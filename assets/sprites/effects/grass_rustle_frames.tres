@@ -1,0 +1,32 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://c14crhm1wbu88"]
+
+[ext_resource type="Texture2D" uid="uid://hbcht55pg4h0" path="res://assets/sprites/effects/Overworld dust and grass.png" id="1_hx2tl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b3yts"]
+atlas = ExtResource("1_hx2tl")
+region = Rect2(576, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l03rs"]
+atlas = ExtResource("1_hx2tl")
+region = Rect2(0, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_khtdl"]
+atlas = ExtResource("1_hx2tl")
+region = Rect2(192, 192, 192, 192)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b3yts")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l03rs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_khtdl")
+}],
+"loop": false,
+"name": &"rustle",
+"speed": 10.0
+}]

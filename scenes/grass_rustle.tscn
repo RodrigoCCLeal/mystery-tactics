@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/grass_rustle.gd" id="1"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/grass_rustle_frames.tres" id="2"]
+
+[node name="GrassRustle" type="Node2D"]
+script = ExtResource("1")
+z_index = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("2")

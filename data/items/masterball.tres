@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cq2jdi813bc0n"]
+
+[ext_resource type="Script" uid="uid://c8w8n0ts68l77" path="res://scripts/item_data.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://c61wtnuvm308a" path="res://assets/sprites/items/Ball/MASTERBALL.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://unnub24vvmm3" path="res://assets/sprites/items/Ball/ball_MASTERBALL.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://b7utp0vgiegwt" path="res://assets/sprites/items/Ball/ball_MASTERBALL_open.png" id="4"]
+
+[resource]
+script = ExtResource("1")
+icon = ExtResource("2")
+category = "Ball"
+effect_description = "Captura garantida — nunca falha, não importa a unidade selvagem."
+can_give = true
+stackable = true
+guaranteed_capture = true
+ball_closed_texture = ExtResource("3")
+ball_open_texture = ExtResource("4")
+action_name = "Master Ball"
+range = 20

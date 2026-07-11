@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bvatb5yhoaq3u"]
+
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
+[ext_resource type="SpriteFrames" uid="uid://dw23hrejfbm77" path="res://assets/sprites/Pokemon/0220/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://khil3myl05o3" path="res://assets/sprites/Pokemon/0220/Normal.png" id="3"]
+[ext_resource type="Resource" path="res://data/attacks/mud_slap.tres" id="4"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_kf18n"]
+[ext_resource type="Resource" path="res://data/attacks/powder_snow.tres" id="6"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="7"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0220_tackle"]
+script = ExtResource("5")
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LearnsetEntry_0220_mud_slap"]
+script = ExtResource("5")
+action = ExtResource("4")
+
+[sub_resource type="Resource" id="LearnsetEntry_0220_powder_snow"]
+script = ExtResource("5")
+level = 5
+action = ExtResource("6")
+
+[resource]
+script = ExtResource("1")
+unit_name = "Swinub"
+sprite_frames = ExtResource("2")
+portrait = ExtResource("3")
+attack_hit_delay = 0.45
+special_hit_delay = 0.1
+types = Array[String](["Ice", "Ground"])
+slots = Array[ExtResource("5_kf18n")]([ExtResource("7"), ExtResource("4"), ExtResource("6")])
+learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0220_tackle"), SubResource("LearnsetEntry_0220_mud_slap"), SubResource("LearnsetEntry_0220_powder_snow")])
+hp_base = 50
+attack_base = 50
+defense_base = 40
+special_attack_base = 30
+special_defense_base = 30
+speed_base = 50
+catch_rate = 0.8824
+growth_group = "Slow"
+base_exp_yield = 50

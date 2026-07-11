@@ -1,0 +1,51 @@
+[gd_resource type="TileSet" format=3 uid="uid://c82qpdmwuwho7"]
+
+[ext_resource type="Texture2D" uid="uid://dliv8jyyc8pnl" path="res://assets/tiles/tilesets/OW/Dungeon forest.png" id="1_lrxlv"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_forest"]
+texture = ExtResource("1_lrxlv")
+texture_region_size = Vector2i(32, 32)
+3:5/0 = 0
+3:5/0/custom_data_0 = true
+2:5/0 = 0
+2:5/0/custom_data_0 = true
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+3:0/0 = 0
+1:1/0 = 0
+0:1/0 = 0
+0:2/0 = 0
+0:3/0 = 0
+0:4/0 = 0
+0:5/0 = 0
+0:6/0 = 0
+1:6/0 = 0
+1:5/0 = 0
+1:4/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+3:3/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+5:1/0 = 0
+4:1/0 = 0
+7:5/0 = 0
+7:5/0/custom_data_0 = true
+6:5/0 = 0
+6:5/0/custom_data_0 = true
+5:5/0 = 0
+5:5/0/custom_data_0 = true
+4:5/0 = 0
+4:5/0/custom_data_0 = true
+
+[resource]
+tile_size = Vector2i(32, 32)
+custom_data_layer_0/name = "walkable"
+custom_data_layer_0/type = 1
+sources/0 = SubResource("TileSetAtlasSource_forest")

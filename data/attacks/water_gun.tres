@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+action_name = "Water Gun"
+max_uses = 25
+range = 2
+accuracy = 1.0
+is_special = true
+element_type = "Water"
+power = 40
+makes_contact = false
+is_projectile = true

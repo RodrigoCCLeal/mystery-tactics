@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/nurse.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://qhe061krocbk" path="res://assets/sprites/Human/NPC/NPC 16.png" id="2"]
+
+[node name="Nurse" type="Node2D"]
+script = ExtResource("1")
+sheet = ExtResource("2")
+facing = "down"
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

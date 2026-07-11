@@ -1,0 +1,127 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/pc_screen.gd" id="1"]
+
+[node name="PcScreen" type="CanvasLayer"]
+script = ExtResource("1")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+color = Color(0, 0, 0, 0.55)
+
+[node name="Center" type="CenterContainer" parent="."]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(860, 520)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Content" type="VBoxContainer" parent="Center/Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Center/Panel/MarginContainer/Content"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "PC"
+
+[node name="Columns" type="HBoxContainer" parent="Center/Panel/MarginContainer/Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TeamColumn" type="VBoxContainer" parent="Center/Panel/MarginContainer/Content/Columns"]
+layout_mode = 2
+
+[node name="TeamLabel" type="Label" parent="Center/Panel/MarginContainer/Content/Columns/TeamColumn"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Time"
+
+[node name="TeamWeightLabel" type="Label" parent="Center/Panel/MarginContainer/Content/Columns/TeamColumn"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Peso: 0/6"
+
+[node name="TeamRows" type="VBoxContainer" parent="Center/Panel/MarginContainer/Content/Columns/TeamColumn"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ReserveColumn" type="VBoxContainer" parent="Center/Panel/MarginContainer/Content/Columns"]
+layout_mode = 2
+
+[node name="ReserveLabel" type="Label" parent="Center/Panel/MarginContainer/Content/Columns/ReserveColumn"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Reserva"
+
+[node name="BoxNav" type="HBoxContainer" parent="Center/Panel/MarginContainer/Content/Columns/ReserveColumn"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="PrevButton" type="Button" parent="Center/Panel/MarginContainer/Content/Columns/ReserveColumn/BoxNav"]
+layout_mode = 2
+text = "<"
+
+[node name="BoxLabel" type="Label" parent="Center/Panel/MarginContainer/Content/Columns/ReserveColumn/BoxNav"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Box 1"
+
+[node name="NextButton" type="Button" parent="Center/Panel/MarginContainer/Content/Columns/ReserveColumn/BoxNav"]
+layout_mode = 2
+text = ">"
+
+[node name="ReserveGrid" type="GridContainer" parent="Center/Panel/MarginContainer/Content/Columns/ReserveColumn"]
+layout_mode = 2
+columns = 8
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+
+[node name="AttributesPanel" type="PanelContainer" parent="Center/Panel/MarginContainer/Content/Columns"]
+custom_minimum_size = Vector2(220, 372)
+layout_mode = 2
+
+[node name="AttrMargin" type="MarginContainer" parent="Center/Panel/MarginContainer/Content/Columns/AttributesPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="AttrContent" type="VBoxContainer" parent="Center/Panel/MarginContainer/Content/Columns/AttributesPanel/AttrMargin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="WeightWarning" type="Label" parent="Center/Panel/MarginContainer/Content"]
+visible = false
+layout_mode = 2
+horizontal_alignment = 1
+text = "Limite de peso excedido"
+theme_override_colors/font_color = Color(1, 0.25, 0.25, 1)
+
+[node name="Prompt" type="Label" parent="Center/Panel/MarginContainer/Content"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Setas: mover cursor.   X: selecionar   Z: fechar"

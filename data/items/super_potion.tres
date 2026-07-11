@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://timvhcf5r6n0"]
+
+[ext_resource type="Script" uid="uid://c8w8n0ts68l77" path="res://scripts/item_data.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://bhqfhjokce8ss" path="res://assets/sprites/items/Medicine/SUPERPOTION.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+icon = ExtResource("2")
+effect_description = "Restaura 60 HP de uma unidade."
+can_use = true
+heal_amount = 60
+action_name = "Super Potion"

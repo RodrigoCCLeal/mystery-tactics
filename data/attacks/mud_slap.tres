@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+action_name = "Mud-Slap"
+max_uses = 25
+range = 1
+is_special = true
+element_type = "Ground"
+power = 20
+makes_contact = false
+is_projectile = true
+area_of_effect = 1
+secondary_status = "Blind"
+secondary_status_chance = 0.5

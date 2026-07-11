@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bludw6rqk7vsm"]
+
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
+[ext_resource type="SpriteFrames" uid="uid://cg3kt4acbg3cv" path="res://assets/sprites/Pokemon/0158/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://co4n8v768q115" path="res://assets/sprites/Pokemon/0158/Normal.png" id="3"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="4"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_typ5f"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="6"]
+[ext_resource type="Resource" path="res://data/abilities/torrent.tres" id="7"]
+[ext_resource type="Resource" path="res://data/abilities/sheer_force.tres" id="8"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0158_tackle"]
+script = ExtResource("5")
+action = ExtResource("4")
+
+[sub_resource type="Resource" id="LearnsetEntry_0158_water_gun"]
+script = ExtResource("5")
+level = 6
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LearnsetEntry_0158_torrent"]
+script = ExtResource("5")
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LearnsetEntry_0158_sheer_force"]
+script = ExtResource("5")
+action = ExtResource("8")
+
+[resource]
+script = ExtResource("1")
+unit_name = "Totodile"
+sprite_frames = ExtResource("2")
+portrait = ExtResource("3")
+attack_hit_delay = 0.35
+special_hit_delay = 0.45
+types = Array[String](["Water"])
+slots = Array[ExtResource("5_typ5f")]([ExtResource("4"), ExtResource("7"), ExtResource("8")])
+learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0158_tackle"), SubResource("LearnsetEntry_0158_water_gun"), SubResource("LearnsetEntry_0158_torrent"), SubResource("LearnsetEntry_0158_sheer_force")])
+hp_base = 50
+attack_base = 65
+defense_base = 64
+special_attack_base = 44
+special_defense_base = 48
+speed_base = 43
+catch_rate = 0.1765
+base_exp_yield = 63

@@ -1,0 +1,2570 @@
+extends Node2D
+
+const MAP_WIDTH = 20
+const MAP_HEIGHT = 14
+const TILE_SIZE = 24
+
+# Zona de deploy: 1/4 do mapa, do lado esquerdo (colunas 0..DEPLOY_ZONE_WIDTH-1).
+# Divisão inteira é proposital (queremos um número de colunas, não fração).
+@warning_ignore("integer_division")
+const DEPLOY_ZONE_WIDTH = MAP_WIDTH / 4
+
+const UNIT_SCENE: PackedScene = preload("res://scenes/unit.tscn")
+const PROJECTILE_SCENE: PackedScene = preload("res://scenes/projectile.tscn")
+const IMPACT_EFFECT_SCENE: PackedScene = preload("res://scenes/impact_effect.tscn")
+const CAPTURE_BALL_SCENE: PackedScene = preload("res://scenes/capture_ball.tscn")
+
+# preload em vez de confiar no class_name global — mesmo motivo do unit.gd.
+const ExpGroups = preload("res://scripts/exp_groups.gd")
+const TypeChart = preload("res://scripts/type_chart.gd")
+
+# Tileset de verdade vai só até x=17, y=7 (o .tres declara coordenadas além
+# disso, mas são sobra sem imagem por trás — ficam em branco se usadas).
+# Qualquer tile com x>11 dentro desse limite é "chão" e pode ser usado à
+# vontade pra dar variedade — exceto (17,2), que é um slot vazio (sem arte).
+# Colunas 0..11 ficam de fora (são as paredes e outras peças com significado próprio).
+const GROUND_ATLAS_MIN_X = 12
+const GROUND_ATLAS_MAX_X = 17
+const GROUND_ATLAS_MAX_Y = 7
+const GROUND_EMPTY_TILE = Vector2i(17, 2)
+
+# Preenchido em _ready() por build_ground_variants() — não dá pra ser const
+# porque é montado com um loop.
+var ground_variants: Array[Vector2i] = []
+
+func build_ground_variants() -> void:
+	ground_variants.clear()
+	# Algumas peças de FLUID_DETAIL (ex: (13,7), (14,7)) caem dentro da faixa
+	# de coordenadas de chão — exclui elas daqui pra não virarem "chão" aleatório
+	# num tile que na verdade é fluido (água/lava/buraco, depende do
+	# BattleTileset sorteado — ver current_battle_tileset).
+	var fluid_detail_positions := {}
+	for entry in FLUID_DETAIL:
+		fluid_detail_positions[entry["pos"]] = true
+	for x in range(GROUND_ATLAS_MIN_X, GROUND_ATLAS_MAX_X + 1):
+		for y in range(GROUND_ATLAS_MAX_Y + 1):
+			var coord = Vector2i(x, y)
+			if coord == GROUND_EMPTY_TILE:
+				continue
+			if fluid_detail_positions.has(coord):
+				continue
+			ground_variants.append(coord)
+
+# Bloco de parede 3x3 (autotile "de mão"): cantos + bordas retas + preenchimento.
+# Coordenadas descritas pelo usuário olhando o tileset.
+const WALL_TOP_LEFT = Vector2i(0, 0)
+const WALL_TOP = Vector2i(1, 0)
+const WALL_TOP_RIGHT = Vector2i(2, 0)
+const WALL_LEFT = Vector2i(0, 1)
+const WALL_FILL = Vector2i(1, 1)      # parede sólida (cercada nos 4 lados) — reservada pra obstáculos internos
+
+const WALL_RIGHT = Vector2i(2, 1)
+const WALL_BOTTOM_LEFT = Vector2i(0, 2)
+const WALL_BOTTOM = Vector2i(1, 2)
+const WALL_BOTTOM_RIGHT = Vector2i(2, 2)
+
+# Mesmo bloco 3x3 acima, mas como array — na mesma ordem de papel que
+# FLUID_SET_A (índices ROLE_*), pra poder usar pick_role()/pick_detail_tile()
+# genéricos com parede também.
+const WALL_SET_A: Array[Vector2i] = [
+	WALL_TOP_LEFT, WALL_TOP, WALL_TOP_RIGHT,
+	WALL_LEFT, WALL_FILL, WALL_RIGHT,
+	WALL_BOTTOM_LEFT, WALL_BOTTOM, WALL_BOTTOM_RIGHT,
+]
+
+# Peças de detalhe da parede (cantos côncavos, T-junctions, pontas soltas,
+# isolada) — mesmo formato de FLUID_DETAIL. A arte da parede é a mesma
+# disposição do fluido, só que 6 colunas mais à esquerda (fluido ocupa
+# x=6..11, parede ocupa x=0..5) — por isso é montada em build_wall_detail()
+# a partir de FLUID_DETAIL, em vez de escrita à mão de novo (evita
+# duplicar/errar as 38 peças). Não pode ser const porque precisa de um loop
+# pra montar.
+var wall_detail: Array[Dictionary] = []
+
+func build_wall_detail() -> void:
+	wall_detail.clear()
+	for entry in FLUID_DETAIL:
+		wall_detail.append({
+			"pos": entry["pos"] - Vector2i(6, 0),
+			"up": entry["up"], "down": entry["down"],
+			"left": entry["left"], "right": entry["right"],
+			"diag": entry["diag"].duplicate(),
+		})
+
+# Blocos de fluido 3x3 (mesmo esquema autotile do bloco de parede: cantos,
+# bordas retas e preenchimento) — é o terço central do atlas (água na
+# tinyWoods, lava na mtBlaze, buraco num futuro terceiro tileset: MESMA
+# coordenada em qualquer um deles, ver comentário grande em
+# BattleTileset/current_battle_tileset). Cada array segue sempre a mesma
+# ordem de papéis:
+# [topo-esq, topo, topo-dir, esq, preenchimento, dir, base-esq, base, base-dir]
+# — ROLE_* abaixo indexa essa ordem.
+const FLUID_SET_A: Array[Vector2i] = [
+	Vector2i(6, 0), Vector2i(7, 0), Vector2i(8, 0),
+	Vector2i(6, 1), Vector2i(7, 1), Vector2i(8, 1),
+	Vector2i(6, 2), Vector2i(7, 2), Vector2i(8, 2),
+]
+
+const ROLE_TOP_LEFT = 0
+const ROLE_TOP = 1
+const ROLE_TOP_RIGHT = 2
+const ROLE_LEFT = 3
+const ROLE_FILL = 4
+const ROLE_RIGHT = 5
+const ROLE_BOTTOM_LEFT = 6
+const ROLE_BOTTOM = 7
+const ROLE_BOTTOM_RIGHT = 8
+
+# Conjunto "detalhado" em (9..11, 0..4): tiles específicos pra cantos côncavos,
+# pontas soltas (conectadas a só 1 vizinho) e a peça isolada — casos que o
+# esquema simples de 9 peças (FLUID_SET_A, só cantos convexos + borda reta +
+# preenchimento) não cobre. Descrito pelo usuário tile a tile: up/down/left/
+# right são os 4 vizinhos ortogonais; "diag" só lista uma diagonal quando os
+# DOIS lados vizinhos a ela são true (nos outros casos already é falsa/irrelevante).
+# (9,0) e (11,0) são espelhadas: canto côncavo baixo-direita vs baixo-esquerda.
+const FLUID_DETAIL: Array[Dictionary] = [
+	{"pos": Vector2i(9, 0), "up": false, "down": true, "left": false, "right": true,
+		"diag": {"down_right": false}},
+	{"pos": Vector2i(11, 0), "up": false, "down": true, "left": true, "right": false,
+		"diag": {"down_left": false}},
+	{"pos": Vector2i(10, 0), "up": false, "down": false, "left": true, "right": true, "diag": {}},
+	{"pos": Vector2i(9, 1), "up": true, "down": true, "left": false, "right": false, "diag": {}},
+	{"pos": Vector2i(10, 1), "up": false, "down": false, "left": false, "right": false, "diag": {}},
+	{"pos": Vector2i(11, 1), "up": true, "down": false, "left": true, "right": false,
+		"diag": {"up_left": false}},
+	{"pos": Vector2i(9, 2), "up": true, "down": false, "left": false, "right": true,
+		"diag": {"up_right": false}},
+	{"pos": Vector2i(10, 2), "up": false, "down": true, "left": false, "right": false, "diag": {}},
+	{"pos": Vector2i(9, 3), "up": false, "down": false, "left": false, "right": true, "diag": {}},
+	{"pos": Vector2i(11, 3), "up": false, "down": false, "left": true, "right": false, "diag": {}},
+	{"pos": Vector2i(10, 3), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": false, "up_right": false, "down_left": false, "down_right": false}},
+	{"pos": Vector2i(10, 4), "up": true, "down": false, "left": false, "right": false, "diag": {}},
+
+	# Lote novo: interior de lagos grandes, cercado nos 4 lados, variando só
+	# 1-2 cantos côncavos (a peça de preenchimento total, sem nenhum canto
+	# côncavo, é FLUID_SET_A[ROLE_FILL] — não precisa entrada aqui).
+	# Coordenadas com X-3 em relação à descrição original (usuário corrigiu).
+	# IMPORTANTE: aqui os 4 cantos são sempre listados (true E false) — como
+	# os 4 lados já são todos true, os 4 cantos são geometricamente relevantes,
+	# então deixar um implícito (por omissão) criaria ambiguidade no match
+	# contra outras peças dessa mesma família que só diferem num canto.
+	{"pos": Vector2i(6, 3), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": true, "up_right": false, "down_left": true, "down_right": false}},
+	{"pos": Vector2i(7, 3), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": false, "up_right": true, "down_left": false, "down_right": true}},
+	{"pos": Vector2i(6, 4), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": false, "up_right": false, "down_left": true, "down_right": true}},
+	{"pos": Vector2i(7, 4), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": true, "up_right": true, "down_left": false, "down_right": false}},
+	{"pos": Vector2i(6, 5), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": true, "up_right": true, "down_left": true, "down_right": false}},
+	{"pos": Vector2i(7, 5), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": true, "up_right": true, "down_left": false, "down_right": true}},
+	{"pos": Vector2i(6, 6), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": true, "up_right": false, "down_left": true, "down_right": true}},
+	{"pos": Vector2i(7, 6), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": false, "up_right": true, "down_left": true, "down_right": true}},
+	{"pos": Vector2i(6, 7), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": false, "up_right": false, "down_left": false, "down_right": true}},
+	{"pos": Vector2i(7, 7), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": false, "up_right": false, "down_left": true, "down_right": false}},
+	{"pos": Vector2i(8, 7), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": false, "up_right": true, "down_left": false, "down_right": false}},
+	{"pos": Vector2i(9, 7), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": true, "up_right": false, "down_left": false, "down_right": false}},
+	{"pos": Vector2i(10, 7), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": false, "up_right": true, "down_left": true, "down_right": false}},
+	{"pos": Vector2i(11, 7), "up": true, "down": true, "left": true, "right": true,
+		"diag": {"up_left": true, "up_right": false, "down_left": false, "down_right": true}},
+
+	# Lote 3: peças em T (3 lados abertos, 1 fechado) com cantos côncavos.
+	# Só os 2 cantos do lado aberto são relevantes aqui (o lado fechado nunca
+	# forma canto), então só esses 2 ficam listados — mas sempre os 2, true
+	# ou false, pelo mesmo motivo do lote 2 (evitar ambiguidade no match).
+	{"pos": Vector2i(8, 3), "up": false, "down": true, "left": true, "right": true,
+		"diag": {"down_left": false, "down_right": false}},
+	{"pos": Vector2i(10, 5), "up": false, "down": true, "left": true, "right": true,
+		"diag": {"down_left": true, "down_right": false}},
+	{"pos": Vector2i(11, 5), "up": false, "down": true, "left": true, "right": true,
+		"diag": {"down_left": false, "down_right": true}},
+	{"pos": Vector2i(8, 4), "up": true, "down": false, "left": true, "right": true,
+		"diag": {"up_left": false, "up_right": false}},
+	{"pos": Vector2i(10, 6), "up": true, "down": false, "left": true, "right": true,
+		"diag": {"up_left": true, "up_right": false}},
+	{"pos": Vector2i(11, 6), "up": true, "down": false, "left": true, "right": true,
+		"diag": {"up_left": false, "up_right": true}},
+	{"pos": Vector2i(9, 4), "up": true, "down": true, "left": false, "right": true,
+		"diag": {"up_right": false, "down_right": false}},
+	{"pos": Vector2i(8, 5), "up": true, "down": true, "left": false, "right": true,
+		"diag": {"up_right": true, "down_right": false}},
+	{"pos": Vector2i(8, 6), "up": true, "down": true, "left": false, "right": true,
+		"diag": {"up_right": false, "down_right": true}},
+	{"pos": Vector2i(9, 5), "up": true, "down": true, "left": true, "right": false,
+		"diag": {"up_left": true, "down_left": false}},
+	{"pos": Vector2i(11, 4), "up": true, "down": true, "left": true, "right": false,
+		"diag": {"up_left": false, "down_left": false}},
+	{"pos": Vector2i(9, 6), "up": true, "down": true, "left": true, "right": false,
+		"diag": {"up_left": false, "down_left": true}},
+]
+
+# Parede + Fluido (água/lava/buraco) JUNTOS nunca passam disso (fração do
+# total de tiles jogáveis) — antes cada um tinha um limite INDEPENDENTE (só
+# fluido, só parede), mas isso deixava o mapa sufocado quando os DOIS
+# cresciam perto do próprio teto ao mesmo tempo (zona de deploy pequena
+# demais, pathing da IA sem saída) — ver generate_fluid()/
+# generate_interior_walls(), que dividem esse mesmo orçamento entre si
+# (fluido gera primeiro, parede usa só o que sobrar).
+const WALL_OR_FLUID_MAX_FRACTION = 4
+
+# Onde as unidades do jogador esperam antes de serem posicionadas.
+# Fica numa coluna única fora do mapa, à ESQUERDA (x negativo) — espaço que
+# fica livre durante a fase de deploy, já que o HUD de batalha (ActionSlots,
+# Pass/Undo/Flee, UnitSummary) só aparece quando start_turn_order() roda no
+# início da Phase.BATTLE (ver linhas ~337-341 e ~863-867). x=-3 cai dentro
+# dessa faixa livre em tela, perto o suficiente da borda do mapa pra não
+# parecer "perdida" no vazio (calculado a partir da Camera2D em (240,192) e
+# viewport base 1152x648 — a mesma conta de screen = world - camera +
+# viewport/2 usada no resto do arquivo). Espaçamento de 2 tiles (48px) entre
+# cada unidade na vertical evita sobrepor sprites.
+#
+# check_deploy_complete() usa grid_pos.x < 0 (não mais grid_pos.y >=
+# MAP_HEIGHT) pra saber quem ainda não foi posicionado — precisa ser algo que
+# NENHUMA posição real dentro do grid jogável possa produzir. Antigamente a
+# staging ficava abaixo do mapa (y = MAP_HEIGHT + 1) e um fallback antigo
+# Vector2i(-2, i*2) já causou esse exato bug uma vez (índice alto empurrava
+# y pra dentro do range válido e a unidade era contada como "já deployada"
+# sem o jogador ter feito nada) — x negativo é seguro porque a zona de
+# deploy real (get_deploy_zone_empty_tiles) nunca usa x < 0.
+func get_staging_position(index: int) -> Vector2i:
+	return Vector2i(-3, index * 2)
+
+enum Phase { DEPLOY, BATTLE, ENDED }
+
+@onready var tilemap: TileMapLayer = $TileMapLayer
+@onready var highlight_layer: TileMapLayer = $HighlightLayer
+@onready var attack_highlight_layer: TileMapLayer = $AttackHighlightLayer
+@onready var fog_layer: TileMapLayer = $FogLayer
+
+# Todo BattleTileset disponível pra sortear (ver comentário grande na classe
+# BattleTileset) — preload em vez de @export porque não tem nenhum node de
+# cena pra arrastar isso: é sorteado sozinho em _ready(), sem intervenção do
+# Inspector. "Apenas para teste" (pedido explícito do usuário) — mais pra
+# frente isso provavelmente passa a depender do bioma da EncounterArea (ver
+# GameState.current_area) em vez de sortear entre TODOS sem critério nenhum.
+const BATTLE_TILESETS: Array[BattleTileset] = [
+	preload("res://data/battle_tilesets/tiny_woods.tres"),
+	preload("res://data/battle_tilesets/mt_blaze.tres"),
+]
+
+# Sorteado em _ready() (ver _pick_battle_tileset()) — guardado aqui pra
+# can_cross_fluid()/_on_unit_tile_entered() lerem fluid_pass_type/
+# fluid_status_on_enter na hora de decidir quem atravessa e quem se queima.
+var current_battle_tileset: BattleTileset
+
+@onready var unit_summary: HBoxContainer = $HUD/UnitSummary
+@onready var end_turn_button: Button = $HUD/EndTurnButton
+@onready var undo_button: Button = $HUD/UndoButton
+@onready var flee_button: Button = $HUD/FleeButton
+@onready var action_slots: HBoxContainer = $HUD/ActionSlots
+@onready var battle_log_panel: PanelContainer = $HUD/BattleLog
+@onready var battle_log: RichTextLabel = $HUD/BattleLog/BattleLogText
+
+# Caixa de log: no estado normal (colapsado) só mostra as últimas
+# BATTLE_LOG_COLLAPSED_LINES mensagens, bem rente ao mapa. Um clique nela
+# expande pra ver o histórico inteiro, crescendo PRA CIMA (o topo sobe, o
+# fundo fica fixo — ver _on_battle_log_gui_input). O fundo (offset_bottom,
+# BATTLE_LOG_BOTTOM abaixo é só documentação do valor fixo no .tscn — o
+# script nunca escreve nele) nunca muda; só o topo alterna entre as duas
+# constantes abaixo. COLLAPSED_TOP fica logo abaixo do fundo do mapa (y=468,
+# ver battle_window_dims no histórico do projeto) — só o suficiente pra não
+# invadir o mapa. EXPANDED_TOP sobe até quase a fileira de portraits, o que
+# faz a caixa cobrir boa parte do mapa temporariamente — aceitável, é uma
+# consulta sob demanda, não o estado padrão.
+const BATTLE_LOG_COLLAPSED_LINES = 3
+const BATTLE_LOG_BOTTOM = 572.0
+const BATTLE_LOG_COLLAPSED_TOP = 502.0
+const BATTLE_LOG_EXPANDED_TOP = 96.0
+
+var battle_log_history: Array[String] = []
+var battle_log_expanded: bool = false
+
+# ActionSlots agora tem os 6 botões divididos em duas colunas (ColumnLeft com
+# os slots 0-2, ColumnRight com 3-5 — ver battle.tscn) em vez de um
+# HBoxContainer com os 6 direto. ACTION_SLOT_COUNT substitui o antigo
+# action_slots.get_child_count() (que agora devolveria 2, as colunas, não os
+# botões) como o número de slots lógicos. Ver _get_action_slot_button().
+const ACTION_SLOT_COUNT = 6
+
+# Unit -> PanelContainer/Label do slot dele no resumo de unidades do HUD.
+var unit_slots: Dictionary = {}
+var unit_hp_labels: Dictionary = {}
+
+# O time do jogador (roster) e MAX_TEAM_SIZE agora moram em GameState (ver
+# game_state.gd) — precisavam ficar acessíveis fora da batalha também, pra
+# tela de Party (aberta do menu de pausa no overworld) poder mostrar e
+# reordenar o mesmo time que vai lutar. battle.gd só LÊ GameState.roster /
+# GameState.get_active_roster() a partir de agora, não guarda mais cópia
+# própria.
+
+var phase: Phase = Phase.DEPLOY
+
+var player_units: Array = []
+var enemy_units: Array = []
+var units: Array = []   # player_units + enemy_units, usado por get_unit_at()
+
+var highlighted_tiles: Array[Vector2i] = []
+var selected_unit: Node = null
+
+# Célula alcançável -> distância REAL do caminho até ela (em passos, contando
+# o desvio em volta de fluido/parede). Preenchido por get_reachable_tiles() e
+# usado por move_selected_unit() pra descontar o custo certo do turno — sem
+# isso, um movimento em linha reta através de um lago (ou lago de lava)
+# intransponível "gastava" só a distância direta, como se a unidade tivesse
+# atravessado o fluido.
+var move_distances: Dictionary = {}
+
+# Ação sendo mirada no momento (null = não está mirando nada, modo normal de
+# seleção/movimento). Setado por _on_slot_pressed(), lido por
+# update_attack_highlight() (segue o mouse) e handle_targeting_input()
+# (confirma ou cancela o alvo ao clicar).
+var targeting_action: ActionData = null
+var targeting_slot_index: int = -1
+
+# ---------- Sistema de turnos ----------
+# Fila de quem joga essa batalha, ordenada por speed (maior primeiro).
+# Só as unidades do jogador entram na fila por enquanto — inimigos ainda
+# não têm IA, então não "jogam" ainda.
+var turn_queue: Array = []
+var current_turn_index: int = 0
+
+# Quanto de movimento a unidade da vez ainda tem sobrando nesse turno.
+# Cada movimento gasta a distância (Chebyshev — diagonal conta como 1 passo,
+# igual nas 8 direções) percorrida; o turno pode ser quebrado em vários
+# movimentos até isso chegar a 0.
+var move_budget_left: int = 0
+
+# Onde a unidade da vez estava quando o turno começou — usado pelo Undo.
+# "Debug" por enquanto: sem armadilhas/terreno especial, desfazer sempre
+# volta pra cá inteiro, não move-a-move.
+var turn_start_pos: Vector2i = Vector2i.ZERO
+
+# Células (dentro do grid jogável) que viraram fluido nessa batalha — água,
+# lava ou (futuramente) buraco, dependendo de qual BattleTileset foi
+# sorteado (ver current_battle_tileset/BATTLE_TILESETS). A REGRA de quem
+# atravessa muda por tileset (ver can_cross_fluid), mas o CONJUNTO de
+# células em si é um só, não importa o fluido — por isso um único
+# Dictionary serve pros três casos.
+var fluid_cells: Dictionary = {}
+
+# Células (dentro do grid jogável) que viraram parede interna nessa batalha.
+# Diferente do fluido, parede bloqueia TODO MUNDO (não tem unidade "voadora"
+# que atravesse parede) — por isso é excluída sem condição em deploy/movimento,
+# ao contrário de fluid_cells que depende de can_unit_cross_fluid().
+var wall_cells: Dictionary = {}
+
+func _ready() -> void:
+	if GameState.roster.size() > GameState.MAX_TEAM_SIZE:
+		push_warning("roster tem %d entradas, mais que o time máximo (%d) — as excedentes serão ignoradas." % [GameState.roster.size(), GameState.MAX_TEAM_SIZE])
+	randomize()
+	_pick_battle_tileset()   # ANTES de qualquer paint_*/set_cell — as 4 layers precisam do tile_set certo já atribuído
+	build_ground_variants()
+	build_wall_detail()
+	# O terreno inteiro já é gerado de uma vez — "revelar" depois não gera
+	# nada novo, só tira a névoa de cima do que já existe.
+	paint_area(0, MAP_WIDTH)
+	generate_fluid()
+	generate_interior_walls()   # depende de fluid_cells já preenchido (não sobrepõe fluido)
+	paint_wall_border()         # depende de wall_cells já populado (se conecta com paredes internas)
+	paint_fog(DEPLOY_ZONE_WIDTH, MAP_WIDTH)
+	spawn_player_units_staged()
+	battle_log.gui_input.connect(_on_battle_log_gui_input)
+	log_message("Battle tileset: %s" % current_battle_tileset.display_name)   # só pra teste, ver comentário de BATTLE_TILESETS
+	log_message("Deploy your units!")
+
+	end_turn_button.pressed.connect(_on_end_turn_pressed)
+	undo_button.pressed.connect(_on_undo_pressed)
+	flee_button.pressed.connect(_on_flee_pressed)
+	for i in ACTION_SLOT_COUNT:
+		var button: Button = _get_action_slot_button(i)
+		button.pressed.connect(_on_slot_pressed.bind(i))
+	unit_summary.visible = false
+	end_turn_button.visible = false
+	undo_button.visible = false
+	flee_button.visible = false
+	action_slots.visible = false
+
+# Sorteia um BATTLE_TILESETS e aplica o .tile_set dele nas 4 TileMapLayer da
+# cena (TileMapLayer de verdade + HighlightLayer/AttackHighlightLayer/
+# FogLayer, que só usam a coordenada (13,1) como "preenchimento" tintado por
+# modulate — ver highlight_tiles()/update_attack_highlight()/paint_fog(), mas
+# mesmo assim precisam de UM TileSet válido registrado com essa coordenada,
+# por isso recebem o mesmo tile_set que o chão de verdade). Roda ANTES de
+# qualquer paint_*/set_cell em _ready() de propósito.
+func _pick_battle_tileset() -> void:
+	current_battle_tileset = BATTLE_TILESETS[randi() % BATTLE_TILESETS.size()]
+	tilemap.tile_set = current_battle_tileset.tile_set
+	highlight_layer.tile_set = current_battle_tileset.tile_set
+	attack_highlight_layer.tile_set = current_battle_tileset.tile_set
+	fog_layer.tile_set = current_battle_tileset.tile_set
+
+# Anexa uma linha ao HISTÓRICO da caixa de eventos da batalha (ver
+# HUD/BattleLog em battle.tscn) e redesenha o texto visível. É o único ponto
+# de escrita nessa caixa — cada evento novo (ataque usado, efetividade,
+# status aplicado, derrota/exp, etc.) chama isso em vez de mexer direto no
+# RichTextLabel. Vamos adicionando mais chamadas aos poucos conforme novos
+# tipos de evento aparecem no jogo.
+func log_message(text: String) -> void:
+	battle_log_history.append(text)
+	_refresh_battle_log_display()
+
+# Redesenha o RichTextLabel a partir do histórico: só as últimas
+# BATTLE_LOG_COLLAPSED_LINES quando colapsado, ou tudo quando expandido (ver
+# _on_battle_log_gui_input). scroll_following=true (battle.tscn) já rola pro
+# final sozinho sempre que o texto muda.
+func _refresh_battle_log_display() -> void:
+	var lines = battle_log_history
+	if not battle_log_expanded:
+		var from = max(0, battle_log_history.size() - BATTLE_LOG_COLLAPSED_LINES)
+		lines = battle_log_history.slice(from)
+	battle_log.text = "\n".join(lines)
+
+# Clique em qualquer lugar da caixa alterna colapsado/expandido. Só o topo
+# (offset_top) do painel se move — o fundo é fixo (ver comentário de
+# BATTLE_LOG_BOTTOM acima), então a caixa sempre cresce PRA CIMA, nunca por
+# cima do que já tem embaixo dela.
+func _on_battle_log_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		battle_log_expanded = not battle_log_expanded
+		battle_log_panel.offset_top = BATTLE_LOG_EXPANDED_TOP if battle_log_expanded else BATTLE_LOG_COLLAPSED_TOP
+		_refresh_battle_log_display()
+
+# Pinta as colunas [from_x, to_x) inteiras (todas as linhas) com um tile
+# sorteado de GROUND_VARIANTS pra cada célula.
+func paint_area(from_x: int, to_x: int) -> void:
+	for x in range(from_x, to_x):
+		for y in MAP_HEIGHT:
+			tilemap.set_cell(Vector2i(x, y), 0, ground_variants.pick_random())
+
+# Cresce uma (ou mais) mancha de fluido (água/lava/buraco, ver
+# current_battle_tileset) a partir de sementes aleatórias, sempre andando pra
+# uma célula vizinha de fluido já existente — isso forma manchas agrupadas em
+# vez de espalhado pelo mapa inteiro. Para quando bate no limite do
+# ORÇAMENTO COMBINADO com parede (ver WALL_OR_FLUID_MAX_FRACTION — fluido
+# gera PRIMEIRO, então é ele quem usa o orçamento cheio; generate_interior_
+# walls() usa só o que sobrar) ou não sobra mais vizinho livre.
+func generate_fluid() -> void:
+	fluid_cells.clear()
+
+	@warning_ignore("integer_division")
+	var max_fluid = (MAP_WIDTH * MAP_HEIGHT) / WALL_OR_FLUID_MAX_FRACTION
+
+	# Nem o primeiro quadrante (zona de deploy do jogador) nem o último (zona
+	# de deploy do "jogador 2", quando tivermos multiplayer) podem ficar mais
+	# de metade cobertos de PAREDE+FLUIDO somados — senão a área de
+	# posicionamento fica pequena demais. Fluido gera primeiro, então só
+	# precisa respeitar a própria metade aqui; generate_interior_walls() é
+	# quem desconta o que o fluido já gastou de cada quadrante (ver lá).
+	@warning_ignore("integer_division")
+	var max_fluid_per_deploy_quadrant = (DEPLOY_ZONE_WIDTH * MAP_HEIGHT) / 2
+	var first_quadrant_fluid = 0
+	var last_quadrant_fluid = 0
+
+	var frontier: Array[Vector2i] = []
+	var seed_count = randi_range(1, 3)
+	for i in seed_count:
+		if fluid_cells.size() >= max_fluid:
+			break
+		var seed_cell = Vector2i(randi_range(0, MAP_WIDTH - 1), randi_range(0, MAP_HEIGHT - 1))
+		if fluid_cells.has(seed_cell):
+			continue
+		if not can_add_fluid_cell(seed_cell, first_quadrant_fluid, last_quadrant_fluid, max_fluid_per_deploy_quadrant):
+			continue
+		fluid_cells[seed_cell] = true
+		frontier.append(seed_cell)
+		if seed_cell.x < DEPLOY_ZONE_WIDTH:
+			first_quadrant_fluid += 1
+		elif seed_cell.x >= MAP_WIDTH - DEPLOY_ZONE_WIDTH:
+			last_quadrant_fluid += 1
+
+	while fluid_cells.size() < max_fluid and not frontier.is_empty():
+		var idx = randi_range(0, frontier.size() - 1)
+		var cell = frontier[idx]
+		var neighbors = [
+			cell + Vector2i(1, 0), cell + Vector2i(-1, 0),
+			cell + Vector2i(0, 1), cell + Vector2i(0, -1),
+		]
+		neighbors.shuffle()
+
+		var grew = false
+		for n in neighbors:
+			if n.x < 0 or n.x >= MAP_WIDTH or n.y < 0 or n.y >= MAP_HEIGHT:
+				continue
+			if fluid_cells.has(n):
+				continue
+			if not can_add_fluid_cell(n, first_quadrant_fluid, last_quadrant_fluid, max_fluid_per_deploy_quadrant):
+				continue
+			fluid_cells[n] = true
+			frontier.append(n)
+			if n.x < DEPLOY_ZONE_WIDTH:
+				first_quadrant_fluid += 1
+			elif n.x >= MAP_WIDTH - DEPLOY_ZONE_WIDTH:
+				last_quadrant_fluid += 1
+			grew = true
+			break
+		if not grew:
+			frontier.remove_at(idx)   # essa célula não tem mais vizinho livre válido — sai da fronteira
+
+		if fluid_cells.size() >= max_fluid:
+			break
+
+	paint_fluid()
+
+# Impede que o fluido passe de metade de um quadrante de deploy (primeiro ou
+# último). O meio do mapa não tem esse limite.
+func can_add_fluid_cell(cell: Vector2i, first_quadrant_fluid: int, last_quadrant_fluid: int, max_per_quadrant: int) -> bool:
+	if cell.x < DEPLOY_ZONE_WIDTH and first_quadrant_fluid >= max_per_quadrant:
+		return false
+	if cell.x >= MAP_WIDTH - DEPLOY_ZONE_WIDTH and last_quadrant_fluid >= max_per_quadrant:
+		return false
+	return true
+
+func paint_fluid() -> void:
+	for cell in fluid_cells.keys():
+		var has_up = fluid_cells.has(cell + Vector2i(0, -1))
+		var has_down = fluid_cells.has(cell + Vector2i(0, 1))
+		var has_left = fluid_cells.has(cell + Vector2i(-1, 0))
+		var has_right = fluid_cells.has(cell + Vector2i(1, 0))
+		var has_up_left = fluid_cells.has(cell + Vector2i(-1, -1))
+		var has_up_right = fluid_cells.has(cell + Vector2i(1, -1))
+		var has_down_left = fluid_cells.has(cell + Vector2i(-1, 1))
+		var has_down_right = fluid_cells.has(cell + Vector2i(1, 1))
+
+		var detail_tile = pick_detail_tile(
+			FLUID_DETAIL,
+			has_up, has_down, has_left, has_right,
+			has_up_left, has_up_right, has_down_left, has_down_right
+		)
+		if detail_tile != Vector2i(-1, -1):
+			tilemap.set_cell(cell, 0, detail_tile)
+			continue
+
+		var role = pick_role(has_up, has_down, has_left, has_right)
+		tilemap.set_cell(cell, 0, FLUID_SET_A[role])
+
+# Cresce uma mancha de parede interna a partir de uma célula na BORDA do grid
+# jogável (x==0, x==MAP_WIDTH-1, y==0 ou y==MAP_HEIGHT-1) — isso garante que
+# a mancha sempre nasce encostada na moldura externa, então nunca fica
+# desconexa dela (todo o resto cresce a partir dessa semente, célula a célula
+# vizinha). Mesmo algoritmo de frontier/seed do fluido, só que sem invadir
+# fluido e usando o que SOBROU do orçamento combinado (ver
+# WALL_OR_FLUID_MAX_FRACTION/generate_fluid, que roda antes e gera primeiro)
+# — tanto no total quanto em cada quadrante de deploy: se o fluido já ocupou
+# metade de um quadrante sozinho, parede não ganha mais espaço NENHUM ali.
+func generate_interior_walls() -> void:
+	wall_cells.clear()
+
+	@warning_ignore("integer_division")
+	var max_combined = (MAP_WIDTH * MAP_HEIGHT) / WALL_OR_FLUID_MAX_FRACTION
+	var max_walls = max(0, max_combined - fluid_cells.size())
+
+	@warning_ignore("integer_division")
+	var max_per_deploy_quadrant = (DEPLOY_ZONE_WIDTH * MAP_HEIGHT) / 2
+	var first_quadrant_fluid = 0
+	var last_quadrant_fluid = 0
+	for cell in fluid_cells.keys():
+		if cell.x < DEPLOY_ZONE_WIDTH:
+			first_quadrant_fluid += 1
+		elif cell.x >= MAP_WIDTH - DEPLOY_ZONE_WIDTH:
+			last_quadrant_fluid += 1
+	var first_quadrant_walls = 0
+	var last_quadrant_walls = 0
+
+	var edge_cells: Array[Vector2i] = []
+	for x in MAP_WIDTH:
+		edge_cells.append(Vector2i(x, 0))
+		edge_cells.append(Vector2i(x, MAP_HEIGHT - 1))
+	for y in MAP_HEIGHT:
+		edge_cells.append(Vector2i(0, y))
+		edge_cells.append(Vector2i(MAP_WIDTH - 1, y))
+	edge_cells.shuffle()
+
+	var frontier: Array[Vector2i] = []
+	var seed_count = randi_range(1, 2)
+	for cell in edge_cells:
+		if frontier.size() >= seed_count or wall_cells.size() >= max_walls:
+			break
+		if wall_cells.has(cell) or fluid_cells.has(cell):
+			continue
+		if not can_add_wall_cell(cell, first_quadrant_walls, last_quadrant_walls, max_per_deploy_quadrant, first_quadrant_fluid, last_quadrant_fluid):
+			continue
+		wall_cells[cell] = true
+		frontier.append(cell)
+		if cell.x < DEPLOY_ZONE_WIDTH:
+			first_quadrant_walls += 1
+		elif cell.x >= MAP_WIDTH - DEPLOY_ZONE_WIDTH:
+			last_quadrant_walls += 1
+
+	while wall_cells.size() < max_walls and not frontier.is_empty():
+		var idx = randi_range(0, frontier.size() - 1)
+		var cell = frontier[idx]
+		var neighbors = [
+			cell + Vector2i(1, 0), cell + Vector2i(-1, 0),
+			cell + Vector2i(0, 1), cell + Vector2i(0, -1),
+		]
+		neighbors.shuffle()
+
+		var grew = false
+		for n in neighbors:
+			if n.x < 0 or n.x >= MAP_WIDTH or n.y < 0 or n.y >= MAP_HEIGHT:
+				continue
+			if wall_cells.has(n) or fluid_cells.has(n):
+				continue
+			if not can_add_wall_cell(n, first_quadrant_walls, last_quadrant_walls, max_per_deploy_quadrant, first_quadrant_fluid, last_quadrant_fluid):
+				continue
+			wall_cells[n] = true
+			frontier.append(n)
+			if n.x < DEPLOY_ZONE_WIDTH:
+				first_quadrant_walls += 1
+			elif n.x >= MAP_WIDTH - DEPLOY_ZONE_WIDTH:
+				last_quadrant_walls += 1
+			grew = true
+			break
+		if not grew:
+			frontier.remove_at(idx)   # sem vizinho livre válido — sai da fronteira
+
+		if wall_cells.size() >= max_walls:
+			break
+
+	paint_interior_walls()
+
+# Mesma ideia de can_add_fluid_cell, mas somando parede+fluido já colocados
+# no quadrante (ver comentário grande de generate_interior_walls acima) —
+# parede não pode fazer o quadrante passar de max_per_quadrant CONTANDO o que
+# o fluido já ocupou ali.
+func can_add_wall_cell(
+	cell: Vector2i,
+	first_quadrant_walls: int, last_quadrant_walls: int, max_per_quadrant: int,
+	first_quadrant_fluid: int, last_quadrant_fluid: int
+) -> bool:
+	if cell.x < DEPLOY_ZONE_WIDTH and first_quadrant_walls + first_quadrant_fluid >= max_per_quadrant:
+		return false
+	if cell.x >= MAP_WIDTH - DEPLOY_ZONE_WIDTH and last_quadrant_walls + last_quadrant_fluid >= max_per_quadrant:
+		return false
+	return true
+
+# Trata qualquer célula FORA do grid jogável (0..MAP_WIDTH-1, 0..MAP_HEIGHT-1)
+# como parede — é a moldura externa, pintada por paint_wall_border() usando
+# essa mesma função. Isso faz a moldura e as paredes internas se conectarem
+# visualmente: os dois lados enxergam um ao outro através da mesma checagem,
+# então pegam o tile côncavo/reto/T certo em vez de um tile fixo genérico.
+func is_wall_or_border(cell: Vector2i) -> bool:
+	if cell.x < 0 or cell.x >= MAP_WIDTH or cell.y < 0 or cell.y >= MAP_HEIGHT:
+		return true
+	return wall_cells.has(cell)
+
+func paint_interior_walls() -> void:
+	for cell in wall_cells.keys():
+		paint_wall_cell(cell)
+
+# Pinta UMA célula de parede (interna ou da moldura externa — não importa,
+# as duas usam a mesma função) olhando os 8 vizinhos via is_wall_or_border().
+# É isso que faz a moldura e as paredes internas se conectarem: os dois lados
+# enxergam um ao outro através da mesma checagem, em vez de a moldura usar
+# tiles fixos que não sabem se tem parede interna encostando nela.
+func paint_wall_cell(cell: Vector2i) -> void:
+	var has_up = is_wall_or_border(cell + Vector2i(0, -1))
+	var has_down = is_wall_or_border(cell + Vector2i(0, 1))
+	var has_left = is_wall_or_border(cell + Vector2i(-1, 0))
+	var has_right = is_wall_or_border(cell + Vector2i(1, 0))
+	var has_up_left = is_wall_or_border(cell + Vector2i(-1, -1))
+	var has_up_right = is_wall_or_border(cell + Vector2i(1, -1))
+	var has_down_left = is_wall_or_border(cell + Vector2i(-1, 1))
+	var has_down_right = is_wall_or_border(cell + Vector2i(1, 1))
+
+	var detail_tile = pick_detail_tile(
+		wall_detail,
+		has_up, has_down, has_left, has_right,
+		has_up_left, has_up_right, has_down_left, has_down_right
+	)
+	if detail_tile != Vector2i(-1, -1):
+		tilemap.set_cell(cell, 0, detail_tile)
+		return
+
+	var role = pick_role(has_up, has_down, has_left, has_right)
+	tilemap.set_cell(cell, 0, WALL_SET_A[role])
+
+# Genérico — usado tanto por fluido quanto por parede (mesmo esquema de
+# autotile "de mão", só muda a tabela de peças e as coordenadas reais).
+# Procura numa tabela de detalhe (FLUID_DETAIL, wall_detail, etc.) uma peça
+# cuja vizinhança bata exatamente (4 lados + só as diagonais que a peça se
+# importa). Se mais de uma peça bater (variação visual da mesma vizinhança,
+# ex: os pares côncavos de fluido), sorteia entre elas. Se nenhuma bater,
+# devolve (-1,-1) e quem chamou cai pro esquema simples de 9 peças (SET_A
+# correspondente) — que cobre cantos convexos, borda reta e preenchimento.
+func pick_detail_tile(
+	detail_table: Array[Dictionary],
+	has_up: bool, has_down: bool, has_left: bool, has_right: bool,
+	has_up_left: bool, has_up_right: bool, has_down_left: bool, has_down_right: bool
+) -> Vector2i:
+	var actual_diag = {
+		"up_left": has_up_left, "up_right": has_up_right,
+		"down_left": has_down_left, "down_right": has_down_right,
+	}
+	var candidates: Array[Vector2i] = []
+	for entry in detail_table:
+		if entry["up"] != has_up or entry["down"] != has_down:
+			continue
+		if entry["left"] != has_left or entry["right"] != has_right:
+			continue
+		var diag_ok = true
+		for corner in entry["diag"].keys():
+			if entry["diag"][corner] != actual_diag[corner]:
+				diag_ok = false
+				break
+		if diag_ok:
+			candidates.append(entry["pos"])
+	if candidates.is_empty():
+		return Vector2i(-1, -1)
+	return candidates.pick_random()
+
+# Genérico também — olha os 4 vizinhos ortogonais de uma célula pra decidir
+# se ela é canto convexo, borda reta ou preenchimento. Devolve o ÍNDICE do
+# papel (ROLE_*), não o Vector2i direto — quem chama busca o tile no SET_A
+# correspondente (FLUID_SET_A, WALL_SET_A). Só é usado como fallback quando
+# pick_detail_tile() não acha peça específica pra vizinhança.
+func pick_role(has_up: bool, has_down: bool, has_left: bool, has_right: bool) -> int:
+	if has_up and has_down and has_left and has_right:
+		return ROLE_FILL
+	if has_down and has_right and not has_up and not has_left:
+		return ROLE_TOP_LEFT
+	if has_down and has_left and not has_up and not has_right:
+		return ROLE_TOP_RIGHT
+	if has_up and has_right and not has_down and not has_left:
+		return ROLE_BOTTOM_LEFT
+	if has_up and has_left and not has_down and not has_right:
+		return ROLE_BOTTOM_RIGHT
+	if has_left and has_right and has_down and not has_up:
+		return ROLE_TOP
+	if has_left and has_right and has_up and not has_down:
+		return ROLE_BOTTOM
+	if has_up and has_down and has_right and not has_left:
+		return ROLE_LEFT
+	if has_up and has_down and has_left and not has_right:
+		return ROLE_RIGHT
+	# Combinações que esse conjunto de 9 tiles não cobre (cantos côncavos,
+	# pontas finas) — usa o preenchimento como fallback, é o que menos destoa.
+	return ROLE_FILL
+
+# Cobre as colunas [from_x, to_x) com névoa. A aparência escura vem só do
+# modulate do FogLayer (veja battle.tscn) — o tile em si é irrelevante,
+# igual já fazíamos com o destaque azul do HighlightLayer.
+func paint_fog(from_x: int, to_x: int) -> void:
+	for x in range(from_x, to_x):
+		for y in MAP_HEIGHT:
+			fog_layer.set_cell(Vector2i(x, y), 0, Vector2i(13, 1))
+
+# Desenha a moldura de parede em volta do grid jogável, uma coluna/linha
+# por FORA de 0..MAP_WIDTH/HEIGHT — não come nenhum tile andável.
+# Precisa rodar DEPOIS de generate_interior_walls() (wall_cells já populado),
+# senão a moldura não sabe quais paredes internas estão encostando nela.
+# Cada célula é resolvida dinamicamente via paint_wall_cell() — é isso que
+# garante a conexão visual com paredes internas (ver comentário lá).
+func paint_wall_border() -> void:
+	paint_wall_cell(Vector2i(-1, -1))
+	paint_wall_cell(Vector2i(MAP_WIDTH, -1))
+	paint_wall_cell(Vector2i(-1, MAP_HEIGHT))
+	paint_wall_cell(Vector2i(MAP_WIDTH, MAP_HEIGHT))
+
+	for x in MAP_WIDTH:
+		paint_wall_cell(Vector2i(x, -1))
+		paint_wall_cell(Vector2i(x, MAP_HEIGHT))
+
+	for y in MAP_HEIGHT:
+		paint_wall_cell(Vector2i(-1, y))
+		paint_wall_cell(Vector2i(MAP_WIDTH, y))
+
+func spawn_player_units_staged() -> void:
+	# Filtra desmaiados (current_hp <= 0) ANTES de calcular as posições de
+	# staging — assim as posições ficam compactas (sem "buraco" na fila) e a
+	# unidade desmaiada simplesmente não aparece pra deploy, nem sua imagem
+	# (ver Party screen pra checar o time inteiro, incluindo quem ficou de fora).
+	var deployable: Array[UnitData] = []
+	for data in GameState.get_active_roster():
+		if data.current_hp > 0:
+			deployable.append(data)
+	for i in deployable.size():
+		var data = deployable[i]
+		var pos = get_staging_position(i)
+		var u = UNIT_SCENE.instantiate()
+		add_child(u)          # precisa vir antes de apply_persisted_data(), que usa @onready var anim
+		u.apply_persisted_data(data)
+		u.init(pos, "right")   # coluna de staging fica à esquerda, olhando pro mapa
+		player_units.append(u)
+		# Sempre que a Speed de QUALQUER unidade mudar (ver Unit.speed_changed/
+		# modify_stat_stage), a fila de turnos pode precisar reordenar quem
+		# ainda não jogou nesta rodada — ver reorder_turn_queue_by_speed().
+		u.speed_changed.connect(reorder_turn_queue_by_speed)
+		# Pisou numa célula nova (ver Unit.tile_entered/move_along_path) — NÃO
+		# dispara aqui no spawn de staging (init() só posiciona, não passa por
+		# move_along_path), só quando o jogador de fato POSICIONA a unidade
+		# (place_selected_unit -> move_to, ver handle_deploy_input) ou ela anda
+		# de verdade em batalha — inclusive deployar em cima de lava já queima.
+		u.tile_entered.connect(_on_unit_tile_entered.bind(u))
+	units = player_units
+
+func get_unit_at(cell: Vector2i) -> Node:
+	# is_instance_valid é uma segunda trava, por segurança — o certo é
+	# remove_defeated_unit() já ter tirado a unidade morta de `units` antes
+	# disso, mas checar aqui evita crash caso algum caminho futuro esqueça.
+	for u in units:
+		if is_instance_valid(u) and u.grid_pos == cell:
+			return u
+	return null
+
+# Só atravessa o fluido do mapa atual (água/lava/buraco — ver
+# current_battle_tileset) quem é do tipo que aquele tileset libera
+# (current_battle_tileset.fluid_pass_type — "Water" na tinyWoods, "Fire" na
+# mtBlaze, "" no futuro tileset de buraco, onde nenhum tipo dá esse direito
+# sozinho), quem tem a flag grounded desligada (voa/flutua e ignora o
+# terreno) na própria UnitData, ou quem tem uma Habilidade equipada que
+# concede isso dinamicamente (ex: Levitate, ver AbilityData.
+# grants_levitation) — Chimecho é o primeiro caso disso. Nenhuma dessas
+# regras garante estar A SALVO do fluido (ver current_battle_tileset.
+# fluid_status_on_enter/_on_unit_tile_entered): mtBlaze ainda queima quem
+# atravessa a lava sem ser Fire.
+func can_cross_fluid(data: UnitData) -> bool:
+	if data == null:
+		return false
+	var pass_type = current_battle_tileset.fluid_pass_type
+	if not data.grounded or (pass_type != "" and data.types.has(pass_type)):
+		return true
+	for action in data.slots:
+		if action is AbilityData and action.grants_levitation:
+			return true
+	return false
+
+func can_unit_cross_fluid(u: Node) -> bool:
+	if u == null:
+		return false
+	return can_cross_fluid(u.data)
+
+# Ligado ao Unit.tile_entered de TODA unidade (ver spawn_player_units_staged/
+# spawn_enemies) — se a célula em que ela acabou de pisar é fluido E o
+# tileset atual tem um status pra isso (current_battle_tileset.
+# fluid_status_on_enter, ex: "Burned" na mtBlaze), tenta aplicar. Sempre
+# tenta em QUALQUER unidade que pise ali (não só quem não é do fluid_pass_
+# type) de propósito — quem É do tipo que o tileset libera (Fire na mtBlaze)
+# já é naturalmente imune via Unit.STATUS_TYPE_IMMUNITIES, então não precisa
+# checar tipo nenhum aqui, apply_status_condition() já se recusa sozinha.
+func _on_unit_tile_entered(cell: Vector2i, u: Node) -> void:
+	if current_battle_tileset.fluid_status_on_enter == "":
+		return
+	if not fluid_cells.has(cell):
+		return
+	if u.apply_status_condition(current_battle_tileset.fluid_status_on_enter):
+		log_message("%s was %s!" % [u.data.unit_name, current_battle_tileset.fluid_status_on_enter])
+
+# Atalhos de teclado da fase de batalha — pensados desde já como INPUT
+# ACTIONS (ver [input] em project.godot), não como keycode cru, porque uma
+# Input Action pode ganhar um evento de CONTROLE além do de teclado mais
+# pra frente (ver comentário do pedido do usuário: "importante muito
+# futuramente quando adicionarmos suporte para controle") sem precisar
+# mexer em battle.gd de novo — só adicionar o evento de joypad na mesma
+# action lá no project.godot. Loadout 1-6 -> teclas 1-6 (action_slot_1..6),
+# Pass -> Space (pass), Flee -> Esc (reaproveita "menu", já existe e não é
+# usado em batalha nenhuma outra hora).
+const ACTION_SLOT_ACTIONS = [
+	"action_slot_1", "action_slot_2", "action_slot_3",
+	"action_slot_4", "action_slot_5", "action_slot_6",
+]
+
+func _unhandled_input(event: InputEvent) -> void:
+	# Só durante Phase.BATTLE — é exatamente quando os botões Pass/Flee/
+	# ActionSlots ficam visíveis (ver start_turn_order()), então os atalhos
+	# só existem quando o botão equivalente também existiria pra clicar.
+	# Turno de inimigo (is_enemy) é tocado sozinho por run_enemy_turn(), sem
+	# nenhum atalho do jogador valendo por cima — Pass/Flee/1-6 ficariam
+	# escondidos mesmo (ver begin_current_turn), mas a tecla "pass" não passa
+	# por button.disabled nenhum, então essa guarda aqui é quem realmente
+	# impede o jogador de encerrar o turno da IA no meio de uma animação.
+	if phase == Phase.BATTLE and (get_current_unit() == null or get_current_unit().is_enemy):
+		return
+	if phase == Phase.BATTLE:
+		# set_input_as_handled() ANTES de chamar a ação (não depois) de
+		# propósito — _on_flee_pressed() troca de cena
+		# (get_tree().change_scene_to_file), o que tira este nó da árvore.
+		# Chamar get_viewport() DEPOIS disso retorna null e crasha
+		# ("Cannot call method 'set_input_as_handled' on a null value").
+		# Marcando como tratado primeiro, a troca de cena pode fazer o que
+		# quiser depois sem essa call depender do nó ainda estar vivo.
+		if event.is_action_pressed("pass"):
+			get_viewport().set_input_as_handled()
+			_on_end_turn_pressed()
+			return
+		if event.is_action_pressed("menu"):
+			get_viewport().set_input_as_handled()
+			_on_flee_pressed()
+			return
+		for i in ACTION_SLOT_ACTIONS.size():
+			if event.is_action_pressed(ACTION_SLOT_ACTIONS[i]):
+				get_viewport().set_input_as_handled()
+				_trigger_action_slot_shortcut(i)
+				return
+
+	# _unhandled_input (em vez de _input) porque agora temos UI de verdade
+	# (o botão de passar turno) — assim um clique no botão não é também
+	# interpretado como clique no mapa.
+	if event is InputEventMouseMotion:
+		if targeting_action != null:
+			update_attack_highlight()
+		return
+
+	if not (event is InputEventMouseButton and event.pressed):
+		return
+
+	var clicked_cell = tilemap.local_to_map(tilemap.to_local(get_global_mouse_position()))
+	var clicked_unit = get_unit_at(clicked_cell)
+
+	if targeting_action != null:
+		handle_targeting_input(clicked_cell)
+		return
+
+	if phase == Phase.DEPLOY:
+		handle_deploy_input(clicked_cell, clicked_unit)
+	elif phase == Phase.BATTLE:
+		handle_battle_input(clicked_cell, clicked_unit)
+	# Phase.ENDED: a batalha já acabou (ver check_battle_end) e a troca de
+	# cena está a caminho — ignora qualquer clique até lá.
+
+# ---------- Fase de deploy ----------
+
+func handle_deploy_input(clicked_cell: Vector2i, clicked_unit: Node) -> void:
+	if clicked_unit and clicked_unit in player_units:
+		select_unit_for_deploy(clicked_unit)
+	elif selected_unit and clicked_cell in highlighted_tiles:
+		place_selected_unit(clicked_cell)
+	else:
+		deselect()
+
+func select_unit_for_deploy(u: Node) -> void:
+	clear_highlights()
+	selected_unit = u
+	highlighted_tiles = get_deploy_zone_empty_tiles()
+	highlight_tiles()
+
+# Todas as células da zona de deploy que estão vazias — ou ocupadas pela
+# própria unidade selecionada, pra permitir reposicionar sem travar.
+func get_deploy_zone_empty_tiles() -> Array[Vector2i]:
+	var tiles: Array[Vector2i] = []
+	var allow_fluid = can_unit_cross_fluid(selected_unit)
+	for x in range(DEPLOY_ZONE_WIDTH):
+		for y in MAP_HEIGHT:
+			var cell = Vector2i(x, y)
+			if fluid_cells.has(cell) and not allow_fluid:
+				continue
+			if wall_cells.has(cell):
+				continue
+			var occupant = get_unit_at(cell)
+			if occupant == null or occupant == selected_unit:
+				tiles.append(cell)
+	return tiles
+
+func place_selected_unit(target: Vector2i) -> void:
+	selected_unit.move_to(target)
+	deselect()
+	check_deploy_complete()
+
+func check_deploy_complete() -> void:
+	for u in player_units:
+		if u.grid_pos.x < 0:
+			return   # ainda tem gente esperando pra ser posicionada (coluna de staging, ver get_staging_position)
+	start_battle()
+
+func start_battle() -> void:
+	phase = Phase.BATTLE
+	fog_layer.clear()
+	spawn_enemies()
+	start_turn_order()
+
+# Sorteia UM grupo da EncounterArea ativa (GameState.current_area,
+# setada por world.gd antes da troca de cena — ver encounter_area.gd/
+# encounter_group.gd) e spawna EXATAMENTE as entries daquele grupo, uma
+# unidade por entrada, na ordem em que estão no grupo, CADA UMA no nível da
+# sua própria EncounterEntry (não é mais um GameState.STARTING_LEVEL fixo
+# pra todo mundo — ex: <0473,54> + <0220,2> sempre traz um Mamoswine nível
+# 54 e um Swinub nível 2 juntos). Repetir a mesma espécie em entries
+# diferentes é o jeito de ter "N cópias dela nessa batalha", ex:
+# <0158,5>+<0158,5>+<0158,5> sempre traz 3 Totodile nível 5 juntos — não é
+# mais um número aleatório de inimigos de espécie aleatória, é o grupo
+# inteiro sorteado que aparece. Cada inimigo usa apply_fresh_data (HP cheio,
+# sem ler/escrever level/xp/hp de verdade) — várias unidades inimigas podem
+# apontar pro mesmo UnitData sem conflito nenhum, já que ninguém escreve nele.
+func spawn_enemies() -> void:
+	var hidden_cells: Array[Vector2i] = []
+	for x in range(DEPLOY_ZONE_WIDTH, MAP_WIDTH):
+		for y in MAP_HEIGHT:
+			hidden_cells.append(Vector2i(x, y))
+	hidden_cells.shuffle()
+
+	var group = GameState.current_area.pick_group() if GameState.current_area != null else null
+	var entries: Array[EncounterEntry] = group.entries if group != null else []
+
+	for entry in entries:
+		var pos = pop_valid_cell(hidden_cells, entry.species)
+		if pos == null:
+			continue   # não sobrou nenhuma célula válida pra essa unidade (raro)
+		var e = UNIT_SCENE.instantiate()
+		add_child(e)
+		e.apply_fresh_data(entry.species, entry.level)
+		e.mark_as_enemy()
+		e.init(pos)
+		enemy_units.append(e)
+		# Inimigo agora entra em turn_queue igual jogador (ver start_turn_order),
+		# então isso passa a valer de verdade: se algum efeito mudar a Speed de
+		# um inimigo no meio da rodada, a fila reordena do mesmo jeito.
+		e.speed_changed.connect(reorder_turn_queue_by_speed)
+		# Mesmo raciocínio de spawn_player_units_staged() — init() acima é só
+		# posicionamento instantâneo (não conta como "entrar" em lugar nenhum,
+		# mesmo espírito de Player.teleport_to() no overworld), então um
+		# inimigo não se queima só por NASCER em cima de lava; só ao andar pra
+		# lá de verdade depois.
+		e.tile_entered.connect(_on_unit_tile_entered.bind(e))
+
+	units = player_units + enemy_units
+
+# Tira da lista `cells` (in-place) e devolve a primeira célula que essa
+# unidade consegue ocupar — pula o fluido se ela não puder atravessar.
+func pop_valid_cell(cells: Array[Vector2i], data: UnitData):
+	var allow_fluid = can_cross_fluid(data)
+	for idx in cells.size():
+		var cell = cells[idx]
+		if fluid_cells.has(cell) and not allow_fluid:
+			continue
+		if wall_cells.has(cell):
+			continue
+		cells.remove_at(idx)
+		return cell
+	return null
+
+# ---------- Fase de batalha ----------
+
+func start_turn_order() -> void:
+	# player_units + enemy_units, intercalados por Speed — antes só o time do
+	# jogador entrava aqui (inimigo não tinha IA pra jogar seu turno, ver
+	# comentário antigo em spawn_enemies()). Agora que run_enemy_turn() existe,
+	# inimigo participa da fila normalmente; begin_current_turn() é quem
+	# decide, pelo is_enemy da unidade da vez, se espera clique do jogador ou
+	# chama a IA sozinha.
+	turn_queue = player_units + enemy_units
+	# get_effective_stat("speed") em vez do stat cru: já nasce certo mesmo se
+	# alguém entrar em campo com um estágio de Speed alterado (não acontece
+	# hoje, mas não custa nada usar o valor "de verdade" desde o início).
+	turn_queue.sort_custom(func(a, b): return a.get_effective_stat("speed") > b.get_effective_stat("speed"))
+	current_turn_index = 0
+	build_unit_summary_hud()
+	unit_summary.visible = true
+	end_turn_button.visible = true
+	undo_button.visible = true
+	flee_button.visible = true
+	action_slots.visible = true
+	begin_current_turn()
+
+func get_current_unit() -> Node:
+	if turn_queue.is_empty():
+		return null
+	return turn_queue[current_turn_index]
+
+# Chamado (via o sinal Unit.speed_changed) toda vez que a Speed de alguém
+# muda durante a batalha — reordena SÓ quem ainda não jogou nesta rodada
+# pela velocidade ATUAL, sem mexer em quem já jogou nem em quem está jogando
+# agora. É assim que "sem repetir turno de ninguém" e "não quebra se 3 ficar
+# mais rápida que 1" (mesmo que 1 já tenha jogado) ficam garantidos ao mesmo
+# tempo: current_turn_index nunca muda aqui, só o que vem DEPOIS dele.
+#
+# Exemplo: fila 1,2,3 (1 mais rápida). No turno de 1 (current_turn_index=0),
+# ela usa um efeito que aumenta a Speed de 3 além da de 2. acted = [] (1
+# ainda está jogando, não "já jogou"), current_unit = 1, pending = [2,3] ->
+# reordenado por Speed atual -> [3,2]. Fila vira 1,3,2 — quando o turno de 1
+# terminar, quem joga a seguir é 3, não 2, sem repetir ninguém.
+func reorder_turn_queue_by_speed() -> void:
+	if phase != Phase.BATTLE or turn_queue.is_empty():
+		return
+	var acted = turn_queue.slice(0, current_turn_index)
+	var current_unit = turn_queue[current_turn_index]
+	var pending = turn_queue.slice(current_turn_index + 1, turn_queue.size())
+	pending.sort_custom(func(a, b): return a.get_effective_stat("speed") > b.get_effective_stat("speed"))
+	turn_queue = acted + [current_unit] + pending
+
+func begin_current_turn() -> void:
+	deselect()
+	cancel_targeting()
+	var u = get_current_unit()
+	if u == null:
+		return
+	turn_start_pos = u.grid_pos
+
+	# Flinched é diferente das outras Status Conditions com duração: ela só
+	# deveria custar UM turno inteiro (movimento e ataque zerados) e sumir
+	# "no começo do turno seguinte" — ou seja, bem aqui, agora, no início
+	# deste turno que ela acabou de travar. Por isso ela é curada NA HORA,
+	# em vez de decrementar status_turns_left no fim do turno como
+	# Frozen/Paralyzed/Confused/Blind/Asleep (ver apply_end_of_turn_status).
+	if u.status_condition == "Flinched":
+		u.cure_status_condition()
+		move_budget_left = 0
+		u.attacks_remaining = 0
+	else:
+		move_budget_left = u.move_range if u.can_move() else 0
+		u.attacks_remaining = 1 if u.can_attack() else 0
+
+	refresh_unit_summary_hud()
+
+	# Turno de inimigo: nenhum HUD de ação do jogador faz sentido pra unidade
+	# que não é dele (ver comentário de run_enemy_turn), então escondemos em
+	# vez de preencher com o loadout do inimigo. A IA decide sozinha e chama
+	# _on_end_turn_pressed() no final — não passa por check_auto_end_turn().
+	if u.is_enemy:
+		action_slots.visible = false
+		end_turn_button.visible = false
+		undo_button.visible = false
+		run_enemy_turn(u)
+		return
+
+	action_slots.visible = true
+	end_turn_button.visible = true
+	undo_button.visible = true
+	refresh_action_slots_hud()
+
+	# Se a unidade começou o turno já sem movimento NEM ataque (travada por
+	# status), passa o turno dela sozinha em vez de deixar a batalha "parada"
+	# esperando o jogador apertar Pass à toa — mesmo gancho usado depois de
+	# mover/atacar (ver check_auto_end_turn). Encadeia normalmente se a
+	# PRÓXIMA unidade também estiver travada.
+	check_auto_end_turn()
+
+# Monta um slot (portrait + HP) por unidade do jogador no HUD. Chamado uma
+# vez quando a batalha começa — a lista de unidades não muda depois disso.
+func build_unit_summary_hud() -> void:
+	for child in unit_summary.get_children():
+		child.queue_free()
+	unit_slots.clear()
+	unit_hp_labels.clear()
+
+	for u in player_units:
+		var slot = PanelContainer.new()
+		# 75 de largura (não mais 56) pra bater com UnitSummary em battle.tscn:
+		# 6 slots * 75 + 5 * separação(6) = 480 = largura do mapa (20 tiles *
+		# 24px), ver comentário lá.
+		slot.custom_minimum_size = Vector2(75, 72)
+
+		var box = VBoxContainer.new()
+		box.alignment = BoxContainer.ALIGNMENT_CENTER
+		slot.add_child(box)
+
+		var portrait = TextureRect.new()
+		portrait.texture = u.data.portrait
+		portrait.custom_minimum_size = Vector2(48, 48)
+		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		box.add_child(portrait)
+
+		var hp_label = Label.new()
+		hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		box.add_child(hp_label)
+
+		unit_summary.add_child(slot)
+		unit_slots[u] = slot
+		unit_hp_labels[u] = hp_label
+
+	refresh_unit_summary_hud()
+
+# Atualiza o texto de nível/HP de todo mundo e a borda azul de quem está na
+# vez. Chamar sempre que o turno mudar, o HP de alguém mudar, ou alguém subir
+# de nível. Mostra nível aqui só por debug por enquanto — xp não aparece
+# ainda (vamos precisar disso no futuro, ver ExpGroups.exp_to_next_level).
+func refresh_unit_summary_hud() -> void:
+	var current = get_current_unit()
+	for u in unit_slots.keys():
+		var slot: PanelContainer = unit_slots[u]
+		var hp_label: Label = unit_hp_labels[u]
+		var text = "%d/%d" % [u.hp_current, u.hp_max]   # nível saiu daqui, já está no tooltip (ver abaixo)
+		# Feedback mínimo de Status Condition — nenhum ataque ainda aplica
+		# isso (é groundwork pros efeitos secundários futuros), mas o HUD já
+		# fica pronto pra mostrar assim que o primeiro ataque começar a usar
+		# Unit.apply_status_condition().
+		if u.status_condition != "":
+			text += "\n[%s]" % u.status_condition
+		hp_label.text = text
+
+		# Tooltip do portrait: nível, Speed (já com estágio alterado, se
+		# tiver — ver Unit.get_effective_stat) e quanto falta de exp pro
+		# próximo nível (ExpGroups.exp_to_next_level já existia, só não era
+		# mostrado em lugar nenhum até agora).
+		var exp_line: String
+		if u.level >= ExpGroups.MAX_LEVEL:
+			exp_line = "Nível máximo"
+		else:
+			var exp_missing = ExpGroups.exp_to_next_level(u.level, u.xp, u.data.growth_group)
+			exp_line = "Exp até o próximo nível: %d" % exp_missing
+		slot.tooltip_text = "Nv. %d\nSpeed: %d\n%s" % [u.level, u.get_effective_stat("speed"), exp_line]
+
+		var style = StyleBoxFlat.new()
+		style.bg_color = Color(0.1, 0.1, 0.12, 0.85)
+		style.set_content_margin_all(4)
+		if u == current:
+			style.border_color = Color(0.2, 0.6, 1.0)
+			style.set_border_width_all(3)
+		slot.add_theme_stylebox_override("panel", style)
+
+# Cor de borda por tipo elemental de AttackData (mesmo vocabulário de
+# UnitData.types/AttackData.element_type) — usada por _apply_slot_border() em
+# refresh_action_slots_hud(). ABILITY_BORDER_COLOR/ITEM_BORDER_COLOR cobrem
+# os outros dois "tipos" de ação possíveis num slot (só existe UM valor fixo
+# pra cada, não varia igual os elementos de ataque).
+const TYPE_BORDER_COLORS := {
+	"Bug": Color("#94bc4a"),
+	"Dark": Color("#736c75"),
+	"Dragon": Color("#6a7baf"),
+	"Electric": Color("#e5c531"),
+	"Fairy": Color("#e397d1"),
+	"Fighting": Color("#cb5f48"),
+	"Fire": Color("#ea7a3c"),
+	"Flying": Color("#7da6de"),
+	"Ghost": Color("#846ab6"),
+	"Grass": Color("#71c558"),
+	"Ground": Color("#cc9f4f"),
+	"Ice": Color("#70cbd4"),
+	"Normal": Color("#aab09f"),
+	"Poison": Color("#b468b7"),
+	"Psychic": Color("#e5709b"),
+	"Rock": Color("#b2a061"),
+	"Steel": Color("#89a1b0"),
+	"Water": Color("#539ae2"),
+}
+const ABILITY_BORDER_COLOR = Color("#81a596")
+const ITEM_BORDER_COLOR = Color("#e4e3e9")
+const BALL_BORDER_COLOR = Color("#d94f4f")
+
+const SLOT_BORDER_WIDTH = 3
+const SLOT_BG_COLOR = Color(0.1, 0.1, 0.12, 0.85)
+# Multiplicador de alpha (fundo E borda) usado no estado "disabled" do botão
+# — é o que preserva a "transparência" de quem não pode ser usado (item
+# passivo, ataque sem uso/já usado no turno) mesmo com a borda colorida.
+const SLOT_DISABLED_ALPHA = 0.35
+
+# Atualiza o texto/estado dos 6 botões de ação com o loadout da unidade da
+# vez. Caixa pequena, conteúdo mínimo: Ataque mostra Nome + usos; Habilidade
+# só o Nome (toda Habilidade é passiva, marcar isso no texto virou redundante
+# — ver AbilityData); Item só o ícone, sem nome nenhum (ver ItemData.icon).
+# A borda de cada botão também é colorida por tipo/categoria (ver
+# _apply_slot_border) pra ficar fácil de reconhecer de relance.
+# Apertar o botão ainda não faz o ataque de verdade, isso vem na próxima
+# etapa (lógica de combate).
+func refresh_action_slots_hud() -> void:
+	var current = get_current_unit()
+	for i in ACTION_SLOT_COUNT:
+		var button: Button = _get_action_slot_button(i)
+		button.icon = null            # limpa ícone de Item de um refresh anterior (ver bloco ItemData abaixo)
+		button.tooltip_text = ""      # idem pro tooltip de Ataque (ver bloco AttackData abaixo)
+
+		if current == null or i >= current.data.slots.size() or current.data.slots[i] == null:
+			button.text = "Vazio"
+			button.disabled = true
+			_reset_slot_border(button)   # slot vazio não é ataque/habilidade/item — sem borda colorida
+			continue
+
+		var action: ActionData = current.data.slots[i]
+
+		# Habilidade é passiva — nunca é "usada" pelo jogador (ver comentário
+		# em AbilityData), então o botão só mostra o nome dela e fica sempre
+		# desabilitado, sem entrar nas checagens de uso/ataque abaixo.
+		if action is AbilityData:
+			button.text = action.action_name
+			button.disabled = true
+			_apply_slot_border(button, ABILITY_BORDER_COLOR)
+			continue
+
+		# Ball e TM são as ÚNICAS categorias de Item clicáveis NA BATALHA —
+		# usá-las conta como a ação do turno (mesmo attacks_remaining que
+		# Ataque usa, ver AttackData abaixo). As duas são Stackable (ver
+		# ItemData.stackable), então o botão SEMPRE mostra quanto ainda resta
+		# nesse slot (UnitData.get_slot_quantity) — sem isso o jogador não
+		# tinha como saber se ainda tinha bola/TM sobrando sem abrir tooltip
+		# nenhum.
+		if action is ItemData and action.category == "Ball":
+			var quantity = current.data.get_slot_quantity(i)
+			button.text = "%dx" % quantity
+			button.icon = action.icon
+			button.disabled = current.attacks_remaining <= 0 or quantity <= 0
+			_apply_slot_border(button, BALL_BORDER_COLOR)
+			continue
+
+		# TM: se comporta como um Ataque na HUD (nome + contagem, borda na
+		# cor do TIPO do ataque que ele ensina — ver tm_attack) só que a
+		# "contagem" mostrada é quantas cargas do ITEM ainda restam nesse
+		# slot, não o max_uses/PP do ataque em si (ver execute_tm_attack:
+		# usar TM 10 não gasta PP de Ice Fang, gasta 1 unidade de TM 10).
+		if action is ItemData and action.category == "TM":
+			var tm_attack: AttackData = action.tm_attack
+			var quantity = current.data.get_slot_quantity(i)
+			button.text = "%s\n%dx" % [action.action_name, quantity]
+			button.disabled = current.attacks_remaining <= 0 or quantity <= 0
+			if tm_attack != null:
+				button.tooltip_text = "%s\nTipo: %s (%s)\nPoder: %d\nCargas restantes: %d" % [
+					tm_attack.action_name,
+					tm_attack.element_type,
+					"Especial" if tm_attack.is_special else "Físico",
+					tm_attack.power,
+					quantity,
+				]
+				_apply_slot_border(button, TYPE_BORDER_COLORS.get(tm_attack.element_type, TYPE_BORDER_COLORS["Normal"]))
+			else:
+				_apply_slot_border(button, ITEM_BORDER_COLOR)
+			continue
+
+		# Qualquer OUTRO Item (Held Item equipado, ou Medicine/Berry que por
+		# algum motivo esteja no loadout) não é clicável NA BATALHA — Use/
+		# Give só acontecem pela Bag, fora de combate (ver
+		# item_list_screen.gd). Sem esse continue, cairia no bloco de
+		# AttackData logo abaixo e quebraria lendo action.is_special/
+		# element_type, que ItemData não tem.
+		if action is ItemData:
+			button.text = ""
+			button.icon = action.icon
+			button.disabled = true
+			_apply_slot_border(button, ITEM_BORDER_COLOR)
+			continue
+
+		# Ataque: nome + usos, só isso — a caixa ficou compacta demais pra
+		# também mostrar Físico/Especial-Tipo ou "já atacou"; o estado
+		# desabilitado do botão já comunica isso visualmente. O tipo ainda
+		# aparece, só que na cor da borda (ver TYPE_BORDER_COLORS) em vez de
+		# escrito por extenso.
+		var label = action.action_name
+
+		# max_uses > 0 = ação com contador (todo ataque, alguns itens). -1 =
+		# sem contador — nunca fica sem uso (não é o caso de nenhum Ataque).
+		var out_of_uses = action.max_uses > 0 and current.slot_uses[i] <= 0
+		if action.max_uses > 0:
+			label += "\n%d/%d" % [current.slot_uses[i], action.max_uses]
+
+		# Ataque só pode ser usado 1x por turno (ver Unit.attacks_remaining).
+		var attack_locked = action is AttackData and current.attacks_remaining <= 0
+
+		button.disabled = out_of_uses or attack_locked
+		button.text = label
+		button.tooltip_text = _build_attack_tooltip(action, current.slot_uses[i])
+		var border_color: Color = TYPE_BORDER_COLORS.get(action.element_type, TYPE_BORDER_COLORS["Normal"])
+		_apply_slot_border(button, border_color)
+
+# Texto do tooltip (hover do mouse) de um Ataque — as informações mais
+# importantes pra decidir se vale usar: tipo, físico/especial, poder,
+# alcance, contato, accuracy e o efeito secundário (se tiver, ver
+# AttackData.secondary_status). Usos entra por último, já que o próprio
+# botão já mostra isso escrito.
+func _build_attack_tooltip(action: AttackData, uses_current: int) -> String:
+	var kind = "Especial" if action.is_special else "Físico"
+	var lines = [
+		action.action_name,
+		"Tipo: %s (%s)" % [action.element_type, kind],
+		"Poder: %d" % action.power,
+		"Alcance: %d%s" % [action.range, " (projétil)" if action.is_projectile else ""],
+		"Contato: %s" % ("Sim" if action.makes_contact else "Não"),
+		"Accuracy: %d%%" % int(action.accuracy * 100),
+	]
+	if action.secondary_status != "":
+		lines.append("Efeito: %d%% de %s" % [int(action.secondary_status_chance * 100), action.secondary_status])
+	if action.max_uses > 0:
+		lines.append("Usos: %d/%d" % [uses_current, action.max_uses])
+	return "\n".join(lines)
+
+# Pinta a borda (+ um fundo escuro neutro, igual o resto do HUD — ver
+# refresh_unit_summary_hud) de um botão de ação com `color`. Dois StyleBox
+# separados: um pro estado normal (borda na cor cheia) e outro pro estado
+# "disabled" (MESMA cor, mas com alpha reduzido — é isso que mantém a
+# "transparência" de quem não pode ser usado, mesmo colorido).
+func _apply_slot_border(button: Button, color: Color) -> void:
+	var normal = StyleBoxFlat.new()
+	normal.bg_color = SLOT_BG_COLOR
+	normal.border_color = color
+	normal.set_border_width_all(SLOT_BORDER_WIDTH)
+	normal.set_content_margin_all(6)
+	button.add_theme_stylebox_override("normal", normal)
+	button.add_theme_stylebox_override("hover", normal)
+	button.add_theme_stylebox_override("pressed", normal)
+
+	var disabled = StyleBoxFlat.new()
+	disabled.bg_color = Color(SLOT_BG_COLOR.r, SLOT_BG_COLOR.g, SLOT_BG_COLOR.b, SLOT_BG_COLOR.a * SLOT_DISABLED_ALPHA)
+	disabled.border_color = Color(color.r, color.g, color.b, color.a * SLOT_DISABLED_ALPHA)
+	disabled.set_border_width_all(SLOT_BORDER_WIDTH)
+	disabled.set_content_margin_all(6)
+	button.add_theme_stylebox_override("disabled", disabled)
+
+# Tira qualquer borda colorida de uma chamada anterior (slot ficou vazio —
+# ver refresh_action_slots_hud) — volta pro visual padrão do tema, sem
+# StyleBox nenhum sobrescrito.
+func _reset_slot_border(button: Button) -> void:
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		if button.has_theme_stylebox_override(state):
+			button.remove_theme_stylebox_override(state)
+
+# Os 6 botões de ação ficam em duas colunas de 3 (ColumnLeft = slots 0-2,
+# ColumnRight = slots 3-5, de cima pra baixo — ver battle.tscn) em vez de um
+# único container com os 6 em fila. column = index/3 escolhe a coluna certa,
+# row = index%3 a posição dentro dela — mantém a correspondência direta com
+# UnitData.slots[index] que o resto do código (refresh_action_slots_hud,
+# _on_slot_pressed, atalhos de teclado) já espera.
+func _get_action_slot_button(index: int) -> Button:
+	@warning_ignore("integer_division")
+	var column = index / 3
+	var row = index % 3
+	return action_slots.get_child(column).get_child(row)
+
+func _on_slot_pressed(index: int) -> void:
+	var current = get_current_unit()
+	if current == null or index >= current.data.slots.size() or current.data.slots[index] == null:
+		return
+	var action: ActionData = current.data.slots[index]
+	# Habilidade é passiva, não clicável — botão já devia estar desabilitado,
+	# mas confere de novo aqui por segurança (mesmo padrão do check abaixo).
+	if action is AbilityData:
+		return
+	# Item que não é Ball nem TM também não é clicável na batalha — mesma
+	# segurança, ver comentário equivalente em refresh_action_slots_hud().
+	# Ball/TM são a exceção (caem direto pro mesmo gate de attacks_remaining
+	# que Ataque usa, logo abaixo) — usá-los também conta como a ação do
+	# turno.
+	if action is ItemData and action.category != "Ball" and action.category != "TM":
+		return
+	# Slot sem carga nenhuma (Ball/TM stackable zerado) — não deveria nem
+	# chegar aqui (get_slot_quantity <= 0 já desabilita o botão, ver
+	# refresh_action_slots_hud), mas confere de novo por segurança.
+	if action is ItemData and action.stackable and current.data.get_slot_quantity(index) <= 0:
+		return
+	# Ataque (ou Ball/TM) já usado neste turno — botão devia estar
+	# desabilitado, mas confere de novo aqui por segurança.
+	if current.attacks_remaining <= 0:
+		return
+	# Sair do modo de movimento (se tava selecionado) e entrar no modo de mira
+	# dessa ação — o highlight vermelho passa a seguir o mouse a partir daqui.
+	deselect()
+	targeting_action = action
+	targeting_slot_index = index
+
+# Atalho de teclado (1-6, ver ACTION_SLOT_ACTIONS/_unhandled_input) pro
+# mesmo botão de ação — respeita EXATAMENTE o estado do botão (button.
+# disabled já reúne out_of_uses/attack_locked/etc, ver
+# refresh_action_slots_hud), então apertar a tecla nunca faz algo que o
+# clique não deixaria fazer.
+func _trigger_action_slot_shortcut(index: int) -> void:
+	if index >= ACTION_SLOT_COUNT:
+		return
+	var button: Button = _get_action_slot_button(index)
+	if button.disabled:
+		return
+	_on_slot_pressed(index)
+	update_attack_highlight()
+
+# Distância Chebyshev (mesma convenção do movimento — diagonal conta 1 passo,
+# igual reto) entre origin e target, comparada com o alcance da ação.
+# - Ataque normal (is_projectile falso, ou nem é AttackData): distância EXATA
+#   (==), não "até" (<=) — um ataque de range 1 nunca acerta a própria célula
+#   da unidade (distância 0), só o anel de tiles a 1 de distância.
+# - Ataque-projétil (is_projectile true) OU Ball (category == "Ball"):
+#   precisa estar numa linha reta de verdade (horizontal, vertical ou
+#   diagonal de 45°) a partir de origin, e a distância só precisa ser <=
+#   range (o range é o alcance MÁXIMO — o projétil/bola pode acertar algo
+#   mais perto, ver find_projectile_target/find_ball_target). Ball sempre
+#   cai aqui (nunca no ramo "distância exata") já que toda Ball se comporta
+#   como projétil, sem exceção.
+# - TM (category == "TM"): NÃO tem range/is_projectile própria — pra fins de
+#   alcance, "é" o ataque que ensina (ver ItemData.tm_attack), então resolve
+#   tudo em cima de tm_attack em vez de action (o `range`/`is_projectile` da
+#   própria ItemData ficam sem uso nenhum pra TM, só existem por herdar de
+#   ActionData).
+func is_valid_target_cell(origin: Vector2i, target: Vector2i, action: ActionData) -> bool:
+	var delta = target - origin
+	if delta == Vector2i.ZERO:
+		return false
+	var dist = max(abs(delta.x), abs(delta.y))
+
+	var effective_action: ActionData = action
+	if action is ItemData and action.category == "TM" and action.tm_attack != null:
+		effective_action = action.tm_attack
+
+	var is_projectile_like = (effective_action is AttackData and effective_action.is_projectile) or (action is ItemData and action.category == "Ball")
+	if is_projectile_like:
+		var is_straight_line = delta.x == 0 or delta.y == 0 or abs(delta.x) == abs(delta.y)
+		return is_straight_line and dist <= effective_action.range
+	return dist == effective_action.range
+
+# Anda em linha reta de origin em direção a target (mesma direção 8-way do
+# resto do jogo), célula por célula, até no máximo max_range passos, e
+# devolve o primeiro INIMIGO encontrado no caminho (ou null se não achar
+# nenhum). Para numa parede/borda do mapa (is_wall_or_border) igual
+# find_ball_target — bug reportado pelo usuário: Powder Snow (e qualquer
+# outro ataque-projétil) estava atravessando paredes por essa checagem não
+# existir aqui antes. Aliados no meio do caminho continuam sendo ignorados
+# (o projétil passa direto por eles em vez de ser bloqueado — simplificação:
+# dá pra mudar isso depois se quisermos que aliados também bloqueiem).
+func find_projectile_target(attacker: Node, origin: Vector2i, target: Vector2i, max_range: int) -> Node:
+	var delta = target - origin
+	var dir = Vector2i(sign(delta.x), sign(delta.y))
+	var cell = origin
+	for step in max_range:
+		var next_cell = cell + dir
+		if is_wall_or_border(next_cell):
+			break
+		cell = next_cell
+		var u = get_unit_at(cell)
+		if u != null and u.is_enemy != attacker.is_enemy:
+			return u
+	return null
+
+# Variante de find_projectile_target() usada só por Ball (ver
+# execute_ball_throw): mesma parada em parede/borda, só que devolve também
+# stop_cell (a última célula andável alcançada) — usada por execute_ball_throw
+# pra saber até onde animar o voo da bola mesmo quando ela erra. Ataque-
+# projétil comum não precisa de stop_cell porque, ao errar (defender == null),
+# execute_attack simplesmente não anima o projétil nenhum (ver comentário lá).
+func find_ball_target(attacker: Node, origin: Vector2i, target: Vector2i, max_range: int) -> Dictionary:
+	var delta = target - origin
+	var dir = Vector2i(sign(delta.x), sign(delta.y))
+	var cell = origin
+	var stop_cell = origin
+	for step in max_range:
+		var next_cell = cell + dir
+		if is_wall_or_border(next_cell):
+			break
+		cell = next_cell
+		stop_cell = cell
+		var u = get_unit_at(cell)
+		if u != null and u.is_enemy != attacker.is_enemy:
+			return {"unit": u, "stop_cell": stop_cell}
+	return {"unit": null, "stop_cell": stop_cell}
+
+# Recalcula o highlight vermelho a partir da posição atual do mouse — chamado
+# a cada movimento do mouse enquanto targeting_action != null. Só destaca a
+# célula sob o cursor, e só se ela estiver dentro do alcance da ação E dentro
+# do grid jogável; fora disso, não mostra nada (não "gruda" no limite). Junto
+# com o highlight, a unidade vira no próprio eixo pra encarar o tile mirado.
+func update_attack_highlight() -> void:
+	attack_highlight_layer.clear()
+	var current = get_current_unit()
+	if current == null or targeting_action == null:
+		return
+
+	var cell = tilemap.local_to_map(tilemap.to_local(get_global_mouse_position()))
+	if cell.x < 0 or cell.x >= MAP_WIDTH or cell.y < 0 or cell.y >= MAP_HEIGHT:
+		return
+	if not is_valid_target_cell(current.grid_pos, cell, targeting_action):
+		return
+
+	attack_highlight_layer.set_cell(cell, 0, Vector2i(13, 1))
+	current.face_towards(cell)
+
+# Clique enquanto mirando: se a célula clicada está dentro do alcance,
+# resolve o alvo de verdade (a própria célula clicada pra ataque normal; o
+# primeiro inimigo na linha, pra projétil — pode ser mais perto do que onde
+# clicou) e executa o ataque se houver um inimigo válido ali. Clicar fora do
+# alcance, sem alvo, ou só em aliados no caminho, cancela a mira sem efeito.
+# De qualquer forma, um clique sempre sai do modo de mira.
+func handle_targeting_input(clicked_cell: Vector2i) -> void:
+	var current = get_current_unit()
+	var action = targeting_action
+	var index = targeting_slot_index
+	if current != null and action is AttackData and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
+		var target: Node = null
+		if action.is_projectile:
+			target = find_projectile_target(current, current.grid_pos, clicked_cell, action.range)
+		else:
+			var clicked_unit = get_unit_at(clicked_cell)
+			if clicked_unit != null and clicked_unit.is_enemy != current.is_enemy:
+				target = clicked_unit
+		if target != null:
+			# Confused: 1/6 de chance do ataque sair na direção errada.
+			# O alvo MIRADO (target) só decide se o ataque é disparado ou
+			# não — quem de fato é atingido, com a mira embaralhada, pode
+			# ser um aliado, ninguém, ou (por sorte) o próprio alvo
+			# original de novo. Ver resolve_confused_target().
+			var actual_target = target
+			if current.status_condition == "Confused" and randf() < 1.0 / 6.0:
+				actual_target = resolve_confused_target(current, action)
+			execute_attack(current, actual_target, action, index)
+	elif current != null and action is ItemData and action.category == "TM" and action.tm_attack != null and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
+		# Mesma lógica de resolução de alvo do ramo AttackData acima, só que
+		# em cima de action.tm_attack (que TEM is_projectile/range de
+		# verdade — a ItemData em si não). Confused TAMBÉM vale aqui,
+		# diferente de Ball: usar um TM é a unidade executando um ataque de
+		# verdade (Ice Fang), não o treinador agindo por conta própria.
+		var tm_attack: AttackData = action.tm_attack
+		var target: Node = null
+		if tm_attack.is_projectile:
+			target = find_projectile_target(current, current.grid_pos, clicked_cell, tm_attack.range)
+		else:
+			var clicked_unit = get_unit_at(clicked_cell)
+			if clicked_unit != null and clicked_unit.is_enemy != current.is_enemy:
+				target = clicked_unit
+		if target != null:
+			var actual_target = target
+			if current.status_condition == "Confused" and randf() < 1.0 / 6.0:
+				actual_target = resolve_confused_target(current, tm_attack)
+			execute_tm_attack(current, actual_target, action, index)
+	elif current != null and action is ItemData and action.category == "Ball" and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
+		# Ball não sofre a mesma checagem de Confused que Ataque sofre acima
+		# — de propósito: quem mira e arremessa a bola é o TREINADOR, não a
+		# unidade em campo, então o "erro de mira" de Confused (que afeta a
+		# unidade, não o jogador) não deveria valer aqui.
+		execute_ball_throw(current, clicked_cell, action, index)
+	cancel_targeting()
+
+# Sorteia uma das 8 direções (a "direção errada" da confusão) e devolve quem
+# estiver nela dentro do alcance da ação — SEM o filtro de "só inimigo" que
+# find_projectile_target tem, de propósito: uma unidade confusa "deve ser
+# capaz de atingir seus aliados". Pode devolver null (nenhuma das 8 direções
+# tinha alguém) — nesse caso o ataque é disparado mesmo assim, só não acerta
+# ninguém (ver execute_attack aceitando defender nulo).
+#
+# Ataque-projétil varre a linha inteira (primeira unidade que achar, igual
+# find_projectile_target); ataque comum (melee) só olha a distância EXATA de
+# action.range naquela direção — mesma convenção de is_valid_target_cell.
+func resolve_confused_target(attacker: Node, action: ActionData) -> Node:
+	var directions: Array[Vector2i] = [
+		Vector2i(0, -1), Vector2i(1, -1), Vector2i(1, 0), Vector2i(1, 1),
+		Vector2i(0, 1), Vector2i(-1, 1), Vector2i(-1, 0), Vector2i(-1, -1),
+	]
+	directions.shuffle()
+	for dir in directions:
+		if action is AttackData and action.is_projectile:
+			var cell = attacker.grid_pos
+			for step in action.range:
+				var next_cell = cell + dir
+				if is_wall_or_border(next_cell):
+					break
+				cell = next_cell
+				var u = get_unit_at(cell)
+				if u != null:
+					return u
+		else:
+			var u = get_unit_at(attacker.grid_pos + dir * action.range)
+			if u != null:
+				return u
+	return null
+
+# Fórmula de dano (estilo Pokémon):
+#   (((2*Nível/5 + 2) * Poder * Ataque/Defesa) / 50 + 2) * Modificadores
+# Se o ataque for Especial, usa Ataque/Defesa Especial em vez dos normais.
+# Modificadores por enquanto é efetividade de tipo (TypeChart), STAB (mesmo
+# tipo do ataque e da unidade, x1.5), Habilidade tipo Blaze (ver
+# calculate_damage_modifiers) e Acerto Crítico (x1.5, ver is_critical
+# abaixo/CRITICAL_HIT_CHANCE) — aleatoriedade de dano (variação ±15%, como no
+# jogo original) ainda não existe.
+# Todas as divisões truncam (mesma convenção do resto do projeto): a parte
+# de dentro trunca primeiro, DEPOIS multiplica pelos modificadores e trunca
+# de novo — igual o jogo original faz (não dá pra multiplicar os
+# modificadores antes de truncar a base, senão o resultado muda). Piso de 1
+# de dano no final — EXCETO se a efetividade de tipo for x0 (imune), aí o
+# dano é 0 mesmo (não faz sentido ter um "mínimo de 1" contra imunidade).
+#
+# is_critical vem PRONTO de quem chama (ver execute_attack, que rola
+# CRITICAL_HIT_CHANCE uma vez só) em vez de rolar aqui dentro — assim quem
+# chama pode logar "A critical hit!" usando o MESMO resultado do roll que
+# decidiu o dano, sem sortear duas vezes (e sem dessincronizar as duas
+# coisas). Chamadas que só querem ESTIMAR dano (ex: IA escolhendo o melhor
+# alvo, ver choose_enemy_action) deixam is_critical no padrão (false) de
+# propósito — uma avaliação de "qual alvo é melhor" não deve depender de
+# sorte, sempre o mesmo resultado pro mesmo estado de jogo.
+func calculate_damage(attacker: Node, defender: Node, attack: AttackData, is_critical: bool = false) -> int:
+	var effectiveness = TypeChart.get_effectiveness(attack.element_type, defender.data.types)
+	if effectiveness == 0.0:
+		return 0
+
+	if has_type_immunity_ability(defender, attack.element_type):
+		return 0
+
+	# get_effective_stat() em vez do stat cru: já aplica o estágio alterado
+	# (Altered Stats, ver Unit.STAGE_STATS) — com todo mundo em estágio 0
+	# (padrão), o resultado é idêntico ao stat cru de antes. Num crítico, os
+	# estágios DESFAVORÁVEIS pro atacante são ignorados (ver Unit.
+	# get_offensive_stat_for_crit/get_defensive_stat_for_crit e o comentário
+	# grande lá): Attack/Sp.Atk rebaixado do atacante não conta, nem Defense/
+	# Sp.Def aumentada do defensor.
+	var atk_key = "special_attack" if attack.is_special else "attack"
+	var def_key = "special_defense" if attack.is_special else "defense"
+	var atk_stat: int
+	var def_stat: int
+	if is_critical:
+		atk_stat = attacker.get_offensive_stat_for_crit(atk_key)
+		def_stat = defender.get_defensive_stat_for_crit(def_key)
+	else:
+		atk_stat = attacker.get_effective_stat(atk_key)
+		def_stat = defender.get_effective_stat(def_key)
+
+	@warning_ignore("integer_division")
+	var level_factor = (2 * attacker.level) / 5 + 2
+
+	@warning_ignore("integer_division")
+	var damage = (level_factor * attack.power * atk_stat / def_stat) / 50 + 2
+
+	var modifiers = calculate_damage_modifiers(attacker, attack) * effectiveness
+	if is_critical:
+		modifiers *= CRITICAL_HIT_MULTIPLIER
+	damage = int(damage * modifiers)
+
+	return max(1, damage)
+
+# 1/16 = 6.25% — mesma fração clássica de acerto crítico dos jogos Pokémon
+# (sem nenhum item/Habilidade que aumente a chance implementado ainda; se um
+# dia existir um "Scope Lens" ou parecido, é aqui que ele multiplicaria).
+const CRITICAL_HIT_CHANCE = 0.0625
+const CRITICAL_HIT_MULTIPLIER = 1.5
+
+# A parte "Modificadores" da fórmula acima que NÃO é efetividade de tipo
+# (essa fica separada em calculate_damage, por causa do caso especial de
+# imunidade x0 — ver comentário lá).
+# - STAB ("Same Type Attack Bonus"): se o tipo do ataque é um dos tipos da
+#   própria unidade (UnitData.types), dano x1.5 — vale pra QUALQUER ataque
+#   que cause dano, não depende de Habilidade nenhuma.
+# - Habilidade (AbilityData): percorre os slots equipados procurando
+#   Habilidades cujo element_type bate com o do ataque E cuja condição de HP
+#   (hp_current/hp_max < hp_threshold) está satisfeita, multiplicando um por
+#   um — dá pra ter mais de uma Habilidade ativa ao mesmo tempo, mesmo que
+#   hoje nenhuma unidade tenha isso. Blaze é a primeira: Fire, hp_threshold
+#   0.25, damage_multiplier 1.3 (data/abilities/blaze.tres).
+# Imunidade TOTAL de tipo vinda de uma Habilidade de QUEM DEFENDE (ex:
+# Levitate x Ground) — separada da imunidade da TypeChart (baseada só no
+# tipo da unidade) porque essa depende do loadout equipado, não é fixa da
+# espécie. Chamada antes do resto da fórmula em calculate_damage(), pelo
+# mesmo motivo: bypassa o piso de dano mínimo de 1.
+func has_type_immunity_ability(defender: Node, element_type: String) -> bool:
+	if element_type == "":
+		return false
+	for action in defender.data.slots:
+		if action is AbilityData and action.immune_type == element_type:
+			return true
+	return false
+
+func calculate_damage_modifiers(attacker: Node, attack: AttackData) -> float:
+	var modifiers = 1.0
+
+	if attacker.data.types.has(attack.element_type):
+		modifiers *= 1.5
+
+	# Burned: só ataques FÍSICOS de quem está queimado recebem o x0.5 (não
+	# afeta ataques especiais nem o dano que essa unidade RECEBE).
+	if attacker.status_condition == "Burned" and not attack.is_special:
+		modifiers *= 0.5
+
+	if attacker.hp_max > 0:
+		var hp_ratio = float(attacker.hp_current) / float(attacker.hp_max)
+		for action in attacker.data.slots:
+			if action is AbilityData and action.element_type == attack.element_type and hp_ratio < action.hp_threshold:
+				modifiers *= action.damage_multiplier
+
+	# Sheer Force: só se o golpe TEM efeito secundário nenhum pra trocar (ver
+	# AbilityData.sheer_force) — o efeito em si é cancelado à parte, em
+	# execute_attack() (ver has_sheer_force ali), não aqui.
+	if attack_has_secondary_effect(attack) and has_sheer_force(attacker):
+		modifiers *= SHEER_FORCE_MULTIPLIER
+
+	return modifiers
+
+# 1.3 = 30% a mais, valor fixo da Habilidade (não configurável por instância
+# — diferente de AbilityData.damage_multiplier, que É por instância, porque
+# Blaze/Torrent podem um dia ter valores diferentes entre si; Sheer Force é
+# sempre 30%, então isso mora aqui como constante da REGRA, não do dado).
+const SHEER_FORCE_MULTIPLIER = 1.3
+
+# true se o attacker carrega uma Habilidade com sheer_force=true equipada
+# (ver AbilityData.sheer_force) — usado tanto pra o bônus de dano
+# (calculate_damage_modifiers) quanto pra cancelar o efeito secundário de
+# verdade (ver execute_attack).
+func has_sheer_force(attacker: Node) -> bool:
+	for action in attacker.data.slots:
+		if action is AbilityData and action.sheer_force:
+			return true
+	return false
+
+# true se ESTE golpe tem pelo menos um efeito secundário configurado (ver
+# AttackData.secondary_status/secondary_status_2) — Sheer Force só faz
+# diferença nenhuma (nem bônus de dano, nem cancelamento) em golpes sem
+# efeito secundário nenhum.
+func attack_has_secondary_effect(attack: AttackData) -> bool:
+	return attack.secondary_status != "" or attack.secondary_status_2 != ""
+
+# Aplica um ataque de verdade: calcula o dano, desconta do HP do alvo e gasta
+# 1 uso do slot (só se a ação tiver contador — ver ActionData.max_uses).
+# defender pode chegar null aqui — caso da Confusão, quando o ataque é
+# disparado (gasta uso/attacks_remaining normalmente) mas a mira embaralhada
+# não achou ninguém na direção sorteada (ver resolve_confused_target). Nesse
+# caso o atacante ainda faz a animação de ataque, só não há reação de
+# ninguém nem dano — ver o "if defender == null: return" logo depois do delay.
+#
+# consume_slot_use=false é usado por execute_tm_attack (ver mais abaixo): um
+# TM executa o attack.max_uses/PP do ATAQUE REFERENCIADO (ex: Ice Fang), que
+# não tem relação nenhuma com o estoque do próprio item TM — quem desconta a
+# carga do TM é execute_tm_attack, via UnitData.slot_quantities, não aqui.
+func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_index: int, consume_slot_use: bool = true) -> void:
+	attacker.face_towards(defender.grid_pos if defender != null else attacker.grid_pos)
+	attacker.play_attack_animation(attack.is_special)
+	log_message("%s used %s." % [attacker.data.unit_name, attack.action_name])
+	if consume_slot_use and attack.max_uses > 0:
+		attacker.slot_uses[slot_index] -= 1
+	attacker.attacks_remaining -= 1
+	refresh_action_slots_hud()
+
+	# Espera até o golpe "conectar" (ver comentário de attack_hit_delay em
+	# UnitData) antes de reagir — sem isso o defensor tomava dano e se
+	# encolhia de dor antes mesmo do ataque encostar nele.
+	var hit_delay = attacker.data.special_hit_delay if attack.is_special else attacker.data.attack_hit_delay
+	await get_tree().create_timer(hit_delay).timeout
+
+	if defender == null:
+		return   # ataque confuso que não achou ninguém na direção sorteada
+
+	# Ataque-projétil: depois do "cast" do atacante, o projétil ainda precisa
+	# viajar até o alvo antes de reagir — sem isso o defensor levava o dano
+	# antes do sprite do projétil sequer sair do lugar.
+	if attack.is_projectile and attack.projectile_texture != null:
+		await fire_projectile(attack.projectile_texture, attacker.position, defender.position)
+
+	# Frozen descongela na hora ao ser atingida por qualquer ataque tipo Fire
+	# — automático, não precisa rolar chance nenhuma. ANTES de
+	# play_hurt_animation() de propósito (diferente do Asleep logo abaixo,
+	# que cura DEPOIS): _play_anim() ignora qualquer chamada de animação
+	# enquanto status_condition == "Frozen" (é assim que Frozen "não anima
+	# nada" — ver comentário em Unit._play_anim), então curar depois faria a
+	# reação de dor nem aparecer na tela.
+	if defender.status_condition == "Frozen" and attack.element_type == "Fire":
+		defender.cure_status_condition()
+		log_message("%s thawed out!" % defender.data.unit_name)
+
+	defender.face_towards(attacker.grid_pos)
+	defender.play_hurt_animation()
+
+	# Efeito de impacto: toca PARADO em cima do alvo, ao mesmo tempo que a
+	# animação de hurt — diferente do projétil (que precisa ser esperado
+	# antes de aplicar dano), aqui não damos await: é só reação visual, não
+	# deve atrasar o resto do turno.
+	if attack.impact_texture != null:
+		play_impact_effect(attack.impact_texture, defender.position)
+
+	# Asleep só cura ao ser ATACADA de verdade (não pelo tick de veneno, que
+	# usa Unit.take_damage() por outro caminho — ver apply_end_of_turn_status,
+	# que não passa por aqui). Antes de aplicar o dano, senão a unidade já
+	# "acordada" mudaria a leitura de status no meio da mesma reação.
+	if defender.status_condition == "Asleep":
+		defender.cure_status_condition()
+
+	# Rolado UMA vez só, antes de calcular o dano (ver comentário grande em
+	# calculate_damage sobre por que is_critical vem pronto de fora em vez de
+	# a função sortear ela mesma).
+	var is_critical = randf() < CRITICAL_HIT_CHANCE
+	var damage = calculate_damage(attacker, defender, attack, is_critical)
+	defender.take_damage(damage)
+
+	if is_critical:
+		log_message("A critical hit!")
+
+	# Mensagem de efetividade — mesma lógica de calculate_damage (efetividade
+	# de tipo x Habilidade de imunidade), recalculada aqui só pra decidir o
+	# texto (sem efeito colateral nenhum, é a mesma fórmula, ver comentário
+	# de calculate_damage acima). "Sem efeito" cobre tanto imunidade x0 da
+	# TypeChart quanto imunidade por Habilidade (ex: Levitate).
+	var effectiveness = TypeChart.get_effectiveness(attack.element_type, defender.data.types)
+	if effectiveness == 0.0 or has_type_immunity_ability(defender, attack.element_type):
+		log_message("It had no effect on %s!" % defender.data.unit_name)
+	elif effectiveness > 1.0:
+		log_message("It's super effective!")
+	elif effectiveness < 1.0:
+		log_message("It's not very effective...")
+
+	# Efeito(s) secundário(s) (ex: Ember -> 10% de queimar o alvo, ver
+	# AttackData.secondary_status/secondary_status_chance) — até DOIS por
+	# ataque, rolados de forma independente (ver AttackData.
+	# secondary_status_2, pensado pra golpes como Ice Fang: 10% de congelar
+	# E, numa rolagem separada, 10% de Flinch). Só tenta se o alvo sobreviveu
+	# ao golpe — não faz sentido aplicar Status Condition em quem já morreu.
+	#
+	# Sheer Force (ver AbilityData.sheer_force/has_sheer_force) CANCELA o
+	# efeito secundário por completo — o bônus de 30% de dano (ver
+	# calculate_damage_modifiers/SHEER_FORCE_MULTIPLIER) já foi aplicado no
+	# `damage` calculado logo acima; aqui só falta garantir que o efeito em
+	# si nunca dispara pra quem carrega essa Habilidade.
+	if defender.hp_current > 0 and not has_sheer_force(attacker):
+		_try_apply_secondary_status(defender, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture)
+		_try_apply_secondary_status(defender, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2)
+
+	if defender.hp_current <= 0:
+		log_message("%s was defeated!" % defender.data.unit_name)
+		award_experience(attacker, defender)
+		remove_defeated_unit(defender)
+		if enemy_units.is_empty() or player_units.is_empty():
+			await end_battle(defender, enemy_units.is_empty())
+			return
+	refresh_unit_summary_hud()
+	check_auto_end_turn()
+
+# Uma rolagem de efeito secundário (ver os dois usos em execute_attack, um
+# pra secondary_status/chance/texture e outro pro par "_2") — extraído pra
+# não duplicar a mesma checagem duas vezes. status == "" (ataque sem esse
+# efeito, ou sem o segundo) sai de cara sem rolar nada.
+# apply_status_condition() devolve false sozinha se o alvo já tiver outra
+# condição (ver comentário lá), então a mensagem/animação só toca quando a
+# condição realmente "pegou".
+func _try_apply_secondary_status(defender: Node, status: String, chance: float, texture: Texture2D) -> void:
+	if status == "" or randf() >= chance:
+		return
+	if defender.apply_status_condition(status):
+		log_message("%s was %s!" % [defender.data.unit_name, status])
+		if texture != null:
+			play_impact_effect(texture, defender.position)
+
+# Uso de um item TM (ver handle_targeting_input) — reaproveita execute_attack
+# inteiro (dano, efetividade, status secundário, tudo) rodando em cima do
+# ataque referenciado (ItemData.tm_attack, ex: Ice Fang), só que
+# consume_slot_use=false: quem desconta 1 carga aqui é a PILHA do próprio
+# item TM (UnitData.slot_quantities), não o PP do ataque (attack.max_uses/
+# Unit.slot_uses) — um TM não "recarrega" com o tempo feito um ataque normal,
+# ele é consumido igual uma Ball, só que sem precisar acertar o alvo pra
+# sumir uma unidade da pilha (usar o ataque já é o suficiente).
+#
+# phase pode já ter virado ENDED dentro do await de execute_attack (se esse
+# ataque matou o último inimigo/aliado e end_battle já trocou de cena) — por
+# isso o guard antes de mexer em slot/HUD, mesmo padrão já usado em
+# execute_ball_throw logo abaixo.
+func execute_tm_attack(attacker: Node, defender: Node, tm_item: ItemData, slot_index: int) -> void:
+	await execute_attack(attacker, defender, tm_item.tm_attack, slot_index, false)
+	if phase != Phase.BATTLE:
+		return
+	attacker.data.set_slot_quantity(slot_index, attacker.data.get_slot_quantity(slot_index) - 1)
+	if attacker.data.get_slot_quantity(slot_index) <= 0:
+		attacker.data.slots[slot_index] = null
+	refresh_action_slots_hud()
+
+# Chamado assim que um dos dois times fica sem ninguém (ver o "if" acima,
+# logo depois de remove_defeated_unit). `last_defeated` é o nó que acabou de
+# morrer — ainda existe na árvore por um instante, tocando a sequência de
+# morte (ver Unit.die()); esperamos ele sumir de vez (tree_exited) antes de
+# fazer qualquer coisa, senão a cena trocaria/travaria no meio da animação,
+# cortando ela na cara do jogador.
+#
+# phase = ENDED ANTES do await é o que impede qualquer clique de continuar
+# a batalha nesse meio-tempo (ver _unhandled_input/handle_battle_input).
+func end_battle(last_defeated: Node, victory: bool) -> void:
+	phase = Phase.ENDED
+	if is_instance_valid(last_defeated) and last_defeated.is_inside_tree():
+		await last_defeated.tree_exited
+	if victory:
+		# Mesmo caminho de volta do botão Flee (ver _on_flee_pressed) — a
+		# posição do jogador no overworld já foi salva em GameState antes de
+		# entrar na batalha (ver world.gd), então só trocar de cena já basta.
+		get_tree().change_scene_to_file(GameState.overworld_scene_path)
+	else:
+		# Derrota: sem "voltar pro overworld de onde veio" (GameState.
+		# player_grid_pos ali seria só o último passo antes de cair nesta
+		# batalha específica, que pode ter sido longe de qualquer lugar
+		# seguro) — em vez disso, devolve o jogador pro ÚLTIMO lugar onde
+		# usou Computador -> Heal (ver GameState.last_heal_grid_pos/
+		# last_heal_facing, atualizado em GameState.heal_active_roster()).
+		# Reaproveita o MESMO mecanismo de restauração que a volta de
+		# vitória já usa (has_saved_position + player_grid_pos/facing, lido
+		# por world.gd::_restore_player_state ao carregar a cena) — só com
+		# outra origem pros valores.
+		GameState.has_saved_position = true
+		GameState.player_grid_pos = GameState.last_heal_grid_pos
+		GameState.player_facing = GameState.last_heal_facing
+		get_tree().change_scene_to_file(GameState.overworld_scene_path)
+
+# Instancia o Projectile, manda ele viajar de `from` até `to` (posições em
+# pixel, mesmo espaço de coordenadas dos Unit — ver Unit.cell_to_position),
+# e só retorna quando ele chega (await no sinal `arrived`). Ver projectile.gd.
+# known_frame_count opcional: repassado direto pro mesmo parâmetro de
+# Projectile.launch() — 0 (padrão) mantém a adivinhação de sempre (quadros
+# quadrados, usada por todo ataque-projétil existente); > 0 é só pra sprite
+# sheets com quadros NÃO quadrados, como a de uma Ball (ver ItemData.
+# ball_frame_count/execute_ball_throw).
+func fire_projectile(texture: Texture2D, from: Vector2, to: Vector2, known_frame_count: int = 0) -> void:
+	var p = PROJECTILE_SCENE.instantiate()
+	add_child(p)
+	p.launch(texture, from, to, known_frame_count)
+	await p.arrived
+
+# Toca o ImpactEffect parado em cima de `at_position` (ver AttackData.
+# impact_texture e ImpactEffect.play() — não é esperado por quem chama, ver
+# comentário no ponto de chamada em execute_attack).
+func play_impact_effect(texture: Texture2D, at_position: Vector2) -> void:
+	var e = IMPACT_EFFECT_SCENE.instantiate()
+	add_child(e)
+	e.play(texture, at_position)
+
+# Arremesso de uma Ball (ver handle_targeting_input) — bem mais simples que
+# execute_attack: não tem dano, efetividade de tipo, nem status secundário,
+# só "acerta uma unidade selvagem inimiga ou se perde numa parede", e SE
+# acertar, tenta capturar (ver resolve_capture). A Ball é SEMPRE consumida
+# do loadout ao ser arremessada, acerte ou erre — ela é um item físico que
+# sai da mão da unidade, não tem "recarregar" (mesmo espírito de Berry se
+# auto-consumir inteira, ver Unit._check_berry_auto_use, só que aqui é
+# sempre, não condicional a nada).
+#
+# Ball é Stackable (ver ItemData.stackable) desde que passamos a poder dar
+# várias de uma vez (UnitData.slot_quantities): cada arremesso desconta só 1
+# da pilha, e o slot só fica null de fato quando a pilha chega a 0 — antes
+# disso a mesma linha do loadout continua com as bolas restantes.
+func execute_ball_throw(attacker: Node, target_cell: Vector2i, item: ItemData, slot_index: int) -> void:
+	attacker.face_towards(target_cell)
+	attacker.play_attack_animation(false)
+	log_message("%s threw %s!" % [attacker.data.unit_name, item.action_name])
+
+	attacker.data.set_slot_quantity(slot_index, attacker.data.get_slot_quantity(slot_index) - 1)
+	if attacker.data.get_slot_quantity(slot_index) <= 0:
+		attacker.data.slots[slot_index] = null
+	attacker.slot_uses[slot_index] = 0
+	attacker.attacks_remaining -= 1
+	refresh_action_slots_hud()
+
+	await get_tree().create_timer(attacker.data.attack_hit_delay).timeout
+
+	var result = find_ball_target(attacker, attacker.grid_pos, target_cell, item.range)
+	var defender: Node = result["unit"]
+	var stop_cell: Vector2i = result["stop_cell"]
+
+	if item.ball_closed_texture != null:
+		await fire_projectile(item.ball_closed_texture, attacker.position, attacker.cell_to_position(stop_cell), item.ball_frame_count)
+
+	if defender == null:
+		log_message("The %s missed!" % item.action_name)
+		refresh_unit_summary_hud()
+		check_auto_end_turn()
+		return
+
+	await resolve_capture(defender, item)
+	# Se a captura deu certo E acabou a batalha (ver resolve_capture ->
+	# end_battle), phase já virou Phase.ENDED e a cena já está trocando —
+	# nesse caso NÃO dá pra continuar como se o turno ainda existisse (mesmo
+	# cuidado que execute_attack toma com o "return" logo após seu próprio
+	# await end_battle).
+	if phase != Phase.BATTLE:
+		return
+	refresh_unit_summary_hud()
+	check_auto_end_turn()
+
+# Resolve UMA tentativa de captura contra `defender` (já confirmado inimigo
+# selvagem válido, ver execute_ball_throw) usando `item` (a Ball
+# arremessada). Fórmula pedida pelo usuário:
+#
+#   (3*HPmax - 2*HPcurrent) * catchRate * ballBonus * statusBonus / (3*HPmax)
+#
+# guaranteed_capture (ex: Master Ball) pula a fórmula inteira e sempre
+# sucede. shake_count é só FLAVOR da animação (ver capture_ball.gd) — 3
+# balanços no sucesso, 0 a 2 no fracasso (mesmo padrão visual dos jogos
+# Pokémon: 3 balanços "fecha" a captura, menos que isso e o alvo escapa).
+#
+# Sucesso: a unidade sai da batalha (remove_defeated_unit, igual derrota,
+# só que SEM ganhar exp — capturar não derrota ninguém) e o UnitData dela
+# (com nível/HP preservados, ver UnitData.apply_capture_progress) vai pra
+# primeira vaga livre da reserva do jogador. Fracasso: a unidade volta a
+# aparecer exatamente como estava (visible = true) — nada nela foi alterado
+# em momento nenhum, então "devolver" é só isso mesmo.
+func resolve_capture(defender: Node, item: ItemData) -> void:
+	var success: bool
+	if item.guaranteed_capture:
+		success = true
+	else:
+		var hp_max = float(defender.hp_max)
+		var hp_now = float(defender.hp_current)
+		var status_bonus = defender.get_capture_status_bonus()
+		var chance = (3.0 * hp_max - 2.0 * hp_now) * defender.data.catch_rate * item.ball_bonus * status_bonus / (3.0 * hp_max)
+		success = randf() < chance
+
+	var shake_count = 3 if success else randi_range(0, 2)
+
+	defender.visible = false
+	var ball = CAPTURE_BALL_SCENE.instantiate()
+	add_child(ball)
+	# move_child() pro índice ONDE o defensor está (empurra ele — e todo
+	# mundo depois dele — uma posição pra frente) em vez de deixar a bola no
+	# fim da lista (padrão de add_child): mesmo z_index 0 de tudo, então quem
+	# decide "na frente ou atrás" aqui é a ORDEM na árvore — ficar ANTES do
+	# defensor é o que garante a bola desenhar atrás dele. Um z_index
+	# negativo faria o mesmo só que atrás do MAPA também (TileMapLayer é
+	# irmã, no mesmo z_index 0) — ficaria invisível debaixo do chão, que foi
+	# exatamente o bug visto no teste.
+	move_child(ball, defender.get_index())
+	await ball.play(item.ball_open_texture, item.ball_closed_texture, item.ball_frame_count, defender.position, success, shake_count)
+
+	if success:
+		log_message("Gotcha! %s was caught!" % defender.data.unit_name)
+		defender.data.apply_capture_progress(defender.level, defender.hp_current)
+		GameState.add_to_first_empty_storage_slot(defender.data)
+		remove_defeated_unit(defender)
+		defender.queue_free()
+		if enemy_units.is_empty() or player_units.is_empty():
+			await end_battle(defender, enemy_units.is_empty())
+	else:
+		log_message("%s broke free!" % defender.data.unit_name)
+		defender.visible = true
+
+# Distribui exp pro time de quem derrotou (ver ExpGroups.calc_exp_gain e a
+# fórmula b*L*a/7): 1.5x pra quem deu o golpe final, 1x pros demais aliados
+# que ainda estão vivos. defender já está com hp_current <= 0 aqui (mas o nó
+# ainda existe — só é removido depois da sequência de morte, ver Unit.die()
+# — então dá pra ler defender.level/defender.data à vontade).
+#
+# Só o time do JOGADOR ganha exp de verdade. Antes da IA existir, um inimigo
+# nunca derrotava ninguém, então esse "if killer.is_enemy: return" nunca
+# importava — agora que inimigo selvagem ataca de verdade (ver
+# run_enemy_turn), sem essa trava um selvagem que derrota uma unidade do
+# jogador faria TODOS os selvagens vivos da batalha subirem de nível na hora
+# (Unit.gain_exp() recalcula stats na hora, sem checar is_enemy) — ficariam
+# mais fortes NO MEIO do próprio combate, o que não faz sentido de jogo
+# nenhum. sync_to_data() já impede isso de PERSISTIR pro catálogo, mas não
+# impede a unidade de ficar mais forte ali mesmo, na mesma batalha.
+func award_experience(killer: Node, defeated: Node) -> void:
+	if killer.is_enemy:
+		return
+	var team = player_units
+	var total_gained = 0
+	for u in team:
+		if u.hp_current <= 0:
+			continue
+		var multiplier = 1.5 if u == killer else 1.0
+		var gained = ExpGroups.calc_exp_gain(defeated.data.base_exp_yield, defeated.level, multiplier)
+		u.gain_exp(gained)
+		total_gained += gained
+	log_message("Your team gained %d EXP." % total_gained)
+
+# Tira a unidade derrotada de TODA a contabilidade da batalha (menos da
+# árvore de cena — o nó em si só some sozinho no fim da sequência de morte,
+# ver Unit.die()). Sem isso, essas listas/dicionários ficavam com uma
+# referência "presa" pra um nó que ia ser destruído em ~1s, e a primeira
+# tentativa de usar essa referência depois (ex: get_unit_at percorrendo
+# `units`) crashava com "Invalid access... on a base object of type
+# 'previously freed'". Chamado assim que hp_current chega a 0, não quando o
+# nó é de fato removido — a unidade fica "fora do jogo" um pouco antes de
+# sumir da tela de vez, o que é o comportamento certo mesmo (não dá pra
+# mirar nem contar turno de quem já morreu).
+func remove_defeated_unit(u: Node) -> void:
+	var turn_idx = turn_queue.find(u)
+	if turn_idx != -1:
+		turn_queue.remove_at(turn_idx)
+		if turn_idx < current_turn_index:
+			current_turn_index -= 1
+		elif current_turn_index >= turn_queue.size():
+			current_turn_index = 0
+
+	player_units.erase(u)
+	enemy_units.erase(u)
+	units.erase(u)
+
+	if unit_slots.has(u):
+		var slot: PanelContainer = unit_slots[u]
+		if is_instance_valid(slot):
+			slot.queue_free()
+		unit_slots.erase(u)
+	unit_hp_labels.erase(u)
+
+func cancel_targeting() -> void:
+	targeting_action = null
+	targeting_slot_index = -1
+	attack_highlight_layer.clear()
+
+# Passa o turno sozinho quando a unidade da vez não tem mais NEM movimento
+# NEM ataque disponível (Habilidade/Item não entram nessa conta — só travam
+# o ataque, ver Unit.attacks_remaining). Chamado depois de mover e depois de
+# atacar, os dois únicos jeitos desses orçamentos baixarem.
+func check_auto_end_turn() -> void:
+	var u = get_current_unit()
+	if u == null:
+		return
+	if move_budget_left <= 0 and u.attacks_remaining <= 0:
+		_on_end_turn_pressed()
+
+func _on_end_turn_pressed() -> void:
+	if phase != Phase.BATTLE or turn_queue.is_empty():
+		return
+	# "Um turno é contabilizado depois daquela unidade afetada Passar o
+	# turno" — ou seja, o tick de Status Condition é da unidade que está
+	# TERMINANDO o turno agora (manual via Pass, ou automático via
+	# check_auto_end_turn), nunca da próxima. Por isso pegamos o current ANTES
+	# de avançar current_turn_index.
+	var finishing_unit = get_current_unit()
+	if finishing_unit != null:
+		var died = await apply_end_of_turn_status(finishing_unit)
+		# Veneno pode ter matado a unidade e encerrado a batalha dentro do
+		# await acima (ver apply_end_of_turn_status) — nesse caso não faz
+		# sentido continuar pra próxima unidade.
+		if phase != Phase.BATTLE:
+			return
+		if died:
+			# remove_defeated_unit() (chamado dentro de apply_end_of_turn_status)
+			# já tira a unidade morta de turn_queue E reajusta
+			# current_turn_index sozinho — nesse índice já sobrou apontando
+			# pra quem SERIA o próximo. Se a gente ainda somasse +1 aqui
+			# embaixo (igual o caminho normal, sem morte), pularia uma
+			# unidade inteira da fila.
+			begin_current_turn()
+			return
+	current_turn_index = (current_turn_index + 1) % turn_queue.size()
+	begin_current_turn()
+
+# Aplica o "fim de turno" de Status Condition da unidade `u`, que acabou de
+# passar seu turno (ver comentário acima): dano de Poisoned + decremento de
+# status_turns_left (curando quem chegar a 0). Frozen/Paralyzed/Confused/
+# Blind/Asleep usam status_turns_left; Poisoned/Burned não têm prazo (só
+# saem por cura) e Flinched nem chega aqui (já foi curada em
+# begin_current_turn, ver comentário lá).
+#
+# Diferente de Unit.get_status_tick_damage() (que só CALCULA o número), aqui
+# é onde a consequência de verdade acontece — inclusive uma possível morte,
+# por isso essa função vive em battle.gd (que é quem sabe remover unidade
+# derrotada e checar fim de batalha) e não em unit.gd.
+#
+# Devolve true se `u` morreu aqui (ver o "if died" em _on_end_turn_pressed,
+# que depende disso pra não avançar o índice duas vezes).
+func apply_end_of_turn_status(u: Node) -> bool:
+	var tick_damage = u.get_status_tick_damage()
+	if tick_damage > 0:
+		u.take_damage(tick_damage)
+		if u.hp_current <= 0:
+			# Sem exp aqui de propósito: veneno não tem "quem matou" (ver
+			# award_experience, que precisa de um killer) — é uma
+			# simplificação deliberada, não um esquecimento.
+			remove_defeated_unit(u)
+			refresh_unit_summary_hud()
+			if enemy_units.is_empty() or player_units.is_empty():
+				await end_battle(u, enemy_units.is_empty())
+			return true
+
+	if u.status_turns_left > 0:
+		u.status_turns_left -= 1
+		if u.status_turns_left <= 0:
+			u.cure_status_condition()
+	return false
+
+# Desfaz o movimento inteiro da unidade da vez, voltando pra onde ela
+# estava no início do turno, e devolve o orçamento de movimento cheio.
+# Sai da batalha sem vencer nem perder, direto pro overworld — devolve o
+# personagem pra onde ele estava graças ao GameState (ver world.gd
+# _restore_player_state(), já escuta isso desde o encontro aleatório).
+# Ainda não desconta nada por fugir (perder o Pokémon selvagem, etc.) —
+# é só o "sair da tela de batalha" por enquanto.
+func _on_flee_pressed() -> void:
+	if phase != Phase.BATTLE:
+		return
+	get_tree().change_scene_to_file(GameState.overworld_scene_path)
+
+func _on_undo_pressed() -> void:
+	if phase != Phase.BATTLE:
+		return
+	var u = get_current_unit()
+	if u == null:
+		return
+	deselect()
+	cancel_targeting()
+	u.teleport_to(turn_start_pos)
+	move_budget_left = u.move_range
+
+func handle_battle_input(clicked_cell: Vector2i, clicked_unit: Node) -> void:
+	# _unhandled_input já não deixa chegar aqui durante turno de inimigo (ver
+	# guarda lá) — checagem repetida por segurança, mesmo padrão do resto do
+	# arquivo, caso algum caminho futuro chame isso direto sem passar por lá.
+	var current = get_current_unit()
+	if current == null or current.is_enemy:
+		return
+	# Só a unidade da vez pode ser selecionada — as outras (aliadas ou
+	# inimigas) ainda não fazem nada quando clicadas.
+	if clicked_unit and clicked_unit == get_current_unit():
+		select_unit(clicked_unit)
+	elif selected_unit and clicked_cell in highlighted_tiles:
+		move_selected_unit(clicked_cell)
+	else:
+		deselect()
+
+func select_unit(u: Node) -> void:
+	clear_highlights()
+	selected_unit = u
+	highlighted_tiles = get_reachable_tiles(u.grid_pos, move_budget_left, u)
+	highlight_tiles()
+
+func move_selected_unit(target: Vector2i) -> void:
+	# Distância REAL do caminho (calculada por get_reachable_tiles via BFS),
+	# não a distância Chebyshev em linha reta — senão dava pra "atravessar"
+	# um lago só por ele estar dentro do alcance em linha reta, mesmo sem
+	# caminho de verdade até lá (o desvio em volta da água custa mais passos).
+	var distance = move_distances.get(target, 0)
+	move_budget_left = max(0, move_budget_left - distance)
+	selected_unit.move_along_path(get_move_path_to(selected_unit.grid_pos, target))
+	deselect()
+	check_auto_end_turn()
+
+# Reconstrói o caminho passo a passo (sem a origem, terminando em target),
+# de trás pra frente, usando move_distances (preenchido pela última chamada
+# de get_reachable_tiles()). Usado pra unidade ANDAR de verdade pelo caminho
+# válido em vez de deslizar em linha reta por cima de parede/água/outra
+# unidade — só a distância já respeitava o desvio, faltava a parte visual.
+# (Nome não pode ser get_path_to: Node já tem um método nativo com esse nome
+# e assinatura diferente — sobrescrever dava erro "function signature
+# doesn't match the parent".)
+#
+# Diferente de simplesmente seguir "de quem essa célula foi descoberta" na
+# BFS (o que dá QUALQUER caminho de custo mínimo, já que as 8 direções custam
+# o mesmo passo — inclusive uns "em escada" tipo direita-baixo-direita-baixo
+# em vez de uma diagonal só), aqui a cada célula a gente escolhe, entre TODOS
+# os vizinhos que também estão exatamente 1 passo mais perto da origem, o que
+# resulta no trajeto mais parecido com uma linha reta — ver
+# path_step_score(). O custo final (quantidade de passos) é sempre o mesmo
+# de qualquer jeito; isso só desempata a favor do caminho mais intuitivo.
+func get_move_path_to(origin: Vector2i, target: Vector2i) -> Array[Vector2i]:
+	if target == origin or not move_distances.has(target):
+		return []
+
+	var general_dir = Vector2i(sign(target.x - origin.x), sign(target.y - origin.y))
+	var path: Array[Vector2i] = []
+	var cell = target
+
+	while cell != origin:
+		path.append(cell)
+		var current_dist = move_distances.get(cell, 0)
+		var best_prev = origin
+		var best_score = -INF
+		var found = false
+
+		for dx in range(-1, 2):
+			for dy in range(-1, 2):
+				if dx == 0 and dy == 0:
+					continue
+				var prev = cell + Vector2i(dx, dy)
+				var prev_dist = 0 if prev == origin else move_distances.get(prev, -1)
+				if prev_dist != current_dist - 1:
+					continue
+				var score = path_step_score(cell - prev, general_dir)
+				if not found or score > best_score:
+					best_score = score
+					best_prev = prev
+					found = true
+
+		if not found:
+			return []   # não deveria acontecer se target está em move_distances
+		cell = best_prev
+
+	path.reverse()
+	return path
+
+# Pontua um passo (de `prev` pra a célula atual, como delta) contra a direção
+# geral origin -> target, eixo por eixo: anda no mesmo sentido do eixo geral
+# pontua 1, fica parado nesse eixo pontua 0 (neutro — só relevante quando o
+# eixo geral também é 0, ou seja, o alvo está exatamente na mesma linha/coluna
+# da origem, e queremos DESENCORAJAR sair dessa linha à toa), anda no sentido
+# contrário pontua -1. Um passo diagonal que bate com os dois eixos ao mesmo
+# tempo (score 2) sempre vence um passo ortogonal (score no máximo 1) — é
+# assim que uma diagonal "reta" vence dois passos em escada de mesmo custo.
+func path_step_score(step: Vector2i, general_dir: Vector2i) -> int:
+	return path_axis_score(step.x, general_dir.x) + path_axis_score(step.y, general_dir.y)
+
+func path_axis_score(step_component: int, dir_component: int) -> int:
+	if dir_component == 0:
+		return 0 if step_component == 0 else -1
+	if step_component == dir_component:
+		return 1
+	if step_component == 0:
+		return 0
+	return -1
+
+# BFS por 8 direções (todas custam 1 passo, igual nas 8 — bate com o sistema
+# de sprites direcionais) até max_range passos. Isso, ao contrário de um
+# simples quadrado Chebyshev ao redor de origin, respeita desvios reais: uma
+# célula só entra em "reachable" se existir um CAMINHO até ela dentro do
+# orçamento de movimento — não só se ela estiver perto em linha reta. É o que
+# impede "teleportar" pro outro lado de um lago que a unidade não atravessa.
+# Cortar uma diagonal encostando num canto de água/parede continua permitido
+# de propósito — só a célula de destino de cada passo precisa ser passável.
+func get_reachable_tiles(origin: Vector2i, max_range: int, u: Node) -> Array[Vector2i]:
+	move_distances.clear()
+	var allow_fluid = can_unit_cross_fluid(u)
+
+	var visited := {origin: 0}
+	var frontier: Array[Vector2i] = [origin]
+
+	while not frontier.is_empty():
+		var next_frontier: Array[Vector2i] = []
+		for cell in frontier:
+			var dist = visited[cell]
+			if dist >= max_range:
+				continue
+			for dx in range(-1, 2):
+				for dy in range(-1, 2):
+					if dx == 0 and dy == 0:
+						continue
+					var n = cell + Vector2i(dx, dy)
+					if n.x < 0 or n.x >= MAP_WIDTH or n.y < 0 or n.y >= MAP_HEIGHT:
+						continue
+					if visited.has(n):
+						continue
+					if wall_cells.has(n):
+						continue
+					if fluid_cells.has(n) and not allow_fluid:
+						continue
+					if get_unit_at(n) != null:
+						continue   # ocupada — não dá pra passar por cima nem parar ali
+					visited[n] = dist + 1
+					next_frontier.append(n)
+		frontier = next_frontier
+
+	visited.erase(origin)
+	move_distances = visited
+	var reachable: Array[Vector2i] = []
+	for cell in visited.keys():
+		reachable.append(cell)
+	return reachable
+
+# ---------- IA de inimigos selvagens (QI 1) ----------
+# Comportamento mais simples possível, do jeito que foi pedido: no turno de
+# um inimigo selvagem, ele anda até ficar ao alcance de alguma unidade
+# aliada e usa, entre os próprios ataques, o que causar MAIS dano contra
+# quem ele conseguiu alcançar. calculate_damage() já embute efetividade de
+# tipo/imunidade — é assim que "se o alvo for Dark, usa Tackle em vez de
+# Confusion" sai de graça, sem nenhuma lógica extra: Confusion (Psychic)
+# contra Dark dá 0 de dano ali dentro, então Tackle sempre vence a
+# comparação de "maior dano" nessa hora. Se não conseguir alcançar ninguém
+# neste turno (mesmo gastando todo o movimento), anda o máximo possível na
+# direção do aliado mais próximo, sem atacar.
+#
+# begin_current_turn() chama isso no lugar de esperar clique do jogador
+# sempre que a unidade da vez tem is_enemy == true; handle_battle_input() e
+# _unhandled_input() têm guardas equivalentes pra impedir o jogador de
+# clicar/atalhar por cima de um turno de IA em andamento (ver lá).
+func run_enemy_turn(u: Node) -> void:
+	var plan = plan_enemy_action(u)
+
+	if plan.has("move_to") and plan["move_to"] != u.grid_pos:
+		await move_unit_along_path(u, plan["move_to"])
+
+	# Checagem defensiva — nada em move_unit_along_path() deveria terminar a
+	# batalha hoje, mas é o mesmo padrão de segurança usado depois de todo
+	# await que mexe em HP/turno no resto do arquivo (ver _on_end_turn_pressed).
+	if phase != Phase.BATTLE:
+		return
+
+	if plan.has("attack"):
+		await execute_attack(u, plan["target"], plan["attack"], plan["slot_index"])
+		if phase != Phase.BATTLE:
+			return
+
+	# execute_attack() já chama check_auto_end_turn() sozinho no final (pode
+	# ter encerrado o turno ali, se move_budget_left TAMBÉM tivesse chegado a
+	# 0) — só terminamos o turno de novo aqui se AINDA formos a unidade da
+	# vez, senão avançaríamos current_turn_index duas vezes (mesma classe de
+	# bug já corrigida uma vez em apply_end_of_turn_status/_on_end_turn_pressed).
+	if get_current_unit() == u:
+		_on_end_turn_pressed()
+
+# Decide o que um inimigo QI 1 faz no turno dele. Devolve um Dictionary:
+# - {} (vazio): não pode nem se mover nem atacar (travado por status) — o
+#   turno passa sem fazer nada.
+# - {"move_to": cell}: não alcança ninguém pra atacar este turno; anda o
+#   máximo possível em direção ao aliado mais próximo.
+# - {"move_to": cell, "attack": AttackData, "slot_index": int, "target": Node}:
+#   posição (pode ser a própria posição atual) de onde atacar, o ataque que
+#   causa mais dano dali, e quem é o alvo.
+func plan_enemy_action(u: Node) -> Dictionary:
+	var allies: Array = []
+	for p in player_units:
+		if p.hp_current > 0:
+			allies.append(p)
+	if allies.is_empty():
+		return {}
+
+	# Inclui a própria posição atual como candidata de ataque (custo de
+	# movimento 0) — get_reachable_tiles() não devolve a origem no resultado
+	# dela (ver "visited.erase(origin)" logo acima), só o que está a 1+ passo.
+	# move_budget_left já vem 0 se a unidade não pode se mover (ver
+	# begin_current_turn/Unit.can_move()), não precisa checar de novo aqui.
+	var reachable: Array[Vector2i] = []
+	if move_budget_left > 0:
+		reachable = get_reachable_tiles(u.grid_pos, move_budget_left, u)
+	var candidate_cells: Array[Vector2i] = [u.grid_pos]
+	candidate_cells.append_array(reachable)
+
+	var best: Dictionary = {}
+	if u.attacks_remaining > 0:
+		var best_damage = -1
+		for slot_index in u.data.slots.size():
+			var action = u.data.slots[slot_index]
+			if not (action is AttackData):
+				continue   # Habilidade é passiva, nunca é "usada" ativamente
+			if action.max_uses > 0 and slot_index < u.slot_uses.size() and u.slot_uses[slot_index] <= 0:
+				continue   # sem usos sobrando nesse slot
+			for ally in allies:
+				for cell in candidate_cells:
+					if not is_valid_target_cell(cell, ally.grid_pos, action):
+						continue
+					# Projétil: só serve se ESSE aliado for realmente quem o
+					# projétil acertaria primeiro na linha — mesma regra do
+					# jogador (ver find_projectile_target/handle_targeting_input).
+					if action.is_projectile and find_projectile_target(u, cell, ally.grid_pos, action.range) != ally:
+						continue
+					var damage = calculate_damage(u, ally, action)
+					if damage > best_damage:
+						best_damage = damage
+						best = {
+							"move_to": cell, "attack": action,
+							"slot_index": slot_index, "target": ally,
+						}
+
+	if not best.is_empty():
+		return best
+
+	if reachable.is_empty():
+		return {}   # travado por status ou já sem orçamento — nada a fazer
+
+	# Não alcançou ninguém pra atacar — anda o máximo possível em direção ao
+	# aliado mais próximo. Escolhe, entre todas as células alcançáveis neste
+	# turno (a própria posição incluída), a que fica mais perto desse aliado
+	# (distância Chebyshev, mesma métrica do resto do movimento) — uma
+	# aproximação gulosa simples, não um replanejamento do caminho até ele.
+	var nearest = allies[0]
+	for ally in allies:
+		if chebyshev_distance(u.grid_pos, ally.grid_pos) < chebyshev_distance(u.grid_pos, nearest.grid_pos):
+			nearest = ally
+
+	var best_cell = u.grid_pos
+	var best_cell_dist = chebyshev_distance(u.grid_pos, nearest.grid_pos)
+	for cell in reachable:
+		var d = chebyshev_distance(cell, nearest.grid_pos)
+		if d < best_cell_dist:
+			best_cell_dist = d
+			best_cell = cell
+	return {"move_to": best_cell}
+
+func chebyshev_distance(a: Vector2i, b: Vector2i) -> int:
+	return max(abs(a.x - b.x), abs(a.y - b.y))
+
+# Move `u` até `target` — uma célula alcançável dentro do orçamento de
+# movimento ATUAL (ver plan_enemy_action, que preenche move_distances via
+# get_reachable_tiles logo antes de devolver o plano) — e só retorna quando a
+# caminhada termina DE VERDADE na tela, pra IA não disparar o ataque em cima
+# da animação de andar ainda rolando. Mesmo desconto de move_budget_left que
+# move_selected_unit() faz pro jogador, só que sem esperar clique nenhum.
+func move_unit_along_path(u: Node, target: Vector2i) -> void:
+	var distance = move_distances.get(target, 0)
+	move_budget_left = max(0, move_budget_left - distance)
+	u.move_along_path(get_move_path_to(u.grid_pos, target))
+	while u.is_moving:
+		await get_tree().process_frame
+
+# ---------- Comum às duas fases ----------
+
+func deselect() -> void:
+	selected_unit = null
+	highlighted_tiles = []
+	move_distances.clear()
+	clear_highlights()
+
+func highlight_tiles() -> void:
+	for cell in highlighted_tiles:
+		highlight_layer.set_cell(cell, 0, Vector2i(13, 1))
+
+func clear_highlights() -> void:
+	highlight_layer.clear()

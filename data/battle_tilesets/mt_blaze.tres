@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BattleTileset" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/battle_tileset.gd" id="1"]
+[ext_resource type="TileSet" path="res://assets/tiles/tilesets/Battle/battle_tileset_mtblaze.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = "Mt. Blaze"
+tile_set = ExtResource("2")
+fluid_pass_type = "Fire"
+fluid_status_on_enter = "Burned"

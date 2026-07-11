@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BattleTileset" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/battle_tileset.gd" id="1"]
+[ext_resource type="TileSet" uid="uid://ck55knuil1sml" path="res://assets/tiles/tilesets/Battle/battle_tileset_tinywoods.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = "Tiny Woods"
+tile_set = ExtResource("2")
+fluid_pass_type = "Water"
+fluid_status_on_enter = ""

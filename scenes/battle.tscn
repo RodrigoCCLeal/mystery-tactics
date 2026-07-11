@@ -1,0 +1,143 @@
+[gd_scene format=3 uid="uid://d3e1x54fgjimr"]
+
+[ext_resource type="Script" uid="uid://e3xybbxrwqqm" path="res://scripts/battle.gd" id="1_th188"]
+[ext_resource type="TileSet" uid="uid://ck55knuil1sml" path="res://assets/tiles/tilesets/Battle/battle_tileset_tinywoods.tres" id="2_p1qf1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_battlelog"]
+bg_color = Color(0.07, 0.07, 0.09, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 0.15)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[node name="Battle" type="Node2D" unique_id=1391552330]
+script = ExtResource("1_th188")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(240, 192)
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1519457802]
+tile_set = ExtResource("2_p1qf1")
+rendering_quadrant_size = 24
+
+[node name="HighlightLayer" type="TileMapLayer" parent="." unique_id=1434001937]
+modulate = Color(0, 0.5882353, 1, 0.5882353)
+z_index = 1
+tile_set = ExtResource("2_p1qf1")
+
+[node name="AttackHighlightLayer" type="TileMapLayer" parent="."]
+modulate = Color(1, 0.15, 0.15, 0.6)
+z_index = 2
+tile_set = ExtResource("2_p1qf1")
+
+[node name="FogLayer" type="TileMapLayer" parent="." unique_id=2001112233]
+modulate = Color(0.06, 0.06, 0.09, 0.96)
+z_index = 5
+tile_set = ExtResource("2_p1qf1")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="UnitSummary" type="HBoxContainer" parent="HUD"]
+offset_left = 336.0
+offset_top = 16.0
+offset_right = 816.0
+offset_bottom = 88.0
+theme_override_constants/separation = 6
+
+[node name="EndTurnButton" type="Button" parent="HUD"]
+offset_left = 842.0
+offset_top = 244.0
+offset_right = 966.0
+offset_bottom = 276.0
+text = "Pass"
+
+[node name="UndoButton" type="Button" parent="HUD"]
+offset_left = 842.0
+offset_top = 284.0
+offset_right = 966.0
+offset_bottom = 316.0
+text = "Undo"
+
+[node name="FleeButton" type="Button" parent="HUD"]
+offset_left = 842.0
+offset_top = 324.0
+offset_right = 966.0
+offset_bottom = 356.0
+text = "Flee"
+
+[node name="ActionSlots" type="HBoxContainer" parent="HUD"]
+offset_left = 16.0
+offset_top = 132.0
+offset_right = 244.0
+offset_bottom = 468.0
+theme_override_constants/separation = 8
+
+[node name="ColumnLeft" type="VBoxContainer" parent="HUD/ActionSlots"]
+theme_override_constants/separation = 6
+
+[node name="Slot0" type="Button" parent="HUD/ActionSlots/ColumnLeft"]
+custom_minimum_size = Vector2(110, 108)
+text = "Vazio"
+autowrap_mode = 2
+expand_icon = true
+icon_alignment = 1
+
+[node name="Slot1" type="Button" parent="HUD/ActionSlots/ColumnLeft"]
+custom_minimum_size = Vector2(110, 108)
+text = "Vazio"
+autowrap_mode = 2
+expand_icon = true
+icon_alignment = 1
+
+[node name="Slot2" type="Button" parent="HUD/ActionSlots/ColumnLeft"]
+custom_minimum_size = Vector2(110, 108)
+text = "Vazio"
+autowrap_mode = 2
+expand_icon = true
+icon_alignment = 1
+
+[node name="ColumnRight" type="VBoxContainer" parent="HUD/ActionSlots"]
+theme_override_constants/separation = 6
+
+[node name="Slot3" type="Button" parent="HUD/ActionSlots/ColumnRight"]
+custom_minimum_size = Vector2(110, 108)
+text = "Vazio"
+autowrap_mode = 2
+expand_icon = true
+icon_alignment = 1
+
+[node name="Slot4" type="Button" parent="HUD/ActionSlots/ColumnRight"]
+custom_minimum_size = Vector2(110, 108)
+text = "Vazio"
+autowrap_mode = 2
+expand_icon = true
+icon_alignment = 1
+
+[node name="Slot5" type="Button" parent="HUD/ActionSlots/ColumnRight"]
+custom_minimum_size = Vector2(110, 108)
+text = "Vazio"
+autowrap_mode = 2
+expand_icon = true
+icon_alignment = 1
+
+[node name="BattleLog" type="PanelContainer" parent="HUD"]
+offset_left = 336.0
+offset_top = 502.0
+offset_right = 816.0
+offset_bottom = 572.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_battlelog")
+
+[node name="BattleLogText" type="RichTextLabel" parent="HUD/BattleLog"]
+bbcode_enabled = false
+scroll_following = true
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/normal_font_size = 14
