@@ -13,3 +13,13 @@ extends Resource
 
 @export var level: int = 1
 @export var action: ActionData
+
+# Só faz sentido quando action é AbilityData (ver comentário grande em
+# AbilityData sobre Habilidade ser passiva) — marca essa Habilidade como
+# "Hidden" (oculta) PRA ESSA ESPÉCIE especificamente, não pra Habilidade em
+# si. É por isso que mora aqui (no par espécie+ação) e não em AbilityData:
+# a MESMA Habilidade pode ser normal numa espécie e Hidden em outra — ex:
+# Sheer Force é Hidden no Totodile (0158.tres) hoje, mas nada impede uma
+# espécie futura ter Sheer Force como Habilidade normal (is_hidden_ability
+# = false, o padrão). Ver UnitData.is_ability_hidden(), que consulta isso.
+@export var is_hidden_ability: bool = false

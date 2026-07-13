@@ -60,18 +60,57 @@ func show_damage_popup(amount: int) -> void:
 # o que trocar. Pra essa não ficar parada e sem graça, quando frame_count<=1
 # a gente liga um balanço vertical suave em vez do ciclo de quadros (ver
 # _start_emote_bob()).
-const CONFUSED_EMOTE_TEXTURE = preload("res://assets/sprites/effects/Emote_Question.None.png")
-const BLIND_EMOTE_TEXTURE = preload("res://assets/sprites/effects/Foresight_Glass.None.png")
+#
+# Caminho corrigido pra assets/sprites/Status/ (não mais .../effects/) —
+# essas duas imagens moraram lá numa reorganização de pastas anterior a esta.
+const CONFUSED_EMOTE_TEXTURE = preload("res://assets/sprites/Status/Emote_Question.None.png")
+const BLIND_EMOTE_TEXTURE = preload("res://assets/sprites/Status/Foresight_Glass.None.png")
 const STATUS_EMOTE_TEXTURES := {
 	"Confused": CONFUSED_EMOTE_TEXTURE,
 	"Blind": BLIND_EMOTE_TEXTURE,
 }
+
+# Burned: pasta com 9 arquivos SEPARADOS (BurnedIndicator/000.png..008.png),
+# não uma tira dentro de uma imagem só — mesmo formato "vários arquivos" já
+# usado em AttackData.projectile_frames/Projectile.raw_frames (ver comentário
+# lá). Por isso vive num dicionário À PARTE (STATUS_EMOTE_FRAME_ARRAYS): cada
+# entrada aqui já é a lista de quadros pronta, sem corte de atlas nenhum (ver
+# _start_status_emote()/_process()).
+const BURNED_EMOTE_FRAMES: Array[Texture2D] = [
+	preload("res://assets/sprites/Status/BurnedIndicator/000.png"),
+	preload("res://assets/sprites/Status/BurnedIndicator/001.png"),
+	preload("res://assets/sprites/Status/BurnedIndicator/002.png"),
+	preload("res://assets/sprites/Status/BurnedIndicator/003.png"),
+	preload("res://assets/sprites/Status/BurnedIndicator/004.png"),
+	preload("res://assets/sprites/Status/BurnedIndicator/005.png"),
+	preload("res://assets/sprites/Status/BurnedIndicator/006.png"),
+	preload("res://assets/sprites/Status/BurnedIndicator/007.png"),
+	preload("res://assets/sprites/Status/BurnedIndicator/008.png"),
+]
+const STATUS_EMOTE_FRAME_ARRAYS := {
+	"Burned": BURNED_EMOTE_FRAMES,
+}
+
+# Default "vazio" tipado pra STATUS_EMOTE_FRAME_ARRAYS.get(status, ...) em
+# _start_status_emote() — um literal `[]` cru ali seria um Array GENÉRICO
+# (sem tipo), e atribuir isso direto a _status_emote_raw_frames (tipada
+# Array[Texture2D]) quebra em runtime ("Trying to assign an array of type
+# 'Array' to a variable of type 'Array[Texture2D]'"). Bug reportado pelo
+# usuário: acontecia com QUALQUER status fora do dicionário (Confused é o
+# caso comum, mas Poisoned/Frozen/etc. teriam o mesmo problema se algum dia
+# passassem por aqui) — sempre que status não é "Burned".
+const EMPTY_TEXTURE_ARRAY: Array[Texture2D] = []
 const STATUS_EMOTE_FRAME_DURATION = 0.08
 
 var _status_emote_atlas: AtlasTexture
 var _status_emote_frame_size: int = 1
 var _status_emote_frame_count: int = 1
 var _status_emote_frame_index: int = 0
+
+# Preenchido só quando o status atual usa o formato "vários arquivos" (ver
+# STATUS_EMOTE_FRAME_ARRAYS/BURNED_EMOTE_FRAMES) — vazio = modo de sempre
+# (_status_emote_atlas fatiado de uma textura só).
+var _status_emote_raw_frames: Array[Texture2D] = []
 
 # Balanço vertical do emote quando ele não tem quadros próprios (ver acima).
 # Guardamos a posição "de repouso" em _ready() em vez de um Vector2 fixo, pra
@@ -150,13 +189,14 @@ const STATUS_TYPE_IMMUNITIES := {
 
 # ---------- Indicadores visuais de Status Condition ----------
 # "Máscara" de cor sobre o sprite (ver _refresh_tint). Condições sem entrada
-# aqui (Poisoned/Burned/Frozen têm cor, mas Paralyzed/Confused/Asleep/
-# Flinched não — essas usam outro indicador: tremor, animação própria, ou
-# ainda não têm sprite, ver Blind/Confused nos comentários de _on_status_
-# condition_changed) ficam com Color.WHITE (sem máscara).
+# aqui (Poisoned/Frozen têm cor, mas Paralyzed/Confused/Asleep/Flinched não
+# — essas usam outro indicador: tremor, animação própria, ou o emote de
+# status flutuando acima da cabeça, ver STATUS_EMOTE_TEXTURES/
+# STATUS_EMOTE_FRAME_ARRAYS) ficam com Color.WHITE (sem máscara). Burned
+# SAIU daqui: agora tem indicador animado próprio (BurnedIndicator, ver
+# STATUS_EMOTE_FRAME_ARRAYS) em vez de tingir o sprite inteiro de vermelho.
 const STATUS_TINT_COLORS := {
 	"Frozen": Color(0.65, 0.85, 1.0),
-	"Burned": Color(1.0, 0.45, 0.45),
 	"Poisoned": Color(0.75, 0.45, 0.95),
 }
 
@@ -626,15 +666,16 @@ func can_attack() -> bool:
 
 # Reage à MUDANÇA de status_condition (chamado por apply_status_condition e
 # cure_status_condition — nunca direto): tint, tremor de Paralyzed, emote de
-# Confused/Blind e a animação própria de quem tem uma (Frozen pausa tudo,
-# Asleep dorme, Flinched fica com cara de dor). Poisoned/Burned não mexem em
-# animação, só na cor (STATUS_TINT_COLORS já cobre isso via _refresh_tint).
+# Confused/Blind/Burned e a animação própria de quem tem uma (Frozen pausa
+# tudo, Asleep dorme, Flinched fica com cara de dor). Poisoned não mexe em
+# animação nenhuma, só na cor (STATUS_TINT_COLORS já cobre isso via
+# _refresh_tint).
 func _on_status_condition_changed() -> void:
 	_refresh_tint()
 
 	if status_condition != "Paralyzed":
 		_stop_paralyze_shake()
-	if not STATUS_EMOTE_TEXTURES.has(status_condition):
+	if not STATUS_EMOTE_TEXTURES.has(status_condition) and not STATUS_EMOTE_FRAME_ARRAYS.has(status_condition):
 		_stop_status_emote()
 
 	match status_condition:
@@ -654,7 +695,7 @@ func _on_status_condition_changed() -> void:
 			_play_anim("hurt_" + facing)
 		"Paralyzed":
 			_start_paralyze_shake()
-		"Confused", "Blind":
+		"Confused", "Blind", "Burned":
 			_start_status_emote(status_condition)
 		"":
 			# Cura de QUALQUER condição — importante sobretudo saindo de
@@ -688,29 +729,40 @@ func _stop_paralyze_shake() -> void:
 	_status_shake_tween = null
 	anim.position.x = 0.0
 
-# Liga o emote de status_emote (nó Sprite2D acima da cabeça, ver unit.tscn)
-# com a textura de STATUS_EMOTE_TEXTURES correspondente, fatiada em quadros
-# QUADRADOS igual Projectile/ImpactEffect (tamanho calculado da própria
-# textura). O avanço de quadro em si acontece em _process() — aqui só
-# prepara a AtlasTexture e mostra o nó. Se a condição não tiver emote
-# cadastrado, não faz nada.
+# Liga o emote de status_emote (nó Sprite2D acima da cabeça, ver unit.tscn).
+# Dois formatos possíveis (ver comentário grande de STATUS_EMOTE_TEXTURES/
+# STATUS_EMOTE_FRAME_ARRAYS lá em cima):
+# - STATUS_EMOTE_FRAME_ARRAYS: quadros já prontos, um arquivo por quadro
+#   (Burned) — troca status_emote.texture direto, sem AtlasTexture nenhum.
+# - STATUS_EMOTE_TEXTURES: uma tira só, fatiada em quadros QUADRADOS igual
+#   Projectile/ImpactEffect (tamanho calculado da própria textura).
+# O avanço de quadro em si acontece em _process() — aqui só prepara o estado
+# inicial e mostra o nó. Se a condição não tiver emote cadastrado em NENHUM
+# dos dois dicionários, não faz nada.
 #
 # frame_count <= 1 (imagem única, sem tira — ex: Foresight_Glass de Blind)
 # liga o balanço vertical (_start_emote_bob) em vez do ciclo de quadros, já
 # que não há quadro nenhum pra trocar.
 func _start_status_emote(status: String) -> void:
-	var texture: Texture2D = STATUS_EMOTE_TEXTURES.get(status)
-	if texture == null:
-		return
-	_status_emote_frame_size = int(texture.get_height())
-	_status_emote_frame_count = max(1, int(texture.get_width()) / _status_emote_frame_size)
 	_status_emote_frame_index = 0
 	_status_emote_frame_timer = 0.0
+	_status_emote_raw_frames = STATUS_EMOTE_FRAME_ARRAYS.get(status, EMPTY_TEXTURE_ARRAY)
 
-	_status_emote_atlas = AtlasTexture.new()
-	_status_emote_atlas.atlas = texture
-	_status_emote_atlas.region = Rect2(0, 0, _status_emote_frame_size, _status_emote_frame_size)
-	status_emote.texture = _status_emote_atlas
+	if not _status_emote_raw_frames.is_empty():
+		_status_emote_frame_count = _status_emote_raw_frames.size()
+		_status_emote_atlas = null
+		status_emote.texture = _status_emote_raw_frames[0]
+	else:
+		var texture: Texture2D = STATUS_EMOTE_TEXTURES.get(status)
+		if texture == null:
+			return
+		_status_emote_frame_size = int(texture.get_height())
+		_status_emote_frame_count = max(1, int(texture.get_width()) / _status_emote_frame_size)
+		_status_emote_atlas = AtlasTexture.new()
+		_status_emote_atlas.atlas = texture
+		_status_emote_atlas.region = Rect2(0, 0, _status_emote_frame_size, _status_emote_frame_size)
+		status_emote.texture = _status_emote_atlas
+
 	status_emote.position = _status_emote_rest_position
 	status_emote.visible = true
 
@@ -721,6 +773,7 @@ func _start_status_emote(status: String) -> void:
 
 func _stop_status_emote() -> void:
 	status_emote.visible = false
+	_status_emote_raw_frames = []
 	_stop_emote_bob()
 
 # Balanço vertical suave e contínuo (sobe/desce EMOTE_BOB_OFFSET pixels em
@@ -831,7 +884,7 @@ var walk_from: Vector2i = Vector2i.ZERO
 # Emitido sempre que grid_pos muda pra uma célula NOVA via move_along_path
 # (ou seja, todo movimento de verdade — inclusive o "caminho de 1 célula" do
 # deploy, ver move_to() logo abaixo) — mesmo espírito de Player.tile_entered
-# no overworld (ver player.gd/world.gd). battle.gd escuta isso em CADA
+# no overworld (ver player.gd/test.gd). battle.gd escuta isso em CADA
 # unidade (ver spawn_player_units_staged/spawn_enemies) pra aplicar o efeito
 # de pisar num tile de fluido (ex: Burned na lava — ver current_battle_
 # tileset.fluid_status_on_enter/_on_unit_tile_entered), sem precisar que
@@ -885,12 +938,17 @@ func _process(delta: float) -> void:
 
 	# Avança o quadro do emote de status (ver _start_status_emote) — só
 	# quando visível, senão ficaria contando tempo à toa pra ninguém ver.
+	# Dois formatos (ver _start_status_emote): quadros prontos (raw_frames,
+	# troca status_emote.texture direto) ou atlas fatiado de uma tira só.
 	if status_emote.visible:
 		_status_emote_frame_timer += delta
 		if _status_emote_frame_timer >= STATUS_EMOTE_FRAME_DURATION:
 			_status_emote_frame_timer -= STATUS_EMOTE_FRAME_DURATION
 			_status_emote_frame_index = (_status_emote_frame_index + 1) % _status_emote_frame_count
-			_status_emote_atlas.region = Rect2(_status_emote_frame_index * _status_emote_frame_size, 0, _status_emote_frame_size, _status_emote_frame_size)
+			if not _status_emote_raw_frames.is_empty():
+				status_emote.texture = _status_emote_raw_frames[_status_emote_frame_index]
+			else:
+				_status_emote_atlas.region = Rect2(_status_emote_frame_index * _status_emote_frame_size, 0, _status_emote_frame_size, _status_emote_frame_size)
 
 # Traduz um deslocamento em células (dx, dy) pra uma das 8 direções do sprite sheet.
 # dy positivo = pra baixo, dx positivo = pra direita (convenção padrão do Godot 2D).

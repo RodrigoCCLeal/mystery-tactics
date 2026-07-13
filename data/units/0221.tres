@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://c77wvm8facwe0"]
+
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
+[ext_resource type="SpriteFrames" uid="uid://b33lr3apatihg" path="res://assets/sprites/Pokemon/0221/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://chuhf2qn3ib86" path="res://assets/sprites/Pokemon/0221/Normal.png" id="3"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="4"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5"]
+[ext_resource type="Resource" path="res://data/attacks/powder_snow.tres" id="6"]
+[ext_resource type="Resource" path="res://data/attacks/mud_slap.tres" id="7"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="8"]
+[ext_resource type="Resource" uid="uid://d3d1yt4acgtl4" path="res://data/units/0473.tres" id="9"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="9_piloswine"]
+[ext_resource type="Resource" path="res://data/abilities/thick_fat.tres" id="10"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0221_tackle"]
+script = ExtResource("5")
+action = ExtResource("4")
+
+[sub_resource type="Resource" id="LearnsetEntry_0221_powder_snow"]
+script = ExtResource("5")
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LearnsetEntry_0221_mud_slap"]
+script = ExtResource("5")
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LearnsetEntry_0221_ancient_power"]
+script = ExtResource("5")
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LearnsetEntry_0221_thick_fat"]
+script = ExtResource("5")
+action = ExtResource("10")
+is_hidden_ability = true
+
+[resource]
+script = ExtResource("1")
+unit_name = "Piloswine"
+sprite_frames = ExtResource("2")
+portrait = ExtResource("3")
+attack_hit_delay = 0.35
+special_hit_delay = 0.25
+types = Array[String](["Ice", "Ground"])
+slots = Array[ExtResource("9_piloswine")]([ExtResource("4"), ExtResource("6"), ExtResource("7"), ExtResource("8")])
+learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0221_tackle"), SubResource("LearnsetEntry_0221_powder_snow"), SubResource("LearnsetEntry_0221_mud_slap"), SubResource("LearnsetEntry_0221_ancient_power"), SubResource("LearnsetEntry_0221_thick_fat")])
+hp_base = 100
+attack_base = 100
+defense_base = 80
+special_attack_base = 60
+special_defense_base = 60
+speed_base = 50
+catch_rate = 0.2941
+growth_group = "Slow"
+base_exp_yield = 158
+evolves_into = ExtResource("9")
+evolve_requires_action = ExtResource("8")

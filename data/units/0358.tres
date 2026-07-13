@@ -8,10 +8,15 @@
 [ext_resource type="Texture2D" uid="uid://baxjj8nfcn0n2" path="res://assets/sprites/Pokemon/0358/Normal.png" id="6"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_typ5f"]
 [ext_resource type="Resource" uid="uid://bax2qsu5q12rb" path="res://data/attacks/confusion.tres" id="7"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="8"]
 
 [sub_resource type="Resource" id="LearnsetEntry_0358_tackle"]
 script = ExtResource("4")
 action = ExtResource("3")
+
+[sub_resource type="Resource" id="LearnsetEntry_0358_growl"]
+script = ExtResource("4")
+action = ExtResource("8")
 
 [sub_resource type="Resource" id="LearnsetEntry_0358_levitate"]
 script = ExtResource("4")
@@ -31,7 +36,7 @@ attack_hit_delay = 0.35
 special_hit_delay = 0.2
 types = Array[String](["Psychic"])
 slots = Array[ExtResource("6_typ5f")]([ExtResource("3"), ExtResource("5")])
-learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0358_tackle"), SubResource("LearnsetEntry_0358_levitate"), SubResource("LearnsetEntry_0358_confusion")])
+learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0358_tackle"), SubResource("LearnsetEntry_0358_growl"), SubResource("LearnsetEntry_0358_levitate"), SubResource("LearnsetEntry_0358_confusion")])
 hp_base = 75
 attack_base = 50
 defense_base = 80

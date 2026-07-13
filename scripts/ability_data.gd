@@ -53,3 +53,28 @@ extends ActionData
 # efeito secundário nenhum (secondary_status == "") não ganham bônus algum,
 # mesmo com essa Habilidade equipada — só o dano deles não muda.
 @export var sheer_force: bool = false
+
+# Se true, a Speed desta unidade sobe automaticamente +1 estágio (ver
+# Unit.modify_stat_stage) ao FINAL de cada turno que ela mesma jogar —
+# diferente de Blaze/Sheer Force acima (que só reagem a algo: dano recebido,
+# efeito secundário de um ataque), Speed Boost é a primeira Habilidade "de
+# tempo": não depende de nada além do turno passar. Ver battle.gd::
+# has_speed_boost/_on_end_turn_pressed, que chama apply_stat_change() —
+# mesma função e mesmo efeito visual que Growl já usa pra baixar Attack, só
+# que aqui é a própria unidade se buffando, não um ataque afetando inimigos.
+@export var speed_boost: bool = false
+
+# Tipos elementais dos quais essa Habilidade REDUZ o dano recebido, quando
+# equipada em QUEM DEFENDE — ex: Thick Fat resiste Fire e Ice. Diferente de
+# immune_type acima (imunidade TOTAL, x0, e um único tipo), aqui pode ter
+# vários tipos e o dano só é reduzido por resist_multiplier (não zerado);
+# diferente também de element_type/hp_threshold/damage_multiplier (que
+# boostam o dano de quem ATACA), esse par funciona do lado de quem DEFENDE,
+# sem depender de HP nenhum (sempre ativo). Vazio = não resiste tipo nenhum.
+# Ver battle.gd calculate_damage_modifiers().
+@export var resist_types: Array[String] = []
+
+# Multiplicador aplicado ao dano recebido quando o tipo do ataque está em
+# resist_types acima. 0.5 = metade do dano (Thick Fat). 1.0 = sem efeito
+# (padrão, quando resist_types está vazio isso nem chega a ser checado).
+@export var resist_multiplier: float = 1.0

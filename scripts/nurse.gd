@@ -3,7 +3,7 @@ extends "res://scripts/npc.gd"
 # Nurse (assets/sprites/Human/NPC/NPC 16.png) — primeiro NPC do jogo.
 # Herda toda a parte de aparência/posição no grid de npc.gd (ver comentário
 # lá) e só sobrescreve interact(): falar com ela de frente (ver
-# world.gd::_try_interact) abre uma pergunta Sim/Não (yes_no_prompt.gd)
+# test.gd::_try_interact) abre uma pergunta Sim/Não (yes_no_prompt.gd)
 # perguntando se o jogador quer curar o time; "Yes" cura na hora, com o
 # MESMO efeito que o botão "Heal" do Computador tinha (ver GameState.
 # heal_active_roster()) — aquele botão era só um atalho de debug e foi
@@ -11,7 +11,7 @@ extends "res://scripts/npc.gd"
 # curar (ver computer_screen.gd).
 #
 # get_tree().paused = true/false ao redor do popup é o MESMO padrão que
-# world.gd já usa pro menu de pausa (ver _open_pause_menu/
+# test.gd já usa pro menu de pausa (ver _open_pause_menu/
 # _on_pause_menu_closed) — trava o Player (e o resto do overworld) enquanto
 # a pergunta está na tela, sem precisar duplicar nenhuma lógica de "ignorar
 # input do jogo enquanto um popup estiver aberto".

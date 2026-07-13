@@ -27,7 +27,7 @@ offset_right = 0.0
 offset_bottom = 0.0
 
 [node name="Panel" type="Panel" parent="Center"]
-custom_minimum_size = Vector2(200, 180)
+custom_minimum_size = Vector2(200, 210)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Center/Panel"]
@@ -67,3 +67,8 @@ text = "Summary"
 [node name="Loadout" type="Label" parent="Center/Panel/MarginContainer/Options"]
 layout_mode = 2
 text = "Loadout"
+
+[node name="Evolve" type="Label" parent="Center/Panel/MarginContainer/Options"]
+visible = false
+layout_mode = 2
+text = "Evolve"

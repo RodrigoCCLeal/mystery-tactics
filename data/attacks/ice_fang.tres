@@ -1,6 +1,8 @@
-[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://cy01uvyq3ukya"]
+[gd_resource type="Resource" script_class="AttackData" load_steps=4 format=3 uid="uid://cy01uvyq3ukya"]
 
 [ext_resource type="Script" uid="uid://ds0uxvdng0s2r" path="res://scripts/attack_data.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://cgwfd0cjilfyc" path="res://assets/sprites/Move/Ice_Fang_Fang.None.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://bejnmrodq3jja" path="res://assets/sprites/Move/Ice_Fang_Hit.None.png" id="3"]
 
 [resource]
 script = ExtResource("1")
@@ -8,6 +10,8 @@ element_type = "Ice"
 accuracy = 0.95
 power = 65
 makes_contact = true
+impact_texture = ExtResource("2")
+impact_texture_2 = ExtResource("3")
 secondary_status = "Frozen"
 secondary_status_chance = 0.1
 secondary_status_2 = "Flinched"

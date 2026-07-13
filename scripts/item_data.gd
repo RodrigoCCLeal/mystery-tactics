@@ -52,6 +52,15 @@ var category: String = "Medicine"
 # cura.
 @export var heal_amount: int = 0
 
+# Se true, "Use" (ver GameState.use_item) revela a Habilidade Hidden da
+# unidade alvo (UnitData.hidden_ability_revealed = true), pra sempre —
+# ex: Ability Patch. Não cura nada (heal_amount = 0 nesse tipo de item),
+# então os dois efeitos são checados/aplicados de forma independente em
+# use_item(). Só faz sentido category == "Medicine" (mesmo grupo de
+# Potion/Revive/Oran Berry — um item que se "usa" numa unidade), mas o
+# campo não trava isso, do mesmo jeito que heal_amount também não trava.
+@export var reveals_hidden_ability: bool = false
+
 # Multiplicador de precisão dos ataques de quem carrega este item
 # equipado no loadout (ver Unit.get_accuracy_multiplier). 1.0 = sem
 # efeito. Nenhum AttackData implementado ainda varia accuracy de verdade

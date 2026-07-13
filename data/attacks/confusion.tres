@@ -1,12 +1,26 @@
 [gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://bax2qsu5q12rb"]
 
 [ext_resource type="Script" uid="uid://ds0uxvdng0s2r" path="res://scripts/attack_data.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://c2l2l0ft5d6s1" path="res://assets/sprites/Move/Confusion/000.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://f4cjoxj83cdk" path="res://assets/sprites/Move/Confusion/002.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://uhqm1adph26a" path="res://assets/sprites/Move/Confusion/004.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://fe0wv0wo0ahg" path="res://assets/sprites/Move/Confusion/006.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://jp6kt8qblavr" path="res://assets/sprites/Move/Confusion/008.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://br4xi3ek0vv1r" path="res://assets/sprites/Move/Confusion/010.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://qt6gjaikhxqn" path="res://assets/sprites/Move/Confusion/012.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://dry23df35kot1" path="res://assets/sprites/Move/Confusion/014.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://cnkni3vfn85gw" path="res://assets/sprites/Move/Confusion/016.png" id="10"]
+[ext_resource type="Texture2D" uid="uid://2hsy1fj7b1w1" path="res://assets/sprites/Move/Confusion/018.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://brd7nce61k1f6" path="res://assets/sprites/Move/Confusion/020.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://d2qufltqoeb2g" path="res://assets/sprites/Move/Confusion/022.png" id="13"]
+[ext_resource type="Texture2D" uid="uid://s0j3ml6d3kx4" path="res://assets/sprites/Move/Confusion/024.png" id="14"]
 
 [resource]
 script = ExtResource("1")
 is_special = true
 element_type = "Psychic"
 power = 50
+impact_frames = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("13"), ExtResource("14")])
 secondary_status = "Confused"
 secondary_status_chance = 0.1
 action_name = "Confusion"

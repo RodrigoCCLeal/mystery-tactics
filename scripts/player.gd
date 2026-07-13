@@ -6,23 +6,23 @@ extends Node2D
 # personagem (assets/sprites/Human) não têm poses diagonais como as dos
 # sprites de batalha (que são 8 direções), por isso a diferença.
 
-# Antes isso era @export (setado via NodePath na mão em world.tscn), mas
+# Antes isso era @export (setado via NodePath na mão em test.tscn), mas
 # node exports tipados só resolvem de node de verdade quando atribuídos
 # PELO editor do Godot (arrastando o node no Inspector) — escrever o
 # NodePath direto no .tscn deixa a propriedade null em runtime, foi isso
 # que causou o erro "Cannot call method 'map_to_local' on a null value".
 # get_node() aqui resolve na hora — Player mora dentro de "Actors" (Node2D
-# com y_sort_enabled = true, ver world.gd/world.tscn: é o que resolve o
+# com y_sort_enabled = true, ver test.gd/test.tscn: é o que resolve o
 # personagem desenhar na ordem errada perto de um NPC), que por sua vez é
-# filho direto de World, o mesmo Node2D que tem o TileMapLayer chamado
+# filho direto de Test, o mesmo Node2D que tem o TileMapLayer chamado
 # "TileMapLayer" — daí o "../.." (sobe de Player pra Actors, de Actors pra
-# World). Se um dia o Player for reusado em outra cena com estrutura
+# Test). Se um dia o Player for reusado em outra cena com estrutura
 # diferente, isso precisa generalizar.
 @onready var tile_map: TileMapLayer = get_node("../../TileMapLayer")
 
-# Mesmo motivo/padrão do tile_map acima — World (ver world.gd::has_npc_at,
+# Mesmo motivo/padrão do tile_map acima — Test (ver test.gd::has_npc_at,
 # usado em can_move_to() lá embaixo pra bloquear o passo em cima de um NPC
-# parado) fica DOIS níveis acima do Player agora (Player -> Actors -> World).
+# parado) fica DOIS níveis acima do Player agora (Player -> Actors -> Test).
 @onready var world: Node2D = get_node("../..")
 
 # Antes (ver git blame se quiser comparar) essas três eram @export Texture2D,
@@ -83,7 +83,7 @@ const RUN_DURATION = 0.11    # segundos pra atravessar 1 tile correndo
 const BIKE_DURATION = RUN_DURATION / 2.0   # segundos pra atravessar 1 tile de bike (2x Run)
 
 # Emitido quando a unidade TERMINA de entrar numa célula nova (não quando só
-# vira de direção sem poder andar). world.gd escuta isso pra decidir coisas
+# vira de direção sem poder andar). test.gd escuta isso pra decidir coisas
 # que dependem do tile em que o personagem pisou (ex: grama alta -> chance
 # de combate aleatório).
 signal tile_entered(cell: Vector2i)
@@ -435,7 +435,7 @@ func can_move_to(cell: Vector2i) -> bool:
 		return false
 	if not tile_data.get_custom_data("walkable"):
 		return false
-	# NPC parado (ver npc.gd/world.gd::has_npc_at) bloqueia o passo igual uma
+	# NPC parado (ver npc.gd/test.gd::has_npc_at) bloqueia o passo igual uma
 	# parede, mesmo sem ter física nenhuma — checado por último porque é o
 	# caso raro (a maioria das células não tem NPC nenhum), então não vale a
 	# pena pagar esse custo antes de já ter certeza que o tile em si é andável.
@@ -444,7 +444,7 @@ func can_move_to(cell: Vector2i) -> bool:
 	return true
 
 # Liga/desliga o efeito de "afundar" na grama alta — quem decide QUANDO
-# chamar isso é world.gd (só ele sabe o que é um tile de grama), Player só
+# chamar isso é test.gd (só ele sabe o que é um tile de grama), Player só
 # sabe cortar a metade de baixo do próprio sprite via shader (ver
 # assets/shaders/sink_in_grass.gdshader, material em AnimatedSprite2D).
 func set_sunk_in_grass(sunk: bool) -> void:
@@ -453,7 +453,7 @@ func set_sunk_in_grass(sunk: bool) -> void:
 
 # Reposiciona instantaneamente, sem tocar animação de passo — usado quando
 # o personagem "aparece" numa célula sem ter andado até ela de verdade (ex:
-# voltando de uma troca de cena, ver GameState/world.gd). Mesmo espírito de
+# voltando de uma troca de cena, ver GameState/test.gd). Mesmo espírito de
 # Unit.teleport_to() em battle.gd, usado ali pro Undo de movimento.
 func teleport_to(cell: Vector2i, new_facing: String = facing) -> void:
 	grid_pos = cell

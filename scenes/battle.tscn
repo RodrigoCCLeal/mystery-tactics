@@ -47,11 +47,20 @@ tile_set = ExtResource("2_p1qf1")
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="UnitSummary" type="HBoxContainer" parent="HUD"]
-offset_left = 336.0
+offset_left = 24.0
 offset_top = 16.0
-offset_right = 816.0
+offset_right = 1128.0
 offset_bottom = 88.0
+alignment = 1
 theme_override_constants/separation = 6
+
+[node name="StartButton" type="Button" parent="HUD"]
+offset_left = 842.0
+offset_top = 196.0
+offset_right = 966.0
+offset_bottom = 228.0
+disabled = true
+text = "Start"
 
 [node name="EndTurnButton" type="Button" parent="HUD"]
 offset_left = 842.0

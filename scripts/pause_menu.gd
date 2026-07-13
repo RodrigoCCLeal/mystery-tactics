@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-# Menu de pausa do overworld (abre com Esc, ver world.gd::_open_pause_menu).
+# Menu de pausa do overworld (abre com Esc, ver test.gd::_open_pause_menu).
 # CanvasLayer em vez de Node2D comum porque CanvasLayer desenha em espaço de
 # TELA, ignorando a Camera2D do Player — senão o menu se moveria/escalaria
 # junto com o mundo, que não é o que queremos pra uma UI.
@@ -21,7 +21,7 @@ extends CanvasLayer
 #
 # process_mode = ALWAYS é essencial: sem isso, esse node também para de
 # processar input assim que a árvore pausa (get_tree().paused = true, feito
-# por world.gd ao abrir o menu) e o jogador ficaria travado sem conseguir
+# por test.gd ao abrir o menu) e o jogador ficaria travado sem conseguir
 # fechar o menu.
 
 signal closed
@@ -109,7 +109,7 @@ func _activate_selected() -> void:
 			print("TODO: salvar jogo")
 
 # A tela de Party entra como sub-menu: esconde (sem fechar) o menu de
-# pausa por baixo — a árvore continua pausada o tempo todo, world.gd só
+# pausa por baixo — a árvore continua pausada o tempo todo, test.gd só
 # despausa quando O MENU DE PAUSA fecha de vez, não quando um submenu dele
 # fecha. Fechar a Party (Z lá sem nada selecionado pra trocar) só volta a
 # mostrar este menu de novo.

@@ -26,6 +26,7 @@ action = ExtResource("7")
 [sub_resource type="Resource" id="LearnsetEntry_0158_sheer_force"]
 script = ExtResource("5")
 action = ExtResource("8")
+is_hidden_ability = true
 
 [resource]
 script = ExtResource("1")
@@ -35,7 +36,7 @@ portrait = ExtResource("3")
 attack_hit_delay = 0.35
 special_hit_delay = 0.45
 types = Array[String](["Water"])
-slots = Array[ExtResource("5_typ5f")]([ExtResource("4"), ExtResource("7"), ExtResource("8")])
+slots = Array[ExtResource("5_typ5f")]([ExtResource("4"), ExtResource("7")])
 learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0158_tackle"), SubResource("LearnsetEntry_0158_water_gun"), SubResource("LearnsetEntry_0158_torrent"), SubResource("LearnsetEntry_0158_sheer_force")])
 hp_base = 50
 attack_base = 65

@@ -65,9 +65,19 @@ func _build_rows() -> void:
 func _refresh_rows() -> void:
 	for i in SLOT_COUNT:
 		var action = data.slots[i]
-		var text = action.action_name if action != null else "-- vazio --"
+		var text = _display_name(action) if action != null else "-- vazio --"
 		row_labels[i].text = "%d. %s" % [i + 1, text]
 		row_labels[i].modulate = Color.YELLOW if i == selected_row and mode == Mode.ROWS else Color.WHITE
+
+# Nome mostrado pra uma ação — igual action.action_name, só que com "
+# (Hidden)" no final quando for uma Habilidade marcada Hidden PRA ESTA
+# ESPÉCIE (ver UnitData.is_ability_hidden/LearnsetEntry.is_hidden_ability).
+# Usado tanto na lista dos 6 slots quanto no escolhedor (_open_picker), pra
+# o jogador ver de cara qual Habilidade é a Hidden antes de equipar.
+func _display_name(action: ActionData) -> String:
+	if action is AbilityData and data.is_ability_hidden(action):
+		return "%s (Hidden)" % action.action_name
+	return action.action_name
 
 func _on_row_mouse_entered(index: int) -> void:
 	if mode != Mode.ROWS:
@@ -138,12 +148,16 @@ func _open_picker() -> void:
 		if not equipped_elsewhere.has(action):
 			picker_options.append(action)
 
-	# Item dado pela Bag (ver GameState.give_item) não vem do learnset —
-	# sem isso, o slot atual simplesmente NÃO aparece na lista, o cursor cai
-	# em "-- vazio --" por padrão, e confirmar ali (achando que só estava
-	# olhando) apaga o item. Precisa continuar selecionável, igual qualquer
-	# ataque/habilidade já equipado.
-	if current is ItemData and not picker_options.has(current):
+	# O slot atual precisa continuar selecionável mesmo se caiu fora da
+	# lista normal de opções, por dois motivos possíveis: (1) Item dado
+	# pela Bag (ver GameState.give_item) não vem do learnset, ou (2)
+	# Habilidade Hidden ainda não revelada (ver UnitData.
+	# get_available_actions/hidden_ability_revealed) — uma unidade que já
+	# equipava essa Habilidade Hidden não pode "perder" ela da lista. Sem
+	# isso, o slot atual simplesmente NÃO aparece, o cursor cai em
+	# "-- vazio --" por padrão, e confirmar ali (achando que só estava
+	# olhando) apaga a ação.
+	if current != null and not picker_options.has(current):
 		picker_options.append(current)
 
 	picker_selected = 0
@@ -158,7 +172,7 @@ func _open_picker() -> void:
 	for i in picker_options.size():
 		var action = picker_options[i]
 		var label = Label.new()
-		label.text = "-- vazio --" if action == null else action.action_name
+		label.text = "-- vazio --" if action == null else _display_name(action)
 		label.mouse_filter = Control.MOUSE_FILTER_STOP
 		label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		label.mouse_entered.connect(_on_picker_mouse_entered.bind(i))

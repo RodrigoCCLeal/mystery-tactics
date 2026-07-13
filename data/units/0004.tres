@@ -8,10 +8,15 @@
 [ext_resource type="Resource" path="res://data/attacks/ember.tres" id="6"]
 [ext_resource type="Resource" path="res://data/abilities/blaze.tres" id="7"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="7_e6ex1"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="8"]
 
 [sub_resource type="Resource" id="LearnsetEntry_0004_tackle"]
 script = ExtResource("5")
 action = ExtResource("4")
+
+[sub_resource type="Resource" id="LearnsetEntry_0004_growl"]
+script = ExtResource("5")
+action = ExtResource("8")
 
 [sub_resource type="Resource" id="LearnsetEntry_0004_ember"]
 script = ExtResource("5")
@@ -31,7 +36,7 @@ attack_hit_delay = 0.7
 special_hit_delay = 0.5
 types = Array[String](["Fire"])
 slots = Array[ExtResource("7_e6ex1")]([ExtResource("4"), ExtResource("6"), ExtResource("7")])
-learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0004_tackle"), SubResource("LearnsetEntry_0004_ember"), SubResource("LearnsetEntry_0004_blaze")])
+learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0004_tackle"), SubResource("LearnsetEntry_0004_growl"), SubResource("LearnsetEntry_0004_ember"), SubResource("LearnsetEntry_0004_blaze")])
 hp_base = 39
 attack_base = 52
 defense_base = 43

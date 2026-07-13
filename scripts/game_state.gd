@@ -10,21 +10,21 @@ const UnitScript = preload("res://scripts/unit.gd")
 #
 # Guarda onde o personagem estava no overworld antes de entrar em combate,
 # pra devolver ele no mesmo lugar quando a batalha terminar em VITÓRIA (ver
-# world.gd::_restore_player_state / battle.gd::end_battle).
+# test.gd::_restore_player_state / battle.gd::end_battle).
 
 var has_saved_position: bool = false
 var player_grid_pos: Vector2i = Vector2i.ZERO
 var player_facing: String = "down"
-var overworld_scene_path: String = "res://scenes/world.tscn"
+var overworld_scene_path: String = "res://scenes/test.tscn"
 
-func save_player_state(cell: Vector2i, facing: String, scene_path: String = "res://scenes/world.tscn") -> void:
+func save_player_state(cell: Vector2i, facing: String, scene_path: String = "res://scenes/test.tscn") -> void:
 	has_saved_position = true
 	player_grid_pos = cell
 	player_facing = facing
 	overworld_scene_path = scene_path
 
-# Posição "ao vivo" do jogador no overworld — world.gd mantém isso atualizado
-# a CADA passo (ver world.gd::_sync_live_position), diferente de
+# Posição "ao vivo" do jogador no overworld — test.gd mantém isso atualizado
+# a CADA passo (ver test.gd::_sync_live_position), diferente de
 # player_grid_pos/player_facing acima, que só mudam no instante em que uma
 # batalha começa. Existe só pra heal_active_roster() (ver abaixo) saber ONDE
 # o jogador está no exato momento em que aperta "Heal" no Computador — nem
@@ -52,7 +52,7 @@ var is_biking: bool = false
 
 # 4 atalhos de item Tool (ver ItemData.can_register) — null = vazio. Usar um
 # item registrado dispara o efeito direto (ver use_tool() abaixo), sem abrir
-# a Bag — o atalho de teclado no overworld (1/2/3/4, ver world.gd::
+# a Bag — o atalho de teclado no overworld (1/2/3/4, ver test.gd::
 # _trigger_tool_shortcut) já lê este array direto.
 const TOOL_SHORTCUT_COUNT = 4
 var tool_shortcuts: Array[ItemData] = [null, null, null, null]
@@ -133,7 +133,25 @@ func _ready() -> void:
 		roster.append(null)
 	while storage.size() < STORAGE_CAPACITY:
 		storage.append(null)
+	_seed_testing_storage()
 	_seed_starting_inventory()
+
+# Reserva "de teste": bota uma cópia de CADA espécie já implementada (ver
+# ALL_SPECIES, mais abaixo) direto na reserva do PC, todas no nível 70 — pra
+# testar ataque/interação/evolução nova (ex: Growl, ou a evolução Piloswine
+# -> Mamoswine que exige Ancient Power equipado) sem precisar caçar/subir de
+# nível cada espécie selvagem primeiro. Mesma ideia de
+# _seed_starting_inventory() logo abaixo, só que pra unidades em vez de
+# item; remover esta chamada (em _ready()) quando o jogo não precisar mais
+# desse atalho de teste.
+# .duplicate() em cada uma, mesmo motivo do roster lá em cima — sem isso,
+# todas as cópias da mesma espécie (aqui e uma eventual capturada depois)
+# dividiriam nível/xp/HP entre si.
+func _seed_testing_storage() -> void:
+	for species in ALL_SPECIES:
+		var data: UnitData = species.duplicate()
+		data.ensure_initialized(70)
+		add_to_first_empty_storage_slot(data)
 
 func get_active_roster() -> Array[UnitData]:
 	var active: Array[UnitData] = []
@@ -173,6 +191,17 @@ func swap_roster_slots(a: int, b: int) -> void:
 	var tmp = roster[a]
 	roster[a] = roster[b]
 	roster[b] = tmp
+
+# Sobrescreve UM slot do time com uma UnitData já pronta — diferente de
+# swap_roster_slots (troca dois slots ENTRE si), aqui é uma substituição
+# direta de um só. Usado hoje só por party_screen.gd::_perform_evolution():
+# evoluir troca a espécie por baixo (nova UnitData, mesmo nível/xp/loadout
+# preservados — ver comentário lá), então o slot precisa ser SUBSTITUÍDO,
+# não trocado com outro.
+func set_roster_slot(index: int, data: UnitData) -> void:
+	if index < 0 or index >= roster.size():
+		return
+	roster[index] = data
 
 # "Caixa" do Computador — unidades que o jogador tem mas não estão no time
 # ativo (ver pc_screen.gd). Tamanho FIXO (STORAGE_CAPACITY), igual `roster`
@@ -270,7 +299,7 @@ func swap_active_with_storage(active_index: int, storage_index: int) -> void:
 #
 # Também registra ESTE lugar/momento como o novo "checkpoint" de derrota
 # (ver last_heal_grid_pos/last_heal_facing acima) — copia de live_grid_pos/
-# live_facing, que world.gd mantém sempre atualizado com a posição de
+# live_facing, que test.gd mantém sempre atualizado com a posição de
 # verdade do jogador. Assim, se o time inteiro desmaiar numa batalha
 # qualquer (mesmo longe daqui), battle.gd::end_battle sabe pra onde mandar
 # o jogador de volta.
@@ -304,11 +333,14 @@ const ALL_SPECIES: Array[UnitData] = [
 	preload("res://data/units/0358.tres"),
 	preload("res://data/units/0158.tres"),
 	preload("res://data/units/0473.tres"),
+	preload("res://data/units/0202.tres"),
+	preload("res://data/units/0255.tres"),
+	preload("res://data/units/0221.tres"),
 ]
 
-# Em qual área do overworld o jogador está AGORA — world.gd seta isso (a
+# Em qual área do overworld o jogador está AGORA — test.gd seta isso (a
 # partir do seu próprio @export var encounter_area) assim que a cena
-# carrega (ver world.gd::_enter_area), e é o mesmo valor que sobrevive à
+# carrega (ver test.gd::_enter_area), e é o mesmo valor que sobrevive à
 # troca de cena pra battle.tscn, onde battle.gd::spawn_enemies() lê daqui
 # pra saber QUAIS unidades selvagens podem aparecer e com que peso (ver
 # encounter_area.gd/encounter_group.gd). Um EncounterArea já carrega tanto o
@@ -318,12 +350,12 @@ const ALL_SPECIES: Array[UnitData] = [
 # uma lista de encontros, ou vice-versa.
 #
 # O valor default abaixo (a área inicial) é só uma rede de segurança pra
-# spawn_enemies() nunca ficar sem tabela nenhuma — no fluxo normal, world.gd
+# spawn_enemies() nunca ficar sem tabela nenhuma — no fluxo normal, test.gd
 # sempre sobrescreve isso ao carregar.
 var current_area: EncounterArea = preload("res://data/areas/starting_area.tres")
 
 # Nome da última área que já mostrou a notificação de entrada (ver
-# area_notification.gd) — existe só pra world.gd saber se a área que está
+# area_notification.gd) — existe só pra test.gd saber se a área que está
 # carregando agora é REALMENTE nova (mostra notificação) ou é a mesma de
 # antes (ex: voltando de uma batalha pro mesmo mapa — não deve notificar de
 # novo). Comparar por NOME (String) em vez de comparar o Resource
@@ -353,6 +385,7 @@ func _seed_starting_inventory() -> void:
 	add_item(preload("res://data/items/pokeball.tres"), 5)     # 5 pra testar fracassos (Master Ball nunca falha)
 	add_item(preload("res://data/items/tm10_ice_fang.tres"), 8) # 8 pra testar Stackable + consumo em batalha
 	add_item(preload("res://data/items/bicycle.tres"), 1)       # Tool: Use liga/desliga is_biking, nunca é consumida
+	add_item(preload("res://data/items/ability_patch.tres"), 1) # pra testar revelar Sheer Force do Totodile (0158)
 
 func add_item(item: ItemData, amount: int = 1) -> void:
 	inventory[item] = get_item_quantity(item) + amount
@@ -380,9 +413,13 @@ func get_items_in_category(category: String) -> Array[ItemData]:
 const LOADOUT_SLOT_COUNT = 6
 
 # "Use" de um item (ver ItemData.can_use) — cura heal_amount HP da unidade
-# alvo (clampado no HP máximo dela, calculado no nível atual) e consome 1
-# unidade do inventário. Não faz nada se o jogador não tiver o item (defesa
-# contra chamada indevida; a Bag só deveria oferecer "Use" quando
+# alvo (clampado no HP máximo dela, calculado no nível atual), revela a
+# Habilidade Hidden dela se o item fizer isso (ver ItemData.
+# reveals_hidden_ability, ex: Ability Patch), e consome 1 unidade do
+# inventário. Os dois efeitos são independentes (um item podia até ter os
+# dois, embora nenhum tenha hoje) — cada um só roda se o campo dele estiver
+# configurado. Não faz nada se o jogador não tiver o item (defesa contra
+# chamada indevida; a Bag só deveria oferecer "Use" quando
 # get_item_quantity > 0).
 func use_item(item: ItemData, target: UnitData) -> void:
 	if item == null or target == null or get_item_quantity(item) <= 0:
@@ -394,7 +431,15 @@ func use_item(item: ItemData, target: UnitData) -> void:
 	# battle.gd re-conferir antes de agir mesmo com o botão já desabilitado.
 	if item.heal_amount > 0 and target.current_hp >= hp_max:
 		return
+	# Mesma lógica pro Ability Patch: não faz nada (não consome) numa
+	# unidade sem Habilidade Hidden nenhuma pra revelar, ou que já revelou
+	# a dela — item_list_screen.gd já filtra isso na escolha do alvo, esta
+	# é a segunda trava.
+	if item.reveals_hidden_ability and not target.has_unrevealed_hidden_ability():
+		return
 	target.current_hp = min(target.current_hp + item.heal_amount, hp_max)
+	if item.reveals_hidden_ability:
+		target.hidden_ability_revealed = true
 	inventory[item] = get_item_quantity(item) - 1
 
 # "Use" de um item Tool (ver ItemData.category == "Tool") — diferente de

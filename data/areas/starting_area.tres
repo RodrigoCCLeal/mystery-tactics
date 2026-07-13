@@ -8,8 +8,8 @@
 [ext_resource type="Resource" uid="uid://cq1d5gsiosefh" path="res://data/units/0001.tres" id="6"]
 [ext_resource type="Resource" uid="uid://c6u2qdc3o2erk" path="res://data/units/0004.tres" id="7"]
 [ext_resource type="Resource" uid="uid://bnqc5pta08a7q" path="res://data/units/0007.tres" id="8"]
-[ext_resource type="Resource" uid="uid://bludw6rqk7vsm" path="res://data/units/0158.tres" id="9"]
 [ext_resource type="Resource" uid="uid://bdtposyaguypb" path="res://data/units/0358.tres" id="10"]
+[ext_resource type="Resource" path="res://data/units/0202.tres" id="11"]
 
 [sub_resource type="Resource" id="EncounterEntry_mamoswine_54"]
 script = ExtResource("3")
@@ -24,7 +24,7 @@ level = 2
 [sub_resource type="Resource" id="EncounterGroup_mamoswine_swinub"]
 script = ExtResource("2")
 entries = Array[ExtResource("3")]([SubResource("EncounterEntry_mamoswine_54"), SubResource("EncounterEntry_swinub_2")])
-weight = 40.0
+weight = 2.0
 
 [sub_resource type="Resource" id="EncounterEntry_bulbasaur_5"]
 script = ExtResource("3")
@@ -44,27 +44,27 @@ level = 5
 [sub_resource type="Resource" id="EncounterGroup_starters"]
 script = ExtResource("2")
 entries = Array[ExtResource("3")]([SubResource("EncounterEntry_bulbasaur_5"), SubResource("EncounterEntry_charmander_5"), SubResource("EncounterEntry_squirtle_5")])
-weight = 40.0
+weight = 7.0
 
-[sub_resource type="Resource" id="EncounterEntry_totodile_5_a"]
+[sub_resource type="Resource" id="EncounterEntry_wobbuffet_100_a"]
 script = ExtResource("3")
-species = ExtResource("9")
-level = 5
+species = ExtResource("11")
+level = 100
 
-[sub_resource type="Resource" id="EncounterEntry_totodile_5_b"]
+[sub_resource type="Resource" id="EncounterEntry_wobbuffet_100_b"]
 script = ExtResource("3")
-species = ExtResource("9")
-level = 5
+species = ExtResource("11")
+level = 100
 
-[sub_resource type="Resource" id="EncounterEntry_totodile_5_c"]
+[sub_resource type="Resource" id="EncounterEntry_wobbuffet_100_c"]
 script = ExtResource("3")
-species = ExtResource("9")
-level = 5
+species = ExtResource("11")
+level = 100
 
-[sub_resource type="Resource" id="EncounterGroup_totodile_trio"]
+[sub_resource type="Resource" id="EncounterGroup_wobbuffet_trio"]
 script = ExtResource("2")
-entries = Array[ExtResource("3")]([SubResource("EncounterEntry_totodile_5_a"), SubResource("EncounterEntry_totodile_5_b"), SubResource("EncounterEntry_totodile_5_c")])
-weight = 10.0
+entries = Array[ExtResource("3")]([SubResource("EncounterEntry_wobbuffet_100_a"), SubResource("EncounterEntry_wobbuffet_100_b"), SubResource("EncounterEntry_wobbuffet_100_c")])
+weight = 90.0
 
 [sub_resource type="Resource" id="EncounterEntry_chimecho_15"]
 script = ExtResource("3")
@@ -74,9 +74,8 @@ level = 15
 [sub_resource type="Resource" id="EncounterGroup_chimecho"]
 script = ExtResource("2")
 entries = Array[ExtResource("3")]([SubResource("EncounterEntry_chimecho_15")])
-weight = 10.0
 
 [resource]
 script = ExtResource("1")
 area_name = "Ilha de Testes"
-groups = Array[ExtResource("2")]([SubResource("EncounterGroup_mamoswine_swinub"), SubResource("EncounterGroup_starters"), SubResource("EncounterGroup_totodile_trio"), SubResource("EncounterGroup_chimecho")])
+groups = Array[ExtResource("2")]([SubResource("EncounterGroup_mamoswine_swinub"), SubResource("EncounterGroup_starters"), SubResource("EncounterGroup_wobbuffet_trio"), SubResource("EncounterGroup_chimecho")])

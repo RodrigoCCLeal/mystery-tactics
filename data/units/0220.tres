@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_kf18n"]
 [ext_resource type="Resource" path="res://data/attacks/powder_snow.tres" id="6"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="7"]
+[ext_resource type="Resource" path="res://data/units/0221.tres" id="8"]
+[ext_resource type="Resource" path="res://data/abilities/thick_fat.tres" id="9"]
 
 [sub_resource type="Resource" id="LearnsetEntry_0220_tackle"]
 script = ExtResource("5")
@@ -22,6 +24,11 @@ script = ExtResource("5")
 level = 5
 action = ExtResource("6")
 
+[sub_resource type="Resource" id="LearnsetEntry_0220_thick_fat"]
+script = ExtResource("5")
+action = ExtResource("9")
+is_hidden_ability = true
+
 [resource]
 script = ExtResource("1")
 unit_name = "Swinub"
@@ -31,7 +38,7 @@ attack_hit_delay = 0.45
 special_hit_delay = 0.1
 types = Array[String](["Ice", "Ground"])
 slots = Array[ExtResource("5_kf18n")]([ExtResource("7"), ExtResource("4"), ExtResource("6")])
-learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0220_tackle"), SubResource("LearnsetEntry_0220_mud_slap"), SubResource("LearnsetEntry_0220_powder_snow")])
+learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0220_tackle"), SubResource("LearnsetEntry_0220_mud_slap"), SubResource("LearnsetEntry_0220_powder_snow"), SubResource("LearnsetEntry_0220_thick_fat")])
 hp_base = 50
 attack_base = 50
 defense_base = 40
@@ -41,3 +48,5 @@ speed_base = 50
 catch_rate = 0.8824
 growth_group = "Slow"
 base_exp_yield = 50
+evolves_into = ExtResource("8")
+evolve_min_level = 33

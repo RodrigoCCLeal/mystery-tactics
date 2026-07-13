@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" uid="uid://ds0uxvdng0s2r" path="res://scripts/attack_data.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://bh2y8ksgnqn6a" path="res://assets/sprites/Move/Growl.Dir8.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+is_special = true
+element_type = "Normal"
+power = 0
+area_of_effect = 1
+range = 3
+is_status = true
+area_shape = "Cone"
+stat_change_stat = "attack"
+stat_change_amount = -1
+cast_frames_by_direction = ExtResource("2")
+action_name = "Growl"
+max_uses = 40
+tags = Array[String](["Sound"])

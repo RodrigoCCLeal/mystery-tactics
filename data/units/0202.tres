@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/0202/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://dxk2a21pyswk0" path="res://assets/sprites/Pokemon/0202/Normal.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+unit_name = "Wobbuffet"
+sprite_frames = ExtResource("2")
+portrait = ExtResource("3")
+attack_hit_delay = 0.35
+special_hit_delay = 0.35
+types = Array[String](["Psychic"])
+weight = 3
+hp_base = 190
+attack_base = 33
+defense_base = 58
+special_attack_base = 33
+special_defense_base = 58
+speed_base = 33
+catch_rate = 0.0588
+growth_group = "Medium Fast"
+base_exp_yield = 142

@@ -170,7 +170,7 @@ func _on_cancel_pressed() -> void:
 func _open_slot_action_menu(index: int, data: UnitData) -> void:
 	var menu = SLOT_ACTION_MENU_SCENE.instantiate()
 	add_child(menu)
-	menu.setup(data.unit_name)
+	menu.setup(data.unit_name, _get_evolution_target(data) != null)
 	active_submenu = menu
 	menu.closed.connect(_on_slot_action_menu_closed.bind(index))
 
@@ -184,6 +184,59 @@ func _on_slot_action_menu_closed(option: String, index: int) -> void:
 			_open_summary(index)
 		"Loadout":
 			_open_loadout(index)
+		"Evolve":
+			_perform_evolution(index)
+
+# Checa os 3 pré-requisitos de UnitData.evolves_into/evolve_min_level/
+# evolve_requires_action (ver comentário deles) e devolve a espécie-alvo se
+# TODOS os que se aplicam estiverem satisfeitos, ou null se não evolui
+# ainda (ou nunca evolui — evolves_into == null). evolve_min_level <= 0 e
+# evolve_requires_action == null contam como "sem exigência", igual
+# comentado em unit_data.gd — só Swinub (nível) e Piloswine (ação
+# equipada) usam um requisito de cada vez hoje, mas nada impede uma espécie
+# futura exigir os DOIS ao mesmo tempo.
+func _get_evolution_target(data: UnitData) -> UnitData:
+	if data == null or data.evolves_into == null:
+		return null
+	if data.evolve_min_level > 0 and data.level < data.evolve_min_level:
+		return null
+	if data.evolve_requires_action != null and not data.slots.has(data.evolve_requires_action):
+		return null
+	return data.evolves_into
+
+# Evolui a unidade do slot `index` — troca a ESPÉCIE (stats base, sprite,
+# learnset, tipos, a própria evolves_into/evolve_min_level/
+# evolve_requires_action pra permitir uma CADEIA de evoluções, ex: Swinub ->
+# Piloswine -> Mamoswine) preservando o que é da UNIDADE, não da espécie:
+# nível, xp, loadout equipado (slots) e quantas cargas de item empilhável
+# cada slot ainda tem (slot_quantities). HP máximo é recalculado com as
+# stats da NOVA espécie, e o HP atual ganha a MESMA diferença (new_max -
+# old_max) somada ao que já tinha — é assim que evolução funciona nos jogos
+# originais: dano sofrido continua contando, mas o aumento de HP máximo
+# vira HP disponível na hora, sem curar tudo de graça nem perder o dano já
+# levado.
+func _perform_evolution(index: int) -> void:
+	var data: UnitData = GameState.get_roster_slot(index)
+	if data == null:
+		return
+	var target: UnitData = _get_evolution_target(data)
+	if target == null:
+		return
+	var old_hp_max = _hp_max(data)
+	var evolved: UnitData = target.duplicate()
+	evolved.level = data.level
+	evolved.xp = data.xp
+	evolved.slots = data.slots.duplicate()
+	evolved.slot_quantities = data.slot_quantities.duplicate()
+	var new_hp_max = _hp_max(evolved)
+	evolved.current_hp = clamp(data.current_hp + (new_hp_max - old_hp_max), 1, new_hp_max)
+	# party_screen.gd não tem um log de mensagens igual battle.gd — o nome
+	# novo já aparece sozinho na linha do slot (_refresh_slot lê
+	# data.unit_name), isso aqui é só reforço pra quem estiver testando pelo
+	# editor/console.
+	print("%s evoluiu para %s!" % [data.unit_name, evolved.unit_name])
+	GameState.set_roster_slot(index, evolved)
+	_refresh_all()
 
 func _open_summary(index: int) -> void:
 	var data = GameState.get_roster_slot(index)

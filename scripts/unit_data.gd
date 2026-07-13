@@ -78,14 +78,48 @@ func set_slot_quantity(index: int, amount: int) -> void:
 # deveria ser escolhido (num menu futuro de equipar ataques/habilidades).
 @export var learnset: Array[LearnsetEntry] = []
 
-# Ações do learnset já disponíveis num dado nível (level <= o informado).
-# Usado pelo futuro menu de equipar — hoje slots ainda é preenchido à mão.
+# Ações do learnset já disponíveis num dado nível (level <= o informado) —
+# EXCETO Habilidade Hidden ainda não revelada (ver hidden_ability_revealed
+# logo abaixo): por padrão ela não aparece como opção pra equipar, só depois
+# de usar um Ability Patch nesta unidade. Usado pelo futuro menu de
+# equipar — hoje slots ainda é preenchido à mão.
 func get_available_actions(level: int) -> Array[ActionData]:
 	var available: Array[ActionData] = []
 	for entry in learnset:
-		if entry.level <= level:
-			available.append(entry.action)
+		if entry.level > level:
+			continue
+		if entry.is_hidden_ability and not hidden_ability_revealed:
+			continue
+		available.append(entry.action)
 	return available
+
+# true se `action` for uma Habilidade marcada Hidden NESTA espécie (ver
+# LearnsetEntry.is_hidden_ability) — procura o LearnsetEntry cuja action
+# seja exatamente essa (mesma instância compartilhada, ver comentário de
+# ALL_SPECIES em game_state.gd) e devolve a flag dele. false tanto pra
+# "não encontrada no learnset" quanto pra "encontrada, mas não é Hidden" —
+# o chamador não precisa distinguir os dois casos. Independente de
+# hidden_ability_revealed — continua reportando a Habilidade como Hidden
+# (pro tooltip/tag "(Hidden)") mesmo depois de revelada; só
+# get_available_actions() acima muda de comportamento com a revelação.
+func is_ability_hidden(action: ActionData) -> bool:
+	for entry in learnset:
+		if entry.action == action:
+			return entry.is_hidden_ability
+	return false
+
+# true se esta unidade tem alguma Habilidade Hidden no learnset E ela ainda
+# não foi revelada (ver hidden_ability_revealed) — é o que um Ability Patch
+# (ver ItemData.reveals_hidden_ability/GameState.use_item) precisa checar
+# antes de deixar o jogador "gastar" o item numa unidade sem Habilidade
+# Hidden nenhuma pra revelar, ou que já revelou a dela.
+func has_unrevealed_hidden_ability() -> bool:
+	if hidden_ability_revealed:
+		return false
+	for entry in learnset:
+		if entry.is_hidden_ability:
+			return true
+	return false
 
 # Loadout AUTOMÁTICO de inimigo: as até `max_slots` ações mais RECENTES que
 # essa espécie já teria aprendido até `level` — uma fila FIFO de tamanho
@@ -148,6 +182,28 @@ var growth_group: String = "Medium Slow"
 # derrotado e o multiplicador de quem recebe.
 @export var base_exp_yield: int = 64
 
+@export_group("Evolução")
+# Espécie que esta vira ao evoluir — null (padrão) = não evolui. A instância
+# aqui é o MESMO Resource compartilhado de ALL_SPECIES (sem duplicate()
+# nenhum, igual LearnsetEntry.action) — party_screen.gd::_perform_evolution()
+# que faz .duplicate() na hora de aplicar de verdade, preservando nível/xp/
+# slots/slot_quantities da unidade atual (só as stats base/sprite/learnset/
+# etc. trocam pra essa nova espécie). Ver evolve_min_level/
+# evolve_requires_action logo abaixo pelos PRÉ-REQUISITOS de quando isso
+# pode acontecer.
+@export var evolves_into: UnitData = null
+
+# Nível mínimo pra evoluir (0 = sem exigência de nível, só o campo abaixo
+# importa). Ex: Swinub -> Piloswine no nível 33.
+@export var evolve_min_level: int = 0
+
+# Ação que precisa estar EQUIPADA (UnitData.slots, não só no learnset) pra
+# evoluir (null = sem exigência de ação). Ex: Piloswine só evolui pra
+# Mamoswine se estiver carregando Ancient Power no loadout — aprender o
+# golpe não basta, tem que estar de fato equipado. Ver
+# party_screen.gd::_get_evolution_target().
+@export var evolve_requires_action: ActionData = null
+
 @export_group("Progresso (persistido entre batalhas)")
 # Diferente de tudo acima (que é fixo, "da espécie"), estes três mudam com o
 # jogo — nível, xp acumulada TOTAL (não "desde o último nível", ver
@@ -162,6 +218,17 @@ var growth_group: String = "Medium Slow"
 @export var level: int = 1
 @export var xp: int = 0
 @export var current_hp: int = -1
+
+# false (padrão) = se esta unidade tem uma Habilidade Hidden no learnset
+# (ver LearnsetEntry.is_hidden_ability), ela fica de fora de
+# get_available_actions() — não aparece como opção pra equipar no Loadout.
+# Vira true pra sempre depois que o jogador usa um Ability Patch nesta
+# unidade específica (ver ItemData.reveals_hidden_ability/GameState.
+# use_item) — a partir daí a Habilidade Hidden entra na lista normal de
+# opções, junto com as outras. Progresso da UNIDADE, não da espécie (por
+# isso mora aqui e não em LearnsetEntry) — duas unidades da mesma espécie
+# podem ter revelado (ou não) independentemente uma da outra.
+@export var hidden_ability_revealed: bool = false
 
 # Preenche level/xp/current_hp na primeira vez que esta instância é usada.
 # Sobe pro nível default já com a xp EXATA que esse nível exigiria de

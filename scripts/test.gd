@@ -9,7 +9,7 @@ extends Node2D
 
 @onready var tile_map: TileMapLayer = $TileMapLayer
 # Player (e qualquer Npc, ver npc.gd) mora dentro de "Actors" (Node2D com
-# y_sort_enabled = true) em vez de direto em World — é isso que resolve o
+# y_sort_enabled = true) em vez de direto em Test — é isso que resolve o
 # personagem "atravessando por baixo" de um NPC (ou vice-versa): dentro de um
 # nó com y_sort_enabled, o Godot desenha os filhos ordenados pela posição Y
 # de cada um (quem está mais embaixo na tela desenha por CIMA), em vez da
@@ -34,7 +34,7 @@ const FACING_TO_DIR = {
 
 # Qual área (nome + tabela de encontros selvagens, ver encounter_area.gd/
 # encounter_group.gd) vale NESTA cena de overworld — configurável no
-# Inspector pra essa instância de World, assim uma área diferente no futuro
+# Inspector pra essa instância de Test, assim uma área diferente no futuro
 # (outra cena, ou uma sub-região desta mesma cena) pode apontar pra outro
 # .tres de área sem mexer em código nenhum aqui. Espelhado em
 # GameState.current_area assim que a cena carrega (ver _enter_area), que é
@@ -132,7 +132,7 @@ func _reset_encounter_counter() -> void:
 
 # Guarda onde o personagem está (pra devolver ele aqui quando a batalha
 # acabar — GameState sobrevive à troca de cena) e troca pra batalha.
-# change_scene_to_file() descarta o World inteiro. O caminho de volta
+# change_scene_to_file() descarta o Test inteiro. O caminho de volta
 # (batalha -> overworld) ainda não existe — batle.gd não tem um fim de
 # batalha implementado ainda (vitória/derrota/fuga); quando tiver, é lá que
 # vamos chamar change_scene_to_file(GameState.overworld_scene_path).
@@ -144,7 +144,7 @@ func _start_encounter() -> void:
 	get_tree().change_scene_to_file("res://scenes/battle.tscn")
 
 # Esc abre o menu de pausa (ver pause_menu.gd). get_tree().paused = true
-# congela Player e World de graça — process_mode padrão (PROCESS_MODE_
+# congela Player e Test de graça — process_mode padrão (PROCESS_MODE_
 # INHERIT) faz qualquer node parar de rodar _process/_input enquanto a
 # árvore está pausada, sem precisar desligar o Player manualmente. O menu
 # em si roda com PROCESS_MODE_ALWAYS (ver pause_menu.gd), então continua
@@ -154,7 +154,7 @@ func _start_encounter() -> void:
 # (ver GameState.tool_shortcuts/register_tool) — as MESMAS actions que
 # battle.gd usa pros slots de ataque 1-6, só que aqui (overworld) só as 4
 # primeiras têm sentido, e o efeito é completamente diferente (usar um Tool,
-# não uma ação de batalha). Não há conflito: World e Battle nunca rodam ao
+# não uma ação de batalha). Não há conflito: Test e Battle nunca rodam ao
 # mesmo tempo (uma troca a outra via change_scene_to_file), cada script só
 # escuta essas actions na sua própria cena.
 func _unhandled_input(event: InputEvent) -> void:

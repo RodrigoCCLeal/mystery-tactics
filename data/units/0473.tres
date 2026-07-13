@@ -9,6 +9,8 @@
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="7"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="8"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="8_kf18n"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="9"]
+[ext_resource type="Resource" path="res://data/abilities/thick_fat.tres" id="10"]
 
 [sub_resource type="Resource" id="LearnsetEntry_0473_ice_fang"]
 script = ExtResource("8")
@@ -26,6 +28,15 @@ action = ExtResource("6")
 script = ExtResource("8")
 action = ExtResource("7")
 
+[sub_resource type="Resource" id="LearnsetEntry_0473_ancient_power"]
+script = ExtResource("8")
+action = ExtResource("9")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_thick_fat"]
+script = ExtResource("8")
+action = ExtResource("10")
+is_hidden_ability = true
+
 [resource]
 script = ExtResource("1")
 unit_name = "Mamoswine"
@@ -35,7 +46,7 @@ attack_hit_delay = 0.2
 special_hit_delay = 0.2
 types = Array[String](["Ice", "Ground"])
 slots = Array[ExtResource("8_kf18n")]([ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7")])
-learnset = Array[ExtResource("8")]([SubResource("LearnsetEntry_0473_ice_fang"), SubResource("LearnsetEntry_0473_mud_slap"), SubResource("LearnsetEntry_0473_powder_snow"), SubResource("LearnsetEntry_0473_tackle")])
+learnset = Array[ExtResource("8")]([SubResource("LearnsetEntry_0473_ice_fang"), SubResource("LearnsetEntry_0473_mud_slap"), SubResource("LearnsetEntry_0473_powder_snow"), SubResource("LearnsetEntry_0473_tackle"), SubResource("LearnsetEntry_0473_ancient_power"), SubResource("LearnsetEntry_0473_thick_fat")])
 weight = 2
 hp_base = 110
 attack_base = 130

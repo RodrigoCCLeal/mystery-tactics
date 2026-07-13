@@ -13,10 +13,88 @@ const UNIT_SCENE: PackedScene = preload("res://scenes/unit.tscn")
 const PROJECTILE_SCENE: PackedScene = preload("res://scenes/projectile.tscn")
 const IMPACT_EFFECT_SCENE: PackedScene = preload("res://scenes/impact_effect.tscn")
 const CAPTURE_BALL_SCENE: PackedScene = preload("res://scenes/capture_ball.tscn")
+const STAT_CHANGE_EFFECT_SCENE: PackedScene = preload("res://scenes/stat_change_effect.tscn")
+const CAST_EFFECT_SCENE: PackedScene = preload("res://scenes/cast_effect.tscn")
+
+# Volta de Unit.facing (string) pra um Vector2i de direção — o INVERSO de
+# Unit.get_direction_suffix (delta -> string). Usada só por play_cast_effect
+# (ver comentário lá): a partir de qual tile o CastEffect nasce/viaja.
+const FACING_TO_DIR := {
+	"down": Vector2i(0, 1),
+	"down_right": Vector2i(1, 1),
+	"right": Vector2i(1, 0),
+	"up_right": Vector2i(1, -1),
+	"up": Vector2i(0, -1),
+	"up_left": Vector2i(-1, -1),
+	"left": Vector2i(-1, 0),
+	"down_left": Vector2i(-1, 1),
+}
 
 # preload em vez de confiar no class_name global — mesmo motivo do unit.gd.
 const ExpGroups = preload("res://scripts/exp_groups.gd")
 const TypeChart = preload("res://scripts/type_chart.gd")
+const UnitScript = preload("res://scripts/unit.gd")
+
+# ---------- Efeito visual de mudança de stat (ver AttackData.stat_change_stat
+# e scripts/stat_change_effect.gd) ----------
+# Duas artes genéricas (sobe/desce), cada uma como VÁRIOS arquivos separados
+# — o usuário adicionou em assets/sprites/Status/statChangeUp (15 quadros,
+# 000-014) e statChangeDown (11 quadros, 000-010). Mesmo formato "vários
+# arquivos" de PROJECTILE_SCENE/IMPACT_EFFECT_SCENE (ver comentário nos
+# scripts deles) — cada Texture2D é um quadro inteiro.
+const STAT_CHANGE_UP_FRAMES: Array[Texture2D] = [
+	preload("res://assets/sprites/Status/statChangeUp/000.png"),
+	preload("res://assets/sprites/Status/statChangeUp/001.png"),
+	preload("res://assets/sprites/Status/statChangeUp/002.png"),
+	preload("res://assets/sprites/Status/statChangeUp/003.png"),
+	preload("res://assets/sprites/Status/statChangeUp/004.png"),
+	preload("res://assets/sprites/Status/statChangeUp/005.png"),
+	preload("res://assets/sprites/Status/statChangeUp/006.png"),
+	preload("res://assets/sprites/Status/statChangeUp/007.png"),
+	preload("res://assets/sprites/Status/statChangeUp/008.png"),
+	preload("res://assets/sprites/Status/statChangeUp/009.png"),
+	preload("res://assets/sprites/Status/statChangeUp/010.png"),
+	preload("res://assets/sprites/Status/statChangeUp/011.png"),
+	preload("res://assets/sprites/Status/statChangeUp/012.png"),
+	preload("res://assets/sprites/Status/statChangeUp/013.png"),
+	preload("res://assets/sprites/Status/statChangeUp/014.png"),
+]
+const STAT_CHANGE_DOWN_FRAMES: Array[Texture2D] = [
+	preload("res://assets/sprites/Status/statChangeDown/000.png"),
+	preload("res://assets/sprites/Status/statChangeDown/001.png"),
+	preload("res://assets/sprites/Status/statChangeDown/002.png"),
+	preload("res://assets/sprites/Status/statChangeDown/003.png"),
+	preload("res://assets/sprites/Status/statChangeDown/004.png"),
+	preload("res://assets/sprites/Status/statChangeDown/005.png"),
+	preload("res://assets/sprites/Status/statChangeDown/006.png"),
+	preload("res://assets/sprites/Status/statChangeDown/007.png"),
+	preload("res://assets/sprites/Status/statChangeDown/008.png"),
+	preload("res://assets/sprites/Status/statChangeDown/009.png"),
+	preload("res://assets/sprites/Status/statChangeDown/010.png"),
+]
+
+# "Máscara de cor" por stat, pedida pelo usuário — aplicada como modulate do
+# Sprite2D do efeito (ver StatChangeEffect.play(), mesma técnica de
+# Unit._refresh_tint()). Sp. Defense = Branco = Color.WHITE = sem tint
+# nenhum (a arte já sai "correta" nesse caso).
+const STAT_CHANGE_TINTS := {
+	"speed": Color(0.3, 0.55, 1.0),             # Azul
+	"defense": Color(0.35, 0.85, 0.35),         # Verde
+	"special_defense": Color(1.0, 1.0, 1.0),    # Branco
+	"attack": Color(1.0, 0.3, 0.3),             # Vermelho
+	"special_attack": Color(0.75, 0.35, 0.95),  # Roxo
+}
+
+# Nome exibido de cada stat alterável (ver Unit.STAGE_STATS) — usado nas
+# mensagens de log de execute_status_attack/apply_stat_change e no tooltip
+# de ataque (_build_attack_tooltip).
+const STAT_DISPLAY_NAMES := {
+	"attack": "Attack",
+	"defense": "Defense",
+	"special_attack": "Sp. Atk",
+	"special_defense": "Sp. Def",
+	"speed": "Speed",
+}
 
 # Tileset de verdade vai só até x=17, y=7 (o .tres declara coordenadas além
 # disso, mas são sobra sem imagem por trás — ficam em branco se usadas).
@@ -263,6 +341,15 @@ const BATTLE_TILESETS: Array[BattleTileset] = [
 var current_battle_tileset: BattleTileset
 
 @onready var unit_summary: HBoxContainer = $HUD/UnitSummary
+# Só existe/fica visível durante Phase.DEPLOY — ao contrário de
+# end_turn_button/undo_button/flee_button (escondidos até start_turn_order()),
+# start_button faz o caminho OPOSTO: começa visível e desabilitado (ver
+# refresh_start_button()) e some assim que a batalha começa (start_battle()).
+# Permite ao jogador postar SÓ PARTE do roster em campo — quem ficar na
+# coluna de staging (grid_pos.x < 0, ver get_staging_position) é removido de
+# player_units antes da batalha começar, então nunca luta e nunca ganha EXP
+# (award_experience() só itera player_units).
+@onready var start_button: Button = $HUD/StartButton
 @onready var end_turn_button: Button = $HUD/EndTurnButton
 @onready var undo_button: Button = $HUD/UndoButton
 @onready var flee_button: Button = $HUD/FleeButton
@@ -295,6 +382,24 @@ var battle_log_expanded: bool = false
 # action_slots.get_child_count() (que agora devolveria 2, as colunas, não os
 # botões) como o número de slots lógicos. Ver _get_action_slot_button().
 const ACTION_SLOT_COUNT = 6
+
+# UnitSummary (a fileira de portraits em cima do mapa, ver battle.tscn) agora
+# É a visualização da fila de turnos inteira — jogador E inimigo juntos, na
+# ordem de turn_queue (ver build_unit_summary_hud()). O node no .tscn é bem
+# mais largo que o mapa (1104px, de x=24 a x=1128) e usa alignment=CENTER —
+# de propósito: 24+1128 tem o mesmo ponto médio (576) que os limites antigos
+# do mapa (336 a 816), então a fileira fica sempre SIMÉTRICA ao centro do
+# mapa não importa quantos slots tenham, sem precisar calcular offset_left/
+# right na mão aqui — o BoxContainer já centraliza os filhos sozinho dentro
+# dessa área larga. UNIT_SUMMARY_WIDTH só entra como teto de segurança: com
+# até ~18 unidades ao mesmo tempo (bem mais que o realista: 6 do time +
+# alguns inimigos) o slot fica no tamanho máximo de sempre; só encolhe se
+# passar muito disso, pra nunca vazar pra fora da tela (1152 de largura
+# base, ver window/stretch em project.godot).
+const UNIT_SUMMARY_WIDTH = 1104.0
+const UNIT_SUMMARY_SLOT_SEP = 6.0
+const UNIT_SUMMARY_SLOT_MAX_WIDTH = 75.0
+const UNIT_SUMMARY_SLOT_MIN_WIDTH = 48.0
 
 # Unit -> PanelContainer/Label do slot dele no resumo de unidades do HUD.
 var unit_slots: Dictionary = {}
@@ -382,6 +487,7 @@ func _ready() -> void:
 	log_message("Battle tileset: %s" % current_battle_tileset.display_name)   # só pra teste, ver comentário de BATTLE_TILESETS
 	log_message("Deploy your units!")
 
+	start_button.pressed.connect(_on_start_pressed)
 	end_turn_button.pressed.connect(_on_end_turn_pressed)
 	undo_button.pressed.connect(_on_undo_pressed)
 	flee_button.pressed.connect(_on_flee_pressed)
@@ -393,6 +499,7 @@ func _ready() -> void:
 	undo_button.visible = false
 	flee_button.visible = false
 	action_slots.visible = false
+	refresh_start_button()
 
 # Sorteia um BATTLE_TILESETS e aplica o .tile_set dele nas 4 TileMapLayer da
 # cena (TileMapLayer de verdade + HighlightLayer/AttackHighlightLayer/
@@ -973,6 +1080,7 @@ func get_deploy_zone_empty_tiles() -> Array[Vector2i]:
 func place_selected_unit(target: Vector2i) -> void:
 	selected_unit.move_to(target)
 	deselect()
+	refresh_start_button()
 	check_deploy_complete()
 
 func check_deploy_complete() -> void:
@@ -981,14 +1089,48 @@ func check_deploy_complete() -> void:
 			return   # ainda tem gente esperando pra ser posicionada (coluna de staging, ver get_staging_position)
 	start_battle()
 
+# Habilita start_button assim que PELO MENOS UMA unidade estiver fora da
+# coluna de staging (grid_pos.x >= 0) — permite ao jogador escolher lutar
+# com menos que o roster inteiro. Chamada em _ready() (estado inicial, todo
+# mundo em staging = desabilitado) e de novo em place_selected_unit() toda
+# vez que alguém é posicionado/reposicionado.
+func refresh_start_button() -> void:
+	for u in player_units:
+		if u.grid_pos.x >= 0:
+			start_button.disabled = false
+			return
+	start_button.disabled = true
+
+func _on_start_pressed() -> void:
+	if phase != Phase.DEPLOY:
+		return
+	start_battle()
+
 func start_battle() -> void:
 	phase = Phase.BATTLE
+	start_button.visible = false
+	# Quem ainda estiver esperando na coluna de staging (grid_pos.x < 0,
+	# ver get_staging_position) NÃO entra na batalha — o jogador escolheu
+	# deixar essa unidade de fora ao apertar Start antes de posicionar todo
+	# mundo. Remover daqui, ANTES de spawn_enemies() recalcular `units` (=
+	# player_units + enemy_units) e de start_turn_order()/build_unit_summary_hud()
+	# montarem fila de turnos e HUD (ambos rodam DEPOIS, olhando pro
+	# player_units já filtrado), é o que garante que ela nunca luta, nunca
+	# aparece no HUD e nunca entra no loop de award_experience() (que só
+	# itera player_units).
+	var deployed: Array[Node] = []
+	for u in player_units:
+		if u.grid_pos.x < 0:
+			u.queue_free()
+		else:
+			deployed.append(u)
+	player_units = deployed
 	fog_layer.clear()
 	spawn_enemies()
 	start_turn_order()
 
 # Sorteia UM grupo da EncounterArea ativa (GameState.current_area,
-# setada por world.gd antes da troca de cena — ver encounter_area.gd/
+# setada por test.gd antes da troca de cena — ver encounter_area.gd/
 # encounter_group.gd) e spawna EXATAMENTE as entries daquele grupo, uma
 # unidade por entrada, na ordem em que estão no grupo, CADA UMA no nível da
 # sua própria EncounterEntry (não é mais um GameState.STARTING_LEVEL fixo
@@ -1095,6 +1237,11 @@ func reorder_turn_queue_by_speed() -> void:
 	var pending = turn_queue.slice(current_turn_index + 1, turn_queue.size())
 	pending.sort_custom(func(a, b): return a.get_effective_stat("speed") > b.get_effective_stat("speed"))
 	turn_queue = acted + [current_unit] + pending
+	# A fileira de portraits em cima do mapa É a fila — se a ordem mudou de
+	# verdade (alguém ficou mais rápido/lento no meio da rodada), ela precisa
+	# refletir isso na hora, não só na próxima vez que begin_current_turn()
+	# rodar.
+	build_unit_summary_hud()
 
 func begin_current_turn() -> void:
 	deselect()
@@ -1143,20 +1290,34 @@ func begin_current_turn() -> void:
 	# PRÓXIMA unidade também estiver travada.
 	check_auto_end_turn()
 
-# Monta um slot (portrait + HP) por unidade do jogador no HUD. Chamado uma
-# vez quando a batalha começa — a lista de unidades não muda depois disso.
+# Monta um slot (portrait + HP) por unidade EM turn_queue, jogador e
+# inimigo juntos, na MESMA ordem em que vão jogar — a fileira em cima do
+# mapa é a visualização da fila de turnos inteira, não só o time do
+# jogador. Chamado quando a batalha começa (start_turn_order()) e de novo
+# toda vez que a ordem muda de verdade (ver reorder_turn_queue_by_speed()) —
+# reconstruir do zero é mais simples que mover/inserir nós um a um, e
+# batalha é turn-based (a fila não muda a cada frame), então o custo de
+# recriar uns poucos Control por chamada é irrelevante.
+#
+# Portrait de inimigo sai ESPELHADA (TextureRect.flip_h) só aqui, na
+# fileira — não mexe no sprite dele no mapa (Unit usa AnimatedSprite2D
+# próprio) — é só reforço visual de "este lado é o time adversário".
 func build_unit_summary_hud() -> void:
 	for child in unit_summary.get_children():
 		child.queue_free()
 	unit_slots.clear()
 	unit_hp_labels.clear()
 
-	for u in player_units:
+	# Largura de cada slot depende de QUANTOS estão na fila agora (time
+	# parcial + N inimigos de uma vez não é sempre 6) — encolhe até
+	# UNIT_SUMMARY_SLOT_MIN_WIDTH em vez de vazar pra fora do HUD.
+	var count = max(turn_queue.size(), 1)
+	var slot_width = clamp((UNIT_SUMMARY_WIDTH - (count - 1) * UNIT_SUMMARY_SLOT_SEP) / count, UNIT_SUMMARY_SLOT_MIN_WIDTH, UNIT_SUMMARY_SLOT_MAX_WIDTH)
+	var portrait_size = max(slot_width - 27.0, 20.0)   # -27 no slot_width máximo (75) dá exatamente os 48px de sempre
+
+	for u in turn_queue:
 		var slot = PanelContainer.new()
-		# 75 de largura (não mais 56) pra bater com UnitSummary em battle.tscn:
-		# 6 slots * 75 + 5 * separação(6) = 480 = largura do mapa (20 tiles *
-		# 24px), ver comentário lá.
-		slot.custom_minimum_size = Vector2(75, 72)
+		slot.custom_minimum_size = Vector2(slot_width, 72)
 
 		var box = VBoxContainer.new()
 		box.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -1164,9 +1325,10 @@ func build_unit_summary_hud() -> void:
 
 		var portrait = TextureRect.new()
 		portrait.texture = u.data.portrait
-		portrait.custom_minimum_size = Vector2(48, 48)
+		portrait.custom_minimum_size = Vector2(portrait_size, portrait_size)
 		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		portrait.flip_h = u.is_enemy
 		box.add_child(portrait)
 
 		var hp_label = Label.new()
@@ -1179,41 +1341,49 @@ func build_unit_summary_hud() -> void:
 
 	refresh_unit_summary_hud()
 
-# Atualiza o texto de nível/HP de todo mundo e a borda azul de quem está na
-# vez. Chamar sempre que o turno mudar, o HP de alguém mudar, ou alguém subir
-# de nível. Mostra nível aqui só por debug por enquanto — xp não aparece
-# ainda (vamos precisar disso no futuro, ver ExpGroups.exp_to_next_level).
+# Atualiza o texto de nível/HP de todo mundo e a borda de quem está na vez —
+# AZUL se for a vez de uma unidade do jogador, VERMELHA se for a vez de um
+# inimigo (antes a borda era sempre azul e só existia pra player_units, já
+# que unit_slots não tinha inimigo nenhum; agora que build_unit_summary_hud()
+# monta slot pra turn_queue inteira, dá pra diferenciar de quem é a vez só
+# olhando a cor). Chamar sempre que o turno mudar, o HP de alguém mudar, ou
+# alguém subir de nível. Mostra nível aqui só por debug por enquanto — xp não
+# aparece ainda (vamos precisar disso no futuro, ver ExpGroups.exp_to_next_level).
 func refresh_unit_summary_hud() -> void:
 	var current = get_current_unit()
 	for u in unit_slots.keys():
 		var slot: PanelContainer = unit_slots[u]
 		var hp_label: Label = unit_hp_labels[u]
-		var text = "%d/%d" % [u.hp_current, u.hp_max]   # nível saiu daqui, já está no tooltip (ver abaixo)
-		# Feedback mínimo de Status Condition — nenhum ataque ainda aplica
-		# isso (é groundwork pros efeitos secundários futuros), mas o HUD já
-		# fica pronto pra mostrar assim que o primeiro ataque começar a usar
-		# Unit.apply_status_condition().
-		if u.status_condition != "":
-			text += "\n[%s]" % u.status_condition
-		hp_label.text = text
+		# Só HP aqui embaixo do portrait — Status Condition JÁ tem indicador
+		# visual próprio (o emote animado em cima do sprite no mapa, ver
+		# Unit._start_status_emote), então repetir como texto aqui era
+		# redundante e deixava o label pequeno demais poluído. O resto
+		# (nível, Speed, exp, status) mora só no tooltip agora.
+		hp_label.text = "%d/%d" % [u.hp_current, u.hp_max]
 
 		# Tooltip do portrait: nível, Speed (já com estágio alterado, se
-		# tiver — ver Unit.get_effective_stat) e quanto falta de exp pro
-		# próximo nível (ExpGroups.exp_to_next_level já existia, só não era
-		# mostrado em lugar nenhum até agora).
-		var exp_line: String
+		# tiver — ver Unit.get_effective_stat), Status Condition (se tiver
+		# alguma ativa) e quanto falta de exp pro próximo nível
+		# (ExpGroups.exp_to_next_level já existia, só não era mostrado em
+		# lugar nenhum até agora).
+		var tooltip_lines = [
+			"Nv. %d" % u.level,
+			"Speed: %d" % u.get_effective_stat("speed"),
+		]
+		if u.status_condition != "":
+			tooltip_lines.append("Status: %s" % u.status_condition)
 		if u.level >= ExpGroups.MAX_LEVEL:
-			exp_line = "Nível máximo"
+			tooltip_lines.append("Nível máximo")
 		else:
 			var exp_missing = ExpGroups.exp_to_next_level(u.level, u.xp, u.data.growth_group)
-			exp_line = "Exp até o próximo nível: %d" % exp_missing
-		slot.tooltip_text = "Nv. %d\nSpeed: %d\n%s" % [u.level, u.get_effective_stat("speed"), exp_line]
+			tooltip_lines.append("Exp até o próximo nível: %d" % exp_missing)
+		slot.tooltip_text = "\n".join(tooltip_lines)
 
 		var style = StyleBoxFlat.new()
 		style.bg_color = Color(0.1, 0.1, 0.12, 0.85)
 		style.set_content_margin_all(4)
 		if u == current:
-			style.border_color = Color(0.2, 0.6, 1.0)
+			style.border_color = Color(0.9, 0.2, 0.2) if current.is_enemy else Color(0.2, 0.6, 1.0)
 			style.set_border_width_all(3)
 		slot.add_theme_stylebox_override("panel", style)
 
@@ -1282,6 +1452,7 @@ func refresh_action_slots_hud() -> void:
 		if action is AbilityData:
 			button.text = action.action_name
 			button.disabled = true
+			button.tooltip_text = _build_ability_tooltip(action, current.data)
 			_apply_slot_border(button, ABILITY_BORDER_COLOR)
 			continue
 
@@ -1297,6 +1468,7 @@ func refresh_action_slots_hud() -> void:
 			button.text = "%dx" % quantity
 			button.icon = action.icon
 			button.disabled = current.attacks_remaining <= 0 or quantity <= 0
+			button.tooltip_text = _build_item_tooltip(action) + "\nQuantidade: %d" % quantity
 			_apply_slot_border(button, BALL_BORDER_COLOR)
 			continue
 
@@ -1333,6 +1505,7 @@ func refresh_action_slots_hud() -> void:
 			button.text = ""
 			button.icon = action.icon
 			button.disabled = true
+			button.tooltip_text = _build_item_tooltip(action)
 			_apply_slot_border(button, ITEM_BORDER_COLOR)
 			continue
 
@@ -1364,19 +1537,95 @@ func refresh_action_slots_hud() -> void:
 # AttackData.secondary_status). Usos entra por último, já que o próprio
 # botão já mostra isso escrito.
 func _build_attack_tooltip(action: AttackData, uses_current: int) -> String:
-	var kind = "Especial" if action.is_special else "Físico"
+	var kind = "Status" if action.is_status else ("Especial" if action.is_special else "Físico")
+	var area_suffix = ""
+	if action.is_projectile:
+		area_suffix = " (projétil)"
+	elif action.area_shape == "Cone":
+		area_suffix = " (cone)"
 	var lines = [
 		action.action_name,
 		"Tipo: %s (%s)" % [action.element_type, kind],
 		"Poder: %d" % action.power,
-		"Alcance: %d%s" % [action.range, " (projétil)" if action.is_projectile else ""],
+		"Alcance: %d%s" % [action.range, area_suffix],
 		"Contato: %s" % ("Sim" if action.makes_contact else "Não"),
 		"Accuracy: %d%%" % int(action.accuracy * 100),
 	]
 	if action.secondary_status != "":
 		lines.append("Efeito: %d%% de %s" % [int(action.secondary_status_chance * 100), action.secondary_status])
+	# Mudança de stat (ver AttackData.stat_change_stat/_amount) — só ataques
+	# de Status usam isso hoje (Growl: -1 Attack em todo inimigo na área).
+	if action.stat_change_stat != "":
+		var stat_label: String = STAT_DISPLAY_NAMES.get(action.stat_change_stat, action.stat_change_stat)
+		var sign_str = "+" if action.stat_change_amount > 0 else ""
+		lines.append("Efeito: %s%d em %s (inimigos na área)" % [sign_str, action.stat_change_amount, stat_label])
+	# Boost de stat no PRÓPRIO usuário (ver AttackData.self_stat_boost_chance/
+	# _amount — Ancient Power é o primeiro caso, diferente de stat_change_stat
+	# acima que só existe em ataques de Status mirando inimigo).
+	if action.self_stat_boost_amount != 0:
+		var boost_sign = "+" if action.self_stat_boost_amount > 0 else ""
+		lines.append("Efeito: %d%% de %s%d em todos os stats (usuário)" % [int(action.self_stat_boost_chance * 100), boost_sign, action.self_stat_boost_amount])
 	if action.max_uses > 0:
 		lines.append("Usos: %d/%d" % [uses_current, action.max_uses])
+	return "\n".join(lines)
+
+# Texto do tooltip de uma Habilidade — diferente de Ataque, AbilityData não
+# tem um campo de descrição livre (ver comentário na classe: são só campos
+# mecânicos específicos, tipo damage_multiplier/immune_type/etc), então o
+# texto é montado dinamicamente a partir de QUAIS desses campos estão
+# configurados nesta Habilidade — só entra linha pra efeito que ela realmente
+# tem. Cobre os 3 "padrões" que existem hoje (ver AbilityData): imunidade de
+# tipo (Levitate), boost de dano condicional (Blaze) e supressão de efeito
+# secundário por dano extra (Sheer Force).
+#
+# owner_data é a UnitData da unidade DONA dessa Habilidade nesta batalha —
+# precisa dela (não só da Habilidade em si) pra saber se é Hidden PRA ESSA
+# ESPÉCIE (ver UnitData.is_ability_hidden/LearnsetEntry.is_hidden_ability):
+# a mesma Habilidade pode ser Hidden numa espécie e normal em outra, então
+# essa informação não pode vir só de `action`. Mesmo padrão já usado em
+# unit_loadout.gd::_display_name().
+func _build_ability_tooltip(action: AbilityData, owner_data: UnitData) -> String:
+	var title = action.action_name
+	if owner_data.is_ability_hidden(action):
+		title += " (Hidden)"
+	var lines = [title]
+	if action.immune_type != "":
+		lines.append("Imunidade total a ataques do tipo %s" % action.immune_type)
+	if action.grants_levitation:
+		lines.append("Concede Levitação (atravessa fluido, ignora Ground)")
+	if action.sheer_force:
+		lines.append("Ataques com efeito secundário perdem o efeito, mas ganham +%d%% de dano" % int((SHEER_FORCE_MULTIPLIER - 1.0) * 100))
+	if action.element_type != "" and action.damage_multiplier != 1.0:
+		var condition = "sempre" if action.hp_threshold >= 1.0 else "com HP abaixo de %d%%" % int(action.hp_threshold * 100)
+		lines.append("Dano de ataques do tipo %s x%.1f (%s)" % [action.element_type, action.damage_multiplier, condition])
+	if not action.resist_types.is_empty() and action.resist_multiplier != 1.0:
+		lines.append("Recebe dano x%.1f de ataques do tipo %s" % [action.resist_multiplier, ", ".join(action.resist_types)])
+	if action.speed_boost:
+		lines.append("Speed +1 ao final de cada turno próprio")
+	if lines.size() == 1:
+		lines.append("Sem efeito configurado.")
+	return "\n".join(lines)
+
+# Texto do tooltip de um Item — effect_description (texto livre, ver
+# ItemData) entra primeiro quando existe, seguido dos campos mecânicos
+# relevantes pra CADA categoria (Ball tem bônus/captura garantida; Medicine/
+# Berry têm heal_amount; Held Item pode ter accuracy_multiplier). Campo no
+# valor padrão (0, 1.0, false) não vira linha — só o que realmente muda algo
+# aparece, mesmo padrão de _build_attack_tooltip só mostrando secondary_status
+# quando ele existe.
+func _build_item_tooltip(action: ItemData) -> String:
+	var lines = [action.action_name]
+	if action.effect_description != "":
+		lines.append(action.effect_description)
+	if action.category == "Ball":
+		if action.guaranteed_capture:
+			lines.append("Captura garantida (100%)")
+		else:
+			lines.append("Bônus de captura: x%.1f" % action.ball_bonus)
+	if action.heal_amount > 0:
+		lines.append("Cura: %d HP" % action.heal_amount)
+	if action.accuracy_multiplier != 1.0:
+		lines.append("Accuracy dos ataques de quem carrega: x%.2f" % action.accuracy_multiplier)
 	return "\n".join(lines)
 
 # Pinta a borda (+ um fundo escuro neutro, igual o resto do HUD — ver
@@ -1497,7 +1746,68 @@ func is_valid_target_cell(origin: Vector2i, target: Vector2i, action: ActionData
 	if is_projectile_like:
 		var is_straight_line = delta.x == 0 or delta.y == 0 or abs(delta.x) == abs(delta.y)
 		return is_straight_line and dist <= effective_action.range
+
+	# Cone (ver AttackData.area_shape/get_cone_cells): a direção do leque é a
+	# mesma direção 8-way de sempre (sign do delta, igual find_projectile_target/
+	# resolve_confused_target) — target só é válido se REALMENTE cair dentro do
+	# leque calculado naquela direção, não só "dentro do range" (uma célula tipo
+	# delta=(2,1), fora de qualquer uma das 8 direções puras, nunca vai estar
+	# DE VERDADE dentro do cone, mesmo com dist=2 <= range).
+	if effective_action is AttackData and effective_action.area_shape == "Cone":
+		var dir = Vector2i(sign(delta.x), sign(delta.y))
+		return dist <= effective_action.range and target in get_cone_cells(origin, dir, effective_action.range)
+
 	return dist == effective_action.range
+
+# Todas as células dentro de um "leque" (cone) que se abre a partir de
+# `origin` na direção `dir` (8-way, sign(delta) — nunca Vector2i.ZERO) até
+# `max_range` passos. O usuário confirmou (com screenshots rotulados
+# célula por célula) que CARDEAL e DIAGONAL crescem de jeitos DIFERENTES —
+# não dá pra usar uma fórmula só pras 8 direções:
+#
+# - CARDEAL (ex: Direita): largura 1, 3, 5... a cada passo de distância —
+#   confirmado exato pra Direita a partir de (5,5), range 3: 9 células
+#   (6,5)(7,5)(8,5)(7,4)(7,6)(8,3)(8,4)(8,6)(8,7). `forward` = a distância
+#   NA direção mirada (dx*dir.x + dy*dir.y); `lateral` = o quanto está FORA
+#   da direção (perpendicular, via o "produto cruzado" 2D
+#   dx*(-dir.y) + dy*dir.x). Entra no leque se forward > 0 (à FRENTE) e
+#   abs(lateral) < forward — é essa comparação que dá a largura 1/3/5,
+#   crescendo 2 células por passo. Total de células = max_range².
+#
+# - DIAGONAL (ex: Baixo-Direita): largura 1, 2, 3... a cada passo —
+#   crescendo só 1 célula por passo, BEM mais estreito que o cardeal no
+#   mesmo range. Confirmado exato pra Baixo-Direita a partir de (0,0),
+#   range 3: 6 células (1,1)(2,1)(3,1)(1,2)(2,2)(1,3) — sempre com AMBOS os
+#   eixos avançando pelo menos 1 passo na direção certa (`along_x`/
+#   `along_y` abaixo, cada um = a componente de dx/dy JÁ multiplicada pelo
+#   sinal de dir naquele eixo — >= 1 significa "avançou de verdade nesse
+#   eixo, no sentido certo"), e a SOMA dos dois avanços limitada a
+#   max_range + 1 (não max_range — é o "+1" que dá a largura 1/2/3 em vez
+#   de pular direto pro range errado). Total de células = max_range *
+#   (max_range + 1) / 2 (número triangular) — cresce mais devagar que o
+#   cardeal (max_range²) conforme o range aumenta.
+func get_cone_cells(origin: Vector2i, dir: Vector2i, max_range: int) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	if dir == Vector2i.ZERO:
+		return cells
+	var is_diagonal = dir.x != 0 and dir.y != 0
+	for dx in range(-max_range, max_range + 1):
+		for dy in range(-max_range, max_range + 1):
+			if dx == 0 and dy == 0:
+				continue
+			if max(abs(dx), abs(dy)) > max_range:
+				continue
+			if is_diagonal:
+				var along_x = dx * dir.x
+				var along_y = dy * dir.y
+				if along_x >= 1 and along_y >= 1 and along_x + along_y <= max_range + 1:
+					cells.append(origin + Vector2i(dx, dy))
+			else:
+				var forward = dx * dir.x + dy * dir.y
+				var lateral = dx * -dir.y + dy * dir.x
+				if forward > 0 and abs(lateral) < forward:
+					cells.append(origin + Vector2i(dx, dy))
+	return cells
 
 # Anda em linha reta de origin em direção a target (mesma direção 8-way do
 # resto do jogo), célula por célula, até no máximo max_range passos, e
@@ -1561,7 +1871,15 @@ func update_attack_highlight() -> void:
 	if not is_valid_target_cell(current.grid_pos, cell, targeting_action):
 		return
 
-	attack_highlight_layer.set_cell(cell, 0, Vector2i(13, 1))
+	# Cone: destaca o LEQUE inteiro (não só a célula sob o mouse) — comunica
+	# de verdade que esse ataque cobre uma área, não só 1 tile (ver
+	# AttackData.area_shape/get_cone_cells).
+	if targeting_action is AttackData and targeting_action.area_shape == "Cone":
+		var dir = Vector2i(sign(cell.x - current.grid_pos.x), sign(cell.y - current.grid_pos.y))
+		for cone_cell in get_cone_cells(current.grid_pos, dir, targeting_action.range):
+			attack_highlight_layer.set_cell(cone_cell, 0, Vector2i(13, 1))
+	else:
+		attack_highlight_layer.set_cell(cell, 0, Vector2i(13, 1))
 	current.face_towards(cell)
 
 # Clique enquanto mirando: se a célula clicada está dentro do alcance,
@@ -1574,7 +1892,18 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 	var current = get_current_unit()
 	var action = targeting_action
 	var index = targeting_slot_index
-	if current != null and action is AttackData and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
+	if current != null and action is AttackData and action.is_status and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
+		# Ataque de Status (ver AttackData.is_status/execute_status_attack): não
+		# mira UM inimigo, mira uma DIREÇÃO — quem de fato é atingido só é
+		# resolvido lá dentro (get_cone_cells/area_cells), então aqui só precisa
+		# calcular `dir` a partir de onde o jogador clicou, mesma convenção
+		# 8-way (sign do delta) do resto do jogo. Sem tratamento de Confused
+		# especial: uma unidade confusa ainda mira a direção certa (só o alvo de
+		# um ataque comum, mirado em 1 inimigo, é embaralhado — não faz muito
+		# sentido "embaralhar direção" pra quem já é uma área inteira).
+		var dir = Vector2i(sign(clicked_cell.x - current.grid_pos.x), sign(clicked_cell.y - current.grid_pos.y))
+		execute_status_attack(current, action, dir, index)
+	elif current != null and action is AttackData and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
 		var target: Node = null
 		if action.is_projectile:
 			target = find_projectile_target(current, current.grid_pos, clicked_cell, action.range)
@@ -1707,7 +2036,7 @@ func calculate_damage(attacker: Node, defender: Node, attack: AttackData, is_cri
 	@warning_ignore("integer_division")
 	var damage = (level_factor * attack.power * atk_stat / def_stat) / 50 + 2
 
-	var modifiers = calculate_damage_modifiers(attacker, attack) * effectiveness
+	var modifiers = calculate_damage_modifiers(attacker, defender, attack) * effectiveness
 	if is_critical:
 		modifiers *= CRITICAL_HIT_MULTIPLIER
 	damage = int(damage * modifiers)
@@ -1745,7 +2074,7 @@ func has_type_immunity_ability(defender: Node, element_type: String) -> bool:
 			return true
 	return false
 
-func calculate_damage_modifiers(attacker: Node, attack: AttackData) -> float:
+func calculate_damage_modifiers(attacker: Node, defender: Node, attack: AttackData) -> float:
 	var modifiers = 1.0
 
 	if attacker.data.types.has(attack.element_type):
@@ -1768,6 +2097,15 @@ func calculate_damage_modifiers(attacker: Node, attack: AttackData) -> float:
 	if attack_has_secondary_effect(attack) and has_sheer_force(attacker):
 		modifiers *= SHEER_FORCE_MULTIPLIER
 
+	# Thick Fat e afins (ver AbilityData.resist_types/resist_multiplier): do
+	# lado de QUEM DEFENDE, não de quem ataca — reduz (não zera, diferente de
+	# immune_type/has_type_immunity_ability) o dano recebido de certos tipos,
+	# sempre ativo (sem condição de HP nenhuma, diferente do bloco de
+	# element_type/hp_threshold acima).
+	for action in defender.data.slots:
+		if action is AbilityData and action.resist_types.has(attack.element_type):
+			modifiers *= action.resist_multiplier
+
 	return modifiers
 
 # 1.3 = 30% a mais, valor fixo da Habilidade (não configurável por instância
@@ -1783,6 +2121,15 @@ const SHEER_FORCE_MULTIPLIER = 1.3
 func has_sheer_force(attacker: Node) -> bool:
 	for action in attacker.data.slots:
 		if action is AbilityData and action.sheer_force:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com speed_boost=true equipada (ver
+# AbilityData.speed_boost) — usado em _on_end_turn_pressed() pra saber se a
+# Speed dela sobe sozinha ao final do turno.
+func has_speed_boost(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.speed_boost:
 			return true
 	return false
 
@@ -1808,6 +2155,14 @@ func attack_has_secondary_effect(attack: AttackData) -> bool:
 func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_index: int, consume_slot_use: bool = true) -> void:
 	attacker.face_towards(defender.grid_pos if defender != null else attacker.grid_pos)
 	attacker.play_attack_animation(attack.is_special)
+	# Cast effect (ver AttackData.cast_frames_by_direction): sai de 1 tile à
+	# frente de quem ataca e viaja — sem await, é só reação visual do
+	# "windup" do golpe, não deve atrasar o resto (mesma ideia de
+	# play_impact_effect). execute_attack não tem um `dir` pronto (mira 1
+	# alvo, não uma direção) — reconstrói a partir de attacker.facing, já
+	# ajustado pelo face_towards() logo acima.
+	if attack.cast_frames_by_direction != null:
+		play_cast_effect(attack.cast_frames_by_direction, attacker, FACING_TO_DIR.get(attacker.facing, Vector2i.ZERO), attack.range)
 	log_message("%s used %s." % [attacker.data.unit_name, attack.action_name])
 	if consume_slot_use and attack.max_uses > 0:
 		attacker.slot_uses[slot_index] -= 1
@@ -1825,9 +2180,11 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 
 	# Ataque-projétil: depois do "cast" do atacante, o projétil ainda precisa
 	# viajar até o alvo antes de reagir — sem isso o defensor levava o dano
-	# antes do sprite do projétil sequer sair do lugar.
-	if attack.is_projectile and attack.projectile_texture != null:
-		await fire_projectile(attack.projectile_texture, attacker.position, defender.position)
+	# antes do sprite do projétil sequer sair do lugar. projectile_frames
+	# conta como "tem arte" também, não só projectile_texture (ver
+	# AttackData.projectile_frames — Water Gun usa esse formato).
+	if attack.is_projectile and (attack.projectile_texture != null or not attack.projectile_frames.is_empty()):
+		await fire_projectile(attack.projectile_texture, attacker.position, defender.position, 0, attack.projectile_frames, attack.projectile_faces_right)
 
 	# Frozen descongela na hora ao ser atingida por qualquer ataque tipo Fire
 	# — automático, não precisa rolar chance nenhuma. ANTES de
@@ -1846,9 +2203,14 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# Efeito de impacto: toca PARADO em cima do alvo, ao mesmo tempo que a
 	# animação de hurt — diferente do projétil (que precisa ser esperado
 	# antes de aplicar dano), aqui não damos await: é só reação visual, não
-	# deve atrasar o resto do turno.
-	if attack.impact_texture != null:
-		play_impact_effect(attack.impact_texture, defender.position)
+	# deve atrasar o resto do turno. impact_texture_2 (ver AttackData) é uma
+	# segunda camada opcional tocada JUNTO da primeira, sobreposta no mesmo
+	# ponto (ex: Ice Fang = mordida + cacos de gelo, ver ImpactEffect.play()).
+	# impact_frames (ver AttackData) conta como "tem arte" também, não só
+	# impact_texture — mesma ideia de projectile_frames (Confusion: 13
+	# arquivos separados, ataque à distância sem projétil, só o impacto).
+	if attack.impact_texture != null or attack.impact_texture_2 != null or not attack.impact_frames.is_empty():
+		play_impact_effect(attack.impact_texture, defender.position, attack.impact_texture_2, attack.impact_frames)
 
 	# Asleep só cura ao ser ATACADA de verdade (não pelo tick de veneno, que
 	# usa Unit.take_damage() por outro caminho — ver apply_end_of_turn_status,
@@ -1892,9 +2254,15 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# calculate_damage_modifiers/SHEER_FORCE_MULTIPLIER) já foi aplicado no
 	# `damage` calculado logo acima; aqui só falta garantir que o efeito em
 	# si nunca dispara pra quem carrega essa Habilidade.
-	if defender.hp_current > 0 and not has_sheer_force(attacker):
-		_try_apply_secondary_status(defender, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture)
-		_try_apply_secondary_status(defender, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2)
+	if not has_sheer_force(attacker):
+		# Boost de stat no próprio atacante (ex: Ancient Power) roda MESMO que o
+		# defensor tenha desmaiado com esse golpe — diferente de secondary_status
+		# abaixo (que não faz sentido aplicar em quem já morreu), aqui o alvo do
+		# efeito é quem ataca, então a sobrevivência do defensor é irrelevante.
+		_try_apply_self_stat_boost(attacker, attack)
+		if defender.hp_current > 0:
+			_try_apply_secondary_status(defender, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture)
+			_try_apply_secondary_status(defender, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2)
 
 	if defender.hp_current <= 0:
 		log_message("%s was defeated!" % defender.data.unit_name)
@@ -1920,6 +2288,115 @@ func _try_apply_secondary_status(defender: Node, status: String, chance: float, 
 		log_message("%s was %s!" % [defender.data.unit_name, status])
 		if texture != null:
 			play_impact_effect(texture, defender.position)
+
+# Efeito secundário de AttackData.self_stat_boost_chance/_amount (ex: Ancient
+# Power) — diferente de _try_apply_secondary_status acima (1 status, no
+# defensor), aqui é SEMPRE os 5 stats de UnitScript.STAGE_STATS juntos, no
+# próprio atacante. Reaproveita apply_stat_change() (mesma função/efeito
+# visual que Growl já usa pra baixar Attack do inimigo) 5 vezes seguidas —
+# cada stat loga/anima separado, mesmo estilo de "Attack rose! Defense
+# rose!..." dos jogos originais.
+func _try_apply_self_stat_boost(attacker: Node, attack: AttackData) -> void:
+	if attack.self_stat_boost_amount == 0 or randf() >= attack.self_stat_boost_chance:
+		return
+	for stat in UnitScript.STAGE_STATS:
+		apply_stat_change(attacker, stat, attack.self_stat_boost_amount)
+
+# Ataque de STATUS (ver AttackData.is_status): NÃO causa dano nenhum — só
+# aplica stat_change_stat/_amount em cada INIMIGO encontrado dentro da área
+# (Single = só a célula mirada; Cone = o leque inteiro, ver get_cone_cells).
+# Estrutura parecida com execute_attack (delay, animação, consumo de uso),
+# mas separada de propósito: aqui a lista de alvos só existe DEPOIS de
+# calcular a geometria da área, então não dá pra reaproveitar a assinatura
+# "1 defender só" de execute_attack — e mesmo se desse, calculate_damage()
+# nunca devolve 0 (piso de 1, ver comentário lá), então um Ataque de Status
+# passando por ali causaria dano por engano.
+#
+# `dir` já vem pronto de quem chama (handle_targeting_input calcula do clique
+# do jogador; run_enemy_turn, da posição do aliado escolhido pela IA) — mesma
+# convenção 8-way de sign(delta) usada no resto do jogo.
+func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, slot_index: int) -> void:
+	attacker.face_towards(attacker.grid_pos + dir)
+	attacker.play_attack_animation(attack.is_special)
+	# Cast effect (ver AttackData.cast_frames_by_direction) — Growl é o
+	# primeiro caso: a onda sonora saindo do próprio usuário do ataque, 1
+	# tile à frente, viajando até `attack.range`. Aqui já temos `dir` pronto
+	# (é literalmente pra que serve esse parâmetro), não precisa reconstruir
+	# de attacker.facing como execute_attack faz.
+	if attack.cast_frames_by_direction != null:
+		play_cast_effect(attack.cast_frames_by_direction, attacker, dir, attack.range)
+	log_message("%s used %s." % [attacker.data.unit_name, attack.action_name])
+	if attack.max_uses > 0:
+		attacker.slot_uses[slot_index] -= 1
+	attacker.attacks_remaining -= 1
+	refresh_action_slots_hud()
+
+	var hit_delay = attacker.data.special_hit_delay if attack.is_special else attacker.data.attack_hit_delay
+	await get_tree().create_timer(hit_delay).timeout
+
+	var area_cells: Array[Vector2i] = get_cone_cells(attacker.grid_pos, dir, attack.range) if attack.area_shape == "Cone" else [attacker.grid_pos + dir * attack.range]
+
+	var targets: Array[Node] = []
+	for cell in area_cells:
+		if cell.x < 0 or cell.x >= MAP_WIDTH or cell.y < 0 or cell.y >= MAP_HEIGHT:
+			continue
+		var u = get_unit_at(cell)
+		if u != null and u.is_enemy != attacker.is_enemy and not targets.has(u):
+			targets.append(u)
+
+	if targets.is_empty():
+		log_message("But it failed!")
+	for target in targets:
+		apply_stat_change(target, attack.stat_change_stat, attack.stat_change_amount)
+
+	refresh_unit_summary_hud()
+	check_auto_end_turn()
+
+# Aplica UMA mudança de stat_stage em `target` (ver Unit.modify_stat_stage) e
+# toca o efeito visual correspondente (ver play_stat_change_effect), exceto
+# quando o estágio JÁ está no limite ANTES da chamada — nesse caso só loga
+# "não sobe/desce mais" e nem chama modify_stat_stage (evita uma mensagem
+# enganosa de "caiu!" quando na prática o clamp não deixou nada mudar).
+func apply_stat_change(target: Node, stat: String, amount: int) -> void:
+	if stat == "" or amount == 0:
+		return
+	var stat_label: String = STAT_DISPLAY_NAMES.get(stat, stat)
+	var before: int = target.stat_stages.get(stat, 0)
+	if amount > 0 and before >= UnitScript.STAT_STAGE_MAX:
+		log_message("%s's %s won't go any higher!" % [target.data.unit_name, stat_label])
+		return
+	if amount < 0 and before <= UnitScript.STAT_STAGE_MIN:
+		log_message("%s's %s won't go any lower!" % [target.data.unit_name, stat_label])
+		return
+	target.modify_stat_stage(stat, amount)
+	log_message("%s's %s %s!" % [target.data.unit_name, stat_label, "rose" if amount > 0 else "fell"])
+	play_stat_change_effect(target.position, stat, amount > 0)
+
+# Toca o StatChangeEffect parado em cima de `at_position` (ver AttackData.
+# stat_change_stat, scripts/stat_change_effect.gd) — não é esperado por quem
+# chama, mesma ideia de play_impact_effect: é só reação visual, não deve
+# atrasar o resto do turno.
+func play_stat_change_effect(at_position: Vector2, stat: String, increased: bool) -> void:
+	var e = STAT_CHANGE_EFFECT_SCENE.instantiate()
+	add_child(e)
+	var frames: Array[Texture2D] = STAT_CHANGE_UP_FRAMES if increased else STAT_CHANGE_DOWN_FRAMES
+	var tint: Color = STAT_CHANGE_TINTS.get(stat, Color.WHITE)
+	e.play(frames, at_position, tint)
+
+# Toca o CastEffect VIAJANDO (ver scripts/cast_effect.gd) a partir de QUEM
+# ATACA — não fica parado em cima do atacante, sai de 1 tile à FRENTE dele
+# (attacker.grid_pos + dir) e viaja até `cast_range` tiles de distância na
+# mesma direção (bug reportado pelo usuário: antes tocava direto em cima do
+# atacante, sem sair do lugar). Não é esperado por quem chama — mesma ideia
+# de play_impact_effect, é só reação visual.
+func play_cast_effect(texture: Texture2D, attacker: Node, dir: Vector2i, cast_range: int) -> void:
+	if dir == Vector2i.ZERO:
+		return
+	var from: Vector2 = attacker.cell_to_position(attacker.grid_pos + dir)
+	var to: Vector2 = attacker.cell_to_position(attacker.grid_pos + dir * cast_range)
+	var e = CAST_EFFECT_SCENE.instantiate()
+	add_child(e)
+	e.play(texture, from, to, attacker.facing)
 
 # Uso de um item TM (ver handle_targeting_input) — reaproveita execute_attack
 # inteiro (dano, efetividade, status secundário, tudo) rodando em cima do
@@ -1959,7 +2436,7 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 	if victory:
 		# Mesmo caminho de volta do botão Flee (ver _on_flee_pressed) — a
 		# posição do jogador no overworld já foi salva em GameState antes de
-		# entrar na batalha (ver world.gd), então só trocar de cena já basta.
+		# entrar na batalha (ver test.gd), então só trocar de cena já basta.
 		get_tree().change_scene_to_file(GameState.overworld_scene_path)
 	else:
 		# Derrota: sem "voltar pro overworld de onde veio" (GameState.
@@ -1970,7 +2447,7 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 		# last_heal_facing, atualizado em GameState.heal_active_roster()).
 		# Reaproveita o MESMO mecanismo de restauração que a volta de
 		# vitória já usa (has_saved_position + player_grid_pos/facing, lido
-		# por world.gd::_restore_player_state ao carregar a cena) — só com
+		# por test.gd::_restore_player_state ao carregar a cena) — só com
 		# outra origem pros valores.
 		GameState.has_saved_position = true
 		GameState.player_grid_pos = GameState.last_heal_grid_pos
@@ -1985,19 +2462,29 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 # quadrados, usada por todo ataque-projétil existente); > 0 é só pra sprite
 # sheets com quadros NÃO quadrados, como a de uma Ball (ver ItemData.
 # ball_frame_count/execute_ball_throw).
-func fire_projectile(texture: Texture2D, from: Vector2, to: Vector2, known_frame_count: int = 0) -> void:
+# frames/rotate_to_direction: repassados direto pros mesmos parâmetros de
+# Projectile.launch() — ver AttackData.projectile_frames/projectile_faces_right
+# (Water Gun é o primeiro caso: dois arquivos separados, arte olhando pra
+# direita, precisa girar pra cada direção de verdade).
+func fire_projectile(texture: Texture2D, from: Vector2, to: Vector2, known_frame_count: int = 0, frames: Array[Texture2D] = [], rotate_to_direction: bool = false) -> void:
 	var p = PROJECTILE_SCENE.instantiate()
 	add_child(p)
-	p.launch(texture, from, to, known_frame_count)
+	p.launch(texture, from, to, known_frame_count, frames, rotate_to_direction)
 	await p.arrived
 
 # Toca o ImpactEffect parado em cima de `at_position` (ver AttackData.
-# impact_texture e ImpactEffect.play() — não é esperado por quem chama, ver
-# comentário no ponto de chamada em execute_attack).
-func play_impact_effect(texture: Texture2D, at_position: Vector2) -> void:
+# impact_texture/impact_texture_2 e ImpactEffect.play() — não é esperado por
+# quem chama, ver comentário no ponto de chamada em execute_attack).
+# texture_2 opcional: segunda camada tocada junto (ver AttackData.
+# impact_texture_2) — os outros dois usos (secondary_status_texture/_2 em
+# _try_apply_secondary_status) continuam passando só uma textura, sem camada
+# extra, exatamente como antes. frames opcional: formato "vários arquivos
+# separados" da camada 1 (ver AttackData.impact_frames) — Confusion é o
+# primeiro caso.
+func play_impact_effect(texture: Texture2D, at_position: Vector2, texture_2: Texture2D = null, frames: Array[Texture2D] = []) -> void:
 	var e = IMPACT_EFFECT_SCENE.instantiate()
 	add_child(e)
-	e.play(texture, at_position)
+	e.play(texture, at_position, texture_2, frames)
 
 # Arremesso de uma Ball (ver handle_targeting_input) — bem mais simples que
 # execute_attack: não tem dano, efetividade de tipo, nem status secundário,
@@ -2191,6 +2678,13 @@ func _on_end_turn_pressed() -> void:
 	# de avançar current_turn_index.
 	var finishing_unit = get_current_unit()
 	if finishing_unit != null:
+		# Speed Boost (ver AbilityData.speed_boost/has_speed_boost) — sobe ANTES
+		# do tick de Status Condition abaixo, incondicional (não depende de
+		# sobreviver ao próprio turno): "ao final do turno", não "se nada mais
+		# acontecer". Reusa apply_stat_change() — mesma função e mesmo efeito
+		# visual que Growl já usa, só que aqui o alvo é a própria unidade.
+		if has_speed_boost(finishing_unit):
+			apply_stat_change(finishing_unit, "speed", 1)
 		var died = await apply_end_of_turn_status(finishing_unit)
 		# Veneno pode ter matado a unidade e encerrado a batalha dentro do
 		# await acima (ver apply_end_of_turn_status) — nesse caso não faz
@@ -2206,7 +2700,24 @@ func _on_end_turn_pressed() -> void:
 			# unidade inteira da fila.
 			begin_current_turn()
 			return
-	current_turn_index = (current_turn_index + 1) % turn_queue.size()
+	# Fim da rodada (todo mundo já jogou, current_turn_index ia estourar o
+	# tamanho da fila) — re-sorta a fila INTEIRA pela Speed ATUAL de cada
+	# unidade antes de recomeçar do topo. Sem isso, uma unidade que mudou a
+	# PRÓPRIA Speed no fim do próprio turno (Speed Boost, chance da Ancient
+	# Power) nunca refletia isso na fila: reorder_turn_queue_by_speed() (ver
+	# abaixo) só reordena quem ainda não jogou NESTA rodada (pending) — quem
+	# já jogou (incluindo a própria unidade que acabou de mudar a Speed dela)
+	# fica de fora de propósito, porque não faz sentido "desjogar" alguém no
+	# meio da rodada. Isso deixava a ordem "presa" pra sempre depois da
+	# primeira rodada, mesmo com Speed mudando bastante — só um recomeço de
+	# rodada de verdade corrige isso.
+	var next_index = current_turn_index + 1
+	if next_index >= turn_queue.size():
+		turn_queue.sort_custom(func(a, b): return a.get_effective_stat("speed") > b.get_effective_stat("speed"))
+		current_turn_index = 0
+		build_unit_summary_hud()
+	else:
+		current_turn_index = next_index
 	begin_current_turn()
 
 # Aplica o "fim de turno" de Status Condition da unidade `u`, que acabou de
@@ -2246,7 +2757,7 @@ func apply_end_of_turn_status(u: Node) -> bool:
 # Desfaz o movimento inteiro da unidade da vez, voltando pra onde ela
 # estava no início do turno, e devolve o orçamento de movimento cheio.
 # Sai da batalha sem vencer nem perder, direto pro overworld — devolve o
-# personagem pra onde ele estava graças ao GameState (ver world.gd
+# personagem pra onde ele estava graças ao GameState (ver test.gd
 # _restore_player_state(), já escuta isso desde o encontro aleatório).
 # Ainda não desconta nada por fugir (perder o Pokémon selvagem, etc.) —
 # é só o "sair da tela de batalha" por enquanto.
@@ -2448,7 +2959,19 @@ func run_enemy_turn(u: Node) -> void:
 		return
 
 	if plan.has("attack"):
-		await execute_attack(u, plan["target"], plan["attack"], plan["slot_index"])
+		var chosen_attack: AttackData = plan["attack"]
+		if chosen_attack.is_status:
+			# Ataque de Status (ver execute_status_attack): a IA "mirou" um
+			# aliado específico (plan["target"]) só pra decidir SE dava pra
+			# usar o ataque dali (is_valid_target_cell), mas a execução de
+			# verdade mira uma DIREÇÃO — reconstrói a mesma direção 8-way a
+			# partir de onde `u` já está (depois do move_unit_along_path acima)
+			# até esse aliado, igual o jogador faz em handle_targeting_input.
+			var target: Node = plan["target"]
+			var dir = Vector2i(sign(target.grid_pos.x - u.grid_pos.x), sign(target.grid_pos.y - u.grid_pos.y))
+			await execute_status_attack(u, chosen_attack, dir, plan["slot_index"])
+		else:
+			await execute_attack(u, plan["target"], chosen_attack, plan["slot_index"])
 		if phase != Phase.BATTLE:
 			return
 

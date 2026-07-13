@@ -1,6 +1,8 @@
-[gd_resource type="Resource" script_class="AttackData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="AttackData" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://cgk0r4dfyvfrm" path="res://assets/sprites/Move/waterGun0.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://c4igrtjlkb24q" path="res://assets/sprites/Move/waterGun1.png" id="3"]
 
 [resource]
 script = ExtResource("1")
@@ -13,3 +15,5 @@ element_type = "Water"
 power = 40
 makes_contact = false
 is_projectile = true
+projectile_frames = Array[Texture2D]([ExtResource("2"), ExtResource("3")])
+projectile_faces_right = true

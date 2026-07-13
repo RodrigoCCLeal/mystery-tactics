@@ -259,6 +259,12 @@ func _open_party_picker(item: ItemData, mode: String) -> void:
 		if item.heal_amount > 0:
 			screen.picker_filter = _has_missing_hp
 			screen.picker_filter_hint = "(HP cheio)"
+		# Mesmo raciocínio pro Ability Patch: não faz nada numa unidade sem
+		# Habilidade Hidden nenhuma pra revelar, ou que já revelou a dela
+		# (ver UnitData.has_unrevealed_hidden_ability).
+		elif item.reveals_hidden_ability:
+			screen.picker_filter = _has_unrevealed_hidden_ability
+			screen.picker_filter_hint = "(sem Habilidade Hidden)"
 	else:
 		screen.picker_prompt = "Dar %s pra qual unidade?   (Z: cancelar)" % item.action_name
 	add_child(screen)
@@ -268,6 +274,9 @@ func _open_party_picker(item: ItemData, mode: String) -> void:
 func _has_missing_hp(data: UnitData) -> bool:
 	var hp_max = UnitScript.calc_hp_static(data.hp_base, data.level, data.weight)
 	return data.current_hp < hp_max
+
+func _has_unrevealed_hidden_ability(data: UnitData) -> bool:
+	return data.has_unrevealed_hidden_ability()
 
 func _on_party_target_picked(index: int, item: ItemData, mode: String) -> void:
 	var target = GameState.get_roster_slot(index)

@@ -3,7 +3,7 @@ extends Resource
 
 # Tabela de encontros selvagens de UMA área do overworld: uma lista de
 # EncounterGroup, cada um com seu peso relativo de aparecer. Uma cena do
-# overworld (ex: world.gd) aponta pra UM EncounterArea via @export — se no
+# overworld (ex: test.gd) aponta pra UM EncounterArea via @export — se no
 # futuro tivermos várias áreas, cada uma terá seu próprio arquivo aqui em
 # data/areas/ e sua própria cena (ou sub-região dentro da mesma cena).
 
