@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_lhlx8"]
 [ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="6"]
 [ext_resource type="Resource" path="res://data/abilities/torrent.tres" id="7"]
+[ext_resource type="Resource" path="res://data/units/0008.tres" id="8"]
 
 [sub_resource type="Resource" id="LearnsetEntry_0007_tackle"]
 script = ExtResource("5")
@@ -40,3 +41,5 @@ special_defense_base = 64
 speed_base = 43
 catch_rate = 0.1765
 base_exp_yield = 63
+evolves_into = ExtResource("8")
+evolve_min_level = 16

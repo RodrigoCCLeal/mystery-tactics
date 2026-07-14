@@ -286,14 +286,22 @@ const FLUID_DETAIL: Array[Dictionary] = [
 		"diag": {"up_left": false, "down_left": true}},
 ]
 
-# Parede + Fluido (água/lava/buraco) JUNTOS nunca passam disso (fração do
-# total de tiles jogáveis) — antes cada um tinha um limite INDEPENDENTE (só
-# fluido, só parede), mas isso deixava o mapa sufocado quando os DOIS
-# cresciam perto do próprio teto ao mesmo tempo (zona de deploy pequena
-# demais, pathing da IA sem saída) — ver generate_fluid()/
-# generate_interior_walls(), que dividem esse mesmo orçamento entre si
-# (fluido gera primeiro, parede usa só o que sobrar).
-const WALL_OR_FLUID_MAX_FRACTION = 4
+# Parede + Fluido (água/lava/buraco) JUNTOS nunca passam de 1/8 do total de
+# tiles jogáveis — antes cada um tinha um limite INDEPENDENTE (só fluido, só
+# parede), mas isso deixava o mapa sufocado quando os DOIS cresciam perto do
+# próprio teto ao mesmo tempo (zona de deploy pequena demais, pathing da IA
+# sem saída).
+#
+# BUG antigo (corrigido aqui): generate_fluid() usava esse MESMO valor como
+# teto pra si só (fluido gera primeiro), então sempre que o fluido crescia até
+# o próprio teto — o que acontecia com frequência, já que o meio do mapa não
+# tem limite de quadrante — ele consumia o orçamento COMBINADO inteiro
+# sozinho, e generate_interior_walls() (que só usa o que sobra, ver
+# max_walls = max_combined - fluid_cells.size()) ficava sempre com 0 pra
+# desenhar. Corrigido limitando o próprio fluido a METADE do orçamento
+# combinado (ver max_fluid em generate_fluid) — isso garante que sempre sobra
+# pelo menos a outra metade pra parede, não importa quanto fluido nasceu.
+const WALL_OR_FLUID_MAX_FRACTION = 8
 
 # Onde as unidades do jogador esperam antes de serem posicionadas.
 # Fica numa coluna única fora do mapa, à ESQUERDA (x negativo) — espaço que
@@ -454,6 +462,19 @@ var move_budget_left: int = 0
 # volta pra cá inteiro, não move-a-move.
 var turn_start_pos: Vector2i = Vector2i.ZERO
 
+# true enquanto um ataque/item do JOGADOR está rodando (entre o clique em
+# handle_targeting_input e o fim da animação) — execute_attack/
+# execute_status_attack/execute_ball_throw são disparados SEM await ali (fire
+# and forget, pra não travar o input enquanto a animação toca), então sem
+# essa flag o jogador podia apertar Flee no meio da própria animação de
+# ataque e crashar do mesmo jeito que apertar Flee no meio do turno do
+# inimigo já crashava (ver o guard de is_enemy em begin_current_turn/
+# _on_flee_pressed) — a cena de batalha era trocada enquanto a corrotina do
+# ataque ainda estava suspensa num await, e ela quebrava ao retomar contra
+# nós já destruídos. Setada/desligada pelos wrappers _run_player_*() logo
+# abaixo de execute_ball_throw; ver uso em _on_flee_pressed().
+var action_in_progress: bool = false
+
 # Células (dentro do grid jogável) que viraram fluido nessa batalha — água,
 # lava ou (futuramente) buraco, dependendo de qual BattleTileset foi
 # sorteado (ver current_battle_tileset/BATTLE_TILESETS). A REGRA de quem
@@ -564,16 +585,22 @@ func generate_fluid() -> void:
 	fluid_cells.clear()
 
 	@warning_ignore("integer_division")
-	var max_fluid = (MAP_WIDTH * MAP_HEIGHT) / WALL_OR_FLUID_MAX_FRACTION
+	var max_combined = (MAP_WIDTH * MAP_HEIGHT) / WALL_OR_FLUID_MAX_FRACTION
+	# Fluido usa só METADE do orçamento combinado (não o combinado inteiro) —
+	# garante que sempre sobra espaço de verdade pra generate_interior_walls()
+	# desenhar parede depois (ver comentário grande de WALL_OR_FLUID_MAX_
+	# FRACTION acima sobre o bug que isso corrige).
+	@warning_ignore("integer_division")
+	var max_fluid = max_combined / 2
 
 	# Nem o primeiro quadrante (zona de deploy do jogador) nem o último (zona
 	# de deploy do "jogador 2", quando tivermos multiplayer) podem ficar mais
-	# de metade cobertos de PAREDE+FLUIDO somados — senão a área de
+	# de 1/4 cobertos de PAREDE+FLUIDO somados — senão a área de
 	# posicionamento fica pequena demais. Fluido gera primeiro, então só
-	# precisa respeitar a própria metade aqui; generate_interior_walls() é
+	# precisa respeitar essa fração aqui; generate_interior_walls() é
 	# quem desconta o que o fluido já gastou de cada quadrante (ver lá).
 	@warning_ignore("integer_division")
-	var max_fluid_per_deploy_quadrant = (DEPLOY_ZONE_WIDTH * MAP_HEIGHT) / 2
+	var max_fluid_per_deploy_quadrant = (DEPLOY_ZONE_WIDTH * MAP_HEIGHT) / 4
 	var first_quadrant_fluid = 0
 	var last_quadrant_fluid = 0
 
@@ -676,7 +703,7 @@ func generate_interior_walls() -> void:
 	var max_walls = max(0, max_combined - fluid_cells.size())
 
 	@warning_ignore("integer_division")
-	var max_per_deploy_quadrant = (DEPLOY_ZONE_WIDTH * MAP_HEIGHT) / 2
+	var max_per_deploy_quadrant = (DEPLOY_ZONE_WIDTH * MAP_HEIGHT) / 4
 	var first_quadrant_fluid = 0
 	var last_quadrant_fluid = 0
 	for cell in fluid_cells.keys():
@@ -1275,12 +1302,22 @@ func begin_current_turn() -> void:
 		action_slots.visible = false
 		end_turn_button.visible = false
 		undo_button.visible = false
+		# flee_button também precisa sumir aqui — ficava visível E CLICÁVEL
+		# durante o turno do inimigo (só os outros 3 botões eram escondidos),
+		# então dava pra apertar Flee no meio de run_enemy_turn() enquanto ele
+		# está suspenso num await (movimento/ataque da IA). _on_flee_pressed()
+		# troca de cena (change_scene_to_file), que libera a árvore inteira —
+		# quando o await da IA retomava depois disso, ele tentava mexer em
+		# nós (attacker/defender/tilemap) já destruídos e crashava. Ver também
+		# a guarda extra dentro de _on_flee_pressed() logo abaixo.
+		flee_button.visible = false
 		run_enemy_turn(u)
 		return
 
 	action_slots.visible = true
 	end_turn_button.visible = true
 	undo_button.visible = true
+	flee_button.visible = true
 	refresh_action_slots_hud()
 
 	# Se a unidade começou o turno já sem movimento NEM ataque (travada por
@@ -1902,7 +1939,7 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 		# um ataque comum, mirado em 1 inimigo, é embaralhado — não faz muito
 		# sentido "embaralhar direção" pra quem já é uma área inteira).
 		var dir = Vector2i(sign(clicked_cell.x - current.grid_pos.x), sign(clicked_cell.y - current.grid_pos.y))
-		execute_status_attack(current, action, dir, index)
+		_run_player_status_attack(current, action, dir, index)
 	elif current != null and action is AttackData and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
 		var target: Node = null
 		if action.is_projectile:
@@ -1920,7 +1957,7 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 			var actual_target = target
 			if current.status_condition == "Confused" and randf() < 1.0 / 6.0:
 				actual_target = resolve_confused_target(current, action)
-			execute_attack(current, actual_target, action, index)
+			_run_player_attack(current, actual_target, action, index)
 	elif current != null and action is ItemData and action.category == "TM" and action.tm_attack != null and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
 		# Mesma lógica de resolução de alvo do ramo AttackData acima, só que
 		# em cima de action.tm_attack (que TEM is_projectile/range de
@@ -1939,13 +1976,13 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 			var actual_target = target
 			if current.status_condition == "Confused" and randf() < 1.0 / 6.0:
 				actual_target = resolve_confused_target(current, tm_attack)
-			execute_tm_attack(current, actual_target, action, index)
+			_run_player_tm_attack(current, actual_target, action, index)
 	elif current != null and action is ItemData and action.category == "Ball" and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
 		# Ball não sofre a mesma checagem de Confused que Ataque sofre acima
 		# — de propósito: quem mira e arremessa a bola é o TREINADOR, não a
 		# unidade em campo, então o "erro de mira" de Confused (que afeta a
 		# unidade, não o jogador) não deveria valer aqui.
-		execute_ball_throw(current, clicked_cell, action, index)
+		_run_player_ball_throw(current, clicked_cell, action, index)
 	cancel_targeting()
 
 # Sorteia uma das 8 direções (a "direção errada" da confusão) e devolve quem
@@ -2185,6 +2222,21 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# AttackData.projectile_frames — Water Gun usa esse formato).
 	if attack.is_projectile and (attack.projectile_texture != null or not attack.projectile_frames.is_empty()):
 		await fire_projectile(attack.projectile_texture, attacker.position, defender.position, 0, attack.projectile_frames, attack.projectile_faces_right)
+
+	# Roll de acerto (attack.accuracy, ver AttackData) — DEPOIS do windup/cast/
+	# projétil (isso sempre joga visualmente, acerte ou erre o golpe) e ANTES
+	# de qualquer reação de quem defende (descongelar, hurt animation, efeito
+	# de impacto, dano, efeitos secundários). Unit.get_accuracy_multiplier()
+	# já embute Focus Band (ItemData.accuracy_multiplier) e o x0.5 de Blind —
+	# accuracy = 1.0 (padrão de AttackData) sempre acerta, pulando o randf()
+	# de propósito (evita, ainda que raríssimo, randf() == 1.0 falhar um golpe
+	# que deveria ser garantido).
+	var final_accuracy = attack.accuracy * attacker.get_accuracy_multiplier()
+	if final_accuracy < 1.0 and randf() >= final_accuracy:
+		log_message("%s's attack missed!" % attacker.data.unit_name)
+		refresh_unit_summary_hud()
+		check_auto_end_turn()
+		return
 
 	# Frozen descongela na hora ao ser atingida por qualquer ataque tipo Fire
 	# — automático, não precisa rolar chance nenhuma. ANTES de
@@ -2537,6 +2589,53 @@ func execute_ball_throw(attacker: Node, target_cell: Vector2i, item: ItemData, s
 	refresh_unit_summary_hud()
 	check_auto_end_turn()
 
+# Wrappers chamados por handle_targeting_input em vez de execute_attack/
+# execute_status_attack/execute_tm_attack/execute_ball_throw direto — essas
+# 4 funções são disparadas SEM await ali (fire and forget: handle_targeting_
+# input não é async, e travar o input até a animação acabar seria ruim), o
+# que deixava flee_button clicável durante a animação de ataque do PRÓPRIO
+# jogador (ver action_in_progress, comentário grande onde é declarada). Cada
+# wrapper liga a flag antes de chamar a função de verdade (aqui sim COM
+# await, já que quem chama o wrapper também não espera por ele) e desliga
+# depois, então o "fire and forget" de fora continua igual — só ganhou um
+# meio de campo que sabe quando a animação de verdade terminou.
+#
+# `if phase == Phase.BATTLE` antes de mexer em flee_button.visible: mesmo
+# guard que execute_tm_attack/execute_ball_throw já usam — se esse ataque
+# terminou a batalha (end_battle já trocou de cena dentro do await acima),
+# flee_button não existe mais nesta árvore, não mexe nele.
+func _run_player_attack(attacker: Node, defender: Node, attack: AttackData, index: int) -> void:
+	action_in_progress = true
+	flee_button.visible = false
+	await execute_attack(attacker, defender, attack, index)
+	action_in_progress = false
+	if phase == Phase.BATTLE:
+		flee_button.visible = true
+
+func _run_player_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, index: int) -> void:
+	action_in_progress = true
+	flee_button.visible = false
+	await execute_status_attack(attacker, attack, dir, index)
+	action_in_progress = false
+	if phase == Phase.BATTLE:
+		flee_button.visible = true
+
+func _run_player_tm_attack(attacker: Node, defender: Node, item: ItemData, index: int) -> void:
+	action_in_progress = true
+	flee_button.visible = false
+	await execute_tm_attack(attacker, defender, item, index)
+	action_in_progress = false
+	if phase == Phase.BATTLE:
+		flee_button.visible = true
+
+func _run_player_ball_throw(attacker: Node, target_cell: Vector2i, item: ItemData, index: int) -> void:
+	action_in_progress = true
+	flee_button.visible = false
+	await execute_ball_throw(attacker, target_cell, item, index)
+	action_in_progress = false
+	if phase == Phase.BATTLE:
+		flee_button.visible = true
+
 # Resolve UMA tentativa de captura contra `defender` (já confirmado inimigo
 # selvagem válido, ver execute_ball_throw) usando `item` (a Ball
 # arremessada). Fórmula pedida pelo usuário:
@@ -2763,6 +2862,23 @@ func apply_end_of_turn_status(u: Node) -> bool:
 # é só o "sair da tela de batalha" por enquanto.
 func _on_flee_pressed() -> void:
 	if phase != Phase.BATTLE:
+		return
+	# Segunda trava (a primeira é esconder flee_button durante o turno do
+	# inimigo, ver begin_current_turn) — mesma checagem que _unhandled_input
+	# já fazia pro atalho de teclado (Esc), só que o clique direto no BOTÃO
+	# nunca passava por ali. Sem isso dava pra clicar Flee no meio de
+	# run_enemy_turn() (ele fica suspenso num await de movimento/ataque da
+	# IA) e crashar quando esse await retomasse com a cena de batalha já
+	# destruída por baixo (change_scene_to_file logo abaixo).
+	if get_current_unit() == null or get_current_unit().is_enemy:
+		return
+	# Terceira trava: mesmo durante o PRÓPRIO turno do jogador, um ataque/item
+	# ainda pode estar animando (execute_attack e companhia rodam sem await
+	# desde handle_targeting_input — ver action_in_progress/_run_player_*()).
+	# flee_button já fica escondido nesse intervalo (mesmos wrappers), isso
+	# aqui é só a segunda camada de segurança, igual a linha acima é a
+	# segunda camada do guard de is_enemy.
+	if action_in_progress:
 		return
 	get_tree().change_scene_to_file(GameState.overworld_scene_path)
 

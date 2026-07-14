@@ -25,12 +25,12 @@ extends ActionData
 # área, sem tocar no HP de ninguém.
 @export var is_status: bool = false
 
-# Chance de acerto (1.0 = 100%). Nenhum lugar em battle.gd ainda faz um roll
-# de acerto de verdade — todo ataque implementado até agora sempre acerta,
-# então este campo ainda não muda comportamento nenhum. Existe agora porque
-# ItemData.accuracy_multiplier (ex: Focus Band) já precisa de ALGO pra
-# multiplicar (ver Unit.get_accuracy_multiplier) — quando o roll de acerto
-# for implementado de verdade, ele deve usar accuracy * essa multiplicação.
+# Chance de acerto (1.0 = 100%). Rolado em battle.gd::execute_attack, logo
+# depois do windup/cast/projétil e antes de qualquer reação de quem defende —
+# accuracy * attacker.get_accuracy_multiplier() (Focus Band, Blind, ver
+# Unit.get_accuracy_multiplier) é a chance final; 1.0 sempre acerta (pula o
+# randf() de propósito). Ice Fang é o primeiro ataque com accuracy < 1.0
+# (0.95) — os outros (Water Gun, Vine Whip) ainda usam o padrão de 1.0.
 @export_range(0.0, 1.0) var accuracy: float = 1.0
 
 # 0 = sem dano direto (ex: ataque que só aplica um efeito/status, sem golpe).

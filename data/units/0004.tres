@@ -9,6 +9,7 @@
 [ext_resource type="Resource" path="res://data/abilities/blaze.tres" id="7"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="7_e6ex1"]
 [ext_resource type="Resource" path="res://data/attacks/growl.tres" id="8"]
+[ext_resource type="Resource" path="res://data/units/0005.tres" id="9"]
 
 [sub_resource type="Resource" id="LearnsetEntry_0004_tackle"]
 script = ExtResource("5")
@@ -45,3 +46,5 @@ special_defense_base = 50
 speed_base = 65
 catch_rate = 0.1765
 base_exp_yield = 62
+evolves_into = ExtResource("9")
+evolve_min_level = 16

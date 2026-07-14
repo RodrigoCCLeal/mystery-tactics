@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/0005/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://dyaklchwjjm8i" path="res://assets/sprites/Pokemon/0005/Normal.png" id="3"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="4"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5"]
+[ext_resource type="Resource" path="res://data/attacks/ember.tres" id="6"]
+[ext_resource type="Resource" path="res://data/abilities/blaze.tres" id="7"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="7_charmeleon"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="8"]
+[ext_resource type="Resource" path="res://data/abilities/solar_power.tres" id="9"]
+[ext_resource type="Resource" path="res://data/units/0006.tres" id="10"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0005_tackle"]
+script = ExtResource("5")
+action = ExtResource("4")
+
+[sub_resource type="Resource" id="LearnsetEntry_0005_growl"]
+script = ExtResource("5")
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LearnsetEntry_0005_ember"]
+script = ExtResource("5")
+level = 4
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LearnsetEntry_0005_blaze"]
+script = ExtResource("5")
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LearnsetEntry_0005_solar_power"]
+script = ExtResource("5")
+is_hidden_ability = true
+action = ExtResource("9")
+
+[resource]
+script = ExtResource("1")
+unit_name = "Charmeleon"
+sprite_frames = ExtResource("2")
+portrait = ExtResource("3")
+attack_hit_delay = 0.6
+special_hit_delay = 0.2
+types = Array[String](["Fire"])
+slots = Array[ExtResource("7_charmeleon")]([ExtResource("4"), ExtResource("6"), ExtResource("7")])
+learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0005_tackle"), SubResource("LearnsetEntry_0005_growl"), SubResource("LearnsetEntry_0005_ember"), SubResource("LearnsetEntry_0005_blaze"), SubResource("LearnsetEntry_0005_solar_power")])
+hp_base = 58
+attack_base = 64
+defense_base = 58
+special_attack_base = 80
+special_defense_base = 65
+speed_base = 80
+catch_rate = 0.1765
+base_exp_yield = 142
+evolves_into = ExtResource("10")
+evolve_min_level = 36

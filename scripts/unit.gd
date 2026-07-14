@@ -552,11 +552,10 @@ func _check_berry_auto_use() -> void:
 			return
 
 # Multiplica accuracy_multiplier de todo ItemData equipado no loadout (ex:
-# Focus Band, ver ItemData.accuracy_multiplier) e o x0.5 de Blind — pronto pra
-# quando battle.gd fizer um roll de acerto de verdade (ver comentário em
+# Focus Band, ver ItemData.accuracy_multiplier) e o x0.5 de Blind — usado por
+# battle.gd::execute_attack no roll de acerto de verdade (ver comentário em
 # AttackData.accuracy). Sem item nenhum equipado e sem Blind, retorna 1.0
-# (sem efeito) — ou seja, MESMO efeito de antes: até hoje nada realmente lê
-# esse número, é groundwork.
+# (sem efeito nenhum no roll).
 func get_accuracy_multiplier() -> float:
 	if data == null:
 		return 1.0

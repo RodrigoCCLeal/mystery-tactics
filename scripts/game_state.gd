@@ -336,6 +336,12 @@ const ALL_SPECIES: Array[UnitData] = [
 	preload("res://data/units/0202.tres"),
 	preload("res://data/units/0255.tres"),
 	preload("res://data/units/0221.tres"),
+	preload("res://data/units/0002.tres"),
+	preload("res://data/units/0003.tres"),
+	preload("res://data/units/0005.tres"),
+	preload("res://data/units/0006.tres"),
+	preload("res://data/units/0008.tres"),
+	preload("res://data/units/0009.tres"),
 ]
 
 # Em qual área do overworld o jogador está AGORA — test.gd seta isso (a

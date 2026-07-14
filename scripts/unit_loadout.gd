@@ -4,13 +4,19 @@ extends CanvasLayer
 # item, ver UnitData.slots) — aberto pela opção "Loadout" do
 # slot_action_menu (ver party_screen.gd::_open_loadout).
 #
-# Duas "camadas" na mesma tela em vez de duas cenas separadas (ROWS lista os
-# 6 slots atuais; PICKING é o sub-menu que aparece por cima pra escolher uma
-# ação nova pra um slot) — mais simples que encadear mais uma CanvasLayer
-# pra algo tão pequeno. X abre o escolhedor no slot selecionado; dentro
-# dele, X escolhe (ou "-- vazio --", que sempre é a primeira opção, pra
-# desequipar) e Z cancela sem mudar nada; Z na lista de slots fecha a tela
-# inteira.
+# Duas colunas lado a lado, AS DUAS SEMPRE ABERTAS ao mesmo tempo — nada de
+# clicar num slot pra só então abrir um sub-menu por cima ou do lado: a
+# esquerda lista os 6 slots atuais, a direita já mostra de cara as opções
+# disponíveis pro slot selecionado. Mover a seleção na esquerda (mouse ou
+# seta) atualiza a direita NA HORA (ver _refresh_picker_options(), chamada
+# toda vez que selected_row muda). ui_left/ui_right trocam qual coluna
+# recebe as setas up/down (focus_column); X escolhe a opção realçada (só
+# faz efeito com o foco na coluna de opções) ou, com o foco nos slots, pula
+# o foco pra lá (atalho, equivalente a apertar seta direita); Z tira o foco
+# da coluna de opções de volta pros slots, ou fecha a tela inteira se o
+# foco já estiver nos slots. Clicar direto numa opção com o mouse aplica na
+# hora, sem precisar "entrar" na coluna primeiro — hover já basta pra ver as
+# opções, clique já basta pra escolher.
 #
 # Grava DIRETO em data.slots (o mesmo Resource compartilhado por
 # GameState.roster e, dentro de uma batalha, por Unit.apply_persisted_data()) — como
@@ -21,17 +27,16 @@ extends CanvasLayer
 
 signal closed
 
-enum Mode { ROWS, PICKING }
+enum Column { SLOTS, OPTIONS }
 
 const SLOT_COUNT = 6
 
-@onready var title_label: Label = $Center/Panel/MarginContainer/Content/Title
-@onready var rows_container: VBoxContainer = $Center/Panel/MarginContainer/Content/Rows
-@onready var picker_layer: CenterContainer = $PickerCenter
-@onready var picker_list: VBoxContainer = $PickerCenter/Panel/MarginContainer/PickerContent/PickerList
+@onready var title_label: Label = $Center/Pair/SlotsBox/MarginContainer/Content/Title
+@onready var rows_container: VBoxContainer = $Center/Pair/SlotsBox/MarginContainer/Content/Rows
+@onready var picker_list: VBoxContainer = $Center/Pair/OptionsBox/MarginContainer/PickerContent/PickerList
 
 var data: UnitData
-var mode: Mode = Mode.ROWS
+var focus_column: Column = Column.SLOTS
 
 var row_labels: Array[Label] = []
 var selected_row: int = 0
@@ -47,10 +52,12 @@ func setup(unit_data: UnitData) -> void:
 		data.slots.append(null)
 	_build_rows()
 	_refresh_rows()
+	# A coluna de opções já nasce preenchida (pro slot 0, selected_row
+	# default) — as duas colunas abrem JUNTAS, não uma depois da outra.
+	_refresh_picker_options()
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	picker_layer.visible = false
 
 func _build_rows() -> void:
 	for i in SLOT_COUNT:
@@ -67,53 +74,65 @@ func _refresh_rows() -> void:
 		var action = data.slots[i]
 		var text = _display_name(action) if action != null else "-- vazio --"
 		row_labels[i].text = "%d. %s" % [i + 1, text]
-		row_labels[i].modulate = Color.YELLOW if i == selected_row and mode == Mode.ROWS else Color.WHITE
+		row_labels[i].modulate = Color.YELLOW if i == selected_row else Color.WHITE
 
 # Nome mostrado pra uma ação — igual action.action_name, só que com "
 # (Hidden)" no final quando for uma Habilidade marcada Hidden PRA ESTA
 # ESPÉCIE (ver UnitData.is_ability_hidden/LearnsetEntry.is_hidden_ability).
-# Usado tanto na lista dos 6 slots quanto no escolhedor (_open_picker), pra
-# o jogador ver de cara qual Habilidade é a Hidden antes de equipar.
+# Usado tanto na lista dos 6 slots quanto na coluna de opções, pra o
+# jogador ver de cara qual Habilidade é a Hidden antes de equipar.
 func _display_name(action: ActionData) -> String:
 	if action is AbilityData and data.is_ability_hidden(action):
 		return "%s (Hidden)" % action.action_name
 	return action.action_name
 
 func _on_row_mouse_entered(index: int) -> void:
-	if mode != Mode.ROWS:
-		return
+	focus_column = Column.SLOTS
 	selected_row = index
 	_refresh_rows()
+	_refresh_picker_options()
 
 func _on_row_gui_input(event: InputEvent, index: int) -> void:
-	if mode != Mode.ROWS:
-		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		focus_column = Column.SLOTS
 		selected_row = index
-		_open_picker()
+		_refresh_rows()
+		_refresh_picker_options()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if mode == Mode.ROWS:
-		_handle_rows_input(event)
+	if event.is_action_pressed("ui_left"):
+		focus_column = Column.SLOTS
+	elif event.is_action_pressed("ui_right"):
+		focus_column = Column.OPTIONS
+	elif focus_column == Column.SLOTS:
+		_handle_slots_input(event)
+		return
 	else:
-		_handle_picker_input(event)
+		_handle_options_input(event)
+		return
+	get_viewport().set_input_as_handled()
 
-func _handle_rows_input(event: InputEvent) -> void:
+func _handle_slots_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_down"):
 		selected_row = wrapi(selected_row + 1, 0, SLOT_COUNT)
 		_refresh_rows()
+		_refresh_picker_options()
 	elif event.is_action_pressed("ui_up"):
 		selected_row = wrapi(selected_row - 1, 0, SLOT_COUNT)
 		_refresh_rows()
+		_refresh_picker_options()
 	elif event.is_action_pressed("confirm"):
-		_open_picker()
+		# Atalho pra quem só usa teclado: equivalente a apertar seta
+		# direita, pula o foco direto pra coluna de opções (que já está
+		# populada — não tem "abrir" nenhum aqui).
+		focus_column = Column.OPTIONS
 	elif event.is_action_pressed("cancel") or event.is_action_pressed("menu"):
 		_close()
 	else:
 		return
 	get_viewport().set_input_as_handled()
 
-func _handle_picker_input(event: InputEvent) -> void:
+func _handle_options_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_down"):
 		picker_selected = wrapi(picker_selected + 1, 0, picker_options.size())
 		_update_picker_visual()
@@ -122,8 +141,12 @@ func _handle_picker_input(event: InputEvent) -> void:
 		_update_picker_visual()
 	elif event.is_action_pressed("confirm"):
 		_choose_picker_option()
+		focus_column = Column.SLOTS
 	elif event.is_action_pressed("cancel") or event.is_action_pressed("menu"):
-		_close_picker()
+		# Só tira o foco de volta pros slots — NÃO fecha a tela (isso só
+		# acontece com cancel/menu já com o foco em slots, ver
+		# _handle_slots_input). As opções continuam abertas, do lado.
+		focus_column = Column.SLOTS
 	else:
 		return
 	get_viewport().set_input_as_handled()
@@ -132,10 +155,14 @@ func _handle_picker_input(event: InputEvent) -> void:
 # tão fácil quanto trocar ele — sem precisar de um botão "remover" à parte.
 #
 # Ações já equipadas em OUTRO slot ficam de fora da lista — não faz sentido
-# a mesma unidade carregar "Tackle" duas vezes. O slot que está sendo
-# editado agora É EXCLUÍDO dessa checagem (senão a própria ação atual dele
-# desapareceria da lista e escolher "a mesma de novo" ficaria impossível).
-func _open_picker() -> void:
+# a mesma unidade carregar "Tackle" duas vezes. O slot SELECIONADO agora é
+# EXCLUÍDO dessa checagem (senão a própria ação atual dele desapareceria da
+# lista e escolher "a mesma de novo" ficaria impossível).
+#
+# Chamada toda vez que selected_row muda (troca de slot no mouse ou nas
+# setas) — as duas colunas ficam abertas o tempo todo, então a direita
+# precisa se manter em dia sozinha, não só numa hora de "abrir" pontual.
+func _refresh_picker_options() -> void:
 	var equipped_elsewhere: Array = []
 	for i in SLOT_COUNT:
 		if i != selected_row and data.slots[i] != null:
@@ -148,15 +175,13 @@ func _open_picker() -> void:
 		if not equipped_elsewhere.has(action):
 			picker_options.append(action)
 
-	# O slot atual precisa continuar selecionável mesmo se caiu fora da
-	# lista normal de opções, por dois motivos possíveis: (1) Item dado
-	# pela Bag (ver GameState.give_item) não vem do learnset, ou (2)
-	# Habilidade Hidden ainda não revelada (ver UnitData.
-	# get_available_actions/hidden_ability_revealed) — uma unidade que já
-	# equipava essa Habilidade Hidden não pode "perder" ela da lista. Sem
-	# isso, o slot atual simplesmente NÃO aparece, o cursor cai em
-	# "-- vazio --" por padrão, e confirmar ali (achando que só estava
-	# olhando) apaga a ação.
+	# Item dado pela Bag (ver GameState.give_item) não vem do learnset, ou
+	# uma Habilidade Hidden ainda não revelada (ver UnitData.
+	# get_available_actions/hidden_ability_revealed) — nos dois casos, o
+	# slot atual precisa continuar selecionável mesmo caindo fora da lista
+	# normal. Sem isso, o slot atual simplesmente NÃO apareceria na lista, o
+	# cursor cairia em "-- vazio --" por padrão, e escolher ali (achando que
+	# só estava olhando) apagaria a ação.
 	if current != null and not picker_options.has(current):
 		picker_options.append(current)
 
@@ -180,17 +205,16 @@ func _open_picker() -> void:
 		picker_list.add_child(label)
 		picker_labels.append(label)
 
-	mode = Mode.PICKING
-	picker_layer.visible = true
-	_refresh_rows()
 	_update_picker_visual()
 
 func _on_picker_mouse_entered(index: int) -> void:
+	focus_column = Column.OPTIONS
 	picker_selected = index
 	_update_picker_visual()
 
 func _on_picker_gui_input(event: InputEvent, index: int) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		focus_column = Column.OPTIONS
 		picker_selected = index
 		_choose_picker_option()
 
@@ -206,8 +230,7 @@ func _choose_picker_option() -> void:
 	# volta pro inventário em vez de sumir — era isso que causava o bug
 	# reportado (dar um item, depois "esvaziar" o slot dele, e o item
 	# nunca mais aparecer na Bag). Só devolve se REALMENTE mudou (escolher
-	# a mesma opção que já estava lá, ver ajuste acima em _open_picker, não
-	# deve devolver nada).
+	# a mesma opção que já estava lá não deve devolver nada).
 	#
 	# Item Stackable (ver ItemData.stackable) devolve a PILHA INTEIRA que
 	# estava no slot (UnitData.get_slot_quantity), não só 1 — senão
@@ -217,13 +240,11 @@ func _choose_picker_option() -> void:
 		var amount = data.get_slot_quantity(selected_row) if old_action.stackable else 1
 		GameState.add_item(old_action, max(amount, 1))
 		data.set_slot_quantity(selected_row, 0)
-	_close_picker()
 	_refresh_rows()
-
-func _close_picker() -> void:
-	mode = Mode.ROWS
-	picker_layer.visible = false
-	_refresh_rows()
+	# A ação escolhida pode ter mudado o que "equipado em outro slot"
+	# exclui — reconstrói a própria coluna de opções também, já apontando
+	# pra ela como a nova "atual" do slot.
+	_refresh_picker_options()
 
 func _close() -> void:
 	closed.emit()

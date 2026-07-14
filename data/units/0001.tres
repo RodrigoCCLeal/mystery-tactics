@@ -9,6 +9,7 @@
 [ext_resource type="Resource" path="res://data/attacks/vine_whip.tres" id="6"]
 [ext_resource type="Resource" path="res://data/abilities/overgrow.tres" id="7"]
 [ext_resource type="Resource" path="res://data/attacks/growl.tres" id="8"]
+[ext_resource type="Resource" path="res://data/units/0002.tres" id="9"]
 
 [sub_resource type="Resource" id="LearnsetEntry_0001_tackle"]
 script = ExtResource("5")
@@ -42,3 +43,5 @@ defense_base = 49
 special_attack_base = 65
 special_defense_base = 65
 catch_rate = 0.1765
+evolves_into = ExtResource("9")
+evolve_min_level = 16

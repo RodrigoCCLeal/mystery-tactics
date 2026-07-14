@@ -22,7 +22,7 @@ static func total_exp_for_level(level: int, group: String) -> int:
 			return (4 * n * n * n) / 5
 		"Medium Fast":
 			return n * n * n
-		"Medallium Slow":
+		"Medium Slow":
 			return (6 * n * n * n) / 5 - 15 * n * n + 100 * n - 140
 		"Slow":
 			return (5 * n * n * n) / 4
