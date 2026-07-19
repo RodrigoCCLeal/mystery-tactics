@@ -256,7 +256,7 @@ var data: UnitData = null
 
 var unit_name: String = ""
 var weight: int = 1       # 0 a 4 — cópia direta de data.weight, não escala com nível
-var iq: int = 5           # cópia direta de data.iq, não escala com nível
+var iq: String = "Easy"   # cópia de data.iq, ou sobrescrito por GameState.current_trainer_iq (ver _apply_common)
 
 # Nível e XP. Ainda não temos os patamares de XP que definem quando sobe de
 # nível — por enquanto o nível só é usado pra calcular os stats reais.
@@ -348,7 +348,13 @@ func apply_persisted_data(new_data: UnitData) -> void:
 	hp_current = max(new_data.current_hp, 1)
 	update_health_bar()
 
-func apply_fresh_data(new_data: UnitData, start_level: int) -> void:
+# forced_loadout opcional — usado por battle.gd::spawn_enemies() pra times de
+# Trainer com golpes específicos (ver TrainerTeamEntry.loadout). Vazio
+# (padrão, único caso antes desse parâmetro existir) mantém o comportamento
+# de sempre: loadout automático via get_recent_loadout(), tanto pra selvagem
+# quanto pra entrada de Trainer sem loadout customizado (regra 3 do usuário:
+# "se não especificado, use as mesmas regras de unidades selvagens").
+func apply_fresh_data(new_data: UnitData, start_level: int, forced_loadout: Array[ActionData] = [], extra_loadout: Array[ActionData] = []) -> void:
 	# Duplica ANTES de mexer no loadout — new_data normalmente é a mesma
 	# instância compartilhada do catálogo (GameState.ALL_SPECIES), reusada por
 	# todo inimigo dessa espécie em qualquer batalha. Escrever em new_data.slots
@@ -358,7 +364,18 @@ func apply_fresh_data(new_data: UnitData, start_level: int) -> void:
 	# jogador. get_recent_loadout() monta o loadout automático (as até 6 ações
 	# mais recentes do learnset pra esse nível — ver comentário lá).
 	var fresh_data: UnitData = new_data.duplicate()
-	fresh_data.slots = fresh_data.get_recent_loadout(start_level)
+	fresh_data.slots = forced_loadout if not forced_loadout.is_empty() else fresh_data.get_recent_loadout(start_level)
+	# extra_loadout: ANEXADO por cima do loadout já resolvido (forçado OU
+	# automático), nunca o substitui — usado hoje só por times "Rocket" (ver
+	# battle.gd::spawn_enemies), que precisam garantir 1 Rocket Ball em CADA
+	# unidade além de quaisquer golpes já configurados/automáticos. Só 6
+	# slots cabem no total (mesmo limite de sempre, ver UnitData.slots) — se o
+	# loadout já resolvido tiver enchido os 6, o extra simplesmente não entra
+	# em vez de estourar o array (o autor do Trainer precisa deixar espaço de
+	# propósito; mesmo espírito defensivo de "não crashar por configuração
+	# incompleta" já usado no resto do projeto).
+	if not extra_loadout.is_empty() and fresh_data.slots.size() < 6:
+		fresh_data.slots = fresh_data.slots + extra_loadout.slice(0, 6 - fresh_data.slots.size())
 	_apply_common(fresh_data)
 	level = start_level
 	xp = 0
@@ -469,7 +486,7 @@ func _on_attack_animation_finished() -> void:
 	if status_condition == "Flinched":
 		_play_anim("hurt_" + facing)
 		return
-	_play_anim("idle_" + facing)
+	_play_anim(_idle_anim_name())
 
 func init(start_pos: Vector2i, initial_facing: String = "down") -> void:
 	grid_pos = start_pos
@@ -478,7 +495,7 @@ func init(start_pos: Vector2i, initial_facing: String = "down") -> void:
 	# hp_current NÃO é resetado aqui — já vem certo de apply_persisted_data()
 	# (dano de batalhas anteriores) ou apply_fresh_data() (cheio), chamado
 	# antes disso. Resetar aqui apagaria a persistência de HP.
-	_play_anim("idle_" + facing)
+	_play_anim(_idle_anim_name())
 	update_health_bar()
 
 # Ajusta a largura do retângulo de preenchimento pra refletir hp_current/hp_max,
@@ -701,7 +718,32 @@ func _on_status_condition_changed() -> void:
 			# Frozen (anim.play(nome) sempre retoma mesmo se estava
 			# pausado) e de Asleep/Flinched (volta pro idle de verdade,
 			# não só continua o sleep/hurt que estava tocando).
-			_play_anim("idle_" + facing)
+			_play_anim(_idle_anim_name())
+
+# Nome da animação de "descanso" a usar AGORA, olhando pra 3 coisas: se a
+# espécie tem hover_<dir> (voa/flutua parada em vez de ficar em pé — ex:
+# espécies Flying puramente aéreas, que nem chegam a ter idle_<dir> nenhum),
+# se ela tem idle_<dir> de verdade, e o estado ATUAL de data.grounded (pode
+# ter sido forçado a true por um efeito de ataque/item/habilidade — nenhum
+# ainda faz isso, mas a checagem já fica pronta pra quando algum fizer).
+# Regras (pedidas pelo usuário):
+#  1. Espécie sem hover_<dir> nenhum -> sempre idle_<dir>, como sempre foi
+#     (imensa maioria das espécies hoje).
+#  2. Espécie com hover_<dir> E efetivamente grounded (data.grounded==true,
+#     seja de base ou forçado) E tem idle_<dir> de verdade -> usa idle_<dir>
+#     normalmente, igual qualquer outra espécie grounded.
+#  3. Espécie com hover_<dir> e (não-grounded OU grounded mas SEM idle_<dir>
+#     nenhum) -> usa hover_<dir> "como se nada tivesse mudado" (mesma pose
+#     flutuando — só a flag grounded em si que já mudou, pra fins de
+#     terreno/fluido, ver battle.gd::generate_fluid).
+func _idle_anim_name() -> String:
+	var idle_name = "idle_" + facing
+	var hover_name = "hover_" + facing
+	if data == null or not anim.sprite_frames.has_animation(hover_name):
+		return idle_name
+	if data.grounded and anim.sprite_frames.has_animation(idle_name):
+		return idle_name
+	return hover_name
 
 # Envelope fino sobre anim.play(): toda chamada de animação REATIVA (ataque,
 # hurt, idle, walk) passa por aqui em vez de chamar anim.play() direto, pra
@@ -842,7 +884,7 @@ func teleport_to(target_pos: Vector2i) -> void:
 	position = cell_to_position(target_pos)
 	is_moving = false
 	facing = "down"
-	_play_anim("idle_" + facing)
+	_play_anim(_idle_anim_name())
 
 # Vira no próprio eixo pra encarar target_cell, sem se mover — usado durante
 # a mira de ataque, pra unidade "seguir" o tile destacado com o olhar.
@@ -851,7 +893,7 @@ func face_towards(target_cell: Vector2i) -> void:
 		return
 	facing = get_direction_suffix(target_cell - grid_pos)
 	if not is_moving:
-		_play_anim("idle_" + facing)
+		_play_anim(_idle_anim_name())
 
 # Toca a animação de ataque na direção atual (facing já deve ter sido ajustado
 # por face_towards antes de chamar isso). Ataques físicos usam "attack_<dir>".
@@ -931,7 +973,7 @@ func _process(delta: float) -> void:
 			walk_path.remove_at(0)
 			if walk_path.is_empty():
 				is_moving = false
-				_play_anim("idle_" + facing)
+				_play_anim(_idle_anim_name())
 			else:
 				_face_next_leg()
 

@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://cumm3ly6s5e6"]
+
+[ext_resource type="Script" uid="uid://28ug00cxflv8" path="res://scripts/exclamation_mark.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://043yagup3bak" path="res://assets/sprites/effects/!.png" id="2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5rro7"]
+atlas = ExtResource("2")
+region = Rect2(0, 0, 192, 171)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_if2qm"]
+atlas = ExtResource("2")
+region = Rect2(192, 0, 192, 171)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_feyvp"]
+atlas = ExtResource("2")
+region = Rect2(384, 0, 192, 171)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ue7sq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5rro7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_if2qm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_feyvp")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="ExclamationMark" type="AnimatedSprite2D" unique_id=115950697]
+sprite_frames = SubResource("SpriteFrames_ue7sq")
+script = ExtResource("1")

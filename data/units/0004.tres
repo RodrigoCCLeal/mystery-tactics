@@ -1,15 +1,21 @@
 [gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://c6u2qdc3o2erk"]
 
 [ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
-[ext_resource type="SpriteFrames" uid="uid://hwcibx1tpaav" path="res://assets/sprites/Pokemon/0004/frames.tres" id="2"]
-[ext_resource type="Texture2D" uid="uid://ctxhnmo0l6n6o" path="res://assets/sprites/Pokemon/0004/Normal.png" id="3"]
+[ext_resource type="SpriteFrames" uid="uid://hwcibx1tpaav" path="res://assets/sprites/Pokemon/Sprites/0004/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://blkftyncap701" path="res://assets/sprites/Pokemon/Sprites/0004/Normal.png" id="3"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="4"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5"]
 [ext_resource type="Resource" path="res://data/attacks/ember.tres" id="6"]
 [ext_resource type="Resource" path="res://data/abilities/blaze.tres" id="7"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="7_e6ex1"]
 [ext_resource type="Resource" path="res://data/attacks/growl.tres" id="8"]
-[ext_resource type="Resource" path="res://data/units/0005.tres" id="9"]
+[ext_resource type="Resource" uid="uid://iw5w08o8gdwx" path="res://data/units/0005.tres" id="9"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="evo_opt_script"]
+
+[sub_resource type="Resource" id="EvolutionOption_1"]
+script = ExtResource("evo_opt_script")
+target = ExtResource("9")
+min_level = 16
 
 [sub_resource type="Resource" id="LearnsetEntry_0004_tackle"]
 script = ExtResource("5")
@@ -46,5 +52,4 @@ special_defense_base = 50
 speed_base = 65
 catch_rate = 0.1765
 base_exp_yield = 62
-evolves_into = ExtResource("9")
-evolve_min_level = 16
+evolution_options = Array[ExtResource("evo_opt_script")]([SubResource("EvolutionOption_1")])

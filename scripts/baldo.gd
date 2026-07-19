@@ -8,7 +8,7 @@ extends "res://scripts/npc.gd"
 # get_tree().paused = true/false ao redor do popup é o MESMO padrão de
 # nurse.gd — trava o overworld inteiro enquanto o tutorial está na tela.
 
-const TUTORIAL_SCREEN_SCENE: PackedScene = preload("res://scenes/tutorial_screen.tscn")
+const TUTORIAL_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/tutorial_screen.tscn")
 
 func interact() -> void:
 	var screen = TUTORIAL_SCREEN_SCENE.instantiate()

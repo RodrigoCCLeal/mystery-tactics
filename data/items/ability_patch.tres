@@ -1,13 +1,14 @@
-[gd_resource type="Resource" script_class="ItemData" format=3]
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://dt0mya0novat0"]
 
 [ext_resource type="Script" uid="uid://c8w8n0ts68l77" path="res://scripts/item_data.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://cfrelktg50uvm" path="res://assets/sprites/items/Medicine/abilitypatch.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-action_name = "Ability Patch"
 icon = ExtResource("2")
-category = "Medicine"
 effect_description = "Revela a Habilidade Hidden de uma unidade, tornando-a disponível pra equipar."
+buy_price = 250000
+sell_price = 125000
 can_use = true
 reveals_hidden_ability = true
+action_name = "Ability Patch"

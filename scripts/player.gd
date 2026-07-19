@@ -14,16 +14,23 @@ extends Node2D
 # get_node() aqui resolve na hora — Player mora dentro de "Actors" (Node2D
 # com y_sort_enabled = true, ver test.gd/test.tscn: é o que resolve o
 # personagem desenhar na ordem errada perto de um NPC), que por sua vez é
-# filho direto de Test, o mesmo Node2D que tem o TileMapLayer chamado
-# "TileMapLayer" — daí o "../.." (sobe de Player pra Actors, de Actors pra
-# Test). Se um dia o Player for reusado em outra cena com estrutura
-# diferente, isso precisa generalizar.
-@onready var tile_map: TileMapLayer = get_node("../../TileMapLayer")
-
-# Mesmo motivo/padrão do tile_map acima — Test (ver test.gd::has_npc_at,
-# usado em can_move_to() lá embaixo pra bloquear o passo em cima de um NPC
-# parado) fica DOIS níveis acima do Player agora (Player -> Actors -> Test).
+# filho direto de Test OU World (Player -> Actors -> Test/World, mesma
+# profundidade nos dois — daí o "../.." funcionar em qualquer um dos dois
+# sem mudar nada aqui). "world" é o nome genérico porque quem hospeda o
+# Player pode ser QUALQUER um dos dois — ver test.gd::has_npc_at/
+# is_cell_walkable e o world.gd equivalente, que fazem a MESMA pergunta de
+# jeitos diferentes por baixo (Test tem um TileMapLayer só; World tem três).
 @onready var world: Node2D = get_node("../..")
+
+# tile_map aqui serve SÓ pra conta de posição (map_to_local, tile_set.tile_size,
+# alinhamento do sprite no pé do tile) — nunca pra decidir se uma célula é
+# andável (isso é sempre world.is_cell_walkable(), ver can_move_to() lá
+# embaixo). É por isso que pedimos pro world.gd/test.gd nos dar o "chão" de
+# referência via get_ground_tile_map() em vez de acharmos ele sozinhos com um
+# NodePath fixo tipo "../../TileMapLayer" — Test só tem UM TileMapLayer, mas
+# World (a cena de STARTINGTOWN) tem TRÊS (Ground/Objects/Top) com nomes
+# diferentes; Player não devia precisar saber disso.
+@onready var tile_map: TileMapLayer = world.get_ground_tile_map()
 
 # Antes (ver git blame se quiser comparar) essas três eram @export Texture2D,
 # arrastadas à mão no Inspector de player.tscn — funcionava porque só
@@ -82,6 +89,24 @@ const MOVE_DURATION = 0.22   # segundos pra atravessar 1 tile andando
 const RUN_DURATION = 0.11    # segundos pra atravessar 1 tile correndo
 const BIKE_DURATION = RUN_DURATION / 2.0   # segundos pra atravessar 1 tile de bike (2x Run)
 
+# Pulo da ladeira de mão única (ver world.gd::is_one_way_tile) — pedido do
+# usuário: "Make the character hop OVER the one-direction tiles, so the
+# player doesn't phase through it". Sem spritesheet de pulo nenhuma pro
+# personagem (walk_sheet/run_sheet/bike_sheet só têm 4 quadros de perna
+# alternando, sem pose de salto), o "hop" é feito 100% por MOVIMENTO em vez
+# de animação nova: um arco vertical somado em cima de position.y durante o
+# passo (ver _continue_move), com o sprite parado numa pose só (ver
+# _try_start_move) — combinado, isso já lê como "pulando por cima" em vez de
+# "andando reto por cima", sem precisar de nenhum asset novo.
+# O pulo cobre 2 tiles de distância de uma vez só (a ladeira + a célula
+# logo depois, ver _try_start_move) — mais tempo que um passo comum de 1
+# tile (senão parece um teleporte), mas ainda mais rápido que dois passos
+# normais em sequência (2 x MOVE_DURATION = 0.44s), pra manter a sensação
+# de "pulo" em vez de "andar meio devagar".
+const HOP_DURATION = 0.36
+const HOP_HEIGHT = 10.0      # pixels que o sprite sobe no pico do arco (t=0.5)
+var is_hopping: bool = false
+
 # Emitido quando a unidade TERMINA de entrar numa célula nova (não quando só
 # vira de direção sem poder andar). test.gd escuta isso pra decidir coisas
 # que dependem do tile em que o personagem pisou (ex: grama alta -> chance
@@ -116,7 +141,13 @@ func _ready() -> void:
 	anim.sprite_frames = build_sprite_frames()
 	_align_sprite_to_tile()
 	_setup_sink_shader()
-	position = tile_map.map_to_local(grid_pos)
+	# global_position (não position) pelo mesmo motivo do fix gêmeo em
+	# npc.gd::_ready() — Player mora dentro de "Actors", que pode ter
+	# qualquer offset (ex: oak_lab_interior.tscn::Actors = Vector2(-20, 2)).
+	# tile_map.map_to_local() devolve uma posição no espaço da TileMapLayer,
+	# não no espaço do pai de Player — atribuir direto em `position` (que É
+	# relativo ao pai) só dava certo quando esse pai ficava em (0,0).
+	global_position = tile_map.to_global(tile_map.map_to_local(grid_pos))
 	anim.play(_idle_anim_name())
 
 # O shader de afundar na grama (sink_in_grass.gdshader) precisa saber, em
@@ -343,7 +374,18 @@ func _idle_anim_name() -> String:
 # um toque rápido de direção (solta antes do próximo _process) virar só um
 # giro, e segurar a tecla virar "gira, depois anda continuamente" — mesmo
 # comportamento clássico de jogo Pokémon.
+# Enquanto uma porta está em uso (ver logo abaixo), o Player fica
+# completamente parado — sem isso, segurar a tecla de direção chamaria
+# world.use_door() de NOVO a cada frame (a animação/fade inteiros levam
+# vários frames pra terminar, e _try_start_move roda todo frame que o
+# Player não estiver "is_moving"), empilhando trocas de cena por cima uma
+# da outra.
+var is_using_door: bool = false
+
 func _try_start_move() -> void:
+	if is_using_door:
+		return
+
 	var dir = read_direction()
 	if dir == Vector2i.ZERO:
 		# Ninguém segurando direção nenhuma — mostra parado. Isso (e não mais
@@ -360,26 +402,77 @@ func _try_start_move() -> void:
 
 	var target_cell = grid_pos + dir
 
-	if not can_move_to(target_cell):
+	# Porta (ver door.gd) checada ANTES de mover — o jogador NÃO entra na
+	# célula da porta, fica parado bem na frente dela enquanto a animação
+	# de abrir toca (ver world.use_door/test.gd/house_interior.gd), depois
+	# a tela escurece e troca de cena. Antes esse check rodava DEPOIS do
+	# passo terminar (tile_entered), o que fazia o personagem ficar
+	# desenhado EM CIMA da porta enquanto ela "abria" — visualmente errado.
+	var door = world.get_door_at(target_cell)
+	if door != null:
+		is_using_door = true
+		anim.play(_idle_anim_name())
+		world.use_door(door)
+		return
+
+	if not can_move_to(target_cell, dir):
 		anim.play(_idle_anim_name())   # já estava de frente, mas não pode andar pra lá (parede etc.)
 		return
 
-	grid_pos = target_cell
+	# Ladeira de mão única não é "andar pra célula seguinte" — o personagem
+	# PULA por cima dela e continua até a célula LOGO DEPOIS (pedido do
+	# usuário: "the character should jump one tile farther"), igual ladeira
+	# de jogo Pokémon de verdade. world.is_one_way_tile() só confere SE
+	# target_cell é ladeira; can_move_to() (logo acima) já garantiu que a
+	# direção bate, senão nem teríamos chegado até aqui.
+	var landing_cell = target_cell
+	is_hopping = world.is_one_way_tile(target_cell)
+	if is_hopping:
+		var beyond_cell = target_cell + dir
+		# Célula depois da ladeira tem que estar livre também — sem isso, o
+		# pulo podia atravessar a ladeira e cair em cima de parede/NPC do
+		# outro lado. Sem lugar pra pousar, trava igual bateu numa parede
+		# comum (mesmo "não anda, só vira de frente" de can_move_to acima).
+		if not can_move_to(beyond_cell, dir):
+			anim.play(_idle_anim_name())
+			return
+		landing_cell = beyond_cell
+
+	grid_pos = landing_cell
 	is_running = Input.is_action_pressed("run")
-	move_start = position
-	move_target = tile_map.map_to_local(grid_pos)
+	# move_start/move_target agora em espaço GLOBAL — mesmo motivo do fix em
+	# _ready() acima: tile_map.map_to_local() é sempre espaço da TileMapLayer,
+	# nunca do pai de Player. _continue_move() interpola os dois e escreve em
+	# global_position (ver lá embaixo), não mais em position direto.
+	move_start = global_position
+	move_target = tile_map.to_global(tile_map.map_to_local(grid_pos))
 	move_elapsed = 0.0
-	move_duration = BIKE_DURATION if is_biking else (RUN_DURATION if is_running else MOVE_DURATION)
+	move_duration = HOP_DURATION if is_hopping else (BIKE_DURATION if is_biking else (RUN_DURATION if is_running else MOVE_DURATION))
 	is_moving = true
-	var prefix = "bike_" if is_biking else ("run_" if is_running else "walk_")
-	anim.play(prefix + facing)
+	if is_hopping:
+		# Segura numa pose só (sem ciclo de perna alternando) durante o
+		# pulo inteiro — junto com o arco vertical em _continue_move, isso
+		# vende "pulando por cima" bem melhor do que continuar o ciclo de
+		# andar normal por cima da ladeira.
+		anim.play(_idle_anim_name())
+	else:
+		var prefix = "bike_" if is_biking else ("run_" if is_running else "walk_")
+		anim.play(prefix + facing)
 
 func _continue_move(delta: float) -> void:
 	move_elapsed += delta
 	var t = clamp(move_elapsed / move_duration, 0.0, 1.0)
-	position = move_start.lerp(move_target, t)
+	global_position = move_start.lerp(move_target, t)
+	if is_hopping:
+		# Arco parabólico simples: 0 nas pontas (t=0 e t=1), pico em t=0.5 —
+		# sin(t*PI) já tem exatamente essa forma. Só mexe em global_position.y
+		# (a posição de VERDADE do Node2D), nunca em anim.offset (esse já é
+		# usado pro alinhamento fixo do pé no tile, ver _align_sprite_to_tile
+		# — somar os dois ali ia descompensar o alinhamento depois do pulo).
+		global_position.y -= sin(t * PI) * HOP_HEIGHT
 	if t >= 1.0:
 		is_moving = false
+		is_hopping = false
 		# NÃO troca pra idle aqui — antes trocava (anim.play(_idle_anim_name())),
 		# mas isso interrompia o ciclo de walk/run/bike a CADA passo: se a
 		# direção continuasse segurada, _try_start_move (no próximo _process)
@@ -425,15 +518,22 @@ func direction_to_facing(dir: Vector2i) -> String:
 # Checagem de colisão de verdade agora: cada tile tem um campo de dado
 # customizado "walkable" (bool), configurado no editor do TileSet (aba
 # "Custom Data" -> pinta "walkable" = true nos tiles andáveis). Célula sem
-# tile nenhum (tile_data null) ou tile marcado como não-andável (inclusive
-# o padrão, que é false, se ninguém configurar nada) bloqueia o passo — é
-# assim que troncos de árvore, água, etc. vão travar o personagem mais pra
-# frente, no mesmo espírito de wall_cells/fluid_cells em battle.gd.
-func can_move_to(cell: Vector2i) -> bool:
-	var tile_data = tile_map.get_cell_tile_data(cell)
-	if tile_data == null:
-		return false
-	if not tile_data.get_custom_data("walkable"):
+# tile nenhum, ou tile marcado como não-andável (inclusive o padrão, que é
+# false, se ninguém configurar nada) bloqueia o passo — é assim que troncos
+# de árvore, água, etc. vão travar o personagem, no mesmo espírito de
+# wall_cells/fluid_cells em battle.gd.
+#
+# A pergunta em si (is_cell_walkable) é delegada pra world (Test ou World) —
+# Player não sabe, nem precisa saber, QUANTOS TileMapLayers existem na cena
+# atual nem como eles se combinam (World, por exemplo, deixa a camada de
+# Objetos "vencer" a de Chão quando as duas têm tile na mesma célula).
+#
+# dir (a direção do PASSO, não só a célula alvo) é o que permite ladeira de
+# mão única existir (ver world.gd::is_cell_walkable, custom data
+# "one_way_dir" no TileSet) — sem saber EM QUE direção o personagem está
+# andando, não dá pra distinguir "saindo" de "entrando" numa borda dessas.
+func can_move_to(cell: Vector2i, dir: Vector2i = Vector2i.ZERO) -> bool:
+	if not world.is_cell_walkable(cell, dir):
 		return false
 	# NPC parado (ver npc.gd/test.gd::has_npc_at) bloqueia o passo igual uma
 	# parede, mesmo sem ter física nenhuma — checado por último porque é o
@@ -458,6 +558,6 @@ func set_sunk_in_grass(sunk: bool) -> void:
 func teleport_to(cell: Vector2i, new_facing: String = facing) -> void:
 	grid_pos = cell
 	facing = new_facing
-	position = tile_map.map_to_local(grid_pos)
+	global_position = tile_map.to_global(tile_map.map_to_local(grid_pos))   # ver comentário em _ready() sobre global_position vs position
 	is_moving = false
 	anim.play(_idle_anim_name())

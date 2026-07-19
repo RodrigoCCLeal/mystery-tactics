@@ -62,9 +62,14 @@ var picker_filter_hint: String = ""
 const UnitScript = preload("res://scripts/unit.gd")
 const ExpGroups = preload("res://scripts/exp_groups.gd")
 
-const SLOT_ACTION_MENU_SCENE: PackedScene = preload("res://scenes/slot_action_menu.tscn")
-const UNIT_SUMMARY_SCENE: PackedScene = preload("res://scenes/unit_summary.tscn")
-const UNIT_LOADOUT_SCENE: PackedScene = preload("res://scenes/unit_loadout.tscn")
+const SLOT_ACTION_MENU_SCENE: PackedScene = preload("res://scenes/ui/popups/slot_action_menu.tscn")
+const UNIT_SUMMARY_SCENE: PackedScene = preload("res://scenes/ui/screens/unit_summary.tscn")
+const UNIT_LOADOUT_SCENE: PackedScene = preload("res://scenes/ui/screens/unit_loadout.tscn")
+const EVOLUTION_CHOICE_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/popups/evolution_choice_screen.tscn")
+# Mesma caixa de 1 linha que trainer.gd/loot_ball.gd já usam pra mensagem
+# rápida + esperar X/Z — reaproveitada aqui só pro aviso de "não coube o
+# peso" (ver _attempt_evolution).
+const MESSAGE_BOX_SCENE: PackedScene = preload("res://scenes/ui/popups/trainer_message_box.tscn")
 
 const SLOT_COUNT = 6
 const PORTRAIT_SIZE = 48.0
@@ -170,7 +175,7 @@ func _on_cancel_pressed() -> void:
 func _open_slot_action_menu(index: int, data: UnitData) -> void:
 	var menu = SLOT_ACTION_MENU_SCENE.instantiate()
 	add_child(menu)
-	menu.setup(data.unit_name, _get_evolution_target(data) != null)
+	menu.setup(data.unit_name, _get_available_evolutions(data).size() > 0)
 	active_submenu = menu
 	menu.closed.connect(_on_slot_action_menu_closed.bind(index))
 
@@ -185,29 +190,99 @@ func _on_slot_action_menu_closed(option: String, index: int) -> void:
 		"Loadout":
 			_open_loadout(index)
 		"Evolve":
-			_perform_evolution(index)
+			_try_evolve(index)
 
-# Checa os 3 pré-requisitos de UnitData.evolves_into/evolve_min_level/
-# evolve_requires_action (ver comentário deles) e devolve a espécie-alvo se
-# TODOS os que se aplicam estiverem satisfeitos, ou null se não evolui
-# ainda (ou nunca evolui — evolves_into == null). evolve_min_level <= 0 e
-# evolve_requires_action == null contam como "sem exigência", igual
-# comentado em unit_data.gd — só Swinub (nível) e Piloswine (ação
-# equipada) usam um requisito de cada vez hoje, mas nada impede uma espécie
-# futura exigir os DOIS ao mesmo tempo.
-func _get_evolution_target(data: UnitData) -> UnitData:
-	if data == null or data.evolves_into == null:
-		return null
-	if data.evolve_min_level > 0 and data.level < data.evolve_min_level:
-		return null
-	if data.evolve_requires_action != null and not data.slots.has(data.evolve_requires_action):
-		return null
-	return data.evolves_into
+# Checa os pré-requisitos (nível mínimo, ação equipada — ver
+# evolution_option.gd) de CADA EvolutionOption em data.evolution_options e
+# devolve só as que estão satisfeitas AGORA. Pode devolver 0 (não evolui
+# ainda, ou não evolui nunca — evolution_options vazio), 1 (evolução
+# normal, direto — ver _try_evolve) ou 2+ (evolução COM ESCOLHA, abre
+# evolution_choice_screen.tscn). min_level <= 0 e requires_action == null
+# contam como "sem exigência", igual sempre.
+func _get_available_evolutions(data: UnitData) -> Array[EvolutionOption]:
+	var available: Array[EvolutionOption] = []
+	if data == null:
+		return available
+	for option in data.evolution_options:
+		if option == null or option.target == null:
+			continue
+		if option.min_level > 0 and data.level < option.min_level:
+			continue
+		if option.requires_action != null and not data.slots.has(option.requires_action):
+			continue
+		available.append(option)
+	return available
 
-# Evolui a unidade do slot `index` — troca a ESPÉCIE (stats base, sprite,
-# learnset, tipos, a própria evolves_into/evolve_min_level/
-# evolve_requires_action pra permitir uma CADEIA de evoluções, ex: Swinub ->
-# Piloswine -> Mamoswine) preservando o que é da UNIDADE, não da espécie:
+# Ponto de entrada de "Evolve" no popup de slot (ver
+# _on_slot_action_menu_closed) — decide sozinho entre evoluir DIRETO (1
+# opção disponível, mesmo comportamento de sempre) ou abrir a tela de
+# escolha (2+ disponíveis ao mesmo tempo). Pedido do usuário: "a unit might
+# be able to evolve into different options. when able to evolve, show a
+# selection screen with the evolution options" — a tela só existe quando há
+# de fato uma escolha a fazer, não pra toda evolução.
+func _try_evolve(index: int) -> void:
+	var data: UnitData = GameState.get_roster_slot(index)
+	if data == null:
+		return
+	var options := _get_available_evolutions(data)
+	if options.is_empty():
+		return
+	if options.size() == 1:
+		_attempt_evolution(index, options[0].target)
+		return
+	_open_evolution_choice(index, data, options)
+
+func _open_evolution_choice(index: int, data: UnitData, options: Array[EvolutionOption]) -> void:
+	var names: Array[String] = []
+	for option in options:
+		names.append(option.target.unit_name)
+	var screen = EVOLUTION_CHOICE_SCREEN_SCENE.instantiate()
+	add_child(screen)
+	screen.setup(data.unit_name, names)
+	active_submenu = screen
+	screen.closed.connect(_on_evolution_choice_closed.bind(index, options))
+
+func _on_evolution_choice_closed(chosen_index: int, index: int, options: Array[EvolutionOption]) -> void:
+	active_submenu = null
+	if chosen_index < 0 or chosen_index >= options.size():
+		return   # Z/cancelado — nenhuma opção escolhida, nada acontece.
+	_attempt_evolution(index, options[chosen_index].target)
+
+# Última checagem antes de evoluir de verdade (ver _perform_evolution) —
+# pedido do usuário: "show an error message and stop the player from
+# evolving if it would exceed the weight limit". get_roster_weight() JÁ
+# inclui o peso ATUAL da unidade evoluindo (ela está no roster agora), por
+# isso a conta é "peso total - peso antigo + peso novo" (a DIFERENÇA), não
+# "peso total + peso novo" — senão toda evolução pareceria estar somando um
+# peso extra inteiro em vez de só a diferença entre as duas espécies.
+func _attempt_evolution(index: int, target: UnitData) -> void:
+	var data: UnitData = GameState.get_roster_slot(index)
+	if data == null or target == null:
+		return
+	var projected_weight = GameState.get_roster_weight() - data.weight + target.weight
+	if projected_weight > GameState.MAX_TEAM_WEIGHT:
+		_show_evolution_error("%s is too heavy to evolve into %s right now!" % [data.unit_name, target.unit_name])
+		return
+	_perform_evolution(index, target)
+
+# Reaproveita trainer_message_box.tscn (ver MESSAGE_BOX_SCENE) — o sinal
+# "closed" dele não tem argumento nenhum, mesma assinatura de
+# _on_child_screen_closed() (usado por Summary/Loadout), então dá pra
+# conectar direto sem bind nenhum.
+func _show_evolution_error(text: String) -> void:
+	var box = MESSAGE_BOX_SCENE.instantiate()
+	add_child(box)
+	box.setup(text)
+	active_submenu = box
+	box.closed.connect(_on_child_screen_closed)
+
+# Evolui a unidade do slot `index` de verdade — chamado só depois que
+# _attempt_evolution() já aprovou o peso (ver acima), com `target` já
+# resolvido por quem chamou (_try_evolve, direto ou via
+# _on_evolution_choice_closed). Troca a ESPÉCIE (stats base, sprite,
+# learnset, tipos, a própria evolution_options pra permitir uma CADEIA de
+# evoluções, ex: Swinub -> Piloswine -> Mamoswine) preservando o que é da
+# UNIDADE, não da espécie:
 # nível, xp, loadout equipado (slots) e quantas cargas de item empilhável
 # cada slot ainda tem (slot_quantities). HP máximo é recalculado com as
 # stats da NOVA espécie, e o HP atual ganha a MESMA diferença (new_max -
@@ -215,12 +290,34 @@ func _get_evolution_target(data: UnitData) -> UnitData:
 # originais: dano sofrido continua contando, mas o aumento de HP máximo
 # vira HP disponível na hora, sem curar tudo de graça nem perder o dano já
 # levado.
-func _perform_evolution(index: int) -> void:
+#
+# Duas correções que vieram junto (pedidas explicitamente pelo usuário,
+# valem pra QUALQUER cadeia de evolução, não só uma espécie específica):
+#
+# 1) hidden_ability_revealed é da UNIDADE (progresso de Ability Patch), não
+#    da espécie — precisa sobreviver à evolução mesmo se a NOVA espécie não
+#    tiver Habilidade Hidden nenhuma pra mostrar agora (ex: Metapod não tem,
+#    mas Caterpie tinha e Butterfree também tem — sem isso, evoluir pra
+#    Metapod "esqueceria" que o Ability Patch já foi usado, e Butterfree
+#    nasceria bloqueado de novo).
+#
+# 2) slots (loadout equipado) é copiado da unidade antiga, mas só HABILIDADE
+#    (AbilityData) equipada é limpa se a NOVA espécie não souber ela (mesmo
+#    critério de LearnsetEntry.action, comparado por instância — ver
+#    is_ability_hidden()/get_available_actions() em unit_data.gd). Ex:
+#    Caterpie com Run Away (Habilidade Hidden) equipado evolui pra Metapod,
+#    que nem aprende Run Away — sem essa limpeza, Metapod ficaria com uma
+#    Habilidade que não é dele.
+#    ATAQUES (AttackData) e ITENS (ItemData) equipados NUNCA são removidos
+#    aqui, mesmo que a nova espécie não os tenha no learnset — um ataque
+#    aprendido por uma pré-evolução treinada continua equipado depois de
+#    evoluir (é essa persistência que recompensa treinar uma unidade em vez
+#    de simplesmente capturá-la já evoluída: ela pode chegar com movimentos
+#    que a espécie evoluída não aprenderia sozinha). Só Habilidade troca de
+#    espécie pra espécie.
+func _perform_evolution(index: int, target: UnitData) -> void:
 	var data: UnitData = GameState.get_roster_slot(index)
-	if data == null:
-		return
-	var target: UnitData = _get_evolution_target(data)
-	if target == null:
+	if data == null or target == null:
 		return
 	var old_hp_max = _hp_max(data)
 	var evolved: UnitData = target.duplicate()
@@ -228,6 +325,18 @@ func _perform_evolution(index: int) -> void:
 	evolved.xp = data.xp
 	evolved.slots = data.slots.duplicate()
 	evolved.slot_quantities = data.slot_quantities.duplicate()
+	evolved.hidden_ability_revealed = data.hidden_ability_revealed
+	for i in evolved.slots.size():
+		var action: ActionData = evolved.slots[i]
+		if action == null or not (action is AbilityData):
+			continue
+		var still_learnable = false
+		for entry in evolved.learnset:
+			if entry.action == action:
+				still_learnable = true
+				break
+		if not still_learnable:
+			evolved.slots[i] = null
 	var new_hp_max = _hp_max(evolved)
 	evolved.current_hp = clamp(data.current_hp + (new_hp_max - old_hp_max), 1, new_hp_max)
 	# party_screen.gd não tem um log de mensagens igual battle.gd — o nome

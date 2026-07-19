@@ -9,12 +9,17 @@ const TILE_SIZE = 24
 @warning_ignore("integer_division")
 const DEPLOY_ZONE_WIDTH = MAP_WIDTH / 4
 
-const UNIT_SCENE: PackedScene = preload("res://scenes/unit.tscn")
-const PROJECTILE_SCENE: PackedScene = preload("res://scenes/projectile.tscn")
-const IMPACT_EFFECT_SCENE: PackedScene = preload("res://scenes/impact_effect.tscn")
-const CAPTURE_BALL_SCENE: PackedScene = preload("res://scenes/capture_ball.tscn")
-const STAT_CHANGE_EFFECT_SCENE: PackedScene = preload("res://scenes/stat_change_effect.tscn")
-const CAST_EFFECT_SCENE: PackedScene = preload("res://scenes/cast_effect.tscn")
+const UNIT_SCENE: PackedScene = preload("res://scenes/actors/unit.tscn")
+const PROJECTILE_SCENE: PackedScene = preload("res://scenes/effects/projectile.tscn")
+const IMPACT_EFFECT_SCENE: PackedScene = preload("res://scenes/effects/impact_effect.tscn")
+const CAPTURE_BALL_SCENE: PackedScene = preload("res://scenes/effects/capture_ball.tscn")
+const STAT_CHANGE_EFFECT_SCENE: PackedScene = preload("res://scenes/effects/stat_change_effect.tscn")
+const CAST_EFFECT_SCENE: PackedScene = preload("res://scenes/effects/cast_effect.tscn")
+
+# Item forçado no loadout de TODA unidade de um time "Rocket" (ver
+# spawn_enemies()/_spawn_enemy_unit) — pedido do usuário: "All units from
+# Rocket teams will have 1 Rocket Ball item action in their loadout".
+const ROCKET_BALL_ITEM: ItemData = preload("res://data/items/rocketball.tres")
 
 # Volta de Unit.facing (string) pra um Vector2i de direção — o INVERSO de
 # Unit.get_direction_suffix (delta -> string). Usada só por play_cast_effect
@@ -1176,31 +1181,70 @@ func spawn_enemies() -> void:
 			hidden_cells.append(Vector2i(x, y))
 	hidden_cells.shuffle()
 
-	var group = GameState.current_area.pick_group() if GameState.current_area != null else null
-	var entries: Array[EncounterEntry] = group.entries if group != null else []
+	# Trainer (ver trainer.gd/GameState.is_trainer_battle) spawna do time
+	# JÁ RESOLVIDO que test.gd::start_trainer_battle() copiou pra
+	# GameState.current_trainer_team antes de trocar de cena — Trainer.
+	# get_active_team() já escolheu o tier certo (número de badges) e cada
+	# entrada já traz seu loadout (vazio = automático, ver TrainerTeamEntry).
+	# Sem isso NÃO teria como spawn_enemies() ler o node Trainer de volta:
+	# change_scene_to_file() já destruiu a cena de overworld inteira, Trainer
+	# incluso, antes de battle.tscn sequer existir.
+	# Times "Rocket" (ver Trainer.iq) ganham 1 Rocket Ball automática em CADA
+	# unidade, além do loadout já configurado/automático de cada uma — ver
+	# comentário grande em Unit.apply_fresh_data::extra_loadout.
+	#
+	# NÃO dá pra escrever isso como uma linha só (`[ROCKET_BALL_ITEM] if ...
+	# else []`) — um literal de array dentro de um ternário sai como Array
+	# comum (sem tipo nenhum), e GDScript recusa atribuir isso a uma variável
+	# declarada Array[ActionData] ("Trying to assign an array of type
+	# 'Array' to a variable of type 'Array[ActionData]'", erro visto ao
+	# iniciar batalha contra um treinador Rocket). Declarar vazio e usar
+	# append() condicional mantém o array já tipado o tempo todo.
+	var extra_loadout: Array[ActionData] = []
+	if GameState.current_trainer_iq == "Rocket":
+		extra_loadout.append(ROCKET_BALL_ITEM)
 
-	for entry in entries:
-		var pos = pop_valid_cell(hidden_cells, entry.species)
-		if pos == null:
-			continue   # não sobrou nenhuma célula válida pra essa unidade (raro)
-		var e = UNIT_SCENE.instantiate()
-		add_child(e)
-		e.apply_fresh_data(entry.species, entry.level)
-		e.mark_as_enemy()
-		e.init(pos)
-		enemy_units.append(e)
-		# Inimigo agora entra em turn_queue igual jogador (ver start_turn_order),
-		# então isso passa a valer de verdade: se algum efeito mudar a Speed de
-		# um inimigo no meio da rodada, a fila reordena do mesmo jeito.
-		e.speed_changed.connect(reorder_turn_queue_by_speed)
-		# Mesmo raciocínio de spawn_player_units_staged() — init() acima é só
-		# posicionamento instantâneo (não conta como "entrar" em lugar nenhum,
-		# mesmo espírito de Player.teleport_to() no overworld), então um
-		# inimigo não se queima só por NASCER em cima de lava; só ao andar pra
-		# lá de verdade depois.
-		e.tile_entered.connect(_on_unit_tile_entered.bind(e))
+	if GameState.is_trainer_battle:
+		for entry in GameState.current_trainer_team:
+			_spawn_enemy_unit(entry.species, entry.level, entry.loadout, hidden_cells, extra_loadout)
+	else:
+		var group = GameState.current_area.pick_group() if GameState.current_area != null else null
+		var entries: Array[EncounterEntry] = group.entries if group != null else []
+		for entry in entries:
+			_spawn_enemy_unit(entry.species, entry.level, [], hidden_cells, [])
 
 	units = player_units + enemy_units
+
+# Extraído de spawn_enemies() pra servir os dois caminhos (selvagem E
+# Trainer) sem duplicar a parte de posicionar/marcar/conectar sinais —
+# forced_loadout vazio reproduz exatamente o comportamento selvagem de
+# sempre (ver Unit.apply_fresh_data).
+func _spawn_enemy_unit(species: UnitData, level: int, forced_loadout: Array[ActionData], hidden_cells: Array[Vector2i], extra_loadout: Array[ActionData] = []) -> void:
+	var pos = pop_valid_cell(hidden_cells, species)
+	if pos == null:
+		return   # não sobrou nenhuma célula válida pra essa unidade (raro)
+	var e = UNIT_SCENE.instantiate()
+	add_child(e)
+	e.apply_fresh_data(species, level, forced_loadout, extra_loadout)
+	# GameState.current_trainer_iq (ver Trainer.iq) sobrescreve o iq da
+	# ESPÉCIE pra TODA unidade deste Trainer — "" (batalha selvagem, ou
+	# Trainer sem iq preenchido, nunca acontece hoje já que o padrão é
+	# "Medium") deixa cada UnitData.iq valer sozinho, sem sobrescrever nada.
+	if GameState.current_trainer_iq != "":
+		e.iq = GameState.current_trainer_iq
+	e.mark_as_enemy()
+	e.init(pos)
+	enemy_units.append(e)
+	# Inimigo agora entra em turn_queue igual jogador (ver start_turn_order),
+	# então isso passa a valer de verdade: se algum efeito mudar a Speed de
+	# um inimigo no meio da rodada, a fila reordena do mesmo jeito.
+	e.speed_changed.connect(reorder_turn_queue_by_speed)
+	# Mesmo raciocínio de spawn_player_units_staged() — init() acima é só
+	# posicionamento instantâneo (não conta como "entrar" em lugar nenhum,
+	# mesmo espírito de Player.teleport_to() no overworld), então um
+	# inimigo não se queima só por NASCER em cima de lava; só ao andar pra
+	# lá de verdade depois.
+	e.tile_entered.connect(_on_unit_tile_entered.bind(e))
 
 # Tira da lista `cells` (in-place) e devolve a primeira célula que essa
 # unidade consegue ocupar — pula o fluido se ela não puder atravessar.
@@ -1663,6 +1707,8 @@ func _build_item_tooltip(action: ItemData) -> String:
 		lines.append("Cura: %d HP" % action.heal_amount)
 	if action.accuracy_multiplier != 1.0:
 		lines.append("Accuracy dos ataques de quem carrega: x%.2f" % action.accuracy_multiplier)
+	if action.physical_damage_multiplier != 1.0:
+		lines.append("Dano de ataques Físicos de quem carrega: x%.2f" % action.physical_damage_multiplier)
 	return "\n".join(lines)
 
 # Pinta a borda (+ um fundo escuro neutro, igual o resto do HUD — ver
@@ -2122,6 +2168,17 @@ func calculate_damage_modifiers(attacker: Node, defender: Node, attack: AttackDa
 	if attacker.status_condition == "Burned" and not attack.is_special:
 		modifiers *= 0.5
 
+	# Held Items com ItemData.physical_damage_multiplier (ex: Muscleband,
+	# 1.1) — mesma restrição "só Físico" do Burned acima, mesmo padrão de
+	# iteração de attacker.data.slots que Unit.get_accuracy_multiplier() já
+	# usa pro multiplicador de precisão (ver comentário lá). Default 1.0 em
+	# qualquer ItemData sem esse campo preenchido, então isso nunca afeta
+	# quem não está carregando um item com esse efeito.
+	if not attack.is_special:
+		for action in attacker.data.slots:
+			if action is ItemData:
+				modifiers *= action.physical_damage_multiplier
+
 	if attacker.hp_max > 0:
 		var hp_ratio = float(attacker.hp_current) / float(attacker.hp_max)
 		for action in attacker.data.slots:
@@ -2485,6 +2542,48 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 	phase = Phase.ENDED
 	if is_instance_valid(last_defeated) and last_defeated.is_inside_tree():
 		await last_defeated.tree_exited
+
+	# Prêmio + registro de derrota SÓ na vitória (regra 6 do usuário: perder
+	# pro Trainer não "derrota" ele nem paga nada, o jogador só volta pro
+	# último Heal, ver o "else" de sempre logo abaixo). is_trainer_battle e
+	# os outros três current_trainer_* SEMPRE voltam pro estado neutro depois
+	# daqui, vitória ou derrota — sem isso uma batalha selvagem seguinte
+	# herdaria "true" por engano (Ball falhando sempre, current_trainer_team
+	# velho sendo spawnado de novo em vez da EncounterArea).
+	if victory and GameState.is_trainer_battle:
+		GameState.add_money(GameState.current_trainer_prize)
+		log_message("You got $%d for winning!" % GameState.current_trainer_prize)
+		# O prêmio já fica escrito no log da batalha (linha acima) — o
+		# usuário achou uma segunda caixa de texto redundante ("It's already
+		# written in the battle log"), então não abrimos mais nenhum popup
+		# aqui. A PAUSA em si continua (pedido explícito: "The pause until
+		# player presses X is fine though, keep it") — só trocamos "esperar
+		# a caixa fechar" por "esperar X/Z ser apertado", sem UI nova
+		# nenhuma, dando tempo do jogador ler o log antes da troca de cena.
+		await _await_confirm_press()
+		# Carimba o número de badges de AGORA, não só "true" — é isso que
+		# deixa trainer.gd::interact() saber depois se já rolou uma badge
+		# nova desde essa derrota (ver comentário grande em GameState.
+		# defeated_trainer_badges).
+		GameState.defeated_trainer_badges[GameState.current_trainer_id] = GameState.badges.size()
+	# Treinador Rocket some PRA SEMPRE depois desta batalha, vitória OU
+	# derrota do jogador (pedido do usuário: "Rocket trainers also vanish
+	# after defeating or being defeated. They cannot be rematched") — bem
+	# diferente da regra 6 (defeated_trainer_badges acima, só marcado na
+	# vitória, e ainda permite revanche com badge nova). Por isso este
+	# `if` roda incondicional a `victory`, e ANTES de current_trainer_id/
+	# current_trainer_iq serem limpos de volta pro estado neutro logo
+	# abaixo — depois disso não teria mais como saber QUEM era o Trainer
+	# nem se o time dele era Rocket. Lido por trainer.gd::_ready(), que se
+	# destrói na hora (queue_free) se encontrar este trainer_id aqui.
+	if GameState.is_trainer_battle and GameState.current_trainer_iq == "Rocket" and GameState.current_trainer_id != "":
+		GameState.vanished_trainers[GameState.current_trainer_id] = true
+	GameState.is_trainer_battle = false
+	GameState.current_trainer_id = ""
+	GameState.current_trainer_team = []
+	GameState.current_trainer_prize = 0
+	GameState.current_trainer_iq = ""
+
 	if victory:
 		# Mesmo caminho de volta do botão Flee (ver _on_flee_pressed) — a
 		# posição do jogador no overworld já foi salva em GameState antes de
@@ -2505,6 +2604,20 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 		GameState.player_grid_pos = GameState.last_heal_grid_pos
 		GameState.player_facing = GameState.last_heal_facing
 		get_tree().change_scene_to_file(GameState.overworld_scene_path)
+
+# Espera o jogador apertar X/Z (confirm/cancel) uma vez, sem abrir UI
+# nenhuma — usado só por end_battle() pra segurar a troca de cena até o
+# jogador ter tempo de ler a mensagem de prêmio que já está no log da
+# batalha (ver comentário em end_battle). is_action_just_pressed (não
+# is_action_pressed) evita que o MESMO toque que já derrotou o último
+# inimigo "vaze" pra cá e feche isso sozinho no mesmo frame; espera um
+# frame novo de propósito antes do loop, pelo mesmo motivo.
+func _await_confirm_press() -> void:
+	await get_tree().process_frame
+	while true:
+		if Input.is_action_just_pressed("confirm") or Input.is_action_just_pressed("cancel"):
+			return
+		await get_tree().process_frame
 
 # Instancia o Projectile, manda ele viajar de `from` até `to` (posições em
 # pixel, mesmo espaço de coordenadas dos Unit — ver Unit.cell_to_position),
@@ -2650,12 +2763,28 @@ func _run_player_ball_throw(attacker: Node, target_cell: Vector2i, item: ItemDat
 # Sucesso: a unidade sai da batalha (remove_defeated_unit, igual derrota,
 # só que SEM ganhar exp — capturar não derrota ninguém) e o UnitData dela
 # (com nível/HP preservados, ver UnitData.apply_capture_progress) vai pra
-# primeira vaga livre da reserva do jogador. Fracasso: a unidade volta a
-# aparecer exatamente como estava (visible = true) — nada nela foi alterado
-# em momento nenhum, então "devolver" é só isso mesmo.
+# primeira vaga livre da reserva certa (ver `storage_pool` logo abaixo).
+# Fracasso: a unidade volta a aparecer exatamente como estava
+# (visible = true) — nada nela foi alterado em momento nenhum, então
+# "devolver" é só isso mesmo.
 func resolve_capture(defender: Node, item: ItemData) -> void:
 	var success: bool
-	if item.guaranteed_capture:
+	if not defender.is_enemy:
+		# `defender` é uma unidade do JOGADOR — só acontece quando um
+		# treinador Rocket joga a Rocket Ball nela (ver _plan_rocket_action),
+		# nunca o contrário. Regra do usuário: "that always succeeds
+		# capturing the player's unit" — sucesso incondicional, sem fórmula
+		# nenhuma e SEM passar pelo `is_trainer_battle -> false` logo abaixo
+		# (essa regra existe pra proteger o time do TREINADOR de ser roubado
+		# pelo jogador, o oposto do que está acontecendo aqui).
+		success = true
+	elif GameState.is_trainer_battle:
+		# Regra do usuário: "Balls will ALWAYS fail if used against Units on
+		# a trainer battle" — checado ANTES até de guaranteed_capture (Master
+		# Ball inclusa: nenhuma Ball é exceção). Time do próprio Trainer não
+		# é "livre" pra capturar, diferente de um selvagem.
+		success = false
+	elif item.guaranteed_capture:
 		success = true
 	else:
 		var hp_max = float(defender.hp_max)
@@ -2682,8 +2811,36 @@ func resolve_capture(defender: Node, item: ItemData) -> void:
 
 	if success:
 		log_message("Gotcha! %s was caught!" % defender.data.unit_name)
-		defender.data.apply_capture_progress(defender.level, defender.hp_current)
-		GameState.add_to_first_empty_storage_slot(defender.data)
+		if defender.is_enemy:
+			# Selvagem/de treinador capturado pelo JOGADOR — de sempre:
+			# carimba nível/HP (UnitData.apply_capture_progress) e ONDE foi
+			# capturada (UnitData.caught_location, lida de GameState.
+			# current_area — null só aconteceria se uma batalha rodasse sem
+			# NUNCA ter passado por um overworld antes, daí o "" de
+			# fallback), depois vai pra reserva normal do jogador.
+			defender.data.apply_capture_progress(defender.level, defender.hp_current)
+			defender.data.caught_location = GameState.current_area.area_name if GameState.current_area != null else ""
+			GameState.add_to_first_empty_storage_slot(defender.data)
+		else:
+			# Unidade do JOGADOR roubada por um treinador Rocket
+			# (defender.is_enemy == false). defender.data JÁ É a mesma
+			# instância que mora em GameState.roster (Unit do jogador nunca
+			# duplica UnitData, ver Unit.apply_persisted_data — diferente do
+			# inimigo, que sempre duplica, ver Unit.apply_fresh_data) — nível/
+			# xp/HP já estão corretos nela, então NENHUM dos dois passos
+			# acima se aplica aqui: apply_capture_progress() reescreveria xp
+			# pro chão do nível atual (perderia progresso parcial de
+			# verdade), e "onde foi capturada" não faz sentido nenhum pra uma
+			# unidade que já era do jogador.
+			#
+			# Precisa sair do time ATIVO (GameState.roster) ANTES de entrar
+			# na caixa do Giovanni — sem isso, a MESMA UnitData ficava
+			# referenciada nos dois lugares ao mesmo tempo (roster ainda
+			# "cheio" nesse slot) e continuava aparecendo normalmente no
+			# time do jogador (bug reportado pelo usuário: "the captured
+			# unit didn't leave my party"). Ver GameState.remove_from_roster.
+			GameState.remove_from_roster(defender.data)
+			GameState.add_to_first_empty_giovanni_slot(defender.data)
 		remove_defeated_unit(defender)
 		defender.queue_free()
 		if enemy_units.is_empty() or player_units.is_empty():
@@ -2862,6 +3019,15 @@ func apply_end_of_turn_status(u: Node) -> bool:
 # é só o "sair da tela de batalha" por enquanto.
 func _on_flee_pressed() -> void:
 	if phase != Phase.BATTLE:
+		return
+	# Trainer battle nunca deixa fugir (mesma regra dos jogos de verdade) —
+	# sem isso, fugir mudava de cena direto (change_scene_to_file logo
+	# abaixo) SEM passar por end_battle(), que é quem zera GameState.
+	# is_trainer_battle/current_trainer_*; a próxima batalha (selvagem ou
+	# não) herdaria esse estado "preso" em true por engano (Ball falhando
+	# sempre, time de Trainer errado spawnando de novo).
+	if GameState.is_trainer_battle:
+		log_message("You can't flee from a Trainer battle!")
 		return
 	# Segunda trava (a primeira é esconder flee_button durante o turno do
 	# inimigo, ver begin_current_turn) — mesma checagem que _unhandled_input
@@ -3090,8 +3256,17 @@ func run_enemy_turn(u: Node) -> void:
 			await execute_attack(u, plan["target"], chosen_attack, plan["slot_index"])
 		if phase != Phase.BATTLE:
 			return
+	elif plan.has("ball_throw"):
+		# Só a tática "Rocket" produz isso (ver _plan_rocket_action) —
+		# captura a última unidade do jogador em vez de dar o golpe final
+		# nela. execute_ball_throw já cuida de tudo (animação, gasto do
+		# slot, resolve_capture) — mesmo caminho que o arremesso do
+		# JOGADOR usa (ver _run_player_ball_throw).
+		await execute_ball_throw(u, plan["target"].grid_pos, plan["ball_throw"], plan["slot_index"])
+		if phase != Phase.BATTLE:
+			return
 
-	# execute_attack() já chama check_auto_end_turn() sozinho no final (pode
+	# execute_attack()/execute_ball_throw() já chamam check_auto_end_turn() sozinhos no final (pode
 	# ter encerrado o turno ali, se move_budget_left TAMBÉM tivesse chegado a
 	# 0) — só terminamos o turno de novo aqui se AINDA formos a unidade da
 	# vez, senão avançaríamos current_turn_index duas vezes (mesma classe de
@@ -3099,32 +3274,156 @@ func run_enemy_turn(u: Node) -> void:
 	if get_current_unit() == u:
 		_on_end_turn_pressed()
 
-# Decide o que um inimigo QI 1 faz no turno dele. Devolve um Dictionary:
+# Decide o que um inimigo faz no turno dele — despachante pro NÍVEL de IA
+# certo (ver Unit.iq/UnitData.iq/Trainer.iq). Devolve um Dictionary, mesmo
+# formato pras 4 táticas (ver cada uma pra detalhe):
 # - {} (vazio): não pode nem se mover nem atacar (travado por status) — o
 #   turno passa sem fazer nada.
 # - {"move_to": cell}: não alcança ninguém pra atacar este turno; anda o
-#   máximo possível em direção ao aliado mais próximo.
+#   máximo possível em direção ao aliado mais próximo (ver _plan_approach).
 # - {"move_to": cell, "attack": AttackData, "slot_index": int, "target": Node}:
-#   posição (pode ser a própria posição atual) de onde atacar, o ataque que
-#   causa mais dano dali, e quem é o alvo.
+#   posição (pode ser a própria posição atual) de onde atacar, o ataque
+#   escolhido, e quem é o alvo.
+# - {"move_to": cell, "ball_throw": ItemData, "slot_index": int, "target": Node}:
+#   só a tática "Rocket" produz isso (ver _plan_rocket_action) — captura o
+#   alvo em vez de bater nele.
+#
+# "Champion" ainda não tem tática própria (pedido do usuário: "Skip for
+# now") — cai pra Medium por enquanto, junto com qualquer valor inesperado.
 func plan_enemy_action(u: Node) -> Dictionary:
+	match u.iq:
+		"Easy":
+			return _plan_easy_action(u)
+		"Hard":
+			return _plan_hard_action(u)
+		"Rocket":
+			return _plan_rocket_action(u)
+		_:
+			return _plan_medium_action(u)
+
+# Reaproveitado pelas 4 táticas — quem do time do jogador ainda está de pé,
+# e quais células `u` alcança neste turno. Inclui a própria posição atual
+# como candidata de ataque (custo de movimento 0) — get_reachable_tiles()
+# não devolve a origem no resultado dela, só o que está a 1+ passo.
+# move_budget_left já vem 0 se a unidade não pode se mover (ver
+# begin_current_turn/Unit.can_move()), não precisa checar de novo aqui.
+func _get_ai_context(u: Node) -> Dictionary:
 	var allies: Array = []
 	for p in player_units:
 		if p.hp_current > 0:
 			allies.append(p)
-	if allies.is_empty():
-		return {}
-
-	# Inclui a própria posição atual como candidata de ataque (custo de
-	# movimento 0) — get_reachable_tiles() não devolve a origem no resultado
-	# dela (ver "visited.erase(origin)" logo acima), só o que está a 1+ passo.
-	# move_budget_left já vem 0 se a unidade não pode se mover (ver
-	# begin_current_turn/Unit.can_move()), não precisa checar de novo aqui.
 	var reachable: Array[Vector2i] = []
 	if move_budget_left > 0:
 		reachable = get_reachable_tiles(u.grid_pos, move_budget_left, u)
 	var candidate_cells: Array[Vector2i] = [u.grid_pos]
 	candidate_cells.append_array(reachable)
+	return {"allies": allies, "reachable": reachable, "candidate_cells": candidate_cells}
+
+# Não alcançou ninguém pra atacar este turno — anda o máximo possível em
+# direção ao aliado mais próximo. Escolhe, entre todas as células
+# alcançáveis (a própria posição incluída), a que fica mais perto desse
+# aliado (distância Chebyshev, mesma métrica do resto do movimento) — uma
+# aproximação gulosa simples, não um replanejamento do caminho até ele.
+# Usada pelas 4 táticas como fallback comum quando não sobra alvo válido.
+func _plan_approach(u: Node, allies: Array, reachable: Array[Vector2i]) -> Dictionary:
+	if reachable.is_empty():
+		return {}   # travado por status ou já sem orçamento — nada a fazer
+
+	var nearest = allies[0]
+	for ally in allies:
+		if chebyshev_distance(u.grid_pos, ally.grid_pos) < chebyshev_distance(u.grid_pos, nearest.grid_pos):
+			nearest = ally
+
+	var best_cell = u.grid_pos
+	var best_cell_dist = chebyshev_distance(u.grid_pos, nearest.grid_pos)
+	for cell in reachable:
+		var d = chebyshev_distance(cell, nearest.grid_pos)
+		if d < best_cell_dist:
+			best_cell_dist = d
+			best_cell = cell
+	return {"move_to": best_cell}
+
+func chebyshev_distance(a: Vector2i, b: Vector2i) -> int:
+	return max(abs(a.x - b.x), abs(a.y - b.y))
+
+# ---------- Tática "Easy" ----------
+# Pedido do usuário: "Big nerf from what we had previously. Units will
+# select a random move to use and walk to the first target they can hit
+# with that move and only enough to hit that move." — SEM otimizar dano
+# nem posição nenhuma, de propósito:
+#   1. sorteia UM slot de ataque usável (dano OU Status, tanto faz — "a
+#      random move" não distingue os dois);
+#   2. entre os aliados vivos, na ordem de sempre (player_units), pega o
+#      PRIMEIRO que esse ataque alcança de ALGUMA célula candidata;
+#   3. anda só até a célula candidata MAIS PERTO da posição atual que sirva
+#      pra esse alvo (não a melhor posição possível — "only enough to hit").
+# Se o ataque sorteado não alcançar ninguém (nem andando o máximo permitido),
+# cai pra _plan_approach em vez de travar o turno inteiro parado — sem isso,
+# uma unidade Easy má sorteada (ex: só tem um golpe de curto alcance e o
+# alvo mais próximo está longe) ficaria parada pra sempre, mesmo turnos
+# depois, o que não é "burra", é quebrada.
+func _plan_easy_action(u: Node) -> Dictionary:
+	var ctx = _get_ai_context(u)
+	var allies: Array = ctx["allies"]
+	var reachable: Array[Vector2i] = ctx["reachable"]
+	var candidate_cells: Array[Vector2i] = ctx["candidate_cells"]
+	if allies.is_empty():
+		return {}
+
+	if u.attacks_remaining > 0:
+		var usable_slots: Array[int] = []
+		for slot_index in u.data.slots.size():
+			var action = u.data.slots[slot_index]
+			if action is AttackData and (action.max_uses <= 0 or slot_index >= u.slot_uses.size() or u.slot_uses[slot_index] > 0):
+				usable_slots.append(slot_index)
+
+		if not usable_slots.is_empty():
+			var slot_index: int = usable_slots[randi() % usable_slots.size()]
+			var action: AttackData = u.data.slots[slot_index]
+
+			# candidate_cells vem com a posição ATUAL primeiro (ver
+			# _get_ai_context) e o resto na ordem "de descoberta" de
+			# get_reachable_tiles() — reordenamos por distância aqui mesmo só
+			# pra achar a célula "mais perto que serve" (pedido: "only enough
+			# to hit that move"), sem afetar candidate_cells de ninguém mais.
+			var sorted_cells := candidate_cells.duplicate()
+			sorted_cells.sort_custom(func(a, b): return chebyshev_distance(u.grid_pos, a) < chebyshev_distance(u.grid_pos, b))
+
+			for ally in allies:
+				for cell in sorted_cells:
+					if not is_valid_target_cell(cell, ally.grid_pos, action):
+						continue
+					if action.is_projectile and find_projectile_target(u, cell, ally.grid_pos, action.range) != ally:
+						continue
+					return {
+						"move_to": cell, "attack": action,
+						"slot_index": slot_index, "target": ally,
+					}
+
+	return _plan_approach(u, allies, reachable)
+
+# ---------- Tática "Medium" ----------
+# O comportamento que a IA sempre teve (por isso reaproveita quase tudo do
+# antigo plan_enemy_action): pra cada ataque de DANO no loadout, testa todo
+# aliado alcançável e fica com a combinação posição+ataque+alvo de MAIOR
+# dano. Pedido do usuário: 1/8 de chance de, em vez disso, usar um ataque
+# de Status num alvo válido qualquer (ver _pick_medium_status_action) —
+# rolado ANTES da busca por dano, pra não competir com ela (um Status quase
+# sempre "perde" a comparação de dano, já que calculate_damage nunca
+# devolve menos que 1 — sem esse desvio explícito, ele praticamente nunca
+# seria escolhido pela busca de maior dano sozinha).
+func _plan_medium_action(u: Node) -> Dictionary:
+	var ctx = _get_ai_context(u)
+	var allies: Array = ctx["allies"]
+	var reachable: Array[Vector2i] = ctx["reachable"]
+	var candidate_cells: Array[Vector2i] = ctx["candidate_cells"]
+	if allies.is_empty():
+		return {}
+
+	if u.attacks_remaining > 0 and randf() < 0.125:
+		var status_plan = _pick_medium_status_action(u, allies, candidate_cells)
+		if not status_plan.is_empty():
+			return status_plan
 
 	var best: Dictionary = {}
 	if u.attacks_remaining > 0:
@@ -3155,30 +3454,288 @@ func plan_enemy_action(u: Node) -> Dictionary:
 	if not best.is_empty():
 		return best
 
-	if reachable.is_empty():
-		return {}   # travado por status ou já sem orçamento — nada a fazer
+	return _plan_approach(u, allies, reachable)
 
-	# Não alcançou ninguém pra atacar — anda o máximo possível em direção ao
-	# aliado mais próximo. Escolhe, entre todas as células alcançáveis neste
-	# turno (a própria posição incluída), a que fica mais perto desse aliado
-	# (distância Chebyshev, mesma métrica do resto do movimento) — uma
-	# aproximação gulosa simples, não um replanejamento do caminho até ele.
-	var nearest = allies[0]
-	for ally in allies:
-		if chebyshev_distance(u.grid_pos, ally.grid_pos) < chebyshev_distance(u.grid_pos, nearest.grid_pos):
-			nearest = ally
+# Sorteia UM ataque de Status (is_status == true) usável do loadout, com
+# pelo menos UMA combinação célula+alvo válida — se houver mais de uma
+# combinação possível no total (vários aliados alcançáveis, ou vários
+# Status diferentes), sorteia entre TODAS elas, não só entre os ataques
+# (senão um Status com 3 alvos válidos teria a mesma chance que um com 1
+# só, o que não é "aleatório" de verdade). Devolve {} se não houver Status
+# nenhum usável agora — quem chama (_plan_medium_action/_plan_hard_action)
+# cai de volta pra busca de maior dano normal nesse caso.
+func _pick_medium_status_action(u: Node, allies: Array, candidate_cells: Array[Vector2i]) -> Dictionary:
+	var options: Array[Dictionary] = []
+	for slot_index in u.data.slots.size():
+		var action = u.data.slots[slot_index]
+		if not (action is AttackData) or not action.is_status:
+			continue
+		if action.max_uses > 0 and slot_index < u.slot_uses.size() and u.slot_uses[slot_index] <= 0:
+			continue
+		for ally in allies:
+			for cell in candidate_cells:
+				if not is_valid_target_cell(cell, ally.grid_pos, action):
+					continue
+				options.append({
+					"move_to": cell, "attack": action,
+					"slot_index": slot_index, "target": ally,
+				})
+	if options.is_empty():
+		return {}
+	return options[randi() % options.size()]
 
-	var best_cell = u.grid_pos
-	var best_cell_dist = chebyshev_distance(u.grid_pos, nearest.grid_pos)
+# ---------- Tática "Hard" ----------
+# As 3 funções abaixo (_best_possible_damage/_max_threat_range/
+# _is_lethally_threatened_at) estimam "o pior que uma unidade DO JOGADOR
+# poderia fazer neste turno" sem rodar get_reachable_tiles() de verdade pra
+# ela — get_reachable_tiles() zera/reescreve move_distances, que
+# move_unit_along_path() precisa intacto pra mover `u` (a unidade da vez
+# de VERDADE) no final de plan_enemy_action; chamá-la de novo aqui, pra
+# outra unidade, corromperia esse estado global. Em vez disso, usamos uma
+# heurística de distância (Chebyshev, mesma métrica do resto do movimento):
+# "alcance total" = move_range + o maior range de ataque no loadout,
+# otimista sobre a posição de onde o golpe sairia. Não é uma simulação
+# perfeita (ignora parede/unidade no caminho, formato de cone etc — mesma
+# simplificação que _plan_approach já assume pro próprio movimento), só
+# precisa ser boa o bastante pra "desviar da faixa de perigo" existir de
+# verdade.
+
+# Maior dano que `p` causaria em `defender` com QUALQUER ataque de dano do
+# loadout dela — calculate_damage() não depende de posição/distância
+# nenhuma (só stats/tipo), então isso é só "qual dos golpes dela bate mais
+# forte nesse alvo", sem nenhuma checagem de alcance (ver _max_threat_range
+# pra isso). -1 se `p` já estiver derrotada ou não tiver ataque de dano
+# usável.
+func _best_possible_damage(p: Node, defender: Node) -> int:
+	if p.hp_current <= 0:
+		return -1
+	var best = -1
+	for slot_index in p.data.slots.size():
+		var action = p.data.slots[slot_index]
+		if not (action is AttackData) or action.is_status:
+			continue
+		if action.max_uses > 0 and slot_index < p.slot_uses.size() and p.slot_uses[slot_index] <= 0:
+			continue
+		var damage = calculate_damage(p, defender, action)
+		if damage > best:
+			best = damage
+	return best
+
+# Ver comentário grande acima do bloco "Tática Hard" — alcance TOTAL
+# otimista de `p` este turno (move_range + maior range de ataque no
+# loadout), pra comparar contra distância Chebyshev em vez de rodar um BFS
+# de verdade.
+func _max_threat_range(p: Node) -> int:
+	var max_range = 0
+	for action in p.data.slots:
+		if action is AttackData and not action.is_status and action.range > max_range:
+			max_range = action.range
+	return p.move_range + max_range
+
+# `defender` ficaria ao alcance de um golpe FATAL de algum `p` em
+# `threateners`, SE `defender` estivesse na célula `at_cell`? ("Fatal" =
+# dano estimado >= HP atual de `defender` — mata de um golpe só.) Usado
+# tanto pra saber se `u` está em perigo onde está quanto pra testar cada
+# célula candidata de fuga.
+func _is_lethally_threatened_at(defender: Node, at_cell: Vector2i, threateners: Array) -> bool:
+	for p in threateners:
+		if chebyshev_distance(p.grid_pos, at_cell) > _max_threat_range(p):
+			continue
+		if _best_possible_damage(p, defender) >= defender.hp_current:
+			return true
+	return false
+
+# Primeiro `p` em `threateners` que ameaça matar `mate` de um golpe só
+# NESTE turno — usado por _plan_hard_action pra escolher quem `u` foca no
+# lugar do alvo de maior dano de sempre ("proteger aliado", pedido do
+# usuário).
+func _find_lethal_threatener(mate: Node, threateners: Array) -> Node:
+	for p in threateners:
+		if chebyshev_distance(p.grid_pos, mate.grid_pos) > _max_threat_range(p):
+			continue
+		if _best_possible_damage(p, mate) >= mate.hp_current:
+			return p
+	return null
+
+# Entre as células alcançáveis por `u` este turno (a atual incluída), a
+# primeira que NÃO fica na faixa de ataque fatal de nenhum `threatener` —
+# null se não existir nenhuma (aí não tem pra onde fugir; _plan_hard_action
+# cai pro comportamento normal de _plan_approach mesmo assim, é melhor
+# andar em direção a alguém do que travar o turno).
+func _find_safe_cell(u: Node, reachable: Array[Vector2i], threateners: Array) -> Variant:
+	if not _is_lethally_threatened_at(u, u.grid_pos, threateners):
+		return u.grid_pos
 	for cell in reachable:
-		var d = chebyshev_distance(cell, nearest.grid_pos)
-		if d < best_cell_dist:
-			best_cell_dist = d
-			best_cell = cell
-	return {"move_to": best_cell}
+		if not _is_lethally_threatened_at(u, cell, threateners):
+			return cell
+	return null
 
-func chebyshev_distance(a: Vector2i, b: Vector2i) -> int:
-	return max(abs(a.x - b.x), abs(a.y - b.y))
+# Busca de ataque igual à do Medium (maior dano por combinação alvo+célula
+# alcançável), com um adicional: se `avoid_danger` for true, uma célula que
+# deixaria `u` na mira de um golpe fatal (ver _is_lethally_threatened_at)
+# perde o DESEMPATE contra uma célula de mesmo dano que não deixa — nunca
+# troca dano por segurança sozinho (dano pesa mais no score, ver `* 2`
+# abaixo), só decide entre jogadas igualmente boas. Reaproveitada pelas
+# duas tentativas de _plan_hard_action (alvo prioritário de defesa e,
+# se esse não alcançar ninguém, todos os alvos).
+func _search_best_attack(u: Node, targets: Array, candidate_cells: Array[Vector2i], threateners: Array, avoid_danger: bool) -> Dictionary:
+	if u.attacks_remaining <= 0:
+		return {}
+	var best: Dictionary = {}
+	var best_score = -1
+	for slot_index in u.data.slots.size():
+		var action = u.data.slots[slot_index]
+		if not (action is AttackData) or action.is_status:
+			continue
+		if action.max_uses > 0 and slot_index < u.slot_uses.size() and u.slot_uses[slot_index] <= 0:
+			continue
+		for target in targets:
+			for cell in candidate_cells:
+				if not is_valid_target_cell(cell, target.grid_pos, action):
+					continue
+				if action.is_projectile and find_projectile_target(u, cell, target.grid_pos, action.range) != target:
+					continue
+				var damage = calculate_damage(u, target, action)
+				var danger = avoid_danger and _is_lethally_threatened_at(u, cell, threateners)
+				var score = damage * 2 + (0 if danger else 1)
+				if score > best_score:
+					best_score = score
+					best = {
+						"move_to": cell, "attack": action,
+						"slot_index": slot_index, "target": target,
+					}
+	return best
+
+# Pedido do usuário (resumo): além de maximizar dano (igual Medium), essa
+# tática também se PROTEGE e protege o time:
+#   1. Se `u` está na mira de um golpe fatal de algum inimigo que ainda vai
+#      jogar nesta rodada, e não sobra ataque melhor que valha o risco,
+#      foge pra uma célula fora dessa faixa em vez do "anda em direção ao
+#      mais próximo" padrão.
+#   2. Se um ALIADO (outra unidade do mesmo time de `u`) está sob risco de
+#      morrer pra um golpe fatal pendente, `u` foca o inimigo que ameaça
+#      esse aliado, no lugar do alvo de maior dano de sempre.
+#   3. Ordem de turno: só quem ainda vai jogar NESTA rodada (ver
+#      turn_queue/current_turn_index) conta como ameaça — quem já agiu só
+#      volta a ameaçar de novo na rodada seguinte.
+func _plan_hard_action(u: Node) -> Dictionary:
+	var ctx = _get_ai_context(u)
+	var targets: Array = ctx["allies"]          # unidades do jogador = alvos de `u`
+	var reachable: Array[Vector2i] = ctx["reachable"]
+	var candidate_cells: Array[Vector2i] = ctx["candidate_cells"]
+	if targets.is_empty():
+		return {}
+
+	var teammates: Array = []
+	for e in enemy_units:
+		if e != u and e.hp_current > 0:
+			teammates.append(e)
+
+	var pending_targets: Array = []
+	for t in targets:
+		var idx = turn_queue.find(t)
+		if idx != -1 and idx >= current_turn_index:
+			pending_targets.append(t)
+
+	var priority_target: Node = null
+	for mate in teammates:
+		var threatener = _find_lethal_threatener(mate, pending_targets)
+		if threatener != null:
+			priority_target = threatener
+			break   # primeiro aliado ameaçado já basta — não hierarquiza vários em perigo ao mesmo tempo
+
+	var best := _search_best_attack(u, [priority_target] if priority_target != null else targets, candidate_cells, pending_targets, true)
+	# priority_target inalcançável de lugar nenhum -> tenta com todos os
+	# alvos, igual Medium faria, em vez de deixar `u` parado à toa.
+	if best.is_empty() and priority_target != null:
+		best = _search_best_attack(u, targets, candidate_cells, pending_targets, true)
+
+	if not best.is_empty():
+		return best
+
+	if _is_lethally_threatened_at(u, u.grid_pos, pending_targets):
+		var safe_cell = _find_safe_cell(u, reachable, pending_targets)
+		if safe_cell != null and safe_cell != u.grid_pos:
+			return {"move_to": safe_cell}
+
+	return _plan_approach(u, targets, reachable)
+
+# ---------- Tática "Rocket" ----------
+# Pedido do usuário: "Same as medium, but with a special feature." — a
+# parte "igual Medium" é literal (reaproveita _plan_medium_action inteira,
+# dano máximo + a mesma chance de 1/8 de Status). O especial: toda unidade
+# de um time Rocket ganha 1 Rocket Ball no loadout (ver spawn_enemies/
+# _spawn_enemy_unit, ROCKET_BALL_ITEM, mais abaixo).
+#
+# O time Rocket joga NORMAL (bate pra derrotar, igual Medium) enquanto o
+# jogador ainda tiver MAIS de uma unidade — só quando resta a ÚLTIMA
+# (player_units.size() == 1) é que a Rocket Ball entra em jogo: SE o golpe
+# que _plan_medium_action escolheu for justamente o GOLPE FINAL que
+# derrotaria essa última unidade (dano calculado >= HP dela), a unidade usa
+# a Ball nesse alvo em vez de bater nele — captura em vez de derrotar (ver
+# resolve_capture, que trata `defender.is_enemy == false` como esse caso
+# exato — captura sempre sucede, sem fórmula nenhuma, e vai pra
+# GameState.giovanni_storage em vez da reserva normal do jogador). Pedido
+# do usuário, depois de testar uma versão anterior que capturava a
+# PRIMEIRA unidade que desse (errado): "it should defeat every unit but
+# one and THEN capture the last one if it COULD deal a lethal attack. It
+# will only throw a ball if it has an attack that would finish the fight
+# if it lands on the last unit" — dano normal em qualquer unidade que NÃO
+# seja a última, Ball só na última E só se fosse mesmo terminar a luta ali.
+#
+# Uma versão intermediária chegou a bloquear a captura da última unidade
+# por completo (medo de zerar GameState.roster e travar o jogo) — não é
+# mais necessário: resolve_capture já tira a UnitData do roster de verdade
+# antes de guardá-la em giovanni_storage (ver GameState.remove_from_roster),
+# então terminar a batalha com o roster inteiro vazio agora é só uma
+# derrota comum (mesmo end_battle(victory=false) de sempre), não um estado
+# quebrado.
+func _plan_rocket_action(u: Node) -> Dictionary:
+	var best = _plan_medium_action(u)
+
+	if not best.has("attack") or best["attack"].is_status:
+		return best   # sem golpe de dano nenhum escolhido — nada pra trocar por captura
+	if player_units.size() != 1:
+		return best   # ainda sobra outra unidade além dessa — bate normal, Ball só vale pra última
+
+	var target: Node = best["target"]
+	var attack: AttackData = best["attack"]
+	if calculate_damage(u, target, attack) < target.hp_current:
+		return best   # esse golpe não terminaria com a unidade — bate normal mesmo
+
+	var ball_slot_index = -1
+	var ball_item: ItemData = null
+	for slot_index in u.data.slots.size():
+		var action = u.data.slots[slot_index]
+		if action is ItemData and action.category == "Ball":
+			ball_slot_index = slot_index
+			ball_item = action
+			break
+	if ball_item == null:
+		return best   # sem Ball no loadout (não devia acontecer numa equipe Rocket de verdade, ver spawn_enemies) — bate normal
+
+	# A célula que _plan_medium_action escolheu pode não servir pra Ball —
+	# Ball exige linha reta (ver is_valid_target_cell), um Cone por exemplo
+	# não. Tenta a mesma célula primeiro (caso comum: ataque reto também),
+	# senão procura entre as candidatas de novo, agora só pra Ball.
+	var ctx = _get_ai_context(u)
+	var candidate_cells: Array[Vector2i] = ctx["candidate_cells"]
+	var throw_cells: Array[Vector2i] = [best["move_to"]]
+	for cell in candidate_cells:
+		if cell != best["move_to"]:
+			throw_cells.append(cell)
+
+	for cell in throw_cells:
+		if not is_valid_target_cell(cell, target.grid_pos, ball_item):
+			continue
+		if find_ball_target(u, cell, target.grid_pos, ball_item.range)["unit"] != target:
+			continue
+		return {
+			"move_to": cell, "ball_throw": ball_item,
+			"slot_index": ball_slot_index, "target": target,
+		}
+
+	return best   # não achou de onde arremessar em linha reta — bate normal mesmo
 
 # Move `u` até `target` — uma célula alcançável dentro do orçamento de
 # movimento ATUAL (ver plan_enemy_action, que preenche move_distances via

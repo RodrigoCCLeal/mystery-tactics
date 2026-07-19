@@ -12,7 +12,7 @@ extends CanvasLayer
 signal closed
 
 const TutorialTopics = preload("res://scripts/tutorial_topics.gd")
-const TUTORIAL_TOPIC_SCREEN_SCENE: PackedScene = preload("res://scenes/tutorial_topic_screen.tscn")
+const TUTORIAL_TOPIC_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/tutorial_topic_screen.tscn")
 
 @onready var rows_container: VBoxContainer = $Center/Panel/MarginContainer/Content/RowsScroll/Rows
 @onready var close_label: Label = $Center/Panel/MarginContainer/Content/Close

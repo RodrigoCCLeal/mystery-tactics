@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://5igdisqid0na"]
+
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="1_mduba"]
+[ext_resource type="Resource" path="res://data/abilities/compound_eyes.tres" id="2_6o0ol"]
+[ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="3_c8662"]
+[ext_resource type="Texture2D" uid="uid://brjo0bv75ncwq" path="res://assets/sprites/Pokemon/Sprites/0020/Normal.png" id="4_mduba"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="5_7g0ua"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_frbxq"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0020/frames.tres" id="7_m70h5"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_compound_eyes"]
+script = ExtResource("1_mduba")
+action = ExtResource("2_6o0ol")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_tinted_lens"]
+script = ExtResource("1_mduba")
+action = ExtResource("3_c8662")
+is_hidden_ability = true
+
+[resource]
+script = ExtResource("5_7g0ua")
+unit_name = "Raticate"
+sprite_frames = ExtResource("7_m70h5")
+portrait = ExtResource("4_mduba")
+attack_hit_delay = 0.1833
+special_hit_delay = 0.0667
+types = Array[String](["Normal"])
+slots = Array[ExtResource("6_frbxq")]([ExtResource("2_6o0ol")])
+learnset = Array[ExtResource("1_mduba")]([SubResource("LearnsetEntry_0012_compound_eyes"), SubResource("LearnsetEntry_0012_tinted_lens")])
+hp_base = 55
+attack_base = 81
+defense_base = 60
+special_attack_base = 50
+special_defense_base = 70
+speed_base = 97
+catch_rate = 0.498
+growth_group = "Medium Fast"
+base_exp_yield = 145

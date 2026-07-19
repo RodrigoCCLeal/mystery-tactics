@@ -160,7 +160,19 @@ func get_recent_loadout(level: int, max_slots: int = 6) -> Array[ActionData]:
 @export var special_attack_base: int = 45
 @export var special_defense_base: int = 45
 @export var speed_base: int = 45
-@export var iq: int = 5                 # usado futuramente pela IA inimiga — não escala com nível
+
+# Nível de IA usado pela unidade em batalha (ver battle.gd::plan_enemy_action
+# e as 4 táticas reais: _plan_easy_action/_plan_medium_action/
+# _plan_hard_action/_plan_rocket_action — "Champion" ainda não tem tática
+# própria, cai pra Medium por enquanto, pedido explícito do usuário: "Skip
+# for now"). "Easy" é o padrão porque é o comportamento de QUALQUER unidade
+# selvagem a menos que a própria espécie diga o contrário (pedido do
+# usuário: "Wild Pokémon will still operate on Easy IQ unless stated
+# otherwise") — times de Trainer normalmente SOBRESCREVEM isso na hora de
+# spawnar (ver Trainer.iq/GameState.current_trainer_iq), então este campo
+# só importa de verdade pra batalhas selvagens ou pra um Trainer que não
+# tenha `iq` configurado.
+@export_enum("Easy", "Medium", "Hard", "Rocket", "Champion") var iq: String = "Easy"
 
 # Quão fácil é capturar essa espécie com uma Ball — entra direto na fórmula
 # de captura (ver battle.gd::resolve_capture): quanto MAIOR, mais fácil.
@@ -183,26 +195,17 @@ var growth_group: String = "Medium Slow"
 @export var base_exp_yield: int = 64
 
 @export_group("Evolução")
-# Espécie que esta vira ao evoluir — null (padrão) = não evolui. A instância
-# aqui é o MESMO Resource compartilhado de ALL_SPECIES (sem duplicate()
-# nenhum, igual LearnsetEntry.action) — party_screen.gd::_perform_evolution()
-# que faz .duplicate() na hora de aplicar de verdade, preservando nível/xp/
-# slots/slot_quantities da unidade atual (só as stats base/sprite/learnset/
-# etc. trocam pra essa nova espécie). Ver evolve_min_level/
-# evolve_requires_action logo abaixo pelos PRÉ-REQUISITOS de quando isso
-# pode acontecer.
-@export var evolves_into: UnitData = null
-
-# Nível mínimo pra evoluir (0 = sem exigência de nível, só o campo abaixo
-# importa). Ex: Swinub -> Piloswine no nível 33.
-@export var evolve_min_level: int = 0
-
-# Ação que precisa estar EQUIPADA (UnitData.slots, não só no learnset) pra
-# evoluir (null = sem exigência de ação). Ex: Piloswine só evolui pra
-# Mamoswine se estiver carregando Ancient Power no loadout — aprender o
-# golpe não basta, tem que estar de fato equipado. Ver
-# party_screen.gd::_get_evolution_target().
-@export var evolve_requires_action: ActionData = null
+# Lista de possíveis evoluções — vazio (padrão) = não evolui. Cada
+# EvolutionOption (ver evolution_option.gd) carrega sua PRÓPRIA espécie-alvo
+# e pré-requisitos (nível mínimo, ação equipada); normalmente só tem UMA
+# entrada (evolução linear, ex: Swinub -> Piloswine), mas pode ter VÁRIAS —
+# nesse caso, se mais de uma ficar disponível ao mesmo tempo,
+# party_screen.gd::_try_evolve() abre uma tela de escolha em vez de evoluir
+# direto (pedido do usuário: "a unit might be able to evolve into different
+# options. when able to evolve, show a selection screen with the evolution
+# options"). Ver party_screen.gd::_get_available_evolutions() pra como os
+# pré-requisitos de cada opção são checados.
+@export var evolution_options: Array[EvolutionOption] = []
 
 @export_group("Progresso (persistido entre batalhas)")
 # Diferente de tudo acima (que é fixo, "da espécie"), estes três mudam com o
@@ -218,6 +221,14 @@ var growth_group: String = "Medium Slow"
 @export var level: int = 1
 @export var xp: int = 0
 @export var current_hp: int = -1
+
+# Nome da área (EncounterArea.area_name, ver GameState.current_area) onde
+# esta unidade foi capturada — "" (padrão) pras 3 unidades iniciais do
+# jogador (nunca foram "capturadas", só começaram no time) e pra qualquer
+# unidade antiga de antes desse campo existir. Carimbado UMA vez, na hora da
+# captura (ver battle.gd::resolve_capture), nunca mudado depois — é
+# histórico, não estado atual. Mostrado em "Summary" (ver unit_summary.gd).
+@export var caught_location: String = ""
 
 # false (padrão) = se esta unidade tem uma Habilidade Hidden no learnset
 # (ver LearnsetEntry.is_hidden_ability), ela fica de fora de

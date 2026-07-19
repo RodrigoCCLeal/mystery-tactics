@@ -13,7 +13,7 @@ extends CanvasLayer
 signal closed
 
 const OPTIONS = ItemData.CATEGORIES
-const ITEM_LIST_SCREEN_SCENE: PackedScene = preload("res://scenes/item_list_screen.tscn")
+const ITEM_LIST_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/item_list_screen.tscn")
 
 @onready var header_label: Label = $Center/Panel/MarginContainer/Options/Header
 @onready var options_container: VBoxContainer = $Center/Panel/MarginContainer/Options

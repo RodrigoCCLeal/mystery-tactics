@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" uid="uid://c8w8n0ts68l77" path="res://scripts/item_data.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://nqjuk7mfrofo" path="res://assets/sprites/items/Ball/ROCKETBALL.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://c1u7mgtpyl4wm" path="res://assets/sprites/items/Ball/ball_ROCKETBALL.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://kk5s5kl4imih" path="res://assets/sprites/items/Ball/ball_ROCKETBALL_open.png" id="4"]
+
+[resource]
+script = ExtResource("1")
+icon = ExtResource("2")
+category = "Ball"
+effect_description = "A ball usada pelo Team Rocket para capturar unidades. Nunca aparece à venda nem como recompensa — só usada como parte do loadout de treinadores Rocket."
+can_give = true
+stackable = true
+ball_closed_texture = ExtResource("3")
+ball_open_texture = ExtResource("4")
+action_name = "Rocket Ball"
+range = 20

@@ -1,13 +1,14 @@
-[gd_resource type="Resource" script_class="ItemData" format=3]
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cgta0is70o5ya"]
 
 [ext_resource type="Script" uid="uid://c8w8n0ts68l77" path="res://scripts/item_data.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://csiy7mobarocn" path="res://assets/sprites/items/Medicine/POTION.png" id="2"]
 
 [resource]
 script = ExtResource("1")
-action_name = "Potion"
 icon = ExtResource("2")
-category = "Medicine"
 effect_description = "Restaura 30 HP de uma unidade."
+buy_price = 300
+sell_price = 150
 can_use = true
 heal_amount = 30
+action_name = "Potion"

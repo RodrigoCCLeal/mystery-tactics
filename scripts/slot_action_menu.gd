@@ -10,11 +10,12 @@ extends CanvasLayer
 # "" como option significa "cancelado" (Z), sem opção nenhuma escolhida.
 #
 # "Evolve" (ver slot_action_menu.tscn) começa OCULTO na cena — só aparece
-# quando setup() recebe can_evolve=true (party_screen.gd já checou os
-# pré-requisitos antes de abrir isso, ver _get_evolution_target()). Por
-# isso a lista de opções não é mais um const fixo: é montada em runtime a
-# partir de QUAIS Labels estão visible no momento (ver _build_option_list),
-# pra "Evolve" oculto nem entrar na navegação por seta.
+# quando setup() recebe can_evolve=true (party_screen.gd já checou se há
+# pelo menos UMA opção de evolução disponível antes de abrir isso, ver
+# _get_available_evolutions()). Por isso a lista de opções não é mais um
+# const fixo: é montada em runtime a partir de QUAIS Labels estão visible
+# no momento (ver _build_option_list), pra "Evolve" oculto nem entrar na
+# navegação por seta.
 
 signal closed(option: String)
 

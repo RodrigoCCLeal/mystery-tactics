@@ -93,7 +93,7 @@ Isso só coloca o ataque no "catálogo" da espécie (`learnset`) — pra ele vir
 
 - **Fôrma:** `scripts/unit_data.gd`
 - **Dado:** `data/units/NNNN.tres` (NNNN = o número da espécie, 4 dígitos com zero à esquerda, ex: `0202.tres`)
-- **Sprites:** `assets/sprites/Pokemon/NNNN/` — as folhas de animação (Idle-Anim.png, Walk-Anim.png, Attack-Anim.png, Hurt-Anim.png, etc.) mais um `frames.tres` (o `SpriteFrames` do Godot, construído a partir delas — ver seção 2.3) e um `Normal.png` (retrato)
+- **Sprites:** `assets/sprites/Pokemon/NNNN/` — as folhas de animação (Idle-Anim.png, Walk-Anim.png, Attack-Anim.png, Hurt-Anim.png, etc.) mais um `frames.tres` (o `SpriteFrames` do Godot, construído a partir delas — ver seção 2.4) e um `Normal.png` (retrato)
 - **Registro obrigatório:** `scripts/game_state.gd`, dentro da constante `ALL_SPECIES`
 
 ### 2.2 Campos principais de `UnitData`
@@ -101,9 +101,9 @@ Isso só coloca o ataque no "catálogo" da espécie (`learnset`) — pra ele vir
 | Campo | O que é |
 |---|---|
 | `unit_name` | Nome mostrado na UI |
-| `sprite_frames` | O `SpriteFrames` (ver seção 2.3) |
+| `sprite_frames` | O `SpriteFrames` (ver seção 2.4) |
 | `portrait` | Textura única pro retrato (HUD) |
-| `attack_hit_delay` / `special_hit_delay` | Segundos entre o INÍCIO da animação de ataque e o instante em que o golpe "conecta" — calibrado por espécie, ver seção 2.3 |
+| `attack_hit_delay` / `special_hit_delay` | Segundos entre o INÍCIO da animação de ataque e o instante em que o golpe "conecta" — calibrado por espécie, ver seção 2.4 |
 | `types` | Array de 1 ou 2 strings: `["Fire"]`, `["Grass", "Poison"]` |
 | `weight` | 0 a 4 — afeta HP máximo e alcance de movimento |
 | `hp_base` / `attack_base` / `defense_base` / `special_attack_base` / `special_defense_base` / `speed_base` | Stats base (a "matéria-prima" da fórmula de nível) |
@@ -112,23 +112,57 @@ Isso só coloca o ataque no "catálogo" da espécie (`learnset`) — pra ele vir
 | `base_exp_yield` | XP concedida ao derrotar essa espécie |
 | `slots` | Array de até 6 `ActionData` (Ataques/Habilidades/Itens) — o loadout de FÁBRICA |
 | `learnset` | Array de `LearnsetEntry` (nível + ação) — o catálogo completo do que essa espécie pode aprender |
+| `evolution_options` | Array de `EvolutionOption` — ver seção 2.3 |
 
-### 2.3 Construindo o `frames.tres` (a parte mais trabalhosa)
+### 2.3 Evolução (`evolution_options`)
+
+Cada entrada de `evolution_options` é um `EvolutionOption` (`scripts/evolution_option.gd`) com três campos:
+
+| Campo | O que é |
+|---|---|
+| `target` | Espécie-alvo (o MESMO `Resource` compartilhado de `data/units/`, sem `.duplicate()` — quem duplica é `party_screen.gd::_perform_evolution()` na hora de aplicar) |
+| `min_level` | Nível mínimo pra esta opção ficar disponível (0 = sem exigência) |
+| `requires_action` | `ActionData` que precisa estar EQUIPADO (`UnitData.slots`, não só no `learnset`) pra esta opção ficar disponível (`null` = sem exigência) |
+
+Normalmente `evolution_options` tem só UMA entrada (evolução linear — ex: Swinub -> Piloswine no nível 33). Mas pode ter VÁRIAS: se, na hora de abrir o menu "Evolve" (tela de Party), mais de uma opção estiver com os pré-requisitos satisfeitos ao mesmo tempo, o jogo abre uma tela de escolha (`evolution_choice_screen.tscn`) em vez de evoluir direto — é assim que uma espécie pode ramificar pra destinos diferentes dependendo de qual condição o jogador cumpriu primeiro.
+
+Exemplo (Metapod evoluindo pra Butterfree no nível 10, uma opção só):
+
+```
+[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="evo_opt_script"]
+[ext_resource type="Resource" path="res://data/units/0012.tres" id="6"]
+
+[sub_resource type="Resource" id="EvolutionOption_1"]
+script = ExtResource("evo_opt_script")
+target = ExtResource("6")
+min_level = 10
+
+[resource]
+...
+evolution_options = Array[ExtResource("evo_opt_script")]([SubResource("EvolutionOption_1")])
+```
+
+Pra uma espécie com DUAS opções, é só criar dois `EvolutionOption` (com `target`/pré-requisitos diferentes) e listar os dois dentro do mesmo array `evolution_options`.
+
+**Armadilha nova:** evoluir muda o `weight` da unidade pra o da NOVA espécie — se isso fizer o time ativo passar de `GameState.MAX_TEAM_WEIGHT`, a evolução é RECUSADA (mensagem de erro na tela, nada muda) até o jogador abrir espaço de peso no time. Não precisa configurar nada pra isso acontecer — `party_screen.gd::_attempt_evolution()` já checa sozinho antes de qualquer evolução, usando o `weight` que a espécie-alvo já tem.
+
+### 2.4 Construindo o `frames.tres` (a parte mais trabalhosa)
 
 Se você já tem as folhas de sprite (formato PMD Sprite Collab: `Idle-Anim.png`, `Walk-Anim.png`, etc., cada uma com um `AnimData.xml` do lado), o `frames.tres` segue uma receita fixa — o padrão foi construído olhando `assets/sprites/Pokemon/0473/frames.tres` (Mamoswine) e vale pra qualquer espécie nova:
 
 1. **Ordem das linhas** em cada PNG (de cima pra baixo, cada bloco tem `<FrameHeight>` pixels de altura): `Down(0), DownRight(1), Right(2), UpRight(3), Up(4), UpLeft(5), Left(6), DownLeft(7)`.
 2. **Ordem das colunas** = índice do quadro, esquerda pra direita, na mesma ordem da lista `<Duration>` do `AnimData.xml`.
 3. Cada direção vira uma animação separada dentro do `SpriteFrames`, nomeada `"<tipo>_<direção>"` (ex: `"walk_up_left"`), com a duração de cada quadro copiada DIRETO do `<Duration>` do XML (sem dividir por nada).
-4. **Velocidade/loop por TIPO de animação** (valores fixos, sempre os mesmos):
-   - `attack`, `hurt`, `shoot`, `charge`: `loop = false`, `speed = 20.0`
-   - `idle`, `sleep`: `loop = true`, `speed = 6.0` (Sleep só registra a direção `"down"` — nenhuma espécie tem Sleep-Anim.png com as 8 direções)
-   - `walk`: `loop = true`, `speed = 15.0`
-5. **`attack_hit_delay`** = (soma dos `<Duration>` dos quadros de ataque, do quadro 0 até o `HitFrame` do XML, exclusive) / 20.0 (a velocidade fixa da animação de ataque). `special_hit_delay` usa a mesma conta em cima de Shoot/Charge.
+4. **`speed = 60.0` pra TODA animação, sempre** (só o `loop` muda por tipo):
+   - `attack`, `hurt`, `shoot`, `charge`: `loop = false`
+   - `idle`, `sleep`: `loop = true` (Sleep só registra a direção `"down"` — nenhuma espécie tem Sleep-Anim.png com as 8 direções)
+   - `walk`: `loop = true`
+   - **Por quê 60 e não um valor "artístico" por tipo:** o formato PMD Sprite Collab mede `<Duration>` em ticks de 1/60s (o motor original desses sprites roda a 60 FPS) — é por isso que um quadro de "hold" parado no Idle costuma ter `Duration` bem maior (30~40) que um quadro de transição (2~4): não é um erro de arte, é literalmente "segura esse quadro por 30 ticks". O campo `speed` do `SpriteFrames` do Godot é en FPS, e o tempo real de cada quadro = `duration / speed` — então `speed = 60.0` é o ÚNICO valor que devolve o tempo real gravado no XML (`duration/60` segundos). Um valor diferente (ex: 15.0 pro walk, 6.0 pro idle) SEMPRE distorce o tempo real por um fator fixo (nesse caso, 4x e 10x mais lento, respectivamente) — passa despercebido só quando os quadros têm duração pequena e uniforme (`1,1,1,1...`), mas fica bem visível (animação "arrastada") em qualquer espécie com `Duration` maior/desigual de verdade, como Idle de Rattata/Raticate (`40,2,2,2,4,2,2,2`) ou Wobbuffet (`40,4,4,4,4,4,4,4,4`).
+5. **`attack_hit_delay`** = (soma dos `<Duration>` dos quadros de ataque, do quadro 0 até o `HitFrame` do XML, exclusive) / 60.0. `special_hit_delay` usa a mesma conta em cima de Shoot/Charge.
 
 Se a arte vier como VÁRIOS ARQUIVOS SEPARADOS em vez de uma tira só (ex: golpes como Water Gun/Confusion), não use esse recibo — isso é o padrão diferente descrito na seção 1.3 (`projectile_frames`/`impact_frames`).
 
-### 2.4 Exemplo real: `data/units/0202.tres` (Wobbuffet, sem ataques)
+### 2.5 Exemplo real: `data/units/0202.tres` (Wobbuffet, sem ataques)
 
 ```
 [gd_resource type="Resource" script_class="UnitData" format=3]
@@ -159,7 +193,7 @@ base_exp_yield = 142
 
 (Uma espécie pode não ter `slots`/`learnset` nenhum — nesse caso ela nunca ataca em batalha, só existe pra ser alvo/testado.)
 
-### 2.5 Registrar a espécie
+### 2.6 Registrar a espécie
 
 Abra `scripts/game_state.gd`, ache a constante `ALL_SPECIES` (é o catálogo de TODAS as espécies do jogo) e adicione uma linha:
 
@@ -173,7 +207,7 @@ const ALL_SPECIES: Array[UnitData] = [
 
 Sem isso, a espécie existe como arquivo mas o jogo não sabe que ela existe.
 
-### 2.6 Colocando a espécie em jogo
+### 2.7 Colocando a espécie em jogo
 
 Depois de registrada em `ALL_SPECIES`, você tem 3 jeitos de fazer ela aparecer de verdade:
 
@@ -229,6 +263,35 @@ func _on_answered(yes: bool) -> void:
 ```
 
 Pra um NPC mais simples que só mostra um texto (sem pergunta Sim/Não), dá pra reaproveisar esse mesmo padrão trocando `yes_no_prompt.tscn` por qualquer outra cena de popup — ou, pro caso mais simples possível, só um `print()`/`log_message()` de teste enquanto não existe uma caixa de diálogo genérica de "falar e fechar".
+
+### 3.4 Caso especial: `LootBall` (objeto de recompensa que some)
+
+Um `LootBall` é um `Npc` (herda de `npc.gd`, igual qualquer NPC da seção 3) especializado em UMA coisa: dar uma recompensa ao ser interagido e desaparecer da cena pra sempre. Pense nele como "um NPC cuja `interact()` já vem pronta" — você não escreve script nenhum novo, só configura uma instância de `scripts/loot_ball.gd` no Inspector.
+
+- **Fôrma:** `scripts/loot_ball.gd` (você não edita esse arquivo, só configura instâncias)
+- **Cena base:** `scenes/npc/loot_ball.tscn`
+- **Visual:** vem de um tile do TileSet do overworld (`assets/tiles/tilesets/OW/outside.tres`, coordenada `(4, 118)` hoje — pra usar outro tile, edite `ATLAS_COORD`/`TILESET_TEXTURE` no topo do script), não de um charset de personagem — por isso não tem campo `sheet` pra preencher.
+
+Campos do Inspector:
+
+| Campo | O que é |
+|---|---|
+| `loot_id` | Identificador ÚNICO desta instância — obrigatório se você quer que ela fique sumida depois de sair e voltar pra cena (ver `GameState.collected_loot`). Sem `loot_id`, a bolinha reaparece toda vez que a cena recarrega. |
+| `open_message` | Texto da primeira caixa, ao interagir (ex: "You found something!") |
+| `reward_type` | `"Item"`, `"Unit"` ou `"Battle"` |
+| `reward_item` / `reward_item_amount` | Só pra `reward_type = "Item"` — soma ao inventário (`GameState.add_item`) |
+| `reward_unit` / `reward_unit_level` | Só pra `reward_type = "Unit"` — sempre com `.duplicate()` (mesmo motivo de sempre: sem isso, duas LootBalls da mesma espécie dividiriam nível/HP) |
+| `add_to_active_team` | Só pra `reward_type = "Unit"`. `false` (padrão) = vai pra primeira vaga livre da RESERVA do PC, sempre cabe. `true` = vai DIRETO pro time ativo (`GameState.add_to_first_empty_roster_slot`) — se não couber (time cheio OU passaria do limite de peso, ver `GameState.MAX_TEAM_SIZE`/`MAX_TEAM_WEIGHT`), mostra um erro e a LootBall **não é consumida** — o jogador pode abrir espaço no PC e voltar. |
+| (nenhum campo extra) | `reward_type = "Battle"` dispara um encontro selvagem normal, sorteado da `EncounterArea` ATUAL do jogador — mesma tabela que a grama alta usaria naquele ponto do mapa, não uma equipe fixa |
+
+Passo a passo pra adicionar uma:
+
+1. Abra a cena do overworld (`test.tscn`/`world.tscn`), arraste uma instância de `scenes/npc/loot_ball.tscn` pra dentro do nó `Actors`, posicione onde quiser.
+2. Preencha `loot_id` (único!) e `reward_type` no Inspector, mais os campos da recompensa escolhida (ver tabela acima).
+
+**Isso é tudo** — igual qualquer NPC (seção 3.2), você não precisa mexer em colisão nem em `test.gd`/`world.gd`: `npc.gd` já cuida do grupo `"npc"` (bloqueio de movimento + detecção de "tem algo na minha frente"), e `loot_ball.gd` já cuida de tocar a caixa de texto, dar a recompensa, marcar `GameState.collected_loot` e sumir (`queue_free()`).
+
+**Armadilha:** se `reward_item`/`reward_unit` ficar vazio no Inspector (esqueceu de preencher), a LootBall avisa no Output e NÃO se marca como coletada — ela continua lá, interagível, esperando você corrigir a configuração e testar de novo.
 
 ---
 

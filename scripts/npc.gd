@@ -31,13 +31,27 @@ const DIR_TO_FACING = {
 	Vector2i(1, 0): "right",
 }
 
-# Mesmo motivo do get_node() em player.gd (em vez de @export com NodePath
-# escrito à mão no .tscn): um NPC sempre mora dentro de "Actors" (Node2D com
-# y_sort_enabled = true — ver test.tscn/test.gd, é o que resolve o NPC e o
-# Player desenharem na ordem certa perto um do outro, por posição Y em vez
-# de ordem fixa na árvore), que por sua vez é filho direto de Test, o mesmo
-# Node2D que tem o TileMapLayer chamado "TileMapLayer". Daí o "../..".
-@onready var tile_map: TileMapLayer = get_node("../../TileMapLayer")
+# Mesmo motivo do get_node() em player.gd: um NPC sempre mora dentro de
+# "Actors" (Node2D com y_sort_enabled = true — ver test.tscn/test.gd, é o
+# que resolve o NPC e o Player desenharem na ordem certa perto um do outro,
+# por posição Y em vez de ordem fixa na árvore), que por sua vez é filho
+# direto de quem hospeda o overworld (Test, World ou HouseInterior — mesma
+# profundidade nos três). "world" é o nome genérico por isso: pode ser
+# QUALQUER um dos três.
+@onready var world: Node2D = get_node("../..")
+
+# ANTES disto era get_node("../../TileMapLayer") direto — funcionava em
+# test.tscn (que tem literalmente UM node chamado "TileMapLayer"), mas
+# CRASHAVA em world.tscn (a camada de chão lá se chama "TileMapLayerGround",
+# não existe nenhum node com o nome exato "TileMapLayer" — get_node()
+# devolvia null, e tile_map.local_to_map() logo abaixo, em _ready(),
+# quebrava com "Nil"). Bug reportado pelo usuário ao tentar colocar um
+# Trainer em world.tscn pela primeira vez — até então nenhum NPC tinha sido
+# testado fora de test.tscn. Mesma técnica que player.gd JÁ usa (delegar
+# pro host via get_ground_tile_map(), que Test/World/HouseInterior
+# implementam cada um do seu jeito) resolve pros três de uma vez, sem
+# depender do NOME do node de chão em cada cena.
+@onready var tile_map: TileMapLayer = world.get_ground_tile_map()
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 
 # Célula do grid onde este NPC está — calculada a partir da posição em pixel
@@ -58,8 +72,24 @@ var grid_pos: Vector2i = Vector2i.ZERO
 
 func _ready() -> void:
 	add_to_group("npc")
-	grid_pos = tile_map.local_to_map(position)
-	position = tile_map.map_to_local(grid_pos)   # encaixa exatamente no centro do tile, não importa onde foi arrastado no editor
+	# local_to_map/map_to_local só fazem sentido em cima de uma posição NO
+	# ESPAÇO LOCAL da TileMapLayer — usar `position` direto (relativo ao PAI
+	# deste Npc, normalmente "Actors") só dava o resultado certo enquanto
+	# esse pai ficava exatamente em (0,0). Assim que o pai tem QUALQUER
+	# transform (ex: oak_lab_interior.tscn::Actors tem position =
+	# Vector2(-20, 2)), a conta ficava sistematicamente errada por esse
+	# offset inteiro — E, pior, ao reescrever `position` com o resultado
+	# (que está no espaço da TileMapLayer, não no espaço do pai), o MESMO
+	# erro se reintroduzia toda vez que a cena carregava. Por isso nenhum
+	# ajuste manual de posição no editor "grudava": _ready() sempre desfazia
+	# de novo, do mesmo jeito errado (bug reportado pelo usuário: LootBalls
+	# do laboratório do Oak nunca ficavam centralizadas na mesa, não importa
+	# o quanto fossem reposicionadas). global_position/to_local/to_global
+	# atravessam a cadeia de transform INTEIRA (não importa quantos pais com
+	# offset existam no meio), então isso funciona não importa a
+	# profundidade/offset da árvore.
+	grid_pos = tile_map.local_to_map(tile_map.to_local(global_position))
+	global_position = tile_map.to_global(tile_map.map_to_local(grid_pos))   # encaixa exatamente no centro do tile, não importa onde foi arrastado no editor
 	anim.sprite_frames = _build_sprite_frames()
 	anim.play("idle_" + facing)
 	_align_sprite_to_tile()

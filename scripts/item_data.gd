@@ -28,6 +28,21 @@ var category: String = "Medicine"
 
 @export_multiline var effect_description: String = ""
 
+@export_group("Loja (Merchant)")
+# Preço pra COMPRAR este item de um Merchant (ver merchant.gd/
+# merchant_buy_screen.gd) — 0 (padrão) = este item nunca aparece à venda em
+# lugar nenhum. Cada Merchant tem seu PRÓPRIO estoque (Array[
+# MerchantStockEntry], ver merchant_stock_entry.gd) que referencia este
+# ItemData — este campo é só o preço "de tabela", o mesmo em toda loja que
+# vender o item (não existe preço por-loja ainda).
+@export var buy_price: int = 0
+# Preço pra VENDER este item pra um Merchant (ver merchant_sell_screen.gd)
+# — 0 (padrão) = este item não pode ser vendido (some da lista de Sell).
+# Itens category == "Tool" nunca podem ser vendidos, mesmo com sell_price >
+# 0 (checado explicitamente em merchant_sell_screen.gd, não aqui, porque a
+# regra é "por categoria", não por item individual).
+@export var sell_price: int = 0
+
 @export_group("Ações disponíveis na Bag")
 # Controla se as opções "Use"/"Give" aparecem quando o jogador seleciona
 # este item na Bag (ver item_list_screen.gd -> item_action_menu.gd).
@@ -68,6 +83,15 @@ var category: String = "Medicine"
 # multiplicador ainda não muda nada visível em batalha, mas o cálculo já
 # existe pronto pra quando um roll de acerto de verdade for implementado.
 @export var accuracy_multiplier: float = 1.0
+
+# Multiplicador de dano dos ataques FÍSICOS (AttackData.is_special == false)
+# de quem carrega este item equipado no loadout (ver battle.gd::
+# calculate_damage_modifiers) — mesmo padrão de accuracy_multiplier acima,
+# só que pro dano em vez da precisão. 1.0 = sem efeito. Ex: Muscleband
+# (1.1). Só ataques Físicos são afetados — Especiais ignoram este campo por
+# completo, do mesmo jeito que o x0.5 de Burned em calculate_damage_modifiers
+# também só olha ataque Físico.
+@export var physical_damage_multiplier: float = 1.0
 
 # Se true, um ÚNICO slot de loadout pode guardar de 1 a 99 unidades deste
 # item ao mesmo tempo (ver UnitData.slot_quantities/get_slot_quantity) — a

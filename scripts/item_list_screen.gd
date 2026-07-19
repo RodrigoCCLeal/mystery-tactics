@@ -23,10 +23,10 @@ const PLACEHOLDER_COLOR = Color(0.35, 0.35, 0.35)
 const ROW_STYLE_NORMAL = Color(0, 0, 0, 0)
 const ROW_STYLE_SELECTED = Color(1, 1, 0.3, 0.25)
 
-const PARTY_SCREEN_SCENE: PackedScene = preload("res://scenes/party_screen.tscn")
-const ITEM_ACTION_MENU_SCENE: PackedScene = preload("res://scenes/item_action_menu.tscn")
-const QUANTITY_PICKER_SCENE: PackedScene = preload("res://scenes/quantity_picker.tscn")
-const TOOL_REGISTER_SCREEN_SCENE: PackedScene = preload("res://scenes/tool_register_screen.tscn")
+const PARTY_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/party_screen.tscn")
+const ITEM_ACTION_MENU_SCENE: PackedScene = preload("res://scenes/ui/popups/item_action_menu.tscn")
+const QUANTITY_PICKER_SCENE: PackedScene = preload("res://scenes/ui/popups/quantity_picker.tscn")
+const TOOL_REGISTER_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/tool_register_screen.tscn")
 const UnitScript = preload("res://scripts/unit.gd")
 
 @onready var title_label: Label = $Center/Panel/MarginContainer/Content/Title

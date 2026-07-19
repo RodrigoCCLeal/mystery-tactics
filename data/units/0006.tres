@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://mnqlmdnh2wc6"]
 
 [ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/0006/frames.tres" id="2"]
-[ext_resource type="Texture2D" uid="uid://dju4qpra7fqbs" path="res://assets/sprites/Pokemon/0006/Normal.png" id="3"]
+[ext_resource type="SpriteFrames" uid="uid://ccfitc806uw3y" path="res://assets/sprites/Pokemon/Sprites/0006/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://krdgr64mmvyg" path="res://assets/sprites/Pokemon/Sprites/0006/Normal.png" id="3"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="4"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5"]
 [ext_resource type="Resource" path="res://data/attacks/ember.tres" id="6"]
@@ -30,8 +30,8 @@ action = ExtResource("7")
 
 [sub_resource type="Resource" id="LearnsetEntry_0006_solar_power"]
 script = ExtResource("5")
-is_hidden_ability = true
 action = ExtResource("9")
+is_hidden_ability = true
 
 [resource]
 script = ExtResource("1")
@@ -41,9 +41,9 @@ portrait = ExtResource("3")
 attack_hit_delay = 0.6
 special_hit_delay = 0.5
 types = Array[String](["Fire", "Flying"])
-weight = 2
 slots = Array[ExtResource("7_charizard")]([ExtResource("4"), ExtResource("6"), ExtResource("7")])
 learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0006_tackle"), SubResource("LearnsetEntry_0006_growl"), SubResource("LearnsetEntry_0006_ember"), SubResource("LearnsetEntry_0006_blaze"), SubResource("LearnsetEntry_0006_solar_power")])
+weight = 2
 hp_base = 78
 attack_base = 84
 defense_base = 78

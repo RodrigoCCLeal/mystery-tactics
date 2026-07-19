@@ -12,8 +12,12 @@ signal closed
 const UnitScript = preload("res://scripts/unit.gd")
 
 @onready var title_label: Label = $Center/Panel/MarginContainer/Content/Title
-@onready var stats_rows: VBoxContainer = $Center/Panel/MarginContainer/Content/Stats
-@onready var loadout_rows: VBoxContainer = $Center/Panel/MarginContainer/Content/Loadout
+# Stats (esquerda) e Loadout (direita) agora moram lado a lado dentro de
+# "Columns" (HBoxContainer) — pedido do usuário: "mudar a tela de summary
+# para duas colunas, coloque o loadout como uma coluna a direita". Antes os
+# dois ficavam empilhados na mesma coluna só, um embaixo do outro.
+@onready var stats_rows: VBoxContainer = $Center/Panel/MarginContainer/Content/Columns/StatsColumn
+@onready var loadout_rows: VBoxContainer = $Center/Panel/MarginContainer/Content/Columns/LoadoutColumn/Loadout
 @onready var close_label: Label = $Center/Panel/MarginContainer/Content/Close
 
 func setup(data: UnitData) -> void:
@@ -29,6 +33,9 @@ func setup(data: UnitData) -> void:
 	_add_stat_row("Sp. Defense", UnitScript.calc_stat_static(data.special_defense_base, level))
 	_add_stat_row("Speed", UnitScript.calc_stat_static(data.speed_base, level))
 	_add_stat_row("Weight", data.weight)
+	# "" (ver UnitData.caught_location) = unidade inicial do time, nunca foi
+	# capturada de verdade — "Time inicial" é mais claro que deixar em branco.
+	_add_stat_row("Caught at", data.caught_location if data.caught_location != "" else "Time inicial")
 
 	for i in data.slots.size():
 		var action = data.slots[i]

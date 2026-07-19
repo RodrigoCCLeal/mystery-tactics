@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://cgpfygf6jlsoo"]
+
+[ext_resource type="Resource" uid="uid://5igdisqid0na" path="res://data/units/0020.tres" id="1_1aw3r"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="1_14mai"]
+[ext_resource type="Resource" path="res://data/abilities/compound_eyes.tres" id="2_1aw3r"]
+[ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="3_kfm5q"]
+[ext_resource type="Texture2D" uid="uid://d24pflsofm1wn" path="res://assets/sprites/Pokemon/Sprites/0019/Normal.png" id="4_14mai"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="5_6n67v"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_fxe1i"]
+[ext_resource type="SpriteFrames" uid="uid://dod1eaux0p3b1" path="res://assets/sprites/Pokemon/Sprites/0019/frames.tres" id="7_lmusc"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="evo_opt_script"]
+
+[sub_resource type="Resource" id="EvolutionOption_1"]
+script = ExtResource("evo_opt_script")
+target = ExtResource("1_1aw3r")
+min_level = 20
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_compound_eyes"]
+script = ExtResource("1_14mai")
+action = ExtResource("2_1aw3r")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_tinted_lens"]
+script = ExtResource("1_14mai")
+action = ExtResource("3_kfm5q")
+is_hidden_ability = true
+
+[resource]
+script = ExtResource("5_6n67v")
+unit_name = "Rattata"
+sprite_frames = ExtResource("7_lmusc")
+portrait = ExtResource("4_14mai")
+attack_hit_delay = 0.1167
+special_hit_delay = 0.15
+types = Array[String](["Normal"])
+slots = Array[ExtResource("6_fxe1i")]([ExtResource("2_1aw3r")])
+learnset = Array[ExtResource("1_14mai")]([SubResource("LearnsetEntry_0012_compound_eyes"), SubResource("LearnsetEntry_0012_tinted_lens")])
+hp_base = 30
+attack_base = 56
+defense_base = 35
+special_attack_base = 25
+special_defense_base = 35
+speed_base = 72
+catch_rate = 1.0
+growth_group = "Medium Fast"
+base_exp_yield = 51
+evolution_options = Array[ExtResource("evo_opt_script")]([SubResource("EvolutionOption_1")])

@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://c77wvm8facwe0"]
 
 [ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
-[ext_resource type="SpriteFrames" uid="uid://b33lr3apatihg" path="res://assets/sprites/Pokemon/0221/frames.tres" id="2"]
-[ext_resource type="Texture2D" uid="uid://chuhf2qn3ib86" path="res://assets/sprites/Pokemon/0221/Normal.png" id="3"]
+[ext_resource type="SpriteFrames" uid="uid://b33lr3apatihg" path="res://assets/sprites/Pokemon/Sprites/0221/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://dcs6bc4binkmj" path="res://assets/sprites/Pokemon/Sprites/0221/Normal.png" id="3"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="4"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5"]
 [ext_resource type="Resource" path="res://data/attacks/powder_snow.tres" id="6"]
@@ -11,6 +11,12 @@
 [ext_resource type="Resource" uid="uid://d3d1yt4acgtl4" path="res://data/units/0473.tres" id="9"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="9_piloswine"]
 [ext_resource type="Resource" path="res://data/abilities/thick_fat.tres" id="10"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="evo_opt_script"]
+
+[sub_resource type="Resource" id="EvolutionOption_1"]
+script = ExtResource("evo_opt_script")
+target = ExtResource("9")
+requires_action = ExtResource("8")
 
 [sub_resource type="Resource" id="LearnsetEntry_0221_tackle"]
 script = ExtResource("5")
@@ -52,5 +58,4 @@ speed_base = 50
 catch_rate = 0.2941
 growth_group = "Slow"
 base_exp_yield = 158
-evolves_into = ExtResource("9")
-evolve_requires_action = ExtResource("8")
+evolution_options = Array[ExtResource("evo_opt_script")]([SubResource("EvolutionOption_1")])

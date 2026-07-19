@@ -11,12 +11,13 @@ extends "res://scripts/npc.gd"
 # curar (ver computer_screen.gd).
 #
 # get_tree().paused = true/false ao redor do popup é o MESMO padrão que
-# test.gd já usa pro menu de pausa (ver _open_pause_menu/
-# _on_pause_menu_closed) — trava o Player (e o resto do overworld) enquanto
-# a pergunta está na tela, sem precisar duplicar nenhuma lógica de "ignorar
-# input do jogo enquanto um popup estiver aberto".
+# test.gd já usa pros menus do jogo/sistema (ver _open_game_menu/
+# _open_system_menu/_on_menu_closed) — trava o Player (e o resto do
+# overworld) enquanto a pergunta está na tela, sem precisar duplicar
+# nenhuma lógica de "ignorar input do jogo enquanto um popup estiver
+# aberto".
 
-const YES_NO_PROMPT_SCENE: PackedScene = preload("res://scenes/yes_no_prompt.tscn")
+const YES_NO_PROMPT_SCENE: PackedScene = preload("res://scenes/ui/popups/yes_no_prompt.tscn")
 
 func interact() -> void:
 	var prompt = YES_NO_PROMPT_SCENE.instantiate()

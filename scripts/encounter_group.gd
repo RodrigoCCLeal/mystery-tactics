@@ -17,3 +17,13 @@ extends Resource
 
 @export var entries: Array[EncounterEntry] = []
 @export_range(0.0, 100.0) var weight: float = 1.0
+
+# Trava de progressão: este grupo só pode ser sorteado se
+# GameState.badges.size() >= min_badges — mesmo princípio de
+# trainer.gd::teams (9 tiers indexados por número de badges), só que aqui é
+# um LIMIAR (não um tier exato): 0 (padrão) = sempre disponível desde o
+# início, 2 = só entra na roleta depois da 2ª badge. É assim que dá pra ter,
+# por exemplo, uma espécie mais forte que só começa a aparecer numa rota já
+# visitada antes, sem precisar de uma EncounterArea nova só pra isso. Ver
+# EncounterArea.pick_group() pra onde isso é de fato checado.
+@export var min_badges: int = 0

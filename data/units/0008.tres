@@ -1,15 +1,21 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://c4vggt7d55rlc"]
 
 [ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/0008/frames.tres" id="2"]
-[ext_resource type="Texture2D" uid="uid://cxleciwvtxekn" path="res://assets/sprites/Pokemon/0008/Normal.png" id="3"]
+[ext_resource type="SpriteFrames" uid="uid://dm0m2affhfxeh" path="res://assets/sprites/Pokemon/Sprites/0008/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://kcypt8anmjry" path="res://assets/sprites/Pokemon/Sprites/0008/Normal.png" id="3"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="4"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_wartortle"]
 [ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="6"]
 [ext_resource type="Resource" path="res://data/abilities/torrent.tres" id="7"]
 [ext_resource type="Resource" path="res://data/abilities/rain_dish.tres" id="8"]
-[ext_resource type="Resource" path="res://data/units/0009.tres" id="9"]
+[ext_resource type="Resource" uid="uid://b127d87swaaju" path="res://data/units/0009.tres" id="9"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="evo_opt_script"]
+
+[sub_resource type="Resource" id="EvolutionOption_1"]
+script = ExtResource("evo_opt_script")
+target = ExtResource("9")
+min_level = 36
 
 [sub_resource type="Resource" id="LearnsetEntry_0008_tackle"]
 script = ExtResource("5")
@@ -26,8 +32,8 @@ action = ExtResource("7")
 
 [sub_resource type="Resource" id="LearnsetEntry_0008_rain_dish"]
 script = ExtResource("5")
-is_hidden_ability = true
 action = ExtResource("8")
+is_hidden_ability = true
 
 [resource]
 script = ExtResource("1")
@@ -47,5 +53,4 @@ special_defense_base = 80
 speed_base = 58
 catch_rate = 0.1765
 base_exp_yield = 142
-evolves_into = ExtResource("9")
-evolve_min_level = 36
+evolution_options = Array[ExtResource("evo_opt_script")]([SubResource("EvolutionOption_1")])

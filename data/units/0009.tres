@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://b127d87swaaju"]
 
 [ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/0009/frames.tres" id="2"]
-[ext_resource type="Texture2D" uid="uid://cfglbj2bfshbh" path="res://assets/sprites/Pokemon/0009/Normal.png" id="3"]
+[ext_resource type="SpriteFrames" uid="uid://bfmjvorhvxvn" path="res://assets/sprites/Pokemon/Sprites/0009/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://cjcetah581hmg" path="res://assets/sprites/Pokemon/Sprites/0009/Normal.png" id="3"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="4"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_blastoise"]
@@ -25,8 +25,8 @@ action = ExtResource("7")
 
 [sub_resource type="Resource" id="LearnsetEntry_0009_rain_dish"]
 script = ExtResource("5")
-is_hidden_ability = true
 action = ExtResource("8")
+is_hidden_ability = true
 
 [resource]
 script = ExtResource("1")

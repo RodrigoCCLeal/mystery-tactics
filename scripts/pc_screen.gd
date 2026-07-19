@@ -1,10 +1,11 @@
 extends CanvasLayer
 
-# Tela do PC — aberta pela opção "PC" do computer_screen.gd. Três painéis:
+# Tela do PC — aberta pela opção do computer_screen.gd. Três painéis:
 # time ativo (esquerda, sempre 6 slots — GameState.roster, incl. vazios),
-# reserva (meio, GameState.storage — grade larga de slots, a maioria vazia
-# até existir alguma forma de conseguir mais unidades), e atributos da
-# unidade sob o MOUSE (direita — prévia ao vivo, atualiza a cada hover).
+# reserva (meio — GameState.storage OU GameState.giovanni_storage, ver
+# reserve_mode logo abaixo — grade larga de slots, a maioria vazia até
+# existir alguma forma de conseguir mais unidades), e atributos da unidade
+# sob o MOUSE (direita — prévia ao vivo, atualiza a cada hover).
 #
 # A reserva é grande demais (GameState.STORAGE_CAPACITY) pra mostrar de uma
 # vez só — por isso vira BOX_COUNT "abas"/páginas de SLOTS_PER_BOX cada
@@ -36,6 +37,34 @@ const UnitScript = preload("res://scripts/unit.gd")
 
 const RESERVE_COLUMNS = 8
 const ATTR_PORTRAIT_SIZE = 64.0
+
+# Qual reserva a coluna do meio mostra: "storage" (padrão, reserva normal do
+# jogador, ver GameState.storage) ou "giovanni" (GameState.giovanni_storage —
+# "Giovanni's Account", unidades roubadas por treinadores Rocket, ver
+# battle.gd::resolve_capture). Quem abre esta cena seta isso ANTES dela
+# entrar na árvore (ver computer_screen.gd::_open_pc_screen) — o resto do
+# arquivo nunca lê GameState.storage/giovanni_storage direto, só chama os 3
+# wrappers _reserve_* logo abaixo, que decidem qual reserva de verdade usar
+# com base neste campo. Isso é o que deixa a MESMA cena/script servir as
+# duas contas, igual house_interior.gd serve qualquer interior.
+@export_enum("storage", "giovanni") var reserve_mode: String = "storage"
+
+func _reserve_get_slot(index: int) -> UnitData:
+	if reserve_mode == "giovanni":
+		return GameState.get_giovanni_slot(index)
+	return GameState.get_storage_slot(index)
+
+func _reserve_swap_slots(a: int, b: int) -> void:
+	if reserve_mode == "giovanni":
+		GameState.swap_giovanni_slots(a, b)
+	else:
+		GameState.swap_storage_slots(a, b)
+
+func _reserve_swap_active(active_index: int, reserve_index: int) -> void:
+	if reserve_mode == "giovanni":
+		GameState.swap_active_with_giovanni(active_index, reserve_index)
+	else:
+		GameState.swap_active_with_storage(active_index, reserve_index)
 
 @onready var team_rows_container: VBoxContainer = $Center/Panel/MarginContainer/Content/Columns/TeamColumn/TeamRows
 @onready var reserve_grid_container: GridContainer = $Center/Panel/MarginContainer/Content/Columns/ReserveColumn/ReserveGrid
@@ -147,7 +176,7 @@ func _build_reserve() -> void:
 		var absolute_index = box_offset + i
 		var slot := PcSlot.new()
 		reserve_grid_container.add_child(slot)
-		slot.setup("reserve", absolute_index, GameState.get_storage_slot(absolute_index))
+		slot.setup("reserve", absolute_index, _reserve_get_slot(absolute_index))
 		slot.dropped.connect(_on_slot_dropped.bind("reserve", absolute_index))
 		slot.hovered.connect(_on_slot_hovered.bind(slot))
 
@@ -183,11 +212,11 @@ func _perform_move(source_column: String, source_index: int, target_column: Stri
 	if source_column == "team" and target_column == "team":
 		GameState.swap_roster_slots(source_index, target_index)
 	elif source_column == "reserve" and target_column == "reserve":
-		GameState.swap_storage_slots(source_index, target_index)
+		_reserve_swap_slots(source_index, target_index)
 	else:
 		var team_idx = source_index if source_column == "team" else target_index
 		var reserve_idx = source_index if source_column == "reserve" else target_index
-		GameState.swap_active_with_storage(team_idx, reserve_idx)
+		_reserve_swap_active(team_idx, reserve_idx)
 	picked_column = ""
 	picked_index = -1
 	_build_all()
@@ -284,7 +313,7 @@ func _update_prompt() -> void:
 func _get_data(column: String, index: int) -> UnitData:
 	if column == "team":
 		return GameState.get_roster_slot(index)
-	return GameState.get_storage_slot(index)
+	return _reserve_get_slot(index)
 
 func _get_slot_node(column: String, index: int) -> PcSlot:
 	if column == "team":

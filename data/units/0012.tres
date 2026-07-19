@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://thcxikwrtjup"]
+
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
+[ext_resource type="SpriteFrames" uid="uid://dm1doih0v2ggi" path="res://assets/sprites/Pokemon/Sprites/0012/frames.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://b04ddbtc4sq6t" path="res://assets/sprites/Pokemon/Sprites/0012/Normal.png" id="3"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="4"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="4_butterfree"]
+[ext_resource type="Resource" path="res://data/abilities/compound_eyes.tres" id="5"]
+[ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="6"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_compound_eyes"]
+script = ExtResource("4")
+action = ExtResource("5")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_tinted_lens"]
+script = ExtResource("4")
+action = ExtResource("6")
+is_hidden_ability = true
+
+[resource]
+script = ExtResource("1")
+unit_name = "Butterfree"
+sprite_frames = ExtResource("2")
+portrait = ExtResource("3")
+attack_hit_delay = 0.55
+special_hit_delay = 0.8
+types = Array[String](["Bug", "Flying"])
+slots = Array[ExtResource("4_butterfree")]([ExtResource("5")])
+learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0012_compound_eyes"), SubResource("LearnsetEntry_0012_tinted_lens")])
+hp_base = 60
+defense_base = 50
+special_attack_base = 90
+special_defense_base = 80
+speed_base = 70
+catch_rate = 0.1765
+growth_group = "Medium Fast"
+base_exp_yield = 178
