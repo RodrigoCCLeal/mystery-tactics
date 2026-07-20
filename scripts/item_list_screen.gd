@@ -27,6 +27,7 @@ const PARTY_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/party_s
 const ITEM_ACTION_MENU_SCENE: PackedScene = preload("res://scenes/ui/popups/item_action_menu.tscn")
 const QUANTITY_PICKER_SCENE: PackedScene = preload("res://scenes/ui/popups/quantity_picker.tscn")
 const TOOL_REGISTER_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/tool_register_screen.tscn")
+const SONG_MENU_SCENE: PackedScene = preload("res://scenes/ui/popups/song_menu.tscn")
 const UnitScript = preload("res://scripts/unit.gd")
 
 @onready var title_label: Label = $Center/Panel/MarginContainer/Content/Title
@@ -213,8 +214,11 @@ func _on_item_action_closed(option: String, item: ItemData) -> void:
 			# unidade pra isso não faria sentido nenhum, diferente de
 			# Medicine/Berry (cura) que sempre precisam de um alvo.
 			if item.category == "Tool":
-				GameState.use_tool(item)
-				_rebuild_rows()
+				if item.opens_song_menu:
+					_open_song_menu(item)
+				else:
+					GameState.use_tool(item)
+					_rebuild_rows()
 			else:
 				_open_party_picker(item, "use")
 		"Give":
@@ -240,6 +244,25 @@ func _open_register_screen(item: ItemData) -> void:
 func _on_register_screen_closed() -> void:
 	_input_locked = false
 	_rebuild_rows()
+
+# Mesmo raciocínio de _open_item_actions()/_open_register_screen() — abre
+# do lado, só travando o input da lista por baixo.
+func _open_song_menu(item: ItemData) -> void:
+	_input_locked = true
+	var menu = SONG_MENU_SCENE.instantiate()
+	add_child(menu)
+	menu.setup(item)
+	menu.closed.connect(_on_song_menu_closed)
+
+func _on_song_menu_closed() -> void:
+	_input_locked = false
+	_rebuild_rows()
+	# A escolha em si (GameState.pending_song, já gravada pelo song_menu se
+	# o jogador confirmou uma) só é APLICADA quando TODOS os menus acima
+	# deste (item_list_screen -> bag_screen -> game_menu) terminarem de
+	# fechar e a árvore despausar de novo — ver comentário grande em
+	# GameState.pending_song sobre o motivo (usar uma Song é uma ação
+	# FÍSICA no overworld, este popup nem tem acesso ao node Player).
 
 # Diferente de item_action_menu/tool_register_screen (pequenos, abrem do
 # lado), party_screen é uma tela cheia — continua no padrão antigo de

@@ -1,16 +1,15 @@
-[gd_scene format=4 uid="uid://ys43i7j8eljb"]
+[gd_scene format=4 uid="uid://s7q3jsg1sy1n"]
 
 [ext_resource type="TileSet" uid="uid://c82qpdmwuwho7" path="res://assets/tiles/tilesets/OW/forest_tileset.tres" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/actors/player.tscn" id="2"]
-[ext_resource type="Script" uid="uid://c0ljwy2sqhknm" path="res://scripts/test.gd" id="3"]
-[ext_resource type="Resource" uid="uid://6uep7b54rcqq" path="res://data/areas/starting_area.tres" id="4"]
+[ext_resource type="Script" path="res://scripts/test.gd" id="3"]
+[ext_resource type="Resource" path="res://data/areas/starting_area.tres" id="4"]
 [ext_resource type="Script" uid="uid://cpnxy7tcyup5l" path="res://scripts/area_notification.gd" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/npc/nurse.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/npc/baldo.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/npc/merchant.tscn" id="8"]
 [ext_resource type="Script" uid="uid://34sf5hideha7" path="res://scripts/merchant_stock_entry.gd" id="9"]
 [ext_resource type="Resource" uid="uid://cgta0is70o5ya" path="res://data/items/potion.tres" id="10"]
-[ext_resource type="Resource" uid="uid://timvhcf5r6n0" path="res://data/items/super_potion.tres" id="11"]
 [ext_resource type="Resource" uid="uid://dt0mya0novat0" path="res://data/items/ability_patch.tres" id="12"]
 [ext_resource type="PackedScene" path="res://scenes/npc/trainer.tscn" id="13"]
 [ext_resource type="Script" uid="uid://cicfhbijirymv" path="res://scripts/trainer_team_entry.gd" id="14"]
@@ -25,6 +24,7 @@
 [ext_resource type="PackedScene" path="res://scenes/npc/loot_ball.tscn" id="22"]
 [ext_resource type="Resource" uid="uid://cusa6m2ijtesg" path="res://data/items/pokeball.tres" id="23"]
 [ext_resource type="Resource" uid="uid://dixdxeik5et4e" path="res://data/units/0202.tres" id="24"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud/time_hud.tscn" id="25"]
 
 [sub_resource type="Resource" id="MerchantStockEntry_potion"]
 script = ExtResource("9")
@@ -32,7 +32,7 @@ item = ExtResource("10")
 
 [sub_resource type="Resource" id="MerchantStockEntry_super_potion"]
 script = ExtResource("9")
-item = ExtResource("11")
+item = ExtResource("23")
 
 [sub_resource type="Resource" id="MerchantStockEntry_ability_patch"]
 script = ExtResource("9")
@@ -121,29 +121,26 @@ trainer_id = "test_bugcatcher_1"
 teams = Array[ExtResource("15")]([SubResource("TrainerTeam_tier0"), SubResource("TrainerTeam_tier1")])
 spot_behavior = "Spinner"
 
-[node name="HikerTrainer" parent="Actors" instance=ExtResource("13")]
+[node name="HikerTrainer" parent="Actors" unique_id=585525480 instance=ExtResource("13")]
 position = Vector2(-176, 144)
-sheet = ExtResource("19")
 trainer_class = "Hiker"
 trainer_id = "test_hiker_1"
 teams = Array[ExtResource("15")]([SubResource("TrainerTeam_hiker_tier0")])
 spot_behavior = "Walker"
 patrol_path = Array[Vector2i]([Vector2i(-6, 4), Vector2i(-2, 4)])
+sheet = ExtResource("19")
 
-[node name="LootBall" parent="Actors" instance=ExtResource("22")]
+[node name="LootBall" parent="Actors" unique_id=915698685 instance=ExtResource("22")]
 position = Vector2(-16, 48)
 loot_id = "test_lootball_1"
-reward_type = "Item"
 reward_item = ExtResource("23")
-reward_item_amount = 1
 
-[node name="LootBallWobbuffet" parent="Actors" instance=ExtResource("22")]
+[node name="LootBallWobbuffet" parent="Actors" unique_id=956168208 instance=ExtResource("22")]
 position = Vector2(16, 16)
+reward_type = "Unit"
 loot_id = "test_lootball_wobbuffet"
 open_message = "You found a Pokémon!"
-reward_type = "Unit"
 reward_unit = ExtResource("24")
-reward_unit_level = 5
 add_to_active_team = true
 
 [node name="TreeTopLayer" type="TileMapLayer" parent="." unique_id=1886724213]
@@ -170,3 +167,7 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=900000001]
+
+[node name="TimeHud" parent="." unique_id=579654476 instance=ExtResource("25")]

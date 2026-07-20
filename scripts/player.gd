@@ -6,18 +6,18 @@ extends Node2D
 # personagem (assets/sprites/Human) não têm poses diagonais como as dos
 # sprites de batalha (que são 8 direções), por isso a diferença.
 
-# Antes isso era @export (setado via NodePath na mão em test.tscn), mas
+# Antes isso era @export (setado via NodePath na mão em world.tscn), mas
 # node exports tipados só resolvem de node de verdade quando atribuídos
 # PELO editor do Godot (arrastando o node no Inspector) — escrever o
 # NodePath direto no .tscn deixa a propriedade null em runtime, foi isso
 # que causou o erro "Cannot call method 'map_to_local' on a null value".
 # get_node() aqui resolve na hora — Player mora dentro de "Actors" (Node2D
-# com y_sort_enabled = true, ver test.gd/test.tscn: é o que resolve o
+# com y_sort_enabled = true, ver world.gd/world.tscn: é o que resolve o
 # personagem desenhar na ordem errada perto de um NPC), que por sua vez é
 # filho direto de Test OU World (Player -> Actors -> Test/World, mesma
 # profundidade nos dois — daí o "../.." funcionar em qualquer um dos dois
 # sem mudar nada aqui). "world" é o nome genérico porque quem hospeda o
-# Player pode ser QUALQUER um dos dois — ver test.gd::has_npc_at/
+# Player pode ser QUALQUER um dos dois — ver world.gd::has_npc_at/
 # is_cell_walkable e o world.gd equivalente, que fazem a MESMA pergunta de
 # jeitos diferentes por baixo (Test tem um TileMapLayer só; World tem três).
 @onready var world: Node2D = get_node("../..")
@@ -25,10 +25,10 @@ extends Node2D
 # tile_map aqui serve SÓ pra conta de posição (map_to_local, tile_set.tile_size,
 # alinhamento do sprite no pé do tile) — nunca pra decidir se uma célula é
 # andável (isso é sempre world.is_cell_walkable(), ver can_move_to() lá
-# embaixo). É por isso que pedimos pro world.gd/test.gd nos dar o "chão" de
+# embaixo). É por isso que pedimos pro world.gd nos dar o "chão" de
 # referência via get_ground_tile_map() em vez de acharmos ele sozinhos com um
 # NodePath fixo tipo "../../TileMapLayer" — Test só tem UM TileMapLayer, mas
-# World (a cena de STARTINGTOWN) tem TRÊS (Ground/Objects/Top) com nomes
+# World (a cena de ARCHI) tem TRÊS (Ground/Objects/Top) com nomes
 # diferentes; Player não devia precisar saber disso.
 @onready var tile_map: TileMapLayer = world.get_ground_tile_map()
 
@@ -47,6 +47,11 @@ extends Node2D
 var walk_sheet: Texture2D   # trainer_POKEMONTRAINER_Red/Leaf.png — dá idle E walk
 var run_sheet: Texture2D    # boy_run.png / girl_run.png — só run, sem pose parada
 var bike_sheet: Texture2D   # boy_bike.png / girl_bike.png — só bike, sem pose parada (mesmo espírito de run_sheet)
+# Songs da Fairy Ocarina (ver item_data.gd::opens_song_menu, Player.apply_song
+# mais abaixo) — mesmo layout de charset que bike_sheet (4 quadros x 4
+# direções), mesmo espírito de idle + ciclo próprio.
+var strength_sheet: Texture2D   # boy_ARCANINE.png — Song "Strength": 2x a velocidade da Bicicleta
+var surf_sheet: Texture2D       # boy_LAPRAS.png — Song "Surf": anda em cima d'água
 
 # Caminho de cada spritesheet por gênero — a MESMA convenção de arquivo do
 # boy (boy_run/boy_bike) não existe pro walk (que usa o nome do trainer de
@@ -60,11 +65,18 @@ const SHEETS_BY_GENDER = {
 		"walk": "res://assets/sprites/Human/Main Character/trainer_POKEMONTRAINER_Red.png",
 		"run": "res://assets/sprites/Human/Main Character/boy_run.png",
 		"bike": "res://assets/sprites/Human/Main Character/boy_bike.png",
+		"strength": "res://assets/sprites/Human/Main Character/boy_ARCANINE.png",
+		"surf": "res://assets/sprites/Human/Main Character/boy_LAPRAS.png",
 	},
 	"girl": {
 		"walk": "res://assets/sprites/Human/Main Character/trainer_POKEMONTRAINER_Leaf.png",
 		"run": "res://assets/sprites/Human/Main Character/girl_run.png",
 		"bike": "res://assets/sprites/Human/Main Character/girl_bike.png",
+		# Sem girl_ARCANINE/girl_LAPRAS ripadas ainda — _load_sheets_for_gender()
+		# cai pra arte do "boy" nesses dois casos enquanto isso (ver lá).
+		# Assim que existirem os dois arquivos, é só adicionar as chaves
+		# "strength"/"surf" aqui (mesmo padrão das 3 de cima) que o fallback
+		# some sozinho.
 	},
 }
 
@@ -74,6 +86,20 @@ const SHEETS_BY_GENDER = {
 # esquerda usado nos sprites de batalha.
 const SHEET_DIRECTIONS = ["down", "left", "right", "up"]
 const FRAMES_PER_CYCLE = 4
+# Só pra boy_ARCANINE.png/boy_LAPRAS.png (Strength/Surf) — essas duas sheets
+# são 64x128 (mesma altura/4-direções que as outras), mas só têm 2 quadros
+# de largura, não 4 (ver comentário grande em build_sprite_frames()).
+const STRENGTH_SURF_FRAMES_PER_CYCLE = 2
+# Pedido do usuário: "I'll have to upscale the sprites, they reduced the
+# character too much and it looks silly" — mesmo com o corte de frame
+# corrigido (32x32 de verdade agora, ver acima), o DESENHO em si do
+# boy_ARCANINE/boy_LAPRAS ocupa menos espaço dentro do quadro 32x32 do que
+# walk_/run_/bike_ (personagem menor dentro do mesmo canvas), então fica
+# visivelmente menor no jogo. Corrigido escalando só o AnimatedSprite2D
+# enquanto Strength/Surf estiver ativo (ver _sync_movement_mode_state()),
+# não a spritesheet em si. Valor "no olho" — ajuste aqui se ainda ficar
+# grande/pequeno demais.
+const STRENGTH_SURF_SPRITE_SCALE = 2.0
 
 # Frame do ciclo de walk usado como pose "parada" (idle) — index 0 (1º
 # quadro) ou 2 (3º quadro) servem, os dois são poses paradas no meio do
@@ -88,6 +114,12 @@ const IDLE_FRAME_INDEX = 0
 const MOVE_DURATION = 0.22   # segundos pra atravessar 1 tile andando
 const RUN_DURATION = 0.11    # segundos pra atravessar 1 tile correndo
 const BIKE_DURATION = RUN_DURATION / 2.0   # segundos pra atravessar 1 tile de bike (2x Run)
+# Pedido do usuário, Song "Strength": "The player speed increases to x2
+# times the bicycle speed" — literal, metade da duração da Bicicleta.
+const STRENGTH_DURATION = BIKE_DURATION / 2.0
+# Song "Surf" não tem velocidade própria pedida — anda na velocidade normal
+# de caminhada (MOVE_DURATION), sem Run (ver _try_start_move mais abaixo,
+# is_surfing entra ANTES de is_running na escolha de duração/animação).
 
 # Pulo da ladeira de mão única (ver world.gd::is_one_way_tile) — pedido do
 # usuário: "Make the character hop OVER the one-direction tiles, so the
@@ -108,10 +140,17 @@ const HOP_HEIGHT = 10.0      # pixels que o sprite sobe no pico do arco (t=0.5)
 var is_hopping: bool = false
 
 # Emitido quando a unidade TERMINA de entrar numa célula nova (não quando só
-# vira de direção sem poder andar). test.gd escuta isso pra decidir coisas
+# vira de direção sem poder andar). world.gd escuta isso pra decidir coisas
 # que dependem do tile em que o personagem pisou (ex: grama alta -> chance
 # de combate aleatório).
 signal tile_entered(cell: Vector2i)
+
+# Mesma caixa de texto genérica de 1 linha já usada fora de trainer.gd (ver
+# loot_ball.gd/party_screen.gd, apesar do nome "trainer_"_message_box) —
+# reaproveitada aqui pro aviso de "sem água na frente" da Song Surf (ver
+# _apply_surf_song/_show_message mais abaixo), em vez de inventar uma caixa
+# nova só pra isso.
+const MESSAGE_BOX_SCENE: PackedScene = preload("res://scenes/ui/popups/trainer_message_box.tscn")
 
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -122,10 +161,29 @@ var is_running: bool = false
 # Espelha GameState.is_biking (ver comentário lá) — NÃO é uma tecla segurada
 # (diferente de is_running/"run"): liga/desliga usando o item Bicycle na Bag
 # (ver GameState.use_tool), um toggle persistente que sobrevive à troca de
-# cena. _sync_biking_state(), chamado todo _process, é quem mantém essa
-# cópia local em dia — Player só LÊ GameState.is_biking, nunca escreve nele
-# diretamente (quem escreve é sempre GameState.use_tool).
+# cena. _sync_movement_mode_state(), chamado todo _process, é quem mantém
+# essa cópia local em dia — normalmente Player só LÊ GameState.is_biking,
+# quem ESCREVE é GameState.use_tool().
 var is_biking: bool = false
+
+# Espelham GameState.is_strength_active/is_surfing (mesmo espírito de
+# is_biking acima, sincronizados por _sync_movement_mode_state()) — a
+# diferença é que Player.apply_song() (chamado por world.gd/
+# house_interior.gd::_apply_pending_song_if_any, ver lá) escreve nos DOIS
+# lados (GameState E a cópia local) na hora, em vez de só mexer em
+# GameState e esperar o próximo frame sincronizar — apply_song() já chama
+# anim.play() logo em seguida, precisa que a cópia local já esteja certa
+# NESSE MESMO frame.
+var is_strength_active: bool = false
+var is_surfing: bool = false
+
+# true só durante o pulo de ATIVAÇÃO do Surf (ver _apply_surf_song) — o
+# pulo em si acontece com a sprite NORMAL ainda (pedido do usuário: "the
+# character hops forward 1 tile... and THEN changes the sprite"), então
+# is_surfing só vira true de verdade quando o pulo aterrissa (ver
+# _continue_move). Consumido (voltando a false) na mesma hora que é lido,
+# nunca fica true por mais de 1 pulo.
+var _hop_activates_surf: bool = false
 
 # Estado do passo atual em andamento — origem/destino em pixels e quanto
 # tempo já passou, pra interpolar center-a-center numa duração fixa (ver
@@ -248,6 +306,13 @@ func _load_sheets_for_gender() -> void:
 	walk_sheet = load(sheets["walk"])
 	run_sheet = load(sheets["run"])
 	bike_sheet = load(sheets["bike"])
+	# .get(..., SHEETS_BY_GENDER["boy"]["strength"/"surf"]) — mesmo
+	# raciocínio do .get(...) da linha de cima (fallback pro boy se
+	# player_gender vier estranho), só que aqui SEMPRE cai no boy pras duas
+	# Songs especificamente, porque girl_ARCANINE/girl_LAPRAS ainda não
+	# existem (ver comentário grande em SHEETS_BY_GENDER["girl"]).
+	strength_sheet = load(sheets.get("strength", SHEETS_BY_GENDER["boy"]["strength"]))
+	surf_sheet = load(sheets.get("surf", SHEETS_BY_GENDER["boy"]["surf"]))
 
 # Monta o SpriteFrames inteiro (idle/walk/run/bike x 4 direções) na hora, a
 # partir das três texturas brutas — em vez de um .tres com AtlasTexture
@@ -260,6 +325,25 @@ func build_sprite_frames() -> SpriteFrames:
 	_add_walk_and_idle(frames, walk_sheet)
 	_add_run(frames, run_sheet)
 	_add_bike(frames, bike_sheet)
+	# 10.0 FPS pras duas — mesmo valor de bike_ (ver _add_bike), sem pedido
+	# específico do usuário sobre velocidade de ANIMAÇÃO (troca de quadro)
+	# pra nenhuma das duas, só de velocidade de MOVIMENTO (ver
+	# STRENGTH_DURATION/comentário sobre Surf lá em cima).
+	# STRENGTH_SURF_FRAMES_PER_CYCLE (2, não FRAMES_PER_CYCLE=4) — bug
+	# reportado pelo usuário: "The sprite for Strength is badly cropped.
+	# It's 2 32x32 sprites for each row". boy_ARCANINE.png/boy_LAPRAS.png
+	# são 64x128 (mesma altura total que bike_sheet, MESMAS 4 direções em
+	# 4 linhas de 32px cada), mas só têm 2 quadros de largura, não 4 —
+	# fatiar assumindo FRAMES_PER_CYCLE=4 cortava cada quadro AO MEIO
+	# (frame_w = 64/4 = 16 em vez dos 32 reais).
+	_add_pose_with_idle(frames, strength_sheet, "strength", 10.0, STRENGTH_SURF_FRAMES_PER_CYCLE)
+	# Surf com fps PRÓPRIO, mais baixo que Strength — pedido do usuário: "the
+	# animations are good though, I would just slow down the surfing
+	# animation a bit", depois "Reduce surf to 3 fps" (6.0 ainda tava rápido
+	# demais). Só 2 quadros no ciclo (ver STRENGTH_SURF_FRAMES_PER_CYCLE), a
+	# 3.0 cada quadro fica meio segundo na tela — bem mais devagar que tudo
+	# mais no jogo, mas foi o valor pedido.
+	_add_pose_with_idle(frames, surf_sheet, "surf", 3.0, STRENGTH_SURF_FRAMES_PER_CYCLE)
 	return frames
 
 func _add_walk_and_idle(frames: SpriteFrames, sheet: Texture2D) -> void:
@@ -295,39 +379,45 @@ func _add_run(frames: SpriteFrames, sheet: Texture2D) -> void:
 			atlas.region = Rect2(col * frame_w, row * frame_h, frame_w, frame_h)
 			frames.add_frame("run_" + dir, atlas)
 
-# Mesma ideia de _add_run() acima, só que pra bike_sheet. TAMBÉM monta
-# idle_bike_<dir> (1º quadro do ciclo, mesmo IDLE_FRAME_INDEX de
-# _add_walk_and_idle) — diferente de run_sheet (que não precisa de pose
-# parada, já que ninguém fica "parado correndo"), bike_sheet precisa:
-# enquanto is_biking for true, a pose parada do personagem passa a ser esta,
-# não a de walk_sheet (ver _idle_anim_name()).
-#
-# O valor 10.0 abaixo é o FPS (quadros por segundo) do ciclo de pedalada —
-# quer mais rápido/devagar? É só mudar esse número (mesma ideia pro walk_
-# em _add_walk_and_idle, 8.0, e run_ em _add_run, 12.0). Repare que isso é
-# INDEPENDENTE de BIKE_DURATION (velocidade de MOVIMENTO, quanto tempo leva
-# pra atravessar 1 tile) — mudar um não muda o outro.
+# Mesma ideia de _add_run() acima, só que pra bike_sheet — ver
+# _add_pose_with_idle() logo abaixo pro corpo de verdade (extraído daqui
+# quando strength_sheet/surf_sheet precisaram do MESMO padrão: ciclo +
+# idle_<prefix>_<dir>, diferente de run_sheet, que não tem pose parada
+# própria — ninguém fica "parado correndo").
 func _add_bike(frames: SpriteFrames, sheet: Texture2D) -> void:
+	# 10.0, mais devagar que run (12.0) mesmo a bike andando 2x mais rápido
+	# (ver BIKE_DURATION) — velocidade de ANIMAÇÃO (troca de quadro) e
+	# velocidade de MOVIMENTO (duração do tile) são coisas independentes;
+	# 16.0 deixava o pedal "picotado"/frenético demais aos olhos do usuário.
+	_add_pose_with_idle(frames, sheet, "bike", 10.0)
+
+# Corpo genérico compartilhado por bike_/strength_/surf_ (ver chamadores) —
+# monta o ciclo "<prefix>_<dir>" (fps quadros por segundo) E
+# "idle_<prefix>_<dir>" (1º quadro do ciclo, mesmo IDLE_FRAME_INDEX de
+# _add_walk_and_idle) a partir de UMA sheet no layout de charset de sempre
+# (frame_count quadros x 4 direções — frame_count é PARÂMETRO, não sempre
+# FRAMES_PER_CYCLE=4, ver comentário grande em build_sprite_frames() sobre
+# boy_ARCANINE/boy_LAPRAS só terem 2 quadros de largura). A pose idle
+# própria é o que permite _idle_anim_name() trocar a pose PARADA do
+# personagem inteira (não só o ciclo de andar) conforme o modo de
+# movimento ativo.
+func _add_pose_with_idle(frames: SpriteFrames, sheet: Texture2D, prefix: String, fps: float, frame_count: int = FRAMES_PER_CYCLE) -> void:
 	@warning_ignore("integer_division")
-	var frame_w = sheet.get_width() / FRAMES_PER_CYCLE
+	var frame_w = sheet.get_width() / frame_count
 	@warning_ignore("integer_division")
 	var frame_h = sheet.get_height() / SHEET_DIRECTIONS.size()
 
 	for row in SHEET_DIRECTIONS.size():
 		var dir = SHEET_DIRECTIONS[row]
-		# 10.0, mais devagar que run (12.0) mesmo a bike andando 2x mais rápido
-		# (ver BIKE_DURATION) — velocidade de ANIMAÇÃO (troca de quadro) e
-		# velocidade de MOVIMENTO (duração do tile) são coisas independentes;
-		# 16.0 deixava o pedal "picotado"/frenético demais aos olhos do usuário.
-		_start_animation(frames, "bike_" + dir, 10.0)
-		_start_animation(frames, "idle_bike_" + dir, 5.0)
-		for col in FRAMES_PER_CYCLE:
+		_start_animation(frames, prefix + "_" + dir, fps)
+		_start_animation(frames, "idle_" + prefix + "_" + dir, 5.0)
+		for col in frame_count:
 			var atlas = AtlasTexture.new()
 			atlas.atlas = sheet
 			atlas.region = Rect2(col * frame_w, row * frame_h, frame_w, frame_h)
-			frames.add_frame("bike_" + dir, atlas)
+			frames.add_frame(prefix + "_" + dir, atlas)
 			if col == IDLE_FRAME_INDEX:
-				frames.add_frame("idle_bike_" + dir, atlas)
+				frames.add_frame("idle_" + prefix + "_" + dir, atlas)
 
 func _start_animation(frames: SpriteFrames, anim_name: String, speed: float) -> void:
 	frames.add_animation(anim_name)
@@ -335,32 +425,61 @@ func _start_animation(frames: SpriteFrames, anim_name: String, speed: float) -> 
 	frames.set_animation_speed(anim_name, speed)
 
 func _process(delta: float) -> void:
-	_sync_biking_state()
+	_sync_movement_mode_state()
 	if is_moving:
 		_continue_move(delta)
 	else:
 		_try_start_move()
 
-# Espelha GameState.is_biking (ver comentário do var is_biking) — chamado
-# todo frame porque o toggle pode acontecer a qualquer momento (usar a
-# Bicycle na Bag, ver GameState.use_tool) sem o Player saber diretamente.
-# Só troca a animação na hora se a unidade estiver PARADA — se estiver no
-# meio de um passo (is_moving), o passo atual termina do jeito que começou
-# (ver _try_start_move, que já lê o is_biking atualizado no PRÓXIMO passo);
-# trocar o sprite no meio do slide ficaria estranho.
-func _sync_biking_state() -> void:
-	if GameState.is_biking == is_biking:
-		return
-	is_biking = GameState.is_biking
-	if not is_moving:
+# Espelha GameState.is_biking/is_strength_active/is_surfing (ver comentário
+# dos três vars) — chamado todo frame porque qualquer um pode mudar a
+# qualquer momento (Bicycle/Fairy Ocarina na Bag, ver GameState.use_tool/
+# Player.apply_song) sem o Player saber diretamente. Só troca a animação na
+# hora se a unidade estiver PARADA — se estiver no meio de um passo
+# (is_moving), o passo atual termina do jeito que começou (ver
+# _try_start_move, que já lê o estado atualizado no PRÓXIMO passo); trocar
+# o sprite no meio do slide ficaria estranho.
+func _sync_movement_mode_state() -> void:
+	var changed := false
+	if GameState.is_biking != is_biking:
+		is_biking = GameState.is_biking
+		changed = true
+	if GameState.is_strength_active != is_strength_active:
+		is_strength_active = GameState.is_strength_active
+		changed = true
+	if GameState.is_surfing != is_surfing:
+		is_surfing = GameState.is_surfing
+		changed = true
+	_update_sprite_scale()
+	if changed and not is_moving:
 		anim.play(_idle_anim_name())
 
-# Nome da animação parada certa pra AGORA — idle_bike_<direção> enquanto
-# is_biking for true (1º quadro de bike_sheet, ver _add_bike), idle_<direção>
-# (1º quadro de walk_sheet) caso contrário. Centraliza essa escolha num só
-# lugar em vez de repetir o ternário em cada anim.play("idle...") espalhado
-# pelo arquivo.
+# Ver STRENGTH_SURF_SPRITE_SCALE — só Strength/Surf precisam de escala
+# extra (boy_ARCANINE/boy_LAPRAS "desenham menor" dentro do quadro 32x32
+# que walk_/run_/bike_). Chamado todo frame por _sync_movement_mode_state()
+# em vez de só quando "changed" (ver lá) porque _apply_strength_song()/
+# _apply_surf_song() já ATUALIZAM is_strength_active/is_surfing local ANTES
+# de _sync rodar de novo — então o diff de _sync nunca veria mudança nesses
+# casos, e a escala ficaria "um frame atrasada" (ou nunca aplicada, na
+# ativação pelo atalho da Ocarina). Barato o bastante (um Vector2 por
+# frame) pra não precisar de gate nenhum.
+func _update_sprite_scale() -> void:
+	var scale_factor = STRENGTH_SURF_SPRITE_SCALE if (is_strength_active or is_surfing) else 1.0
+	anim.scale = Vector2(scale_factor, scale_factor)
+
+# Nome da animação parada certa pra AGORA — precedência is_surfing >
+# is_strength_active > is_biking > parado comum, mesma ordem de
+# _try_start_move() mais abaixo (escolha de duração/prefixo de movimento).
+# Não dá pra "somar" dois ao mesmo tempo por design (Player.apply_song()
+# sempre desliga os outros dois antes de ligar um novo, ver lá) — mas a
+# ORDEM aqui garante um resultado sensato mesmo que isso mude um dia.
+# Centraliza essa escolha num só lugar em vez de repetir o mesmo ternário em
+# cada anim.play("idle...") espalhado pelo arquivo.
 func _idle_anim_name() -> String:
+	if is_surfing:
+		return "idle_surf_" + facing
+	if is_strength_active:
+		return "idle_strength_" + facing
 	return ("idle_bike_" if is_biking else "idle_") + facing
 
 # Só considera um passo novo quando a unidade está parada — sem "buffer" de
@@ -404,7 +523,7 @@ func _try_start_move() -> void:
 
 	# Porta (ver door.gd) checada ANTES de mover — o jogador NÃO entra na
 	# célula da porta, fica parado bem na frente dela enquanto a animação
-	# de abrir toca (ver world.use_door/test.gd/house_interior.gd), depois
+	# de abrir toca (ver world.use_door/world.gd/house_interior.gd), depois
 	# a tela escurece e troca de cena. Antes esse check rodava DEPOIS do
 	# passo terminar (tile_entered), o que fazia o personagem ficar
 	# desenhado EM CIMA da porta enquanto ela "abria" — visualmente errado.
@@ -425,9 +544,22 @@ func _try_start_move() -> void:
 	# de jogo Pokémon de verdade. world.is_one_way_tile() só confere SE
 	# target_cell é ladeira; can_move_to() (logo acima) já garantiu que a
 	# direção bate, senão nem teríamos chegado até aqui.
+	#
+	# Saindo da água (is_surfing e target_cell NÃO é água — can_move_to já
+	# garantiu que só chega aqui se for terra andável) também vira pulo
+	# agora — pedido do usuário: "Add a hop animation when getting out of
+	# water". SÓ 1 tile (sem "beyond_cell" — isso é coisa de ladeira, aqui é
+	# só sair da água pro tile de terra logo à frente).
 	var landing_cell = target_cell
-	is_hopping = world.is_one_way_tile(target_cell)
-	if is_hopping:
+	# Tipo explícito (bool), não := — world é Node2D genérico (ver @onready
+	# var world acima), então world.is_cell_water(...) é uma chamada
+	# "duck-typed" sem tipo de retorno conhecido em tempo de análise
+	# estática, e := sozinho não consegue inferir o tipo dessa expressão
+	# (erro reportado: "Cannot infer the type of exiting_water variable
+	# because the value doesn't have a set type").
+	var exiting_water: bool = is_surfing and not world.is_cell_water(target_cell)
+	is_hopping = world.is_one_way_tile(target_cell) or exiting_water
+	if world.is_one_way_tile(target_cell):
 		var beyond_cell = target_cell + dir
 		# Célula depois da ladeira tem que estar livre também — sem isso, o
 		# pulo podia atravessar a ladeira e cair em cima de parede/NPC do
@@ -439,6 +571,24 @@ func _try_start_move() -> void:
 		landing_cell = beyond_cell
 
 	grid_pos = landing_cell
+	if exiting_water:
+		# Pedido do usuário: "change the player to normal sprite when
+		# starting the movement" — ao CONTRÁRIO do pulo de ATIVAÇÃO do Surf
+		# (_hop_activates_surf, sprite muda só na ATERRISSAGEM), aqui a
+		# sprite já vira normal ANTES do pulo começar (por isso flip aqui,
+		# não em _continue_move na aterrissagem). Escreve nos dois lados
+		# (local E GameState, mesmo motivo de sempre) — precisa acontecer
+		# ANTES do anim.play(_idle_anim_name()) mais abaixo, senão ainda
+		# leria is_surfing==true e tocaria a pose de Surf durante o pulo.
+		is_surfing = false
+		GameState.is_surfing = false
+		# Sem isso, a escala 1.8x (ver STRENGTH_SURF_SPRITE_SCALE) só sumia
+		# no PRÓXIMO frame (_sync_movement_mode_state roda ANTES desta
+		# função a cada _process, ver lá) — 1 frame de personagem "normal
+		# mas ainda grande" antes do pulo nem começar direito. Chamando de
+		# novo aqui, na hora, garante que o pulo já começa com o tamanho
+		# certo desde o primeiro frame.
+		_update_sprite_scale()
 	is_running = Input.is_action_pressed("run")
 	# move_start/move_target agora em espaço GLOBAL — mesmo motivo do fix em
 	# _ready() acima: tile_map.map_to_local() é sempre espaço da TileMapLayer,
@@ -447,16 +597,40 @@ func _try_start_move() -> void:
 	move_start = global_position
 	move_target = tile_map.to_global(tile_map.map_to_local(grid_pos))
 	move_elapsed = 0.0
-	move_duration = HOP_DURATION if is_hopping else (BIKE_DURATION if is_biking else (RUN_DURATION if is_running else MOVE_DURATION))
+	# Precedência: pulo > Surf > Strength > Bike > Run > andar normal. Surf
+	# ANTES de Run/Bike de propósito — pedido do usuário não deu velocidade
+	# própria pra Surf (fica em MOVE_DURATION, andar normal) nem falou nada
+	# de correr/pedalar em cima d'água, então nenhum dos dois se aplica
+	# enquanto is_surfing for true (mesma ideia pro prefixo de animação
+	# logo abaixo).
+	move_duration = HOP_DURATION if is_hopping \
+		else (MOVE_DURATION if is_surfing \
+		else (STRENGTH_DURATION if is_strength_active \
+		else (BIKE_DURATION if is_biking \
+		else (RUN_DURATION if is_running else MOVE_DURATION))))
 	is_moving = true
 	if is_hopping:
 		# Segura numa pose só (sem ciclo de perna alternando) durante o
 		# pulo inteiro — junto com o arco vertical em _continue_move, isso
 		# vende "pulando por cima" bem melhor do que continuar o ciclo de
-		# andar normal por cima da ladeira.
+		# andar normal por cima da ladeira. Se este pulo em particular for
+		# o de ATIVAÇÃO do Surf (_hop_activates_surf), is_surfing ainda é
+		# false aqui (só vira true na aterrissagem, ver _continue_move) —
+		# _idle_anim_name() corretamente mostra a pose NORMAL durante o
+		# pulo, do jeito que o usuário pediu.
 		anim.play(_idle_anim_name())
 	else:
-		var prefix = "bike_" if is_biking else ("run_" if is_running else "walk_")
+		var prefix: String
+		if is_surfing:
+			prefix = "surf_"
+		elif is_strength_active:
+			prefix = "strength_"
+		elif is_biking:
+			prefix = "bike_"
+		elif is_running:
+			prefix = "run_"
+		else:
+			prefix = "walk_"
 		anim.play(prefix + facing)
 
 func _continue_move(delta: float) -> void:
@@ -473,6 +647,26 @@ func _continue_move(delta: float) -> void:
 	if t >= 1.0:
 		is_moving = false
 		is_hopping = false
+		# Pulo de ativação do Surf aterrissou — SÓ AGORA a sprite vira
+		# Lapras (pedido do usuário: hop primeiro, sprite depois, ver
+		# comentário grande em _apply_surf_song). Escreve nos dois lados
+		# (local E GameState, mesmo motivo do comentário grande no var
+		# is_surfing) — _try_start_move()/_idle_anim_name() do PRÓXIMO
+		# frame já leem a cópia local certa sem precisar esperar
+		# _sync_movement_mode_state() rodar primeiro.
+		if _hop_activates_surf:
+			_hop_activates_surf = false
+			is_surfing = true
+			GameState.is_surfing = true
+		# "Chegou em terra andável de verdade enquanto surfava, volta a ser
+		# pé" (pedido do usuário: "the player character will return to the
+		# normal sprite sheets and isnt considered Surfing anymore") NÃO
+		# precisa mais de código aqui — is_surfing já vira false no INÍCIO
+		# do pulo de saída, não na aterrissagem (ver exiting_water em
+		# _try_start_move, pedido do usuário: "change the player to normal
+		# sprite when starting the movement"). Sem tecla nem Song nenhuma
+		# pra sair — só pisar em terra já reverte sozinho, só que mais cedo
+		# agora.
 		# NÃO troca pra idle aqui — antes trocava (anim.play(_idle_anim_name())),
 		# mas isso interrompia o ciclo de walk/run/bike a CADA passo: se a
 		# direção continuasse segurada, _try_start_move (no próximo _process)
@@ -515,6 +709,21 @@ func direction_to_facing(dir: Vector2i) -> String:
 		return "left"
 	return "right"
 
+# Inverso de direction_to_facing() acima — precisado por _apply_surf_song()
+# pra achar QUAL célula fica na frente do personagem a partir só de
+# `facing` (String), sem input nenhum envolvido. Mesma tabela que
+# world.gd/house_interior.gd::FACING_TO_DIR já usam pro mesmo propósito
+# (duplicada aqui em vez de reusada de lá — mesmo espírito de
+# SHEET_DIRECTIONS/etc. já duplicadas entre arquivos deste projeto; Player
+# não deveria depender de detalhe nenhum de world.gd além dos métodos que
+# ele já delega, ver comentário grande em cima de `world`).
+const FACING_TO_DIR = {
+	"down": Vector2i(0, 1),
+	"up": Vector2i(0, -1),
+	"left": Vector2i(-1, 0),
+	"right": Vector2i(1, 0),
+}
+
 # Checagem de colisão de verdade agora: cada tile tem um campo de dado
 # customizado "walkable" (bool), configurado no editor do TileSet (aba
 # "Custom Data" -> pinta "walkable" = true nos tiles andáveis). Célula sem
@@ -534,8 +743,14 @@ func direction_to_facing(dir: Vector2i) -> String:
 # andando, não dá pra distinguir "saindo" de "entrando" numa borda dessas.
 func can_move_to(cell: Vector2i, dir: Vector2i = Vector2i.ZERO) -> bool:
 	if not world.is_cell_walkable(cell, dir):
-		return false
-	# NPC parado (ver npc.gd/test.gd::has_npc_at) bloqueia o passo igual uma
+		# Terra normal (walkable) SEMPRE vale, surfando ou não — é isso que
+		# permite o auto-retorno "pisou em terra, para de surfar" (ver
+		# _continue_move). Só chega aqui quando REALMENTE não é andável a
+		# pé; pedido do usuário: "the player... may move through water
+		# tiles" — só enquanto is_surfing, e só em cima de água de verdade.
+		if not (is_surfing and world.is_cell_water(cell)):
+			return false
+	# NPC parado (ver npc.gd/world.gd::has_npc_at) bloqueia o passo igual uma
 	# parede, mesmo sem ter física nenhuma — checado por último porque é o
 	# caso raro (a maioria das células não tem NPC nenhum), então não vale a
 	# pena pagar esse custo antes de já ter certeza que o tile em si é andável.
@@ -544,7 +759,7 @@ func can_move_to(cell: Vector2i, dir: Vector2i = Vector2i.ZERO) -> bool:
 	return true
 
 # Liga/desliga o efeito de "afundar" na grama alta — quem decide QUANDO
-# chamar isso é test.gd (só ele sabe o que é um tile de grama), Player só
+# chamar isso é world.gd (só ele sabe o que é um tile de grama), Player só
 # sabe cortar a metade de baixo do próprio sprite via shader (ver
 # assets/shaders/sink_in_grass.gdshader, material em AnimatedSprite2D).
 func set_sunk_in_grass(sunk: bool) -> void:
@@ -553,11 +768,96 @@ func set_sunk_in_grass(sunk: bool) -> void:
 
 # Reposiciona instantaneamente, sem tocar animação de passo — usado quando
 # o personagem "aparece" numa célula sem ter andado até ela de verdade (ex:
-# voltando de uma troca de cena, ver GameState/test.gd). Mesmo espírito de
+# voltando de uma troca de cena, ver GameState/world.gd). Mesmo espírito de
 # Unit.teleport_to() em battle.gd, usado ali pro Undo de movimento.
 func teleport_to(cell: Vector2i, new_facing: String = facing) -> void:
 	grid_pos = cell
 	facing = new_facing
 	global_position = tile_map.to_global(tile_map.map_to_local(grid_pos))   # ver comentário em _ready() sobre global_position vs position
 	is_moving = false
+	anim.play(_idle_anim_name())
+
+# Chamado por world.gd/house_interior.gd::_apply_pending_song_if_any(),
+# sempre com a árvore JÁ despausada (ver comentário lá) — é a Fairy Ocarina
+# de verdade acontecendo no mundo (pular na água, trocar de sprite...), por
+# isso precisa do node Player de verdade em vez de só mexer em GameState.
+# "Fly" JÁ aparece no popup (ver GameState.SONG_NAMES — desbloqueada pra
+# teste igual as outras duas) mas cai no `_: pass` por enquanto, sem efeito
+# nenhum — pedido do usuário: "Fly we will implement at another time".
+# Igual ao padrão de loot_ball.gd (ver MESSAGE_BOX_SCENE) — pausa a árvore
+# enquanto o aviso está na tela (a própria caixa é PROCESS_MODE_ALWAYS, ver
+# trainer_message_box.gd, então continua recebendo X/Z normalmente) e
+# despausa em _on_message_closed(). A árvore já estava despausada quando
+# apply_song() roda (ver comentário grande logo acima), então não tem
+# conflito de pausar de novo por cima de uma pausa que já existia.
+func _show_message(text: String) -> void:
+	get_tree().paused = true
+	var box = MESSAGE_BOX_SCENE.instantiate()
+	add_child(box)
+	box.setup(text)
+	box.closed.connect(_on_message_closed)
+
+func _on_message_closed() -> void:
+	get_tree().paused = false
+
+func apply_song(song_name: String) -> void:
+	match song_name:
+		"Strength":
+			_apply_strength_song()
+		"Surf":
+			_apply_surf_song()
+		_:
+			pass
+
+# Pedido do usuário: "Strength: boy_ARCANINE. The player speed increases to
+# x2 times the bicycle speed." Toggle simples, mesmo espírito de is_biking
+# (usar de novo desliga) — exclusivo com Bike (não dá pra pedalar E ter
+# força de Arcanine ao mesmo tempo) e bloqueado enquanto Surf estiver ativo
+# (não dá pra "correr" em cima d'água).
+func _apply_strength_song() -> void:
+	if GameState.is_surfing:
+		return
+	GameState.is_strength_active = not GameState.is_strength_active
+	is_strength_active = GameState.is_strength_active
+	if is_strength_active:
+		GameState.is_biking = false
+		is_biking = false
+	if not is_moving:
+		anim.play(_idle_anim_name())
+
+# Pedido do usuário: "Surf: boy_Lapras... the character hops forward 1
+# tile (like with the one-directional tiles) and THEN changes the sprite
+# to boy_LAPRAS." Só funciona com água bem na frente (mesma direção que o
+# personagem já está olhando) — sem tecla de direção envolvida, `facing`
+# já basta. Já surfando ou no meio de um passo (is_moving) continua mudo de
+# propósito (não é bem um erro, só "não é a hora") — mas "sem água na
+# frente" agora avisa (ver MESSAGE_BOX_SCENE), pedido do usuário: "add a
+# message to the Surf song when used in an invalid location".
+func _apply_surf_song() -> void:
+	if GameState.is_surfing or is_moving:
+		return
+	var dir: Vector2i = FACING_TO_DIR.get(facing, Vector2i.ZERO)
+	var target_cell = grid_pos + dir
+	if not world.is_cell_water(target_cell) or world.has_npc_at(target_cell):
+		_show_message("You need to be facing water to use this")
+		return
+
+	# Exclusividade de movimento — não dá pra estar de bike/Strength E
+	# entrando na água ao mesmo tempo (mesmo raciocínio de
+	# _apply_strength_song acima, só que na direção oposta).
+	GameState.is_biking = false
+	is_biking = false
+	GameState.is_strength_active = false
+	is_strength_active = false
+
+	grid_pos = target_cell
+	move_start = global_position
+	move_target = tile_map.to_global(tile_map.map_to_local(grid_pos))
+	move_elapsed = 0.0
+	move_duration = HOP_DURATION
+	is_hopping = true
+	# is_surfing só vira true na ATERRISSAGEM (ver _continue_move) — o pulo
+	# em si mostra a pose normal, exatamente como pedido.
+	_hop_activates_surf = true
+	is_moving = true
 	anim.play(_idle_anim_name())

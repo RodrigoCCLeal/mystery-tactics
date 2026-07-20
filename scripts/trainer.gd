@@ -50,7 +50,7 @@ var trainer_class: String = "Youngster"
 # Nível de IA que TODAS as unidades deste Trainer usam em batalha —
 # sobrescreve o iq individual de cada UnitData (ver comentário grande em
 # unit_data.gd::iq) assim que a batalha começa (ver GameState.
-# current_trainer_iq, copiado daqui em test.gd/world.gd/house_interior.gd::
+# current_trainer_iq, copiado daqui em world.gd/house_interior.gd::
 # start_trainer_battle, e aplicado unidade por unidade em battle.gd::
 # _spawn_enemy_unit). "Medium" como padrão (não "Easy") porque um Trainer
 # humano jogando "burro que nem selvagem" não fazia muito sentido como
@@ -245,11 +245,11 @@ func _process(delta: float) -> void:
 	if get_tree().paused and not _pausing_for_battle:
 		return
 	# Uma batalha selvagem já está a caminho ESTE MESMO frame (ver
-	# test.gd::_battle_starting/is_battle_starting) — não vale a pena nem
+	# world.gd::_battle_starting/is_battle_starting) — não vale a pena nem
 	# começar a se mexer/avistar: a cena inteira está prestes a ser trocada
 	# de qualquer jeito, e começar _spot_player() agora só criaria uma
 	# corrida entre as duas trocas de cena (ver comentário grande em
-	# test.gd sobre o motivo dessa trava existir).
+	# world.gd sobre o motivo dessa trava existir).
 	if world.is_battle_starting():
 		return
 	if is_moving:
@@ -310,7 +310,7 @@ func _process_patrol_idle_step() -> void:
 		anim.play("idle_" + facing)
 		return
 	var step_cell = grid_pos + dir
-	# world.has_npc_at() só enxerga o grupo "npc" (ver test.gd::_get_npc_at)
+	# world.has_npc_at() só enxerga o grupo "npc" (ver world.gd::_get_npc_at)
 	# — o Player NUNCA se registra nesse grupo (ele é o dono do overworld, não
 	# um NPC), então essa checagem sozinha NUNCA barra o Walker de pisar em
 	# cima do jogador. É exatamente o bug reportado: "the hiker seems to have
@@ -360,7 +360,7 @@ func _check_sight() -> void:
 	# "chegando" na célula antes dele visualmente estar lá — mais perceptível
 	# correndo, já que os passos são mais curtos/rápidos e a checagem roda
 	# todo frame. Esperar o passo terminar (mesmo instante em que a grama
-	# selvagem confere tile_entered, ver test.gd) alinha a checagem com o que
+	# selvagem confere tile_entered, ver world.gd) alinha a checagem com o que
 	# o jogador está vendo na tela. Reportado pelo usuário: "When running,
 	# the player is spotted before actually entering eyesight."
 	if player.is_moving:
@@ -397,7 +397,7 @@ func _can_see_player_in_direction(dir_name: String, max_range: int, player: Node
 # the player"). Assim que o "!" termina, esta função simplesmente volta:
 # _process() já enxerga is_spotted=true e _showing_message=false no próximo
 # frame e chama _advance_toward_player() sozinho, começando a perseguição.
-# start_trainer_battle() (world.gd/test.gd/house_interior.gd) é quem desliga
+# start_trainer_battle() (world.gd/house_interior.gd) é quem desliga
 # o pause de volta, bem no fim, antes de trocar de cena — não fazemos isso
 # aqui de propósito, pra manter o jogador travado o tempo TODO até a
 # batalha realmente começar, perseguição e caixa de texto incluídas.
@@ -471,8 +471,8 @@ func _advance_toward_player() -> void:
 # esse pause de volta. Sem chegar numa batalha de verdade, esse pause nunca
 # era desfeito — o jogo ficava travado pra sempre (bug real: "game freezes
 # and battle doesn't start"), bem mais fácil de acontecer no mapa de
-# STARTINGTOWN, cheio de parede/prédio no meio do caminho, do que no campo
-# aberto de test.tscn onde isso nunca tinha sido reparado. Devolve tudo pro
+# ARCHI, cheio de parede/prédio no meio do caminho, do que no campo
+# aberto de world.tscn onde isso nunca tinha sido reparado. Devolve tudo pro
 # estado neutro: o jogador recupera o controle, e o Trainer volta a girar/
 # patrulhar normalmente (ver _process) como se nunca tivesse avistado
 # ninguém.
@@ -526,7 +526,7 @@ func _continue_move(delta: float) -> void:
 func _get_player() -> Node2D:
 	return get_node("../Player") if has_node("../Player") else null
 
-# X de frente pro Trainer (mesmo caminho de qualquer Npc, ver test.gd::
+# X de frente pro Trainer (mesmo caminho de qualquer Npc, ver world.gd::
 # _try_interact, que já vira o Trainer pro jogador ANTES de chamar isto) —
 # regra do usuário: "They all initiate a battle if the player interacts
 # with them", mas SÓ depois da mesma caixa de texto que o avistamento

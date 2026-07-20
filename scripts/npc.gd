@@ -22,7 +22,7 @@ const SHEET_DIRECTIONS = ["down", "left", "right", "up"]
 const FRAMES_PER_CYCLE = 4
 const IDLE_FRAME_INDEX = 0
 
-# Vetor de célula -> facing, o inverso do que test.gd::FACING_TO_DIR faz
+# Vetor de célula -> facing, o inverso do que world.gd::FACING_TO_DIR faz
 # pro Player — usado só por face_towards() logo abaixo.
 const DIR_TO_FACING = {
 	Vector2i(0, 1): "down",
@@ -32,7 +32,7 @@ const DIR_TO_FACING = {
 }
 
 # Mesmo motivo do get_node() em player.gd: um NPC sempre mora dentro de
-# "Actors" (Node2D com y_sort_enabled = true — ver test.tscn/test.gd, é o
+# "Actors" (Node2D com y_sort_enabled = true — ver world.tscn/world.gd, é o
 # que resolve o NPC e o Player desenharem na ordem certa perto um do outro,
 # por posição Y em vez de ordem fixa na árvore), que por sua vez é filho
 # direto de quem hospeda o overworld (Test, World ou HouseInterior — mesma
@@ -41,13 +41,13 @@ const DIR_TO_FACING = {
 @onready var world: Node2D = get_node("../..")
 
 # ANTES disto era get_node("../../TileMapLayer") direto — funcionava em
-# test.tscn (que tem literalmente UM node chamado "TileMapLayer"), mas
+# world.tscn (que tem literalmente UM node chamado "TileMapLayer"), mas
 # CRASHAVA em world.tscn (a camada de chão lá se chama "TileMapLayerGround",
 # não existe nenhum node com o nome exato "TileMapLayer" — get_node()
 # devolvia null, e tile_map.local_to_map() logo abaixo, em _ready(),
 # quebrava com "Nil"). Bug reportado pelo usuário ao tentar colocar um
 # Trainer em world.tscn pela primeira vez — até então nenhum NPC tinha sido
-# testado fora de test.tscn. Mesma técnica que player.gd JÁ usa (delegar
+# testado fora de world.tscn. Mesma técnica que player.gd JÁ usa (delegar
 # pro host via get_ground_tile_map(), que Test/World/HouseInterior
 # implementam cada um do seu jeito) resolve pros três de uma vez, sem
 # depender do NOME do node de chão em cada cena.
@@ -57,7 +57,7 @@ const DIR_TO_FACING = {
 # Célula do grid onde este NPC está — calculada a partir da posição em pixel
 # que o Inspector/editor já tiver (arrastar o node na cena é o suficiente,
 # não precisa digitar coordenada de grid nenhuma). Outros sistemas (ver
-# test.gd::_get_npc_at/_try_interact, player.gd::can_move_to) leem isso pra
+# world.gd::_get_npc_at/_try_interact, player.gd::can_move_to) leem isso pra
 # saber "tem alguém aqui" sem precisar de física (Area2D/CollisionShape2D) —
 # mesmo espírito de grid puro que o resto do projeto já usa (wall_cells em
 # battle.gd, walkable custom data em player.gd).
@@ -156,19 +156,19 @@ func _find_foot_row(frame_w: int, frame_h: int) -> int:
 				return y
 	return frame_h - 1
 
-# Chamado por test.gd::_try_interact quando o jogador está de frente pra
+# Chamado por world.gd::_try_interact quando o jogador está de frente pra
 # este NPC e aperta "confirm" (X). Não faz nada por padrão — cada NPC de
 # verdade sobrescreve isso na própria subclasse (ver nurse.gd).
 func interact() -> void:
 	pass
 
 # Vira o NPC pra encarar `cell` (sempre a célula do jogador — ver
-# test.gd::_try_interact, que chama isso ANTES de interact(), pra todo NPC
+# world.gd::_try_interact, que chama isso ANTES de interact(), pra todo NPC
 # automaticamente) — feedback do usuário: "quando falado, o NPC deve virar
 # pro jogador", vale pra qualquer NPC futuro, não só a Nurse, por isso mora
 # na base em vez de em cada subclasse. cell e grid_pos são sempre adjacentes
 # (o jogador só interage com quem está bem na sua frente, 1 célula de
-# distância — ver test.gd), então a diferença cai direto num dos 4 vetores
+# distância — ver world.gd), então a diferença cai direto num dos 4 vetores
 # de DIR_TO_FACING; qualquer outro valor (não deveria acontecer) simplesmente
 # não vira o NPC (get() com default = facing atual).
 func face_towards(cell: Vector2i) -> void:

@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-# Menu do SISTEMA (Configurações/Exit) — abre com Esc (ver test.gd::
+# Menu do SISTEMA (Configurações/Exit) — abre com Esc (ver world.gd::
 # _open_system_menu). Segundo menu do overworld, separado do game_menu.gd
 # (aberto com "A") — "Exit" morava dentro do menu de "A" antes (era
 # pause_menu.gd), mas o usuário pediu pra mover pra cá, indo pra tela de
@@ -95,7 +95,7 @@ func _open_exit_confirm() -> void:
 
 func _on_exit_answered(yes: bool) -> void:
 	if yes:
-		# get_tree().paused foi ligado por test.gd ao abrir este menu (ver
+		# get_tree().paused foi ligado por world.gd ao abrir este menu (ver
 		# _open_system_menu) — precisa desligar ANTES de trocar de cena,
 		# senão a árvore nova (title_screen) nasceria pausada também (Node
 		# comum para de processar _process/_input com a árvore pausada; só

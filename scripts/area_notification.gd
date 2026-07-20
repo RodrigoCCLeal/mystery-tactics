@@ -5,8 +5,8 @@ extends CanvasLayer
 # Player, e ficar sempre no mesmo lugar da tela independente de onde o
 # personagem estiver no mapa.
 #
-# test.gd é quem decide QUANDO chamar show_area() (só quando a área
-# realmente muda, ver test.gd::_enter_area) — este script só sabe mostrar
+# world.gd é quem decide QUANDO chamar show_area() (só quando a área
+# realmente muda, ver world.gd::_enter_area) — este script só sabe mostrar
 # o texto e sumir sozinho depois de 1 segundo, não sabe nada sobre áreas.
 
 @onready var label: Label = $Label

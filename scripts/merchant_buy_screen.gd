@@ -8,7 +8,12 @@ extends CanvasLayer
 # quantidade do lado usando _input_locked pra travar a lista por baixo).
 #
 # Itens com buy_price <= 0 nunca aparecem (ver comentário em ItemData.
-# buy_price: "0 = este item nunca aparece à venda em lugar nenhum").
+# buy_price: "0 = este item nunca aparece à venda em lugar nenhum"). Linhas
+# com min_badges não atingido (ver MerchantStockEntry.min_badges) também não
+# aparecem NA LISTA — diferente de "esgotado"/"sem dinheiro" (que mostram a
+# linha escurecida), uma badge faltando esconde a linha inteira, mesmo
+# espírito de EncounterGroup.min_badges nunca sortear um encontro fora de
+# alcance em vez de "mostrar mas bloquear".
 # Linhas esgotadas ou que o jogador não tem dinheiro pra comprar nem 1
 # unidade ficam escurecidas (modulate) e não fazem nada ao serem
 # selecionadas — mesmo princípio de guard que item_list_screen.gd usa pra
@@ -47,7 +52,7 @@ func _ready() -> void:
 func setup(stock: Array[MerchantStockEntry]) -> void:
 	row_entries.clear()
 	for entry in stock:
-		if entry.item != null and entry.item.buy_price > 0:
+		if entry.item != null and entry.item.buy_price > 0 and entry.meets_badge_requirement():
 			row_entries.append(entry)
 	_rebuild_rows()
 

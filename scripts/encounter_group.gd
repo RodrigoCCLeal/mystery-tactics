@@ -18,6 +18,17 @@ extends Resource
 @export var entries: Array[EncounterEntry] = []
 @export_range(0.0, 100.0) var weight: float = 1.0
 
+# De ONDE esse grupo pode ser sorteado — pedido do usuário: "We can add a
+# tag to the encounter table, being 'Grass' or 'Water' or 'Fishing'". Ao
+# contrário de min_badges/times_of_day (filtros "macios", com fallback pro
+# conjunto mais amplo se ninguém passar — ver EncounterArea.pick_group()),
+# este é um filtro RÍGIDO: surfar na água nunca pode sortear um grupo
+# "Grass" por acaso só porque nenhum grupo "Water" existia ainda (ficaria
+# um Rattata terrestre no meio do lago). "Fishing" já existe na lista pra
+# quando a vara de pescar for implementada (pedido do usuário: "we will add
+# fishing later"), sem precisar mexer neste campo de novo depois.
+@export_enum("Grass", "Water", "Fishing") var source: String = "Grass"
+
 # Trava de progressão: este grupo só pode ser sorteado se
 # GameState.badges.size() >= min_badges — mesmo princípio de
 # trainer.gd::teams (9 tiers indexados por número de badges), só que aqui é
@@ -27,3 +38,13 @@ extends Resource
 # visitada antes, sem precisar de uma EncounterArea nova só pra isso. Ver
 # EncounterArea.pick_group() pra onde isso é de fato checado.
 @export var min_badges: int = 0
+
+# Quais períodos do dia (ver GameState.get_time_of_day) este grupo pode ser
+# sorteado — @export_flags dá 3 caixinhas no Inspector (Morning/Day/Night),
+# cada uma virando 1 bit (1/2/4 nessa ordem — MESMA ordem que
+# GameState.TIME_BIT_MORNING/DAY/NIGHT usam, os dois têm que ficar em
+# sincronia). Padrão = 7 (as 3 marcadas) = sem gate nenhum, disponível a
+# qualquer hora — mesmo espírito permissivo de min_badges=0 acima. Ex: uma
+# espécie noturna marcaria só "Night" (valor 4) pra nunca aparecer de dia.
+# Ver EncounterArea.pick_group() pra onde isso é de fato filtrado.
+@export_flags("Morning", "Day", "Night") var times_of_day: int = 7

@@ -22,8 +22,18 @@ extends Resource
 # jogador — ver merchant_sell_screen.gd).
 @export var quantity: int = -1
 
+# Trava de progressão, mesmo princípio de EncounterGroup.min_badges (ver
+# comentário grande lá): esta linha só aparece na tela de Buy se
+# GameState.badges.size() >= min_badges. Padrão 0 = sem trava, sempre
+# disponível (comportamento de antes desta feature). Ver
+# merchant_buy_screen.gd::setup(), que filtra por isso.
+@export var min_badges: int = 0
+
 func is_infinite() -> bool:
 	return quantity == -1
 
 func is_in_stock() -> bool:
 	return is_infinite() or quantity > 0
+
+func meets_badge_requirement() -> bool:
+	return GameState.badges.size() >= min_badges

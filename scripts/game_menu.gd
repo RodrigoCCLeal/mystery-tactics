@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-# Menu do JOGO (Pokémon/Bag/Save/Pokédex) — abre com "A" (ver test.gd::
+# Menu do JOGO (Pokémon/Bag/Save/Pokédex) — abre com "A" (ver world.gd::
 # _open_game_menu). Era o antigo pause_menu.gd (que tinha "PlayerName" fixo
 # como Label clicável sem efeito e "Exit" dentro dele) — agora dividido em
 # dois: "Exit" mudou pra system_menu.gd (aberto com Esc, ver aquele

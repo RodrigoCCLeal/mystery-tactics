@@ -17,10 +17,20 @@ func _ready() -> void:
 	# fade tem que cobrir a tela INTEIRA, inclusive menu aberto.
 	layer = 100
 	rect.color = Color(0, 0, 0, 0)
+	# PROCESS_MODE_ALWAYS — fade_to() usa create_tween(), e um Tween ligado a
+	# um node com PROCESS_MODE_INHERIT (o padrão) para de avançar junto com
+	# QUALQUER pausa (get_tree().paused = true, usado por praticamente toda
+	# tela do projeto). Até agora nunca importava (nenhum use_door() rodava
+	# com a árvore pausada), mas bed.gd precisa pausar a árvore ENQUANTO
+	# desmaia a tela pro "cochilo" (ver bed.gd::_on_answered) — sem isso, o
+	# await fade_to() nunca terminaria e o jogo ficaria travado com a tela
+	# preta pra sempre (mesma classe de bug já visto no relógio de
+	# GameState).
+	process_mode = Node.PROCESS_MODE_ALWAYS
 
 # Escurece a tela, troca de cena (Door.target_scene_path, ver door.gd), e
 # clareia de novo depois que a cena nova já montou. Chamado SEM "await" por
-# quem usa (ver test.gd/world.gd/house_interior.gd::use_door) — roda
+# quem usa (ver world.gd/house_interior.gd::use_door) — roda
 # sozinho em segundo plano, ninguém precisa esperar ele terminar.
 func change_scene_with_fade(scene_path: String, fade_duration: float = 0.25) -> void:
 	await fade_to(1.0, fade_duration)

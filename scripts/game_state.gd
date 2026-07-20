@@ -10,21 +10,24 @@ const UnitScript = preload("res://scripts/unit.gd")
 #
 # Guarda onde o personagem estava no overworld antes de entrar em combate,
 # pra devolver ele no mesmo lugar quando a batalha terminar em VITÓRIA (ver
-# test.gd::_restore_player_state / battle.gd::end_battle).
+# world.gd/house_interior.gd::_restore_player_state / battle.gd::end_battle).
 
 var has_saved_position: bool = false
 var player_grid_pos: Vector2i = Vector2i.ZERO
 var player_facing: String = "down"
-var overworld_scene_path: String = "res://scenes/overworld/test.tscn"
+# world.tscn (não mais test.tscn — "Ilha de Testes" foi removida, pedido do
+# usuário: "Lets delete ilha de testes, we dont need it anymore") é a cena
+# overworld de verdade do jogo agora.
+var overworld_scene_path: String = "res://scenes/overworld/world.tscn"
 
-func save_player_state(cell: Vector2i, facing: String, scene_path: String = "res://scenes/overworld/test.tscn") -> void:
+func save_player_state(cell: Vector2i, facing: String, scene_path: String = "res://scenes/overworld/world.tscn") -> void:
 	has_saved_position = true
 	player_grid_pos = cell
 	player_facing = facing
 	overworld_scene_path = scene_path
 
-# Posição "ao vivo" do jogador no overworld — test.gd mantém isso atualizado
-# a CADA passo (ver test.gd::_sync_live_position), diferente de
+# Posição "ao vivo" do jogador no overworld — world.gd mantém isso atualizado
+# a CADA passo (ver world.gd::_sync_live_position), diferente de
 # player_grid_pos/player_facing acima, que só mudam no instante em que uma
 # batalha começa. Existe só pra heal_active_roster() (ver abaixo) saber ONDE
 # o jogador está no exato momento em que aperta "Heal" no Computador — nem
@@ -33,13 +36,25 @@ func save_player_state(cell: Vector2i, facing: String, scene_path: String = "res
 var live_grid_pos: Vector2i = Vector2i.ZERO
 var live_facing: String = "down"
 
-# Último lugar onde o jogador usou Computador -> Heal — é pra ONDE ele volta
-# se o time inteiro for derrotado em batalha (ver battle.gd::end_battle).
-# Começa no mesmo spawn padrão do Player (grid_pos ZERO, ver Player._ready())
-# pra sempre ter um destino válido mesmo que o jogador nunca tenha curado
-# nem uma vez ainda.
+# Último lugar onde o jogador usou Computador -> Heal (ou Nurse, ou Bed — ver
+# nurse.gd/bed.gd, ambos chamam heal_active_roster() abaixo) — é pra ONDE ele
+# volta se o time inteiro for derrotado em batalha (ver battle.gd::
+# end_battle). Começa no mesmo spawn padrão do Player (grid_pos ZERO, ver
+# Player._ready()) pra sempre ter um destino válido mesmo que o jogador nunca
+# tenha curado nem uma vez ainda.
 var last_heal_grid_pos: Vector2i = Vector2i.ZERO
 var last_heal_facing: String = "down"
+# Cena (Bed/Nurse podem estar dentro de QUALQUER interior, não só no
+# overworld "de fora") onde aquele checkpoint fica — sem isso,
+# battle.gd::end_battle só sabia reaplicar last_heal_grid_pos/facing EM CIMA
+# da cena onde a batalha começou, o que ficava errado sempre que o
+# checkpoint de cura era em outra cena (ex: curou numa Bed dentro de casa,
+# andou até a rota ao lado, perdeu uma batalha lá — o jogador reaparecia nas
+# coordenadas da cama, mas ainda dentro da cena da ROTA). Lido junto com os
+# dois campos acima em heal_active_roster()/end_battle(); overworld_scene_path
+# (ver logo acima) sempre reflete a cena "de fora de batalha" atual, então
+# copiar esse valor no momento do heal já basta.
+var last_heal_scene_path: String = "res://scenes/overworld/red_house_interior.tscn"
 
 # --- Perfil do jogador / progresso (ver title_screen.gd, save_slot_screen.gd,
 # name_entry_screen.gd, game_menu.gd) ---
@@ -88,9 +103,36 @@ var current_save_slot: int = -1
 # sozinho, então não importa quando/onde o toggle aconteceu.
 var is_biking: bool = false
 
+# Mesmo espírito de is_biking acima, só que pras duas Songs da Fairy Ocarina
+# (ver data/items/fairy_ocarina.tres, item_data.gd::opens_song_menu) que
+# mexem em movimento — "Strength" (boy_ARCANINE, 2x a velocidade da
+# Bicicleta) e "Surf" (boy_LAPRAS, anda em cima d'água). Player.apply_song()
+# é quem escreve nos dois (não use_tool() — a Ocarina nunca passa por ali,
+# ver item_list_screen.gd/world.gd::_open_song_menu), e também é quem
+# garante que os três (is_biking/is_strength_active/is_surfing) nunca ficam
+# true ao mesmo tempo — não dá pra pedalar E ter a força do Arcanine E estar
+# em cima d'água tudo junto.
+var is_strength_active: bool = false
+# Diferente de is_biking/is_strength_active (toggle: usar de novo desliga),
+# is_surfing só liga via Player.apply_song("Surf") (precisa estar de frente
+# pra água, ver lá) e só desliga sozinho quando o jogador pisa de volta em
+# terra andável (ver Player._continue_move) — não existe "usar a Song de
+# novo pra sair da água" no jogo de origem, e aqui também não.
+var is_surfing: bool = false
+
+# Song escolhida no popup da Fairy Ocarina (ver scenes/ui/popups/
+# song_menu.tscn), esperando ser APLICADA. "" = nada pendente. Precisa desse
+# meio-passo porque o popup pode abrir de dentro da Bag (vários CanvasLayers
+# de distância de World/HouseInterior, sem acesso nenhum ao node Player de
+# verdade) — quem de fato aplica (Player.apply_song) só roda depois que
+# TODOS os menus fecharem e a árvore despausar de novo (ver world.gd/
+# house_interior.gd::_apply_pending_song_if_any, chamado no fim de
+# _on_menu_closed).
+var pending_song: String = ""
+
 # 4 atalhos de item Tool (ver ItemData.can_register) — null = vazio. Usar um
 # item registrado dispara o efeito direto (ver use_tool() abaixo), sem abrir
-# a Bag — o atalho de teclado no overworld (1/2/3/4, ver test.gd::
+# a Bag — o atalho de teclado no overworld (1/2/3/4, ver world.gd::
 # _trigger_tool_shortcut) já lê este array direto.
 const TOOL_SHORTCUT_COUNT = 4
 var tool_shortcuts: Array[ItemData] = [null, null, null, null]
@@ -168,6 +210,15 @@ var roster: Array[UnitData] = []
 # sessão que já tinha progresso (dinheiro, roster evoluído, etc.) misturaria
 # o estado antigo com o novo em vez de começar do zero de verdade.
 func _ready() -> void:
+	# PROCESS_MODE_ALWAYS — sem isso, _process() (ver logo abaixo, relógio de
+	# Manhã/Dia/Noite) herdaria o pause da árvore (PROCESS_MODE_INHERIT, o
+	# padrão) e pararia de contar toda vez que QUALQUER popup/menu pausa o
+	# jogo (get_tree().paused = true é usado por praticamente toda tela do
+	# projeto — game_menu, PC, Yes/No da Nurse/Bed, etc.) — o relógio
+	# congelaria toda hora sem motivo nenhum. GameState já sobrevive a troca
+	# de cena (é autoload) — faz sentido o tempo dele também não respeitar
+	# pausas que são só de UMA tela específica.
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_apply_fresh_state()
 
 # Estado de "jogo novo": roster/reserva/inventário padrão (mesmo dos 3
@@ -202,6 +253,10 @@ func _apply_fresh_state() -> void:
 	_seed_starting_inventory()
 	tool_shortcuts = [null, null, null, null]
 	is_biking = false
+	is_strength_active = false
+	is_surfing = false
+	pending_song = ""
+	current_encounter_source = "Grass"
 	player_gender = "boy"
 	money = 0
 	badges = []
@@ -209,16 +264,43 @@ func _apply_fresh_state() -> void:
 	vanished_trainers = {}
 	trainer_positions = {}
 	trainer_facings = {}
-	has_saved_position = false
-	player_grid_pos = Vector2i.ZERO
+	# Pedido do usuário: "When creating a new save file, the player starts
+	# in red_house_interior (0,16)" — has_saved_position=true (não false
+	# como antes) É o que faz world.gd/house_interior.gd::
+	# _restore_player_state() de fato teleportar pra esta posição em vez de
+	# deixar o Player onde o .tscn o desenhou por padrão (ver comentário
+	# grande em house_interior.gd::_restore_player_state). last_heal_* (não
+	# só player_grid_pos/facing/overworld_scene_path) também aponta pra cá:
+	# é o checkpoint de "onde a cama/cura mais recente foi" (ver
+	# heal_active_roster()), e antes de curar pela primeira vez de verdade,
+	# a própria casa onde o jogador nasce já é o fallback mais razoável se
+	# ele perder uma batalha cedo — melhor que reaparecer em (0,0) dentro de
+	# world.tscn, que nem é mais a cena inicial.
+	has_saved_position = true
+	# (0,16) foi o primeiro pedido do usuário, mas ficava FORA da sala de
+	# verdade (bug reportado: "the map is empty and the location shows
+	# 'Ilha de Testes'"). Corrigido uma vez pra (0,2) — a entrada TÉRREA da
+	# casa (mesmo target_grid_pos que world.tscn::DoorToRedHouse usa pra
+	# entrar andando) — mas o pedido de verdade era começar no ANDAR DE
+	# CIMA ("the room has 2 floors, both on the same scene. (0,16) is on
+	# the second floor"). Conferido direto no tile_map_data binário de
+	# red_house_interior.tscn (StairsUp leva a (5,-20), a Bed/OpenPc estão
+	# ambos por volta de y=-15/-20 também): o andar de cima é REAL, só que
+	# fica em y NEGATIVO (-14 a -22), não +16 — provável troca de sinal na
+	# hora de escolher o número. (0,-16) é uma célula de chão de verdade
+	# nesse cluster (custom_data "walkable"=true tanto no Ground quanto no
+	# objeto que também ocupa essa célula, conferido no TileSet inside.tres).
+	player_grid_pos = Vector2i(0, -16)
 	player_facing = "down"
-	live_grid_pos = Vector2i.ZERO
+	live_grid_pos = Vector2i(0, -16)
 	live_facing = "down"
-	last_heal_grid_pos = Vector2i.ZERO
+	last_heal_grid_pos = Vector2i(0, -16)
 	last_heal_facing = "down"
-	current_area = preload("res://data/areas/starting_area.tres")
+	last_heal_scene_path = "res://scenes/overworld/red_house_interior.tscn"
+	current_area = preload("res://data/areas/archi_area.tres")
 	last_notified_area_name = ""
-	overworld_scene_path = "res://scenes/overworld/test.tscn"
+	overworld_scene_path = "res://scenes/overworld/red_house_interior.tscn"
+	game_time_seconds = 8.0 * 3600.0   # 8:00 (Manhã) — ver comentário grande em game_time_seconds
 
 # Reserva "de teste": bota uma cópia de CADA espécie já implementada (ver
 # ALL_SPECIES, mais abaixo) direto na reserva do PC, todas no nível 70 — pra
@@ -481,7 +563,7 @@ func swap_active_with_storage(active_index: int, storage_index: int) -> void:
 #
 # Também registra ESTE lugar/momento como o novo "checkpoint" de derrota
 # (ver last_heal_grid_pos/last_heal_facing acima) — copia de live_grid_pos/
-# live_facing, que test.gd mantém sempre atualizado com a posição de
+# live_facing, que world.gd mantém sempre atualizado com a posição de
 # verdade do jogador. Assim, se o time inteiro desmaiar numa batalha
 # qualquer (mesmo longe daqui), battle.gd::end_battle sabe pra onde mandar
 # o jogador de volta.
@@ -491,6 +573,19 @@ func heal_active_roster() -> void:
 			data.current_hp = UnitScript.calc_hp_static(data.hp_base, data.level, data.weight)
 	last_heal_grid_pos = live_grid_pos
 	last_heal_facing = live_facing
+	last_heal_scene_path = overworld_scene_path
+
+# Nível da unidade mais alta do time ativo (nulls ignorados) — 1 se o roster
+# inteiro estiver vazio (nunca deveria acontecer de verdade, já que o
+# jogador sempre tem pelo menos 1 starter antes de poder entrar numa
+# batalha, mas evita "menor que qualquer level real" por segurança). Usado
+# por battle.gd::end_battle pra calcular a multa de dinheiro na derrota.
+func get_highest_roster_level() -> int:
+	var highest := 1
+	for data in roster:
+		if data != null:
+			highest = max(highest, data.level)
+	return highest
 
 # Catálogo de TODAS as espécies já implementadas no jogo — NÃO é o time do
 # jogador nem a reserva do PC (roster/storage guardam só o que o jogador
@@ -531,9 +626,9 @@ const ALL_SPECIES: Array[UnitData] = [
 	preload("res://data/units/0020.tres"),
 ]
 
-# Em qual área do overworld o jogador está AGORA — test.gd seta isso (a
+# Em qual área do overworld o jogador está AGORA — world.gd seta isso (a
 # partir do seu próprio @export var encounter_area) assim que a cena
-# carrega (ver test.gd::_enter_area), e é o mesmo valor que sobrevive à
+# carrega (ver world.gd::_enter_area), e é o mesmo valor que sobrevive à
 # troca de cena pra battle.tscn, onde battle.gd::spawn_enemies() lê daqui
 # pra saber QUAIS unidades selvagens podem aparecer e com que peso (ver
 # encounter_area.gd/encounter_group.gd). Um EncounterArea já carrega tanto o
@@ -542,17 +637,30 @@ const ALL_SPECIES: Array[UnitData] = [
 # propósito, não tem sentido uma área "ter" um nome sem ter (nem que vazia)
 # uma lista de encontros, ou vice-versa.
 #
-# O valor default abaixo (a área inicial) é só uma rede de segurança pra
-# spawn_enemies() nunca ficar sem tabela nenhuma — no fluxo normal, test.gd
-# sempre sobrescreve isso ao carregar.
-var current_area: EncounterArea = preload("res://data/areas/starting_area.tres")
+# O valor default abaixo (a área inicial de verdade, ARCHI) é só uma
+# rede de segurança pra spawn_enemies() nunca ficar sem tabela nenhuma — no
+# fluxo normal, world.gd/house_interior.gd sempre sobrescrevem isso ao
+# carregar (ver AreaNotification/current_area, atualizado por quem entra
+# numa EncounterArea nova).
+var current_area: EncounterArea = preload("res://data/areas/archi_area.tres")
+
+# Qual EncounterGroup.source pick_group() deve considerar na PRÓXIMA batalha
+# selvagem — "Grass" (padrão, grama alta) ou "Water" (surfando, ver
+# Player.is_surfing/world.gd::_on_player_tile_entered). Escrito por
+# world.gd::_start_encounter() bem antes de trocar de cena pra battle.tscn
+# (mesmo momento/motivo que current_trainer_id etc. são escritos pra batalha
+# de Trainer, ver logo abaixo) — battle.gd::spawn_enemies() é quem lê isso
+# de volta. Resetado pra "Grass" no fim de toda batalha (ver battle.gd::
+# end_battle) só por higiene, já que quem dispara sempre escreve de novo
+# antes de qualquer batalha nova mesmo.
+var current_encounter_source: String = "Grass"
 
 # ---------- Batalha contra Trainer (ver trainer.gd) ----------
 # Espelha, do mesmo jeito que current_area faz pra encontro selvagem, os
 # dados que battle.gd precisa DEPOIS que change_scene_to_file() já destruiu
 # a cena de overworld inteira (Trainer incluso) — sem isso, spawn_enemies()
 # não teria como saber "qual time botar em campo" numa batalha de Trainer.
-# test.gd::start_trainer_battle() preenche os quatro antes de trocar de cena;
+# world.gd::start_trainer_battle() preenche os quatro antes de trocar de cena;
 # battle.gd::end_battle() zera de volta depois (vitória ou derrota), pra uma
 # batalha selvagem seguinte não pensar por engano que ainda é contra Trainer.
 
@@ -662,8 +770,116 @@ func set_flag(flag_name: String, value: bool = true) -> void:
 		return
 	flags[flag_name] = value
 
+# ---------- Hora do dia (Manhã/Dia/Noite) ----------
+# Relógio PRÓPRIO do jogo (não a data/hora real do sistema) — anda sozinho
+# em _process() abaixo, 4x mais rápido que tempo real (pedido do usuário:
+# "Time passes 4x faster then irl. Meaning we have a full day cicle in 6
+# hours of play time" — 24h de jogo / 4 = 6h de jogo DE VERDADE pra dar a
+# volta inteira). Guardado em SEGUNDOS dentro de um dia (0..86400, dá a
+# volta sozinho com fmod) — não existe contagem de quantos DIAS já se
+# passaram, nem hora exata mostrada em lugar nenhum (ver time_hud.gd, que só
+# mostra o PERÍODO — Manhã/Dia/Noite —, não "10:42"); nada no jogo precisa
+# saber "que dia é hoje", só o período atual.
+#
+# Usado por:
+#   - encounter_area.gd::pick_group() — filtra EncounterGroup.times_of_day
+#     (ver get_time_of_day_bit() abaixo) junto com min_badges.
+#   - time_hud.gd — ícone (meio-sol/sol/lua) no HUD permanente.
+#   - world.gd — CanvasModulate de brilho bem sutil no overworld
+#     (ver get_time_of_day_mask_color() abaixo).
+#   - bed.gd — "When resting on a bed, the time of day advances to the next
+#     one" (ver advance_to_next_time_of_day() abaixo).
+const SECONDS_PER_DAY := 86400.0
+const TIME_SPEED_MULTIPLIER := 4.0
+
+# Início de cada período, em segundos desde 00:00 — valores exatos pedidos
+# pelo usuário:
+#   Night   21:00 - 3:59  (atravessa a meia-noite, ver get_time_of_day())
+#   Morning  4:00 - 10:59
+#   Day     11:00 - 20:59
+const MORNING_START_SECONDS := 4.0 * 3600.0    # 4:00
+const DAY_START_SECONDS := 11.0 * 3600.0       # 11:00
+const NIGHT_START_SECONDS := 21.0 * 3600.0     # 21:00
+
+# 8:00 (Manhã) — só o valor inicial de uma partida nova (ver
+# _apply_fresh_state()); persistido de verdade em save_game/load_game.
+var game_time_seconds: float = 8.0 * 3600.0
+
+func _process(delta: float) -> void:
+	game_time_seconds = fmod(game_time_seconds + delta * TIME_SPEED_MULTIPLIER, SECONDS_PER_DAY)
+
+# "Morning", "Day" ou "Night" — recalculado a partir de game_time_seconds
+# toda vez que é chamado (barato o bastante pra não precisar cachear nem
+# avisar por sinal; quem precisa saber só chama isso 1x por frame, ver
+# time_hud.gd).
+func get_time_of_day() -> String:
+	if game_time_seconds >= NIGHT_START_SECONDS or game_time_seconds < MORNING_START_SECONDS:
+		return "Night"
+	if game_time_seconds < DAY_START_SECONDS:
+		return "Morning"
+	return "Day"
+
+# Hora/minuto pro relógio do HUD (ver time_hud.gd) — pedido do usuário:
+# "Half-Sun/Sun/Moon - Hour:Minute". Divisão inteira simples a partir de
+# game_time_seconds, mesmo espírito de get_time_of_day() acima (recalculado
+# a cada chamada, sem cache/sinal).
+func get_hour() -> int:
+	return int(game_time_seconds / 3600.0) % 24
+
+func get_minute() -> int:
+	return int(game_time_seconds / 60.0) % 60
+
+# Bits usados por EncounterGroup.times_of_day (ver @export_flags lá —
+# "Morning","Day","Night" nessa ordem vira bit 1/2/4) — mantidos aqui,
+# perto de get_time_of_day(), pra ficar óbvio que os dois precisam
+# continuar em sincronia (mudar a ordem de um sem o outro quebra o filtro
+# silenciosamente).
+const TIME_BIT_MORNING := 1
+const TIME_BIT_DAY := 2
+const TIME_BIT_NIGHT := 4
+
+func get_time_of_day_bit() -> int:
+	match get_time_of_day():
+		"Morning":
+			return TIME_BIT_MORNING
+		"Day":
+			return TIME_BIT_DAY
+		_:
+			return TIME_BIT_NIGHT
+
+# Cor bem sutil de CanvasModulate por período (ver world.gd) —
+# pedido do usuário: "apply a VERY SLIGHT mask on the overworld showing the
+# difference in brightness". Valores só um pouco abaixo/acima de 1.0 de
+# propósito — um tint forte demais chamaria mais atenção do que o pedido
+# ("very slight"); ajuste aqui se quiser mais contraste entre os períodos.
+const DAY_MASK_COLOR := Color(1.0, 1.0, 1.0)
+const MORNING_MASK_COLOR := Color(0.97, 0.95, 0.92)
+const NIGHT_MASK_COLOR := Color(0.72, 0.74, 0.88)
+
+func get_time_of_day_mask_color() -> Color:
+	match get_time_of_day():
+		"Morning":
+			return MORNING_MASK_COLOR
+		"Night":
+			return NIGHT_MASK_COLOR
+		_:
+			return DAY_MASK_COLOR
+
+# Chamada por bed.gd ao descansar — pula direto pro INÍCIO do PRÓXIMO
+# período (não soma um intervalo fixo de tempo) — pedido do usuário: "When
+# resting on a bed, the time of day advances the the next one Morning ->
+# Day -> Night" (Night fecha o ciclo de volta pra Morning).
+func advance_to_next_time_of_day() -> void:
+	match get_time_of_day():
+		"Morning":
+			game_time_seconds = DAY_START_SECONDS
+		"Day":
+			game_time_seconds = NIGHT_START_SECONDS
+		_:
+			game_time_seconds = MORNING_START_SECONDS
+
 # Nome da última área que já mostrou a notificação de entrada (ver
-# area_notification.gd) — existe só pra test.gd saber se a área que está
+# area_notification.gd) — existe só pra world.gd saber se a área que está
 # carregando agora é REALMENTE nova (mostra notificação) ou é a mesma de
 # antes (ex: voltando de uma batalha pro mesmo mapa — não deve notificar de
 # novo). Comparar por NOME (String) em vez de comparar o Resource
@@ -694,6 +910,17 @@ func _seed_starting_inventory() -> void:
 	add_item(preload("res://data/items/tm10_ice_fang.tres"), 8) # 8 pra testar Stackable + consumo em batalha
 	add_item(preload("res://data/items/bicycle.tres"), 1)       # Tool: Use liga/desliga is_biking, nunca é consumida
 	add_item(preload("res://data/items/ability_patch.tres"), 1) # pra testar revelar Sheer Force do Totodile (0158)
+	add_item(preload("res://data/items/fairy_ocarina.tres"), 1) # Tool: Use abre o popup de Songs
+	# Sem NPC/LootBall que ensine Song nenhuma ainda (ver unlock_song acima)
+	# — as 3 desbloqueadas direto aqui só pra dar pra testar o popup/menu
+	# inteiro (Fly incluída, mesmo sem efeito ainda — ver SONG_NAMES) antes
+	# de existir uma forma de verdade de aprendê-las. Pedido do usuário:
+	# "Unlock the 3 songs for testing, we will add ways to unlock them
+	# later" — mesmo espírito de masterball/pokeball acima ("só pra já dar
+	# pra testar").
+	unlock_song("Strength")
+	unlock_song("Surf")
+	unlock_song("Fly")
 
 func add_item(item: ItemData, amount: int = 1) -> void:
 	inventory[item] = get_item_quantity(item) + amount
@@ -767,12 +994,63 @@ func use_item(item: ItemData, target: UnitData) -> void:
 #
 # Cada efeito de Tool novo vira mais um "if item.<campo>" aqui, do mesmo
 # jeito que battle.gd tem um bloco por categoria pra Ball/TM — hoje só
-# existe toggles_bike (Bicycle).
+# existe toggles_bike (Bicycle). A Fairy Ocarina (item.opens_song_menu)
+# NÃO passa por aqui — ela abre um popup de escolha de Song em vez de ter um
+# efeito único e direto (ver item_list_screen.gd/world.gd::
+# _open_song_menu), então quem chama "Use" já desvia pra lá ANTES de chegar
+# nesta função.
 func use_tool(item: ItemData) -> void:
 	if item == null:
 		return
 	if item.toggles_bike:
+		# Bloqueia de vez enquanto Surfando — pedido do usuário: "Make it so
+		# you cant use the bike while surfing. Player could get stuck".
+		# ANTES isso forçava is_surfing = false e ligava a Bike por cima,
+		# só que se o jogador estivesse em cima de água nesse momento, a
+		# célula deixava de ser andável pra ele (can_move_to só permite
+		# água com is_surfing == true, e a Bike não tem esse privilégio) —
+		# jogador ficava travado sem conseguir sair da água de jeito
+		# nenhum. Agora nem entra no toggle, mesmo silêncio de outras ações
+		# inválidas neste projeto (mesmo espírito de bater numa parede).
+		if is_surfing:
+			return
 		is_biking = not is_biking
+		# Mesma exclusividade que Player.apply_song() já aplica no sentido
+		# contrário (Strength desligando a Bike) — sem isso, dava pra ligar
+		# a Bicicleta enquanto ainda "Strength" estivesse ativo e os dois
+		# sprites brigarem por qual mostrar. Surf não entra mais aqui (ver
+		# guard acima, já garante que nunca chega ligado nesse ponto).
+		if is_biking:
+			is_strength_active = false
+
+# Nomes de Song válidos pra Fairy Ocarina — "Fly" JÁ entra na lista (pedido
+# do usuário: "Unlock the 3 songs for testing, we will add ways to unlock
+# them later"), mesmo sem efeito nenhum implementado ainda (Player.
+# apply_song() trata "Fly" como no-op por enquanto, ver comentário lá —
+# "Fly we will implement at another time"). Fica na lista pra já dar pra
+# testar o desbloqueio/menu das 3 juntas; só o EFEITO de Fly que ainda não
+# existe.
+const SONG_NAMES = ["Strength", "Surf", "Fly"]
+
+# Quais Songs o jogador já aprendeu — song_menu.gd mostra só estas. Reusa o
+# mesmo `flags` genérico de cima (ver set_flag/get_flag e loot_ball.gd::
+# exclusive_flag) em vez de um Array/Dictionary dedicado só pra isso, mesmo
+# espírito de min_badges/exclusive_flag: não vale a pena um sistema novo pra
+# guardar só "true/false por nome".
+func get_unlocked_songs() -> Array[String]:
+	var unlocked: Array[String] = []
+	for song in SONG_NAMES:
+		if get_flag("song_%s_unlocked" % song.to_lower()):
+			unlocked.append(song)
+	return unlocked
+
+# Gancho pronto pra quando existir um jeito de verdade de aprender uma Song
+# (NPC ensinando, LootBall, recompensa de Trainer...) — nenhum lugar chama
+# isso ainda além do seed de teste (ver _seed_starting_inventory), mas a
+# função já existe pra não precisar mexer em GameState de novo quando esse
+# dia chegar.
+func unlock_song(song_name: String) -> void:
+	set_flag("song_%s_unlocked" % song_name.to_lower())
 
 # True se `item` já ocupa um dos 4 atalhos de Tool — item_action_menu.gd usa
 # isso pra decidir se mostra "Register" ou "Unregister" (ver ItemData.
@@ -840,17 +1118,62 @@ func _save_path(slot: int) -> String:
 func has_save(slot: int) -> bool:
 	return FileAccess.file_exists(_save_path(slot))
 
+# Lê o .tres como TEXTO (sem passar pelo ResourceLoader) só pra conferir se
+# algum [ext_resource ... path="res://..."] dele aponta pra um arquivo que
+# não existe mais — bug reportado: "Game crashed" ao simplesmente ABRIR a
+# tela de Load/New Game, porque ela já espia (peek_save) TODO slot pra
+# mostrar nome/badges (ver save_slot_screen.gd::_build_slot_row), e um save
+# salvo ANTES desta sessão deletar "Ilha de Testes" ainda referencia
+# data/areas/starting_area.tres (ver current_area em save_data.gd) — um
+# recurso que não existe mais no disco. Chamar ResourceLoader.load() em
+# cima disso não só falha (cascata de "Parse Error"/"Failed loading
+# resource" no console), como pode derrubar o jogo inteiro. Esta função
+# detecta o problema ANTES, olhando o arquivo como texto puro (sempre
+# seguro, nunca aciona o parser de Resource de verdade), pra peek_save()
+# poder desviar do load() e devolver null sem nunca chegar a chamá-lo.
+func _save_has_missing_dependency(slot: int) -> bool:
+	var file = FileAccess.open(_save_path(slot), FileAccess.READ)
+	if file == null:
+		return false
+	var text = file.get_as_text()
+	file.close()
+	for line in text.split("\n"):
+		if not line.begins_with("[ext_resource"):
+			continue
+		var path_start = line.find('path="')
+		if path_start == -1:
+			continue
+		path_start += "path=\"".length()
+		var path_end = line.find('"', path_start)
+		if path_end == -1:
+			continue
+		var ref_path = line.substr(path_start, path_end - path_start)
+		if ref_path.begins_with("res://") and not ResourceLoader.exists(ref_path):
+			return true
+	return false
+
 # Carrega um slot só pra LER um resumo (nome + badges, ver save_slot_screen.gd)
 # sem aplicar nada em GameState — load_game() abaixo é quem de fato troca o
 # estado atual pelo do save. CACHE_MODE_IGNORE evita que o Godot devolva uma
 # instância em cache de uma leitura anterior do mesmo caminho (o slot pode
 # ter sido sobrescrito por um save_game() novo desde a última vez que
 # alguém olhou pra ele, ex: save_slot_screen reabrindo depois de um
-# "New Game" que escreveu por cima do mesmo slot).
+# "New Game" que escreveu por cima do mesmo slot). Devolve null tanto pra
+# slot vazio quanto pra slot CORROMPIDO (ver _save_has_missing_dependency
+# acima) — save_slot_screen.gd distingue os dois casos via is_save_corrupted().
 func peek_save(slot: int) -> SaveData:
 	if not has_save(slot):
 		return null
+	if _save_has_missing_dependency(slot):
+		return null
 	return ResourceLoader.load(_save_path(slot), "SaveData", ResourceLoader.CACHE_MODE_IGNORE) as SaveData
+
+# Distingue "slot vazio" (has_save false) de "slot ocupado mas quebrado"
+# (has_save true, peek_save null) — save_slot_screen.gd usa isso pra
+# mostrar "Corrupted" em vez de "Empty" (e não travar tentando ler o save
+# de novo, ver comentário grande em _save_has_missing_dependency acima).
+func is_save_corrupted(slot: int) -> bool:
+	return has_save(slot) and peek_save(slot) == null
 
 # Sobrescreve o slot com o estado ATUAL de GameState — mesma função tanto
 # pro primeiro save de uma partida nova (ver start_new_game() abaixo) quanto
@@ -891,15 +1214,17 @@ func save_game(slot: int) -> void:
 	data.tool_shortcuts = tool_shortcuts.duplicate()
 	data.current_area = current_area
 	data.overworld_scene_path = overworld_scene_path
+	data.game_time_seconds = game_time_seconds
 	# live_grid_pos/live_facing (não player_grid_pos/player_facing) porque
 	# Save só é possível de dentro do overworld (game_menu.gd, aberto pelo
-	# "A" — nunca em batalha), e são esses dois que test.gd mantém
+	# "A" — nunca em batalha), e são esses dois que world.gd mantém
 	# sincronizados com a posição de VERDADE a cada passo (ver comentário
 	# de GameState.live_grid_pos).
 	data.player_grid_pos = live_grid_pos
 	data.player_facing = live_facing
 	data.last_heal_grid_pos = last_heal_grid_pos
 	data.last_heal_facing = last_heal_facing
+	data.last_heal_scene_path = last_heal_scene_path
 	current_save_slot = slot
 	var err = ResourceSaver.save(data, _save_path(slot))
 	if err != OK:
@@ -909,11 +1234,15 @@ func save_game(slot: int) -> void:
 # save_slot_screen.gd (opção "Load Game"). Quem troca de cena pro overworld
 # depois é sempre quem chamou isto (ver save_slot_screen.gd::
 # _activate_selected_slot), não esta função, mesmo padrão de
-# start_new_game() abaixo.
-func load_game(slot: int) -> void:
+# start_new_game() abaixo. Devolve false (sem mexer em nada) se o slot
+# estiver vazio OU corrompido (ver is_save_corrupted) — ANTES retornava void
+# e save_slot_screen.gd trocava de cena de qualquer jeito mesmo com o load
+# tendo falhado silenciosamente; agora quem chama sabe que precisa avisar o
+# jogador em vez de entrar no overworld com o estado errado.
+func load_game(slot: int) -> bool:
 	var data := peek_save(slot)
 	if data == null:
-		return
+		return false
 	player_name = data.player_name
 	money = data.money
 	badges = data.badges.duplicate()
@@ -938,8 +1267,22 @@ func load_game(slot: int) -> void:
 	for i in data.inventory_items.size():
 		inventory[data.inventory_items[i]] = data.inventory_quantities[i]
 	tool_shortcuts = data.tool_shortcuts.duplicate()
-	current_area = data.current_area
-	overworld_scene_path = data.overworld_scene_path
+	# Fallback pro default de jogo novo se current_area vier null — não
+	# deveria acontecer mais (peek_save/_save_has_missing_dependency já
+	# filtra saves com ext_resource quebrado ANTES de chegar aqui), mas é
+	# barato o bastante pra deixar como segunda linha de defesa; world.gd
+	# recalcula isso de qualquer forma assim que entra na cena (ver
+	# _update_current_area), então nem chega a ficar visível por muito tempo.
+	current_area = data.current_area if data.current_area != null else preload("res://data/areas/archi_area.tres")
+	# overworld_scene_path/last_heal_scene_path são só String (não
+	# ext_resource), então _save_has_missing_dependency não pega se
+	# apontarem pra uma cena deletada (ex: um save de antes desta sessão
+	# apagar "Ilha de Testes"/test.tscn) — o .tres ainda carrega normalmente,
+	# só quebraria DEPOIS, no change_scene_to_file (ver save_slot_screen.gd).
+	# Cai pro default de jogo novo se a cena salva não existir mais.
+	overworld_scene_path = data.overworld_scene_path if ResourceLoader.exists(data.overworld_scene_path) else "res://scenes/overworld/red_house_interior.tscn"
+	last_heal_scene_path = data.last_heal_scene_path if ResourceLoader.exists(data.last_heal_scene_path) else "res://scenes/overworld/red_house_interior.tscn"
+	game_time_seconds = data.game_time_seconds
 	has_saved_position = true
 	player_grid_pos = data.player_grid_pos
 	player_facing = data.player_facing
@@ -948,6 +1291,7 @@ func load_game(slot: int) -> void:
 	last_heal_grid_pos = data.last_heal_grid_pos
 	last_heal_facing = data.last_heal_facing
 	current_save_slot = slot
+	return true
 
 # "New Game" num slot específico (ver save_slot_screen.gd/name_entry_screen.gd)
 # — reseta tudo pro estado de jogo novo (ver _apply_fresh_state()) e já

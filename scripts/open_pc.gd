@@ -9,7 +9,7 @@ class_name OpenPc
 #
 # Herda de npc.gd pelo MESMO motivo de LootBall (ver comentário grande lá):
 # de graça, ganha grid_pos alinhado ao tile + grupo "npc" (é assim que
-# test.gd/world.gd/house_interior.gd::_try_interact() acham "tem algo
+# world.gd/house_interior.gd::_try_interact() acham "tem algo
 # interagível na minha frente" e bloqueiam o jogador de atravessar por
 # cima), sem precisar duplicar esse sistema de detecção.
 #
@@ -81,7 +81,7 @@ func _make_atlas(coord: Vector2i) -> AtlasTexture:
 	atlas.region = Rect2(coord.x * ATLAS_TILE_SIZE.x, coord.y * ATLAS_TILE_SIZE.y, ATLAS_TILE_SIZE.x, ATLAS_TILE_SIZE.y)
 	return atlas
 
-# X de frente pro terminal (mesmo caminho de qualquer Npc — ver test.gd/
+# X de frente pro terminal (mesmo caminho de qualquer Npc — ver world.gd/
 # world.gd/house_interior.gd::_try_interact). Pedido do usuário: "activate
 # 'PC' menu" — abre a MESMA computer_screen.tscn que existia atrás da opção
 # "PC" do menu A antes dela ser removida (ver game_menu.gd), só que agora
@@ -92,7 +92,7 @@ func interact() -> void:
 	_busy = true
 	anim.visible = true
 	anim.play("screen_on")
-	get_tree().paused = true   # mesmo padrão de test.gd::_open_game_menu — pausa o overworld enquanto a tela está aberta
+	get_tree().paused = true   # mesmo padrão de world.gd::_open_game_menu — pausa o overworld enquanto a tela está aberta
 	var screen = COMPUTER_SCREEN_SCENE.instantiate()
 	add_child(screen)
 	screen.closed.connect(_on_screen_closed)

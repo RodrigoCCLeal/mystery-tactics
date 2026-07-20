@@ -171,3 +171,14 @@ var category: String = "Medicine"
 # a cada frame — troca pra bike_<direção>/idle_bike_<direção> e passa a
 # andar em BIKE_DURATION). Só a Bicycle tem isso true hoje.
 @export var toggles_bike: bool = false
+
+# Se true, "Use" abre um popup de escolha de Song (ver scenes/ui/popups/
+# song_menu.tscn, GameState.get_unlocked_songs) EM VEZ de chamar
+# GameState.use_tool() direto — diferente de toggles_bike acima (um efeito
+# único, sem escolha nenhuma), este item tem VÁRIOS efeitos possíveis
+# (Strength/Surf/Fly), cada Song mudando o sprite/movimento do jogador de um
+# jeito diferente (ver Player.apply_song). Só a Fairy Ocarina tem isso true
+# hoje. Ver item_list_screen.gd::_on_item_action_closed e world.gd/
+# house_interior.gd::_trigger_tool_shortcut pros dois lugares que checam
+# este campo antes de decidir abrir o popup ou chamar use_tool() normal.
+@export var opens_song_menu: bool = false

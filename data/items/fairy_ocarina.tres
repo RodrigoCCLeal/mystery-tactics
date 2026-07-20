@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" uid="uid://c8w8n0ts68l77" path="res://scripts/item_data.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://jgm60fp5b0ym" path="res://assets/sprites/items/Tool/FAIRY_OCARINA.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+icon = ExtResource("2")
+category = "Tool"
+effect_description = "Use para tocar uma Song já aprendida. Cada Song muda o personagem de um jeito diferente (Strength, Surf...)."
+can_use = true
+can_register = true
+opens_song_menu = true
+buy_price = 0
+sell_price = 0
+action_name = "Fairy Ocarina"

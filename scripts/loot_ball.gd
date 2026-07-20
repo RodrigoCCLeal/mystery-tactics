@@ -11,7 +11,7 @@ class_name LootBall
 # Por que herda de npc.gd em vez de ser um Node2D solto (do jeito que
 # door.gd é): de graça, ganha o alinhamento no grid (_ready() calcula
 # grid_pos a partir de onde foi arrastada no editor) e, mais importante, o
-# grupo "npc" — é assim que test.gd/world.gd/house_interior.gd::
+# grupo "npc" — é assim que world.gd/house_interior.gd::
 # _try_interact() já sabem achar "tem algo interagível na minha frente"
 # (ver _get_npc_at/has_npc_at nos três hosts) E bloquear o jogador de andar
 # por cima. Sem isso, precisaríamos duplicar esse sistema de detecção
@@ -170,7 +170,7 @@ const ART_CENTER_OFFSET := Vector2(0, -2)
 func _align_sprite_to_tile() -> void:
 	anim.offset = ART_CENTER_OFFSET + visual_offset
 
-# X de frente pra LootBall (mesmo caminho de qualquer Npc — ver test.gd::
+# X de frente pra LootBall (mesmo caminho de qualquer Npc — ver world.gd::
 # _try_interact, que já vira ela pro jogador ANTES de chamar isto).
 # _opened trava contra abrir duas vezes no mesmo frame (ex: X segurado) —
 # a bolinha só devia mesmo sumir depois que _vanish() rodar, mas isso só
@@ -287,7 +287,7 @@ func _grant_unit() -> void:
 	_show_result_then_vanish("%s was added to your Storage!" % data.unit_name)
 
 # "Surprise battle" — reusa o MESMO sistema de encontro selvagem da grama
-# alta (ver world.gd/test.gd::trigger_wild_encounter, wrapper público de
+# alta (ver world.gd::trigger_wild_encounter, wrapper público de
 # _start_encounter), em vez de inventar uma tabela de inimigo própria só
 # pra LootBall: o oponente sorteado é o da EncounterArea ATUAL do jogador
 # (GameState.current_area), do mesmo jeito que pisar na grama decidiria.

@@ -19,6 +19,11 @@ signal closed
 
 const NAME_ENTRY_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/name_entry_screen.tscn")
 const YES_NO_PROMPT_SCENE: PackedScene = preload("res://scenes/ui/popups/yes_no_prompt.tscn")
+# Mesma caixa genérica de 1 linha de sempre (ver player.gd::MESSAGE_BOX_SCENE
+# pro mesmo comentário) — usada aqui só pro aviso de "esse save não abre
+# mais" (ver _activate_selected_slot), bug reportado: "Game crashed" ao
+# tentar dar Load num save de antes desta sessão deletar "Ilha de Testes".
+const MESSAGE_BOX_SCENE: PackedScene = preload("res://scenes/ui/popups/trainer_message_box.tscn")
 
 const ROW_STYLE_NORMAL = Color(0, 0, 0, 0)
 const ROW_STYLE_SELECTED = Color(1, 1, 0.3, 0.25)
@@ -76,7 +81,14 @@ func _build_slot_row(slot: int) -> PanelContainer:
 	var data := GameState.peek_save(slot)
 	if data == null:
 		var empty_label = Label.new()
-		empty_label.text = "Empty"
+		# Distingue "sem save nenhum" de "tem save, mas tá quebrado" (ver
+		# GameState.is_save_corrupted/_save_has_missing_dependency) — o
+		# segundo caso é o que crashava antes (save de antes desta sessão
+		# deletar "Ilha de Testes" ainda referenciando starting_area.tres).
+		# Ainda pode ser sobrescrito normalmente em mode=="new" (has_save()
+		# continua true, só peek_save() que devolve null), só não dá pra
+		# Load nele (ver _activate_selected_slot).
+		empty_label.text = "Corrupted" if GameState.is_save_corrupted(slot) else "Empty"
 		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		empty_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(empty_label)
@@ -128,7 +140,14 @@ func _activate_selected_slot() -> void:
 	if mode == "load":
 		if not GameState.has_save(selected_slot):
 			return
-		GameState.load_game(selected_slot)
+		# load_game() agora devolve bool (ver comentário grande em
+		# game_state.gd) — ANTES a gente trocava de cena de qualquer jeito
+		# mesmo com o load tendo falhado silenciosamente (data == null lá
+		# dentro), o que jogava o jogador pro overworld com o estado errado
+		# em vez de avisar que aquele slot específico não abre mais.
+		if not GameState.load_game(selected_slot):
+			_show_message("This save can't be loaded — its data is missing. Overwrite it with New Game to reuse this slot.")
+			return
 		get_tree().change_scene_to_file(GameState.overworld_scene_path)
 		return
 	# mode == "new"
@@ -143,6 +162,15 @@ func _confirm_overwrite(slot: int) -> void:
 	add_child(prompt)
 	prompt.setup("This slot already has a save. Overwrite it with a brand-new game?")
 	prompt.answered.connect(_on_overwrite_answered.bind(slot))
+
+# Aviso de "esse save não abre mais" (ver _activate_selected_slot) — não
+# esconde esta tela nem mexe em pause (diferente de player.gd::_show_message,
+# aqui ainda não existe overworld nenhum rodando pra pausar), só sobrepõe a
+# caixa de texto e deixa o jogador escolher outro slot depois de fechar.
+func _show_message(text: String) -> void:
+	var box = MESSAGE_BOX_SCENE.instantiate()
+	add_child(box)
+	box.setup(text)
 
 func _on_overwrite_answered(yes: bool, slot: int) -> void:
 	if yes:

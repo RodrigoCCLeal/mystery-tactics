@@ -7,26 +7,26 @@
 [ext_resource type="Resource" uid="uid://c6u2qdc3o2erk" path="res://data/units/0004.tres" id="5"]
 [ext_resource type="Resource" uid="uid://bnqc5pta08a7q" path="res://data/units/0007.tres" id="6"]
 
-[sub_resource type="Resource" id="EncounterEntry_startingtown_bulbasaur_5"]
+[sub_resource type="Resource" id="EncounterEntry_archi_bulbasaur_5"]
 script = ExtResource("3")
 species = ExtResource("4")
 level = 5
 
-[sub_resource type="Resource" id="EncounterEntry_startingtown_charmander_5"]
+[sub_resource type="Resource" id="EncounterEntry_archi_charmander_5"]
 script = ExtResource("3")
 species = ExtResource("5")
 level = 5
 
-[sub_resource type="Resource" id="EncounterEntry_startingtown_squirtle_5"]
+[sub_resource type="Resource" id="EncounterEntry_archi_squirtle_5"]
 script = ExtResource("3")
 species = ExtResource("6")
 level = 5
 
-[sub_resource type="Resource" id="EncounterGroup_startingtown"]
+[sub_resource type="Resource" id="EncounterGroup_archi"]
 script = ExtResource("2")
-entries = Array[ExtResource("3")]([SubResource("EncounterEntry_startingtown_bulbasaur_5"), SubResource("EncounterEntry_startingtown_charmander_5"), SubResource("EncounterEntry_startingtown_squirtle_5")])
+entries = Array[ExtResource("3")]([SubResource("EncounterEntry_archi_bulbasaur_5"), SubResource("EncounterEntry_archi_charmander_5"), SubResource("EncounterEntry_archi_squirtle_5")])
 
 [resource]
 script = ExtResource("1")
-area_name = "STARTINGTOWN"
-groups = Array[ExtResource("2")]([SubResource("EncounterGroup_startingtown")])
+area_name = "ARCHI"
+groups = Array[ExtResource("2")]([SubResource("EncounterGroup_archi")])

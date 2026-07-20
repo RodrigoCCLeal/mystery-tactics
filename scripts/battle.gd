@@ -1162,7 +1162,7 @@ func start_battle() -> void:
 	start_turn_order()
 
 # Sorteia UM grupo da EncounterArea ativa (GameState.current_area,
-# setada por test.gd antes da troca de cena — ver encounter_area.gd/
+# setada por world.gd antes da troca de cena — ver encounter_area.gd/
 # encounter_group.gd) e spawna EXATAMENTE as entries daquele grupo, uma
 # unidade por entrada, na ordem em que estão no grupo, CADA UMA no nível da
 # sua própria EncounterEntry (não é mais um GameState.STARTING_LEVEL fixo
@@ -1182,7 +1182,7 @@ func spawn_enemies() -> void:
 	hidden_cells.shuffle()
 
 	# Trainer (ver trainer.gd/GameState.is_trainer_battle) spawna do time
-	# JÁ RESOLVIDO que test.gd::start_trainer_battle() copiou pra
+	# JÁ RESOLVIDO que world.gd::start_trainer_battle() copiou pra
 	# GameState.current_trainer_team antes de trocar de cena — Trainer.
 	# get_active_team() já escolheu o tier certo (número de badges) e cada
 	# entrada já traz seu loadout (vazio = automático, ver TrainerTeamEntry).
@@ -1208,7 +1208,12 @@ func spawn_enemies() -> void:
 		for entry in GameState.current_trainer_team:
 			_spawn_enemy_unit(entry.species, entry.level, entry.loadout, hidden_cells, extra_loadout)
 	else:
-		var group = GameState.current_area.pick_group() if GameState.current_area != null else null
+		# current_encounter_source ("Grass"/"Water"/"Fishing", ver
+		# EncounterGroup.source) — quem chamou world.gd::_start_encounter()
+		# antes de trocar de cena pra cá já escreveu o valor certo em
+		# GameState (grama alta = "Grass" de sempre; surfando em cima
+		# d'água = "Water", ver world.gd::_on_player_tile_entered).
+		var group = GameState.current_area.pick_group(GameState.current_encounter_source) if GameState.current_area != null else null
 		var entries: Array[EncounterEntry] = group.entries if group != null else []
 		for entry in entries:
 			_spawn_enemy_unit(entry.species, entry.level, [], hidden_cells, [])
@@ -2583,26 +2588,63 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 	GameState.current_trainer_team = []
 	GameState.current_trainer_prize = 0
 	GameState.current_trainer_iq = ""
+	# Mesmo espírito dos quatro campos acima — volta pro default ("Grass")
+	# assim que a batalha termina, pra uma batalha de TREINADOR seguinte
+	# (que nem olha pra este campo) não herdar por engano um "Water" de uma
+	# batalha selvagem de água anterior caso algo volte a ler isso sem
+	# querer.
+	GameState.current_encounter_source = "Grass"
 
 	if victory:
 		# Mesmo caminho de volta do botão Flee (ver _on_flee_pressed) — a
 		# posição do jogador no overworld já foi salva em GameState antes de
-		# entrar na batalha (ver test.gd), então só trocar de cena já basta.
+		# entrar na batalha (ver world.gd), então só trocar de cena já basta.
 		get_tree().change_scene_to_file(GameState.overworld_scene_path)
 	else:
 		# Derrota: sem "voltar pro overworld de onde veio" (GameState.
 		# player_grid_pos ali seria só o último passo antes de cair nesta
 		# batalha específica, que pode ter sido longe de qualquer lugar
 		# seguro) — em vez disso, devolve o jogador pro ÚLTIMO lugar onde
-		# usou Computador -> Heal (ver GameState.last_heal_grid_pos/
-		# last_heal_facing, atualizado em GameState.heal_active_roster()).
-		# Reaproveita o MESMO mecanismo de restauração que a volta de
-		# vitória já usa (has_saved_position + player_grid_pos/facing, lido
-		# por test.gd::_restore_player_state ao carregar a cena) — só com
-		# outra origem pros valores.
+		# usou Computador -> Heal (ou Nurse, ou Bed — ver GameState.
+		# last_heal_grid_pos/last_heal_facing/last_heal_scene_path,
+		# atualizados em GameState.heal_active_roster()). Reaproveita o
+		# MESMO mecanismo de restauração que a volta de vitória já usa
+		# (has_saved_position + player_grid_pos/facing, lido por
+		# world.gd/house_interior.gd::_restore_player_state ao
+		# carregar a cena) — só com outra origem pros valores. Também
+		# reaplica last_heal_scene_path (não só a posição) — sem isso, um
+		# checkpoint de cura dentro de OUTRA cena (uma Bed numa casa,
+		# enquanto a batalha perdida rolou lá fora numa rota) reaparecia com
+		# as coordenadas certas mas na cena ERRADA (a da rota, não a da
+		# casa).
+		#
+		# Conveniência pedida pelo usuário ("For convenience, also heal the
+		# team"): cura o time de verdade na derrota, não só teleporta com o
+		# time ainda desmaiado. NÃO chamamos GameState.heal_active_roster()
+		# aqui — aquela função também RE-GRAVA o checkpoint pra posição
+		# ATUAL (live_grid_pos/live_facing/overworld_scene_path), que nesse
+		# momento é onde a batalha começou, não onde o jogador vai
+		# reaparecer; faríamos o checkpoint "andar" pra qualquer lugar onde
+		# o jogador leva um walkover. Em vez disso, só a parte de cura é
+		# repetida aqui, deixando o checkpoint em si intocado.
+		for data in GameState.roster:
+			if data != null:
+				data.current_hp = UnitScript.calc_hp_static(data.hp_base, data.level, data.weight)
+		# Multa de dinheiro pedida pelo usuário: "the player loses money
+		# equal to their highest unit level * number of badges * 25" —
+		# highest LEVEL (não HP/base stat), do time ATIVO (GameState.roster,
+		# a "reserva" de storage/giovanni_storage não conta pra isso).
+		# clampi/max(0, ...) — dinheiro nunca fica negativo, mesmo espírito
+		# de spend_money() recusar gastar mais do que o jogador tem.
+		var money_lost = GameState.get_highest_roster_level() * GameState.badges.size() * 25
+		GameState.money = max(0, GameState.money - money_lost)
+		if money_lost > 0:
+			log_message("You lost $%d..." % money_lost)
+			await _await_confirm_press()
 		GameState.has_saved_position = true
 		GameState.player_grid_pos = GameState.last_heal_grid_pos
 		GameState.player_facing = GameState.last_heal_facing
+		GameState.overworld_scene_path = GameState.last_heal_scene_path
 		get_tree().change_scene_to_file(GameState.overworld_scene_path)
 
 # Espera o jogador apertar X/Z (confirm/cancel) uma vez, sem abrir UI
@@ -3013,7 +3055,7 @@ func apply_end_of_turn_status(u: Node) -> bool:
 # Desfaz o movimento inteiro da unidade da vez, voltando pra onde ela
 # estava no início do turno, e devolve o orçamento de movimento cheio.
 # Sai da batalha sem vencer nem perder, direto pro overworld — devolve o
-# personagem pra onde ele estava graças ao GameState (ver test.gd
+# personagem pra onde ele estava graças ao GameState (ver world.gd
 # _restore_player_state(), já escuta isso desde o encontro aleatório).
 # Ainda não desconta nada por fugir (perder o Pokémon selvagem, etc.) —
 # é só o "sair da tela de batalha" por enquanto.
@@ -3696,7 +3738,28 @@ func _plan_rocket_action(u: Node) -> Dictionary:
 	if not best.has("attack") or best["attack"].is_status:
 		return best   # sem golpe de dano nenhum escolhido — nada pra trocar por captura
 	if player_units.size() != 1:
-		return best   # ainda sobra outra unidade além dessa — bate normal, Ball só vale pra última
+		return best   # ainda sobra outra unidade DE PÉ além dessa — bate normal, Ball só vale pra última
+
+	# Bug reportado pelo usuário: "the bug where rocket catches the ONLY
+	# member of the active team is still happening" — player_units.size()
+	# == 1 acima só diz "só uma unidade ainda está de pé NESTA batalha", o
+	# que é verdade também quando o time INTEIRO do jogador sempre foi
+	# aquela única unidade (nunca teve companheiro nenhum, vivo ou
+	# desmaiado). Regra corrigida do usuário: "The rocket trainer will only
+	# catch the last remaining unit alive IF and ONLY IF, there are other
+	# active units on the team. (Even if they are fainted)" — o que importa
+	# é o TIME ATIVO inteiro (GameState.roster, slots não-nulos — desmaiado
+	# ainda conta, só reserva do PC/Giovanni é que não), não só quem
+	# continua de pé na batalha agora. Sem essa segunda trava, um jogador
+	# com um único membro no time (o caso mais perigoso de todos, ver
+	# comentário grande acima sobre zerar o roster) tinha essa mesma
+	# unidade capturada na primeira oportunidade.
+	var active_team_size := 0
+	for d in GameState.roster:
+		if d != null:
+			active_team_size += 1
+	if active_team_size <= 1:
+		return best   # essa É o time inteiro do jogador — nunca captura, bate normal mesmo
 
 	var target: Node = best["target"]
 	var attack: AttackData = best["attack"]

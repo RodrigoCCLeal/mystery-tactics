@@ -925,7 +925,7 @@ var walk_from: Vector2i = Vector2i.ZERO
 # Emitido sempre que grid_pos muda pra uma célula NOVA via move_along_path
 # (ou seja, todo movimento de verdade — inclusive o "caminho de 1 célula" do
 # deploy, ver move_to() logo abaixo) — mesmo espírito de Player.tile_entered
-# no overworld (ver player.gd/test.gd). battle.gd escuta isso em CADA
+# no overworld (ver player.gd/world.gd). battle.gd escuta isso em CADA
 # unidade (ver spawn_player_units_staged/spawn_enemies) pra aplicar o efeito
 # de pisar num tile de fluido (ex: Burned na lava — ver current_battle_
 # tileset.fluid_status_on_enter/_on_unit_tile_entered), sem precisar que

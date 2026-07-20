@@ -4,7 +4,7 @@ extends Node2D
 # Marca UMA célula do grid como porta/entrada de caverna — o jogador
 # atravessa essa célula e a cena troca na hora, sem precisar apertar nada
 # (igual entrar numa casa nos jogos Pokémon originais). Ver
-# test.gd/world.gd/house_interior.gd::_on_player_tile_entered, que chama
+# world.gd/house_interior.gd::_on_player_tile_entered, que chama
 # get_door_at(cell), checado em player.gd::_try_start_move() ANTES do
 # jogador entrar na célula (não depois, ver comentário lá).
 #
@@ -100,6 +100,20 @@ func _find_ground_tile_map() -> TileMapLayer:
 var grid_pos: Vector2i = Vector2i.ZERO
 var anim: AnimatedSprite2D = null
 
+# Ajuste fino pedido pelo usuário: cada quadro do sheet tem uma coluna de
+# pixel EXTRA sobrando (ver o "- 1" no recorte do AtlasTexture em
+# _build_open_animation) — cortar essa coluna encolhe o quadro em 1px de
+# largura, o que sozinho já puxa o desenho pra direita/baixo
+# (AnimatedSprite2D centra na LARGURA/ALTURA atual do quadro, então um
+# quadro mais estreito recentra sozinho). DOOR_ANIM_OFFSET some o resto do
+# ajuste — x começou em -1 (esquerda), depois voltou +1 (direita: "Move 1
+# pixel to the right"), os dois se cancelam e ficou 0; y continua -1 (1px
+# pra cima) — no mesmo sistema de coordenadas 2D de sempre (direita = +x,
+# baixo = +y). Aplicado como anim.offset em _build_open_animation() logo
+# abaixo (AnimatedSprite2D é centered por padrão, então offset desloca o
+# desenho sem mexer em position/grid_pos).
+const DOOR_ANIM_OFFSET := Vector2(0, -1)
+
 func _ready() -> void:
 	add_to_group("door")
 	# Mesmo bug (e mesma correção) do gêmeo em npc.gd::_ready() — usar
@@ -128,6 +142,7 @@ func _build_open_animation() -> void:
 	anim = AnimatedSprite2D.new()
 	add_child(anim)
 	anim.visible = false
+	anim.offset = DOOR_ANIM_OFFSET
 
 	var frames = SpriteFrames.new()
 	frames.add_animation("open")
@@ -155,7 +170,7 @@ func _build_open_animation() -> void:
 
 	anim.sprite_frames = frames
 
-# Chamado por test.gd/world.gd/house_interior.gd::use_door() ANTES de
+# Chamado por world.gd/house_interior.gd::use_door() ANTES de
 # salvar a posição/trocar de cena — toca a animação inteira (fechada até
 # aberta) e só devolve o controle quando ela termina, pra dar tempo da
 # porta "abrir de verdade" antes do fade-to-black cobrir a tela. Sem

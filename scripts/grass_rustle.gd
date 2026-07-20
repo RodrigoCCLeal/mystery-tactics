@@ -2,7 +2,7 @@ extends Node2D
 
 # Efeito visual de "as folhas da grama alta se mexendo" — toca uma vez (sem
 # loop) na célula onde o personagem acabou de pisar, e se destrói sozinho
-# quando a animação termina. Instanciado por test.gd toda vez que o
+# quando a animação termina. Instanciado por world.gd toda vez que o
 # personagem entra numa célula de grama alta (mesmo gancho do contador de
 # encontro aleatório, ver Test._on_player_tile_entered()).
 #

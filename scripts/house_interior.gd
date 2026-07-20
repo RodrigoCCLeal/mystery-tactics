@@ -1,7 +1,7 @@
 extends Node2D
 
 # Script genérico pra QUALQUER interior (casa, loja, caverna, ginásio...) —
-# mesma base de movimento/menus de test.gd/world.gd, MENOS o que só faz
+# mesma base de movimento/menus de world.gd, MENOS o que só faz
 # sentido lá fora:
 #   - sem grama alta/encontro aleatório (não tem grama dentro de casa);
 #   - sem AreaNotification (o banner de nome de área é coisa de overworld —
@@ -37,6 +37,19 @@ extends Node2D
 const GAME_MENU_SCENE: PackedScene = preload("res://scenes/ui/screens/game_menu.tscn")
 const SYSTEM_MENU_SCENE: PackedScene = preload("res://scenes/ui/screens/system_menu.tscn")
 
+# HUD permanente (ícone de período do dia + nome da área — ver time_hud.gd)
+# instanciado em CÓDIGO em vez de precisar ser arrastado à mão em CADA
+# interior (mesmo espírito de tile_map_top.z_index=1 acima, ver comentário
+# grande lá — automático pra ninguém esquecer de configurar numa cena nova).
+# GameState.current_area continua sendo o da ÁREA DE FORA (nenhum interior
+# muda esse valor, ver comentário no topo do arquivo sobre não ter
+# AreaNotification aqui) — mostrar esse mesmo nome enquanto o jogador está
+# DENTRO de um prédio daquela área é o comportamento certo (ex: "Olivine
+# City" continua na tela dentro de uma casa de Olivine City). Sem a máscara
+# de brilho (CanvasModulate) — pedido do usuário foi só "no overworld",
+# interior tem iluminação própria, não deve escurecer/clarear com a hora.
+const TIME_HUD_SCENE: PackedScene = preload("res://scenes/ui/hud/time_hud.tscn")
+
 const FACING_TO_DIR = {
 	"down": Vector2i(0, 1),
 	"up": Vector2i(0, -1),
@@ -47,7 +60,7 @@ const FACING_TO_DIR = {
 var active_menu: CanvasLayer = null
 
 # Trava contra duas batalhas disparando ao mesmo tempo — ver comentário
-# grande gêmeo em test.gd::_battle_starting. Não tem grama aqui dentro (a
+# grande gêmeo em world.gd::_battle_starting. Não tem grama aqui dentro (a
 # outra ponta do problema, que causava o race de verdade lá fora), mas
 # is_battle_starting()/start_trainer_battle() ainda precisam existir: é
 # nisso que trainer.gd::_process()/_begin_battle() mexem sem checar QUAL
@@ -74,12 +87,23 @@ func is_battle_starting() -> bool:
 # get_custom_data("one_way_dir") numa TileSet que não tem essa layer.
 var _objects_has_one_way_layer: bool = false
 
+# Mesmo guard/motivo de _objects_has_one_way_layer acima, pra "water" (ver
+# is_cell_water abaixo) — quase nenhum interior vai ter essa layer (não
+# existe água dentro de casa normalmente), mas o guard existe pelo mesmo
+# motivo de sempre: nunca chamar get_custom_data("water") numa TileSet que
+# não tem essa layer.
+var _ground_has_water_layer: bool = false
+var _objects_has_water_layer: bool = false
+
 func _ready() -> void:
 	player.tile_entered.connect(_on_player_tile_entered)
 	if tile_map_objects != null:
 		_objects_has_one_way_layer = _tileset_has_custom_data(tile_map_objects.tile_set, "one_way_dir")
+		_objects_has_water_layer = _tileset_has_custom_data(tile_map_objects.tile_set, "water")
+	_ground_has_water_layer = _tileset_has_custom_data(tile_map_ground.tile_set, "water")
 	if tile_map_top != null:
 		tile_map_top.z_index = 1   # ver comentário grande em tile_map_top acima
+	add_child(TIME_HUD_SCENE.instantiate())   # ver comentário grande em TIME_HUD_SCENE acima
 	_restore_player_state()
 	_sync_live_position()
 
@@ -111,7 +135,7 @@ func _sync_live_position() -> void:
 # Delegado por player.gd::can_move_to() — mesma lógica de world.gd
 # (Objetos manda quando tem tile na célula, senão cai pro Chão). move_dir
 # (opcional, sem uso aqui ainda) só existe pra bater com a mesma assinatura
-# de world.gd::is_cell_walkable — ver comentário gêmeo em test.gd.
+# de world.gd::is_cell_walkable — ver comentário gêmeo em world.gd.
 func is_cell_walkable(cell: Vector2i, move_dir: Vector2i = Vector2i.ZERO) -> bool:
 	if tile_map_objects != null:
 		var obj_data = tile_map_objects.get_cell_tile_data(cell)
@@ -136,12 +160,30 @@ func is_one_way_tile(cell: Vector2i) -> bool:
 	var obj_data = tile_map_objects.get_cell_tile_data(cell)
 	return obj_data != null and obj_data.get_custom_data("one_way_dir") != ""
 
+# Ver world.gd::is_cell_water — mesma lógica, só que com a camada de
+# Objetos opcional (nem todo interior tem uma) igual is_cell_walkable/
+# is_one_way_tile acima. Precisa existir mesmo que quase sempre devolva
+# false (nenhum interior tem água hoje) — Player.can_move_to() chama isso
+# através de `world` sem saber se está dentro de World ou HouseInterior
+# (mesma classe de bug já vista com is_battle_starting, ver comentário
+# grande em _battle_starting).
+func is_cell_water(cell: Vector2i) -> bool:
+	if _objects_has_water_layer:
+		var obj_data = tile_map_objects.get_cell_tile_data(cell)
+		if obj_data != null and obj_data.get_custom_data("water"):
+			return true
+	if _ground_has_water_layer:
+		var ground_data = tile_map_ground.get_cell_tile_data(cell)
+		if ground_data != null and ground_data.get_custom_data("water"):
+			return true
+	return false
+
 func get_ground_tile_map() -> TileMapLayer:
 	return $TileMapLayerGround
 
 # Chamado por Trainer._begin_battle() (ver trainer.gd) — mesmo espírito dos
-# gêmeos em test.gd/world.gd::start_trainer_battle. scene_file_path (em vez
-# de um caminho fixo tipo "res://scenes/overworld/test.tscn") é o que
+# gêmeos em world.gd::start_trainer_battle. scene_file_path (em vez
+# de um caminho fixo tipo "res://scenes/overworld/world.tscn") é o que
 # permite este MESMO script servir qualquer interior: cada casa/loja tem seu
 # próprio arquivo .tscn, mas todos apontam pra este script — scene_file_path
 # é preenchido automaticamente pelo Godot com o caminho do .tscn que está
@@ -166,7 +208,7 @@ func get_door_at(cell: Vector2i) -> Door:
 	return null
 
 # Porta abre (se tiver animação configurada) -> fade pra preto -> troca de
-# cena -> fade clareia. Mesmo comentário de test.gd::use_door.
+# cena -> fade clareia. Mesmo comentário de world.gd::use_door.
 func use_door(door: Door) -> void:
 	await door.play_open_animation()
 	GameState.save_player_state(door.target_grid_pos, door.target_facing, door.target_scene_path)
@@ -223,3 +265,18 @@ func _open_system_menu() -> void:
 func _on_menu_closed() -> void:
 	active_menu = null
 	get_tree().paused = false
+	_apply_pending_song_if_any()
+
+# Mesmo comentário grande de world.gd::_apply_pending_song_if_any — sem
+# atalho de Tool aqui dentro (nenhum interior tem _trigger_tool_shortcut),
+# então o ÚNICO jeito de GameState.pending_song vir preenchido é o jogador
+# ter usado a Fairy Ocarina de dentro da Bag. "Surf" indoors sempre falha em
+# silêncio (Player.apply_song -> _apply_surf_song() não acha água nenhuma
+# na frente, ver world.gd::is_cell_water sempre false aqui) — comportamento
+# esperado, não é um bug.
+func _apply_pending_song_if_any() -> void:
+	if GameState.pending_song == "":
+		return
+	var song = GameState.pending_song
+	GameState.pending_song = ""
+	player.apply_song(song)

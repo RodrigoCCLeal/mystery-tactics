@@ -1,7 +1,7 @@
 extends "res://scripts/npc.gd"
 
 # Baldo (assets/sprites/Human/Important Character/trainer_BALDO.png) — o NPC
-# tutorial do jogo. Falar com ele de frente (ver test.gd::_try_interact)
+# tutorial do jogo. Falar com ele de frente (ver world.gd::_try_interact)
 # abre tutorial_screen.tscn direto, sem pergunta Sim/Não nenhuma (diferente
 # da Enfermeira) — não existe "recusar" um tutorial, é só informação.
 #

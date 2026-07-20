@@ -61,10 +61,13 @@ extends Resource
 @export var tool_shortcuts: Array[ItemData] = []
 
 # Área de encontro atual (ver EncounterArea) e pra qual cena de overworld
-# voltar — hoje só existe test.tscn, mas o campo já existe pra quando houver
-# mais de uma área/cena.
+# voltar — várias cenas existem hoje (world.tscn + interiores), este campo
+# é o que lembra em qual delas o jogador estava.
 @export var current_area: EncounterArea
-@export var overworld_scene_path: String = "res://scenes/overworld/test.tscn"
+@export var overworld_scene_path: String = "res://scenes/overworld/world.tscn"
+# Ver GameState.game_time_seconds — relógio próprio do jogo (Manhã/Dia/
+# Noite), em segundos dentro de um dia de 24h.
+@export var game_time_seconds: float = 8.0 * 3600.0
 
 # Onde o jogador estava exatamente (ver GameState.live_grid_pos/live_facing —
 # são estes, não player_grid_pos/player_facing, que valem "AGORA", os outros
@@ -74,3 +77,4 @@ extends Resource
 @export var player_facing: String = "down"
 @export var last_heal_grid_pos: Vector2i = Vector2i.ZERO
 @export var last_heal_facing: String = "down"
+@export var last_heal_scene_path: String = "res://scenes/overworld/red_house_interior.tscn"
