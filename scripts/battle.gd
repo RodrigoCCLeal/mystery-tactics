@@ -1445,7 +1445,12 @@ func refresh_unit_summary_hud() -> void:
 		# Unit._start_status_emote), então repetir como texto aqui era
 		# redundante e deixava o label pequeno demais poluído. O resto
 		# (nível, Speed, exp, status) mora só no tooltip agora.
-		hp_label.text = "%d/%d" % [u.hp_current, u.hp_max]
+		# Pedido do usuário: "remove the currentHP/maxHP for enemy units
+		# shown below their portraits" — só o time do jogador mostra o
+		# número exato agora; texto vazio (não hide) pra manter a mesma
+		# altura de slot entre as duas fileiras, sem espaço em branco
+		# "pulando" quando a vez passa de um time pro outro.
+		hp_label.text = "%d/%d" % [u.hp_current, u.hp_max] if not u.is_enemy else ""
 
 		# Tooltip do portrait: nível, Speed (já com estágio alterado, se
 		# tiver — ver Unit.get_effective_stat), Status Condition (se tiver

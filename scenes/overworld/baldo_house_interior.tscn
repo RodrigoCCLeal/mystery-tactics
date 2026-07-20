@@ -1,0 +1,46 @@
+[gd_scene format=4 uid="uid://clc1tvthnmx6p"]
+
+[ext_resource type="Script" uid="uid://qtks6yhdcxpi" path="res://scripts/house_interior.gd" id="1_b0d3n"]
+[ext_resource type="TileSet" uid="uid://k5g3ykamfuub" path="res://assets/tiles/tilesets/OW/inside.tres" id="2_35xwf"]
+[ext_resource type="PackedScene" path="res://scenes/actors/player.tscn" id="3_etugg"]
+[ext_resource type="PackedScene" path="res://scenes/npc/loot_ball.tscn" id="4_b0d3n"]
+[ext_resource type="Resource" uid="uid://dt0mya0novat0" path="res://data/items/ability_patch.tres" id="6_om58f"]
+[ext_resource type="Script" uid="uid://d26pj4i16thtp" path="res://scripts/door.gd" id="6_stqft"]
+
+[node name="HouseInterior" type="Node2D" unique_id=1248770916]
+script = ExtResource("1_b0d3n")
+
+[node name="TileMapLayerGround" type="TileMapLayer" parent="." unique_id=1812697409]
+tile_map_data = PackedByteArray("AAD/////AAAAADsAAAD+////AAAAADsAAAD+/wAAAAAAADsAAAD//wAAAAAAADsAAAAAAAAAAAAAADsAAAAAAP//AAAAADsAAAABAP//AAAAADsAAAACAP//AAAAADsAAAACAAAAAAAAADsAAAABAAAAAAAAADsAAAABAAEAAAAAADsAAAAAAAEAAAAAADsAAAD//wEAAAAAADsAAAD+/wEAAAAAADsAAAACAAEAAAAAADsAAAACAAIAAAAAADsAAAABAAIAAAAAADsAAAAAAAIAAAAAADsAAAD//wIAAAAAADsAAAD+/wIAAAAAADsAAAD9/wIAAAAAADsAAAD9/wEAAAAAADsAAAD9/wAAAAAAADsAAAD9////AAAAADsAAAD9//7/AAAAADsAAAD+//7/AAAAADsAAAD///7/AAAAADsAAAAAAP7/AAAAADsAAAABAP7/AAAAADsAAAACAP7/AAAAADsAAAADAP7/AAAAADsAAAADAP//AAAAADsAAAADAAAAAAAAADsAAAADAAEAAAAAADsAAAADAAIAAAAAADsAAAD8/wIAAAAAADsAAAD8/wEAAAAAADsAAAD8/wAAAAAAADsAAAD8////AAAAADsAAAD8//7/AAAAADsAAAD9//3/AAAAADsAAAD8//3/AAAAADsAAAD+//3/AAAAADsAAAD///3/AAAAADsAAAAAAP3/AAAAADsAAAABAP3/AAAAADsAAAACAP3/AAAAADsAAAADAP3/AAAAADsAAAAEAAIAAAAAADsAAAAEAAEAAAAAADsAAAAEAAAAAAAAADsAAAAEAP//AAAAADsAAAAEAP7/AAAAADsAAAAEAP3/AAAAADsAAAAFAAIAAAAAADsAAAAFAAEAAAAAADsAAAAFAAAAAAAAADsAAAAFAP//AAAAADsAAAAFAP7/AAAAADsAAAAFAP3/AAAAADsAAAAEAPz/AAAAADsAAAAFAPz/AAAAADsAAAADAPz/AAAAADsAAAACAPz/AAAAADsAAAABAPz/AAAAADsAAAAAAPz/AAAAADsAAAD///z/AAAAADsAAAD+//z/AAAAADsAAAD9//z/AAAAADsAAAD8//z/AAAAADsAAAD7//z/AAAAADsAAAD7//3/AAAAADsAAAD7//7/AAAAADsAAAD7////AAAAADsAAAD7/wAAAAAAADsAAAD7/wEAAAAAADsAAAD7/wIAAAAAADsAAAD7//r/AAAAAAQAAAD7//v/AAAAAAUAAAD8//r/AAAAAAQAAAD8//v/AAAAAAUAAAD9//r/AAAAAAQAAAD9//v/AAAAAAUAAAD+//r/AAAAAAQAAAD+//v/AAAAAAUAAAD///r/AAAAAAQAAAD///v/AAAAAAUAAAAAAPr/AAAAAAQAAAAAAPv/AAAAAAUAAAABAPr/AAAAAAQAAAABAPv/AAAAAAUAAAACAPr/AAAAAAQAAAACAPv/AAAAAAUAAAADAPr/AAAAAAQAAAADAPv/AAAAAAUAAAAEAPr/AAAAAAQAAAAEAPv/AAAAAAUAAAAFAPr/AAAAAAQAAAAFAPv/AAAAAAUAAAA=")
+tile_set = ExtResource("2_35xwf")
+
+[node name="TileMapLayerCarpet" type="TileMapLayer" parent="." unique_id=325810399]
+tile_map_data = PackedByteArray("AAABAPv/AAABAL4AAAABAPz/AAABAMIAAAA=")
+tile_set = ExtResource("2_35xwf")
+
+[node name="TileMapLayerObjects" type="TileMapLayer" parent="." unique_id=453877382]
+tile_map_data = PackedByteArray("AAD//wIAAAAFAGsAAAD//wMAAAAFAGwAAAAAAAIAAAAGAGsAAAAAAAMAAAAGAGwAAAABAAIAAAAHAGsAAAABAAMAAAAHAGwAAAD7//v/AAAAAJAAAAD7//z/AAAAAJEAAAD8//v/AAABAJAAAAD8//z/AAABAJEAAAD9//r/AAAEAI8AAAD9//v/AAAEAJAAAAD9//z/AAAEAJEAAAD+//r/AAAFAI8AAAD+//v/AAAFAJAAAAD+//z/AAAFAJEAAAD7//r/AAAAAI8AAAD7//3/AAAAAJIAAAD8//r/AAABAI8AAAD8//3/AAABAJIAAAD///v/AAAFAJIAAAD///z/AAAFAJMAAAD8//7/AAABAJMAAAD7/wEAAAAEAKcAAAD9/wIAAAAEAKgAAAAAAPz/AAAAAMMAAAAAAPv/AAAAAL4AAAABAPv/AAAHAKYAAAABAPr/AAAHAKUAAAABAPz/AAAGAJ8AAAAEAAEAAAAAAK0AAAAEAAIAAAAAAK4AAAAFAAEAAAABAK0AAAAFAAIAAAABAK4AAAACAPv/AAACALAAAAACAPz/AAACALEAAAADAPv/AAADALAAAAADAPz/AAADALEAAAAEAPr/AAAEAK8AAAAEAPv/AAAEALAAAAAEAPz/AAAEALEAAAADAP7/AAAAAJYAAAADAP//AAAAAJcAAAADAAAAAAAAAJgAAAAEAP7/AAABAJYAAAAEAP//AAABAJcAAAAEAAAAAAABAJgAAAAFAP7/AAACAJYAAAAFAP//AAACAJcAAAAFAAAAAAACAJgAAAA=")
+tile_set = ExtResource("2_35xwf")
+
+[node name="TileMapLayerTop" type="TileMapLayer" parent="." unique_id=627253620]
+tile_set = ExtResource("2_35xwf")
+
+[node name="Actors" type="Node2D" parent="." unique_id=395888979]
+y_sort_enabled = true
+
+[node name="Player" parent="Actors" unique_id=1293387206 instance=ExtResource("3_etugg")]
+position = Vector2(2, -3)
+
+[node name="LootBall" parent="Actors" unique_id=975781015 instance=ExtResource("4_b0d3n")]
+position = Vector2(-117.73016, 78.850525)
+loot_id = "baldo_patch"
+open_message = "He won't need this..."
+reward_item = ExtResource("6_om58f")
+caught_location_override = "Oak's Lab"
+add_to_active_team = true
+
+[node name="Door" type="Node2D" parent="." unique_id=1916441077]
+position = Vector2(16, 106)
+script = ExtResource("6_stqft")
+target_scene_path = "uid://buoxvep8rshcn"
+target_grid_pos = Vector2i(-9, 6)

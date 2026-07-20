@@ -42,7 +42,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		_close()
 	else:
 		return
-	get_viewport().set_input_as_handled()
+	# Guard, não chamada direta — bug reportado: "Cannot call method
+	# 'set_input_as_handled' on a null value" ao confirmar "Sim" aqui.
+	# _activate_selected() (linha de cima) pode ter acabado de chamar
+	# get_tree().quit(), e a Viewport já pode estar sendo desmontada ANTES
+	# desta linha rodar (mesmo dentro do mesmo frame) — get_viewport()
+	# some no meio do processo de fechar o jogo. Resto do input handling
+	# (mover seleção, cancelar) continua funcionando normal, só o quit em
+	# si que não precisa mais "consumir" o evento (o jogo já tá fechando).
+	var viewport = get_viewport()
+	if viewport != null:
+		viewport.set_input_as_handled()
 
 func _move_selection(step: int) -> void:
 	selected_index = wrapi(selected_index + step, 0, OPTIONS.size())

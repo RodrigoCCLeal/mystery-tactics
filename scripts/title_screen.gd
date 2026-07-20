@@ -57,7 +57,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		_activate_selected()
 	else:
 		return
-	get_viewport().set_input_as_handled()
+	# Guard, não chamada direta — mesmo crash de quit_confirm.gd (ver
+	# comentário grande lá): _activate_selected() pode ter escolhido "Exit"
+	# e chamado get_tree().quit(), e a Viewport pode já não existir mais
+	# quando chega nesta linha.
+	var viewport = get_viewport()
+	if viewport != null:
+		viewport.set_input_as_handled()
 
 func _move_selection(step: int) -> void:
 	selected_index = wrapi(selected_index + step, 0, option_labels.size())
