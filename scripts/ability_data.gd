@@ -78,3 +78,19 @@ extends ActionData
 # resist_types acima. 0.5 = metade do dano (Thick Fat). 1.0 = sem efeito
 # (padrão, quando resist_types está vazio isso nem chega a ser checado).
 @export var resist_multiplier: float = 1.0
+
+# Nome de um clima (ver battle.gd::WEATHER_*) que esta Habilidade ativa
+# SOZINHA, automaticamente, assim que a batalha começa — "" (padrão) = não
+# ativa clima nenhum. Checado uma vez só por battle.gd::
+# _trigger_start_of_battle_abilities(), logo depois que TODAS as unidades
+# desta batalha já spawnaram (jogador E inimigo) — pedido do usuário: "When
+# multiple units have Start of Battle abilities, they resolve in speed
+# order, from highest to lowest". Cada unidade com isso preenchido chama
+# battle.gd::try_set_weather() com ELA MESMA como `activator`, então um Heat
+# Rock/Damp Rock/etc equipado JUNTO desta Habilidade ainda estende a duração
+# normalmente (ver ItemData.extends_weather) — só não faz diferença nenhuma
+# pras 3 formas extremas (ver battle.gd::EXTREME_WEATHERS), que já nascem
+# permanentes de qualquer jeito, não importa o que try_set_weather receba
+# como `permanent`. Desolate Land (Groudon, ver data/abilities/
+# desolate_land.tres) é a primeira: "Harsh Sunlight".
+@export var sets_weather_on_battle_start: String = ""

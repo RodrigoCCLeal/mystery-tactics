@@ -63,6 +63,17 @@ var trainer_class: String = "Youngster"
 # in their loadout"), sem precisar configurar isso aqui manualmente.
 @export_enum("Easy", "Medium", "Hard", "Rocket", "Champion") var iq: String = "Medium"
 
+@export_group("Clima (opcional)")
+# Mesma ideia de EncounterArea.starting_weather (ver comentário lá) mas pra
+# batalha CONTRA ESTE TREINADOR — "" (padrão) = sem clima nenhum ao
+# começar, comportamento de sempre. Copiado pra GameState.
+# current_trainer_starting_weather por world.gd::start_trainer_battle()
+# (mesmo momento/motivo que iq/teams também são copiados — ver comentário
+# lá), lido por battle.gd::start_battle() já sem acesso a este node
+# (change_scene_to_file já destruiu a cena de overworld inteira).
+@export var starting_weather: String = ""
+@export var starting_weather_overridable: bool = true
+
 @export_group("Time (9 tiers = 0..8 badges)")
 # Índice = GameState.badges.size() no momento da batalha (regra 3 do
 # usuário). Não precisa preencher os 9 — get_active_team() cai pro tier

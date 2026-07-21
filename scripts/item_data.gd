@@ -93,6 +93,18 @@ var category: String = "Medicine"
 # também só olha ataque Físico.
 @export var physical_damage_multiplier: float = 1.0
 
+# Nome de um clima (ver battle.gd::WEATHER_* — "Sunny"/"Rain"/"Sandstorm"/
+# "Snow"; as 3 formas extremas nunca usam isso, elas já nascem permanentes
+# de qualquer jeito, ver try_set_weather) que este item ESTENDE de
+# WEATHER_BASE_DURATION (4 rodadas) pra WEATHER_EXTENDED_DURATION (7) —
+# "" (padrão) = não estende clima nenhum. Só faz efeito se a unidade que
+# ATIVOU o clima (o `activator` de battle.gd::try_set_weather) carregar
+# este item equipado no loadout NA HORA em que o clima é ativado, igual
+# Heat Rock/Damp Rock/Smooth Rock/Icy Rock dos jogos de verdade (ver
+# data/items/heat_rock.tres e companhia) — pedido do usuário: "can be
+# boosted to 7 if the unit that activated it is holding a specific item".
+@export var extends_weather: String = ""
+
 # Se true, um ÚNICO slot de loadout pode guardar de 1 a 99 unidades deste
 # item ao mesmo tempo (ver UnitData.slot_quantities/get_slot_quantity) — a
 # quantidade é escolhida no momento do "Give" (ver item_list_screen.gd ->

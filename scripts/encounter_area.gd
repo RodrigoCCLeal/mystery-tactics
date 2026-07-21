@@ -10,6 +10,23 @@ extends Resource
 @export var area_name: String = ""
 @export var groups: Array[EncounterGroup] = []
 
+# Clima permanente (ver battle.gd::WEATHER_*/try_set_weather) que toda
+# batalha SELVAGEM nesta área já começa tendo — "" (padrão) = sem clima
+# nenhum ao entrar em batalha, comportamento de sempre. Pedido do usuário:
+# "Some battles may activate permanent weather effects at the start".
+# Permanente = weather_turns_left fica em -1 (não desconta sozinho por
+# rodada) até algo trocar de clima — ver starting_weather_overridable
+# logo abaixo pra saber se isso pode acontecer.
+@export var starting_weather: String = ""
+
+# Só é lido quando starting_weather acima não é vazio — controla se um
+# clima normal ativado DEPOIS (ex: um golpe futuro que ativa Rain) pode
+# substituir este clima inicial (ver battle.gd::weather_overridable/
+# can_override_weather). true (padrão) = pode; false trava o clima desta
+# área até o fim da batalha (a menos que uma das 3 formas extremas de
+# clima entre em jogo, que ignoram este flag por completo, regra fixa).
+@export var starting_weather_overridable: bool = true
+
 # Sorteia UM grupo pelos pesos relativos (não precisam somar 100, é
 # normalizado pelo total abaixo — regra do usuário: "encounter weight / sum
 # of all POSSIBLE weights"). Devolve null se groups estiver vazio (área sem

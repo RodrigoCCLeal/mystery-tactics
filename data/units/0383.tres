@@ -3,6 +3,13 @@
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0383/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0383/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learnset"]
+[ext_resource type="Resource" path="res://data/abilities/desolate_land.tres" id="5_desolate_land"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0383_desolate_land"]
+script = ExtResource("4_learnset")
+action = ExtResource("5_desolate_land")
+is_hidden_ability = true
 
 [resource]
 script = ExtResource("1_script")
@@ -11,6 +18,7 @@ sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Ground"])
 grounded = true
+learnset = Array[ExtResource("4_learnset")]([SubResource("LearnsetEntry_0383_desolate_land")])
 weight = 1
 hp_base = 100
 attack_base = 150

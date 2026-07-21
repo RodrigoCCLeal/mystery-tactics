@@ -1307,6 +1307,16 @@ var current_trainer_prize: int = 0
 # o próprio iq.
 var current_trainer_iq: String = ""
 
+# Trainer.starting_weather/starting_weather_overridable (ver comentário
+# grande lá) — mesmo padrão de current_trainer_iq logo acima, copiados por
+# world.gd::start_trainer_battle() antes da troca de cena e lidos por
+# battle.gd::start_battle() (ver _apply_starting_weather) pra ativar o
+# clima permanente da batalha, se houver um configurado. "" = nenhum clima
+# (nunca uma batalha selvagem olha pra estes dois — essa usa GameState.
+# current_area.starting_weather/starting_weather_overridable em vez disso).
+var current_trainer_starting_weather: String = ""
+var current_trainer_starting_weather_overridable: bool = true
+
 # trainer_id -> GameState.badges.size() de quando esse Trainer foi
 # derrotado (vitória do jogador) pela ÚLTIMA vez — regra 6 do usuário:
 # "Once defeated, they will NOT force a battle again, but the player may
@@ -1524,6 +1534,13 @@ const ALL_ITEMS: Array[ItemData] = [
 	preload("res://data/items/fairy_ocarina.tres"),
 	preload("res://data/items/rocketball.tres"),
 	preload("res://data/items/muscle_band.tres"),
+	# Os 4 "Rock" de clima (ver ItemData.extends_weather/battle.gd::
+	# try_set_weather) — estendem a duração do clima que combina com cada um
+	# de 4 pra 7 rodadas quando equipados por quem ativa o clima.
+	preload("res://data/items/heat_rock.tres"),
+	preload("res://data/items/damp_rock.tres"),
+	preload("res://data/items/smooth_rock.tres"),
+	preload("res://data/items/icy_rock.tres"),
 ]
 
 # Inventário inicial de acordo com o modo escolhido em mode_select_screen.gd

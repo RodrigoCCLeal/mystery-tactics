@@ -376,6 +376,10 @@ var current_battle_tileset: BattleTileset
 @onready var struggle_button: Button = $HUD/StruggleButton
 @onready var battle_log_panel: PanelContainer = $HUD/BattleLog
 @onready var battle_log: RichTextLabel = $HUD/BattleLog/BattleLogText
+# Logo abaixo da fileira de portraits (UnitSummary) — mostra o clima ativo
+# (ver try_set_weather/refresh_weather_hud) ou fica escondido (visible =
+# false, ver .tscn) sem clima nenhum ativo.
+@onready var weather_label: Label = $HUD/WeatherLabel
 
 # Caixa de log: no estado normal (colapsado) só mostra as últimas
 # BATTLE_LOG_COLLAPSED_LINES mensagens, bem rente ao mapa. Um clique nela
@@ -514,6 +518,130 @@ var fluid_cells: Dictionary = {}
 # que atravesse parede) — por isso é excluída sem condição em deploy/movimento,
 # ao contrário de fluid_cells que depende de can_unit_cross_fluid().
 var wall_cells: Dictionary = {}
+
+# ---------- Clima (Weather) ----------
+# Só existe UM efeito de clima ativo por vez (pedido do usuário: "There can
+# only be 1 weather effect active, so if another one activates, it overrides
+# the active one") — current_weather guarda o NOME dele ("" = nenhum, ver
+# WEATHER_NONE). As 4 formas "normais" duram WEATHER_BASE_DURATION rodadas
+# (WEATHER_EXTENDED_DURATION se quem ativou carregar o item certo — ver
+# ItemData.extends_weather/try_set_weather), contadas em RODADAS INTEIRAS
+# (decremento em _on_end_turn_pressed, no mesmo ponto onde a fila de turnos
+# reinicia do topo — ver comentário lá), não por turno individual de cada
+# unidade, senão um time de 6 gastaria o clima todo numa única rodada. As 3
+# formas "extremas" nascem permanentes (weather_turns_left = -1, nunca
+# descontam sozinhas) e só terminam trocadas por outra — ver
+# can_override_weather() logo abaixo.
+const WEATHER_NONE = ""
+const WEATHER_SUNNY = "Sunny"
+const WEATHER_RAIN = "Rain"
+const WEATHER_SANDSTORM = "Sandstorm"
+const WEATHER_SNOW = "Snow"
+const WEATHER_HARSH_SUNLIGHT = "Harsh Sunlight"
+const WEATHER_HEAVY_RAIN = "Heavy Rain"
+const WEATHER_STRONG_WINDS = "Strong Winds"
+
+# As 3 formas extremas têm regra de override PRÓPRIA (fixa, ver
+# can_override_weather) — cada uma só aceita ser substituída pelas OUTRAS
+# DUAS desta lista, Strong Winds nem isso. Fora dessas 3, qualquer clima
+# "normal" (Sunny/Rain/Sandstorm/Snow) só pode ser substituído por outro
+# clima se weather_overridable (setado por quem ativou o clima ATUAL)
+# permitir — pedido do usuário: "Some battles may activate permanent weather
+# effects at the start, but it can be overridden (or not, we need a flag for
+# it)".
+const EXTREME_WEATHERS = [WEATHER_HARSH_SUNLIGHT, WEATHER_HEAVY_RAIN, WEATHER_STRONG_WINDS]
+
+const WEATHER_BASE_DURATION = 4
+const WEATHER_EXTENDED_DURATION = 7
+
+var current_weather: String = WEATHER_NONE
+# -1 = permanente (nunca desconta sozinho, só troca via can_override_weather).
+# >0 = quantas RODADAS inteiras ainda faltam antes do clima acabar sozinho.
+var weather_turns_left: int = 0
+# Só é consultado quando current_weather NÃO é uma das 3 formas extremas
+# (essas ignoram isso por completo, regra fixa) — controla se o clima
+# "normal" ativo agora pode ser substituído por outro clima normal depois.
+# true (padrão) = pode; uma batalha com clima permanente "travado" no início
+# (ver EncounterArea.starting_weather_overridable/Trainer.
+# starting_weather_overridable) põe isto false.
+var weather_overridable: bool = true
+
+# true se `new_weather` puder se tornar o clima ativo agora (current_weather).
+# Vazio ("" — current_weather nenhum) sempre aceita, e re-ativar o MESMO
+# clima que já está ativo também sempre aceita (é assim que um golpe que
+# "reforça" o próprio clima, ex: usar Sunny Day de novo já em Sunny, teria
+# efeito — recomeça a contagem em vez de ser recusado). Fora isso, a regra
+# depende de qual clima está ativo AGORA: as 3 formas extremas usam a lista
+# fixa EXTREME_WEATHERS (match abaixo); qualquer clima normal usa o flag
+# weather_overridable guardado por quem o ativou.
+func can_override_weather(new_weather: String) -> bool:
+	if current_weather == WEATHER_NONE or current_weather == new_weather:
+		return true
+	match current_weather:
+		WEATHER_STRONG_WINDS:
+			return false
+		WEATHER_HARSH_SUNLIGHT:
+			return new_weather == WEATHER_HEAVY_RAIN or new_weather == WEATHER_STRONG_WINDS
+		WEATHER_HEAVY_RAIN:
+			return new_weather == WEATHER_HARSH_SUNLIGHT or new_weather == WEATHER_STRONG_WINDS
+		_:
+			return weather_overridable
+
+# API pública do sistema de clima — ninguém ainda chama isto com um
+# `activator` de verdade (nenhum golpe/Habilidade que ATIVE clima foi
+# implementado ainda, só o clima "de fábrica" de início de batalha via
+# start_battle()/_apply_starting_weather(), que chama permanent=true e
+# activator=null), mas a regra do item que estende a duração (ver
+# ItemData.extends_weather) já está pronta e correta pra quando esse golpe
+# existir — mesmo espírito de Unit.modify_stat_stage ("o cano" pronto antes
+# do primeiro efeito secundário que o usa).
+#
+# activator: unidade que causou a troca (null = evento de batalha, sem
+# "dono" — nunca ganha a duração estendida do item, ver abaixo).
+# permanent: true força weather_turns_left = -1 (não desconta sozinho,
+# usado por clima de início de batalha) — ignorado (sempre permanente de
+# qualquer jeito) se new_weather for uma das 3 formas extremas.
+# overridable: só faz sentido pra clima normal (ver weather_overridable
+# acima); ignorado pras 3 formas extremas, que têm regra fixa própria.
+# Devolve false sem mudar nada se can_override_weather() recusar a troca.
+func try_set_weather(new_weather: String, activator: Node = null, permanent: bool = false, overridable: bool = true) -> bool:
+	if not can_override_weather(new_weather):
+		return false
+	current_weather = new_weather
+	weather_overridable = overridable
+	if new_weather == WEATHER_NONE:
+		weather_turns_left = 0
+	elif permanent or EXTREME_WEATHERS.has(new_weather):
+		weather_turns_left = -1
+	else:
+		weather_turns_left = WEATHER_EXTENDED_DURATION if _activator_extends_weather(new_weather, activator) else WEATHER_BASE_DURATION
+	if new_weather != WEATHER_NONE:
+		log_message(WEATHER_START_MESSAGES.get(new_weather, "The weather changed to %s!" % new_weather))
+	refresh_weather_hud()
+	return true
+
+const WEATHER_START_MESSAGES := {
+	WEATHER_SUNNY: "The sunlight got harsh!",
+	WEATHER_RAIN: "It started to rain!",
+	WEATHER_SANDSTORM: "A sandstorm kicked up!",
+	WEATHER_SNOW: "It started to snow!",
+	WEATHER_HARSH_SUNLIGHT: "The sunlight turned extremely harsh!",
+	WEATHER_HEAVY_RAIN: "A heavy rain began to fall!",
+	WEATHER_STRONG_WINDS: "Mysterious strong winds are protecting Flying-type Pokémon!",
+}
+
+# ItemData.extends_weather (ver comentário lá) precisa bater com o NOME
+# exato do clima sendo ativado — um Heat Rock (extends_weather = "Sunny")
+# não estende Rain, por exemplo. activator == null (evento de batalha, sem
+# unidade "dona") nunca estende nada: só faz sentido perguntar "quem
+# carrega o item" quando existe alguém que de fato ativou o clima.
+func _activator_extends_weather(new_weather: String, activator: Node) -> bool:
+	if activator == null or activator.data == null:
+		return false
+	for action in activator.data.slots:
+		if action is ItemData and action.extends_weather == new_weather:
+			return true
+	return false
 
 func _ready() -> void:
 	if GameState.roster.size() > GameState.MAX_TEAM_SIZE:
@@ -1182,7 +1310,58 @@ func start_battle() -> void:
 	player_units = deployed
 	fog_layer.clear()
 	spawn_enemies()
+	_apply_starting_weather()
+	_trigger_start_of_battle_abilities()
 	start_turn_order()
+
+# Clima "de fábrica" desta batalha, se houver um configurado (pedido do
+# usuário: "Some battles may activate permanent weather effects at the
+# start") — Trainer (GameState.current_trainer_starting_weather, copiado por
+# world.gd::start_trainer_battle ANTES da troca de cena, ver comentário lá)
+# ou selvagem (GameState.current_area.starting_weather, a mesma EncounterArea
+# que spawn_enemies() acima já usou pra sortear os inimigos). permanent=true
+# sempre — um clima de início de batalha nunca conta rodada sozinho, só
+# termina se algo mais tarde o substituir (ver weather_overridable/
+# can_override_weather). activator=null: ninguém "carrega item" por um
+# clima que nasce com a batalha, então extends_weather nunca entra em jogo
+# aqui (ver try_set_weather/_activator_extends_weather).
+func _apply_starting_weather() -> void:
+	var weather := ""
+	var overridable := true
+	if GameState.is_trainer_battle:
+		weather = GameState.current_trainer_starting_weather
+		overridable = GameState.current_trainer_starting_weather_overridable
+	elif GameState.current_area != null:
+		weather = GameState.current_area.starting_weather
+		overridable = GameState.current_area.starting_weather_overridable
+	if weather != "":
+		try_set_weather(weather, null, true, overridable)
+
+# Habilidades "de entrada" que ativam clima sozinhas (ver AbilityData.
+# sets_weather_on_battle_start — Desolate Land, do Groudon, é a primeira) —
+# checado uma vez só aqui, DEPOIS de spawn_enemies() (jogador E inimigo já
+# existem, `units` já está preenchido) e DEPOIS de _apply_starting_weather()
+# (clima "de fábrica" do mapa/Trainer, se houver, já ativo — uma Habilidade
+# pode perfeitamente substituir isso, sujeita às mesmas regras de sempre em
+# can_override_weather, incluindo starting_weather_overridable=false
+# travando até uma Habilidade). Ordenado por Speed, do maior pro menor —
+# pedido do usuário: "When multiple units have Start of Battle abilities,
+# they resolve in speed order, from highest to lowest". Não precisa de
+# nenhum tratamento especial pra conflito entre duas Habilidades diferentes
+# (ex: uma futura "Primordial Sea" mais lenta tentando substituir Desolate
+# Land de um Groudon mais rápido): como cada uma chama try_set_weather() na
+# ORDEM em que é processada, quem processa DEPOIS já usa a regra normal de
+# override (Harsh Sunlight só cede pra Heavy Rain/Strong Winds, ver
+# EXTREME_WEATHERS) — a própria ordem de chamada resolve o conflito sozinha.
+func _trigger_start_of_battle_abilities() -> void:
+	var ordered: Array = units.duplicate()
+	ordered.sort_custom(func(a, b): return a.get_effective_stat("speed") > b.get_effective_stat("speed"))
+	for u in ordered:
+		if u.data == null:
+			continue
+		for action in u.data.slots:
+			if action is AbilityData and action.sets_weather_on_battle_start != "":
+				try_set_weather(action.sets_weather_on_battle_start, u)
 
 # Sorteia UM grupo da EncounterArea ativa (GameState.current_area,
 # setada por world.gd antes da troca de cena — ver encounter_area.gd/
@@ -1459,6 +1638,22 @@ func build_unit_summary_hud() -> void:
 # olhando a cor). Chamar sempre que o turno mudar, o HP de alguém mudar, ou
 # alguém subir de nível. Mostra nível aqui só por debug por enquanto — xp não
 # aparece ainda (vamos precisar disso no futuro, ver ExpGroups.exp_to_next_level).
+# Chamada por try_set_weather() (ativou/trocou clima) e _advance_weather_turn()
+# (desconta rodada, ou encerra o clima) — nunca precisa ser chamada de mais
+# nenhum outro lugar, essas duas cobrem toda mudança possível de
+# current_weather/weather_turns_left. weather_turns_left < 0 (permanente,
+# ver comentário grande na declaração) mostra só o nome, sem contador — não
+# faz sentido escrever "turns left" de algo que não desconta sozinho.
+func refresh_weather_hud() -> void:
+	if current_weather == WEATHER_NONE:
+		weather_label.visible = false
+		return
+	weather_label.visible = true
+	if weather_turns_left < 0:
+		weather_label.text = current_weather
+	else:
+		weather_label.text = "%s (%d)" % [current_weather, weather_turns_left]
+
 func refresh_unit_summary_hud() -> void:
 	var current = get_current_unit()
 	for u in unit_slots.keys():
@@ -2177,8 +2372,51 @@ func resolve_confused_target(attacker: Node, action: ActionData) -> Node:
 # alvo, ver choose_enemy_action) deixam is_critical no padrão (false) de
 # propósito — uma avaliação de "qual alvo é melhor" não deve depender de
 # sorte, sempre o mesmo resultado pro mesmo estado de jogo.
+# ---------- Clima (Weather) x Dano ----------
+# Strong Winds (pedido do usuário, com o exemplo do Skarmory): um ataque cujo
+# tipo SERIA super efetivo contra um Pokémon puramente Flying (ex: Rock,
+# Electric, Ice — qualquer tipo com multiplicador > 1.0 contra "Flying" na
+# TypeChart) tem sua efetividade FINAL (já combinando todos os tipos do
+# defensor, não só o "Flying" isolado) travada em 0.5x — não é "multiplica
+# por 0.5", é "vira 0.5x", mesmo que a conta normal desse outro valor. É
+# assim que o exemplo do usuário funciona: Rock em Skarmory (Steel/Flying)
+# seria NEUTRO de qualquer jeito (2.0 de Flying x 0.5 de Steel = 1.0), mas em
+# Strong Winds vira 0.5x mesmo assim, porque Rock "seria" super efetivo num
+# Flying puro. Chamado no lugar de TypeChart.get_effectiveness() direto em
+# TODO lugar que precisar da efetividade combinada de um ataque (dano E a
+# mensagem "super effective"/"not very effective" — ver os dois usos abaixo).
+func get_weather_adjusted_effectiveness(attack_element: String, defender: Node) -> float:
+	var effectiveness = TypeChart.get_effectiveness(attack_element, defender.data.types)
+	if current_weather == WEATHER_STRONG_WINDS and defender.data.types.has("Flying"):
+		if TypeChart.get_multiplier(attack_element, "Flying") > 1.0:
+			return 0.5
+	return effectiveness
+
+# Sandstorm: Rock ganha x1.5 de Special Defense. Snow: Ice ganha x1.5 de
+# Defense (pedido do usuário). Os dois são bônus de CLIMA, não Altered Stats
+# (stat_stages) — por isso entram como multiplicador direto em cima do stat
+# já efetivo (ver calculate_damage), não como mais um estágio, e por isso
+# valem MESMO num golpe crítico (crítico só ignora estágio desfavorável do
+# defensor — ver Unit.get_defensive_stat_for_crit — nunca um bônus de clima).
+func get_weather_defense_multiplier(def_key: String, defender: Node) -> float:
+	if current_weather == WEATHER_SANDSTORM and def_key == "special_defense" and defender.data.types.has("Rock"):
+		return 1.5
+	if current_weather == WEATHER_SNOW and def_key == "defense" and defender.data.types.has("Ice"):
+		return 1.5
+	return 1.0
+
+# Ver comentário grande no ponto de chamada (execute_attack, logo antes do
+# roll de accuracy normal) — Water sempre falha em Harsh Sunlight, Fire
+# sempre falha em Heavy Rain.
+func _weather_blocks_attack(attack: AttackData) -> bool:
+	if current_weather == WEATHER_HARSH_SUNLIGHT and attack.element_type == "Water":
+		return true
+	if current_weather == WEATHER_HEAVY_RAIN and attack.element_type == "Fire":
+		return true
+	return false
+
 func calculate_damage(attacker: Node, defender: Node, attack: AttackData, is_critical: bool = false) -> int:
-	var effectiveness = TypeChart.get_effectiveness(attack.element_type, defender.data.types)
+	var effectiveness = get_weather_adjusted_effectiveness(attack.element_type, defender)
 	if effectiveness == 0.0:
 		return 0
 
@@ -2202,6 +2440,7 @@ func calculate_damage(attacker: Node, defender: Node, attack: AttackData, is_cri
 	else:
 		atk_stat = attacker.get_effective_stat(atk_key)
 		def_stat = defender.get_effective_stat(def_key)
+	def_stat = int(round(def_stat * get_weather_defense_multiplier(def_key, defender)))
 
 	@warning_ignore("integer_division")
 	var level_factor = (2 * attacker.level) / 5 + 2
@@ -2249,6 +2488,23 @@ func has_type_immunity_ability(defender: Node, element_type: String) -> bool:
 
 func calculate_damage_modifiers(attacker: Node, defender: Node, attack: AttackData) -> float:
 	var modifiers = 1.0
+
+	# Sunny/Harsh Sunlight: Fire x1.5, Water x0.5. Rain/Heavy Rain: o
+	# oposto. O "Water sempre falha em Harsh Sunlight"/"Fire sempre falha em
+	# Heavy Rain" NÃO mora aqui — vira um golpe que erra de propósito (ver
+	# _weather_blocks_attack() em execute_attack), então nem chega a rolar
+	# dano pra multiplicar por nada.
+	match attack.element_type:
+		"Fire":
+			if current_weather == WEATHER_SUNNY or current_weather == WEATHER_HARSH_SUNLIGHT:
+				modifiers *= 1.5
+			elif current_weather == WEATHER_RAIN or current_weather == WEATHER_HEAVY_RAIN:
+				modifiers *= 0.5
+		"Water":
+			if current_weather == WEATHER_RAIN or current_weather == WEATHER_HEAVY_RAIN:
+				modifiers *= 1.5
+			elif current_weather == WEATHER_SUNNY or current_weather == WEATHER_HARSH_SUNLIGHT:
+				modifiers *= 0.5
 
 	if attacker.data.types.has(attack.element_type):
 		modifiers *= 1.5
@@ -2378,6 +2634,18 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# accuracy = 1.0 (padrão de AttackData) sempre acerta, pulando o randf()
 	# de propósito (evita, ainda que raríssimo, randf() == 1.0 falhar um golpe
 	# que deveria ser garantido).
+	# Harsh Sunlight faz Water falhar SEMPRE, Heavy Rain faz Fire falhar
+	# SEMPRE (pedido do usuário) — checado ANTES do roll de accuracy normal
+	# (mesmo lugar, mesmo formato de saída de "errou" que o miss comum logo
+	# abaixo: consome o uso do slot igual, só não causa dano nem efeito
+	# nenhum) porque nos jogos de verdade isso não é "imunidade" nenhuma,
+	# é o golpe sendo tentado e falhando por conta do clima.
+	if _weather_blocks_attack(attack):
+		log_message("%s's attack failed because of the weather!" % attacker.data.unit_name)
+		refresh_unit_summary_hud()
+		check_auto_end_turn()
+		return
+
 	var final_accuracy = attack.accuracy * attacker.get_accuracy_multiplier()
 	if final_accuracy < 1.0 and randf() >= final_accuracy:
 		log_message("%s's attack missed!" % attacker.data.unit_name)
@@ -2433,7 +2701,7 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# texto (sem efeito colateral nenhum, é a mesma fórmula, ver comentário
 	# de calculate_damage acima). "Sem efeito" cobre tanto imunidade x0 da
 	# TypeChart quanto imunidade por Habilidade (ex: Levitate).
-	var effectiveness = TypeChart.get_effectiveness(attack.element_type, defender.data.types)
+	var effectiveness = get_weather_adjusted_effectiveness(attack.element_type, defender)
 	if effectiveness == 0.0 or has_type_immunity_ability(defender, attack.element_type):
 		log_message("It had no effect on %s!" % defender.data.unit_name)
 	elif effectiveness > 1.0:
@@ -2529,6 +2797,14 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 # condição realmente "pegou".
 func _try_apply_secondary_status(defender: Node, status: String, chance: float, texture: Texture2D) -> void:
 	if status == "" or randf() >= chance:
+		return
+	# Sunny/Harsh Sunlight: ninguém pega Frozen (regra oficial desde a Gen 6
+	# — pedido do usuário: "Units can't be frozen"). Silencioso, sem
+	# mensagem própria — mesmo tratamento de qualquer outra tentativa de
+	# status que "não pega" por algum motivo (ver Unit.is_immune_to_status,
+	# mesma ideia, só que a condição aqui depende do CLIMA, não do tipo da
+	# unidade, por isso mora em battle.gd em vez de unit.gd).
+	if status == "Frozen" and (current_weather == WEATHER_SUNNY or current_weather == WEATHER_HARSH_SUNLIGHT):
 		return
 	if defender.apply_status_condition(status):
 		log_message("%s was %s!" % [defender.data.unit_name, status])
@@ -2720,6 +2996,8 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 	GameState.current_trainer_team = []
 	GameState.current_trainer_prize = 0
 	GameState.current_trainer_iq = ""
+	GameState.current_trainer_starting_weather = ""
+	GameState.current_trainer_starting_weather_overridable = true
 	# Mesmo espírito dos quatro campos acima — volta pro default ("Grass")
 	# assim que a batalha termina, pra uma batalha de TREINADOR seguinte
 	# (que nem olha pra este campo) não herdar por engano um "Water" de uma
@@ -3192,6 +3470,12 @@ func _on_end_turn_pressed() -> void:
 	# rodada de verdade corrige isso.
 	var next_index = current_turn_index + 1
 	if next_index >= turn_queue.size():
+		# Rodada nova de verdade (todo mundo já jogou) — é AQUI, não no fim do
+		# turno de cada unidade individual, que o clima desconta 1 (pedido do
+		# usuário: "Weather effects last for 4 turns"). Contar por unidade em
+		# vez de por rodada faria um time de 6 gastar o clima inteiro numa
+		# rodada só — ver comentário grande em weather_turns_left.
+		_advance_weather_turn()
 		turn_queue.sort_custom(func(a, b): return a.get_effective_stat("speed") > b.get_effective_stat("speed"))
 		current_turn_index = 0
 		build_unit_summary_hud()
@@ -3199,12 +3483,62 @@ func _on_end_turn_pressed() -> void:
 		current_turn_index = next_index
 	begin_current_turn()
 
+# Desconta 1 rodada de weather_turns_left e encerra o clima sozinho quando
+# chega a 0 — nada acontece se não houver clima ativo (WEATHER_NONE) ou se
+# ele for permanente (weather_turns_left < 0, ver try_set_weather). Voltar
+# weather_overridable pra true junto da limpeza evita que o flag "travado"
+# de um clima permanente anterior (ver EncounterArea/Trainer.
+# starting_weather_overridable) vaze pro PRÓXIMO clima que vier a ser
+# ativado nesta mesma batalha, que por padrão deveria poder ser sobrescrito
+# normalmente.
+const WEATHER_END_MESSAGES := {
+	WEATHER_SUNNY: "The sunlight faded.",
+	WEATHER_RAIN: "The rain stopped.",
+	WEATHER_SANDSTORM: "The sandstorm subsided.",
+	WEATHER_SNOW: "The snow stopped falling.",
+}
+
+func _advance_weather_turn() -> void:
+	if current_weather == WEATHER_NONE or weather_turns_left < 0:
+		return
+	weather_turns_left -= 1
+	if weather_turns_left <= 0:
+		log_message(WEATHER_END_MESSAGES.get(current_weather, "The weather cleared up."))
+		current_weather = WEATHER_NONE
+		weather_turns_left = 0
+		weather_overridable = true
+	refresh_weather_hud()
+
+# Sandstorm: todo mundo perde 1/16 do PRÓPRIO hp_max ao passar o turno,
+# exceto Ground/Steel/Rock (pedido do usuário) — mesmo "cano" de
+# Unit.get_status_tick_damage() (só calcula o número, quem aplica e checa
+# morte é apply_end_of_turn_status logo abaixo), só que baseado no CLIMA da
+# batalha em vez de status_condition da própria unidade, por isso mora aqui
+# e não em unit.gd. max(1, ...) evita "0 de dano" arredondado em unidades de
+# HP baixo — diferente do tick de Poisoned (Unit.get_status_tick_damage),
+# que não tem essa trava; aqui vale a pena porque 1/16 é uma fração bem
+# menor que os 8% de Poisoned, mais fácil de zerar em hp_max pequeno.
+const SANDSTORM_DAMAGE_FRACTION_DENOMINATOR = 16
+const SANDSTORM_IMMUNE_TYPES = ["Ground", "Steel", "Rock"]
+
+func get_weather_tick_damage(u: Node) -> int:
+	if current_weather != WEATHER_SANDSTORM:
+		return 0
+	for t in SANDSTORM_IMMUNE_TYPES:
+		if u.data.types.has(t):
+			return 0
+	@warning_ignore("integer_division")
+	return max(1, u.hp_max / SANDSTORM_DAMAGE_FRACTION_DENOMINATOR)
+
 # Aplica o "fim de turno" de Status Condition da unidade `u`, que acabou de
 # passar seu turno (ver comentário acima): dano de Poisoned + decremento de
 # status_turns_left (curando quem chegar a 0). Frozen/Paralyzed/Confused/
 # Blind/Asleep usam status_turns_left; Poisoned/Burned não têm prazo (só
 # saem por cura) e Flinched nem chega aqui (já foi curada em
-# begin_current_turn, ver comentário lá).
+# begin_current_turn, ver comentário lá). Dano de clima (Sandstorm, ver
+# get_weather_tick_damage acima) soma no MESMO take_damage de baixo — uma
+# unidade Envenenada numa tempestade de areia leva os dois de uma vez,
+# com uma mensagem própria só pro clima.
 #
 # Diferente de Unit.get_status_tick_damage() (que só CALCULA o número), aqui
 # é onde a consequência de verdade acontece — inclusive uma possível morte,
@@ -3215,6 +3549,10 @@ func _on_end_turn_pressed() -> void:
 # que depende disso pra não avançar o índice duas vezes).
 func apply_end_of_turn_status(u: Node) -> bool:
 	var tick_damage = u.get_status_tick_damage()
+	var weather_tick_damage = get_weather_tick_damage(u)
+	if weather_tick_damage > 0:
+		tick_damage += weather_tick_damage
+		log_message("%s is buffeted by the sandstorm!" % u.data.unit_name)
 	if tick_damage > 0:
 		u.take_damage(tick_damage)
 		if u.hp_current <= 0:

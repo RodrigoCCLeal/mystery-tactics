@@ -313,6 +313,8 @@ func start_trainer_battle(trainer: Node) -> void:
 	GameState.current_trainer_team = trainer.get_active_team()
 	GameState.current_trainer_prize = trainer.get_prize_money()
 	GameState.current_trainer_iq = trainer.iq
+	GameState.current_trainer_starting_weather = trainer.starting_weather
+	GameState.current_trainer_starting_weather_overridable = trainer.starting_weather_overridable
 	get_tree().change_scene_to_file("res://scenes/battle/battle.tscn")
 
 # Delegado por player.gd::can_move_to(). Objects manda quando tem tile na
