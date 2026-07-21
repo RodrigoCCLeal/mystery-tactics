@@ -245,7 +245,12 @@ func _try_interact() -> void:
 		npc.interact()
 
 func _open_game_menu() -> void:
-	if active_menu != null:
+	# SceneTransition.is_active: mesmo guard/motivo de world.gd::
+	# _open_game_menu — sem isso, abrir menu (e pausar a árvore) durante um
+	# fade de porta deixava a cena seguinte "travada" pra sempre (bug
+	# reportado: "if the player presses A or ESC during scene transitions
+	# the game freezes").
+	if active_menu != null or SceneTransition.is_active:
 		return
 	var menu = GAME_MENU_SCENE.instantiate()
 	add_child(menu)
@@ -254,7 +259,7 @@ func _open_game_menu() -> void:
 	get_tree().paused = true
 
 func _open_system_menu() -> void:
-	if active_menu != null:
+	if active_menu != null or SceneTransition.is_active:
 		return
 	var menu = SYSTEM_MENU_SCENE.instantiate()
 	add_child(menu)

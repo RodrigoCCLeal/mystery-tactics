@@ -1,0 +1,79 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/mode_select_screen.gd" id="1"]
+
+[node name="ModeSelectScreen" type="CanvasLayer"]
+script = ExtResource("1")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+color = Color(0, 0, 0, 0.5)
+
+[node name="Center" type="CenterContainer" parent="."]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="Panel" type="Panel" parent="Center"]
+custom_minimum_size = Vector2(280, 200)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Center/Panel"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Content" type="VBoxContainer" parent="Center/Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/Panel/MarginContainer/Content"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Choose a Game Mode"
+
+[node name="Options" type="VBoxContainer" parent="Center/Panel/MarginContainer/Content"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="NormalOption" type="Label" parent="Center/Panel/MarginContainer/Content/Options"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Normal"
+
+[node name="ChallengeOption" type="Label" parent="Center/Panel/MarginContainer/Content/Options"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Challenge"
+
+[node name="DebuggerOption" type="Label" parent="Center/Panel/MarginContainer/Content/Options"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Debugger"
+
+[node name="Hint" type="Label" parent="Center/Panel/MarginContainer/Content"]
+layout_mode = 2
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+text = "(Esc to go back)"

@@ -11,6 +11,25 @@ extends CanvasLayer
 
 @onready var rect: ColorRect = $ColorRect
 
+# True do início ao fim de change_scene_with_fade() — bug reportado pelo
+# usuário: "if the player presses A or ESC during scene transitions the
+# game freezes". Causa: SceneTransition roda com PROCESS_MODE_ALWAYS (ver
+# _ready() abaixo), então continua seu fade/await MESMO se a árvore for
+# pausada nesse meio-tempo — e "A"/Esc no overworld (ver world.gd/
+# house_interior.gd::_open_game_menu/_open_system_menu) fazem EXATAMENTE
+# isso: pausam a árvore E entram como filho da cena antiga, que está prestes
+# a ser destruída pelo change_scene_to_file() logo abaixo. Resultado: a cena
+# nova nascia com a árvore ainda pausada pra sempre (ninguém nunca rodava
+# _on_menu_closed() do menu que sumiu junto com a cena antiga) — parecia o
+# jogo inteiro ter travado, já que só node com PROCESS_MODE_ALWAYS continua
+# processando com paused=true. is_active é consultado por essas duas funções
+# (guard "if SceneTransition.is_active: return", mesmo espírito do guard
+# "if active_menu != null: return" que já existia) pra simplesmente recusar
+# abrir menu nenhum enquanto o fade estiver rolando — e change_scene_with_fade
+# ainda desliga get_tree().paused como segunda camada de defesa (ver abaixo),
+# caso algum caminho futuro pause a árvore por outro motivo durante o fade.
+var is_active: bool = false
+
 func _ready() -> void:
 	# layer alto = desenha por CIMA de qualquer CanvasLayer comum (HUD de
 	# batalha, game_menu/system_menu...), que usam o layer padrão (1) — o
@@ -33,7 +52,17 @@ func _ready() -> void:
 # quem usa (ver world.gd/house_interior.gd::use_door) — roda
 # sozinho em segundo plano, ninguém precisa esperar ele terminar.
 func change_scene_with_fade(scene_path: String, fade_duration: float = 0.25) -> void:
+	is_active = true
 	await fade_to(1.0, fade_duration)
+	# Segunda camada de defesa (ver comentário grande em is_active acima) —
+	# se por algum motivo a árvore ainda estiver pausada aqui (um menu que
+	# conseguiu abrir antes do guard em world.gd/house_interior.gd, ou
+	# qualquer outra fonte futura de pause), desliga ANTES de trocar de
+	# cena. Mesma lição já aplicada em world.gd (linha perto de
+	# is_trainer_battle)/house_interior.gd/system_menu.gd: SceneTree.paused
+	# sobrevive a change_scene_to_file() sozinho, a cena nova nasceria
+	# pausada por engano sem isso.
+	get_tree().paused = false
 	get_tree().change_scene_to_file(scene_path)
 	# process_frame garante que a cena nova já terminou de entrar na árvore
 	# (change_scene_to_file troca no próximo idle frame, não na hora) antes
@@ -41,6 +70,7 @@ func change_scene_with_fade(scene_path: String, fade_duration: float = 0.25) -> 
 	# de um frame ainda com a cena antiga/vazia.
 	await get_tree().process_frame
 	await fade_to(0.0, fade_duration)
+	is_active = false
 
 func fade_to(target_alpha: float, duration: float) -> void:
 	var tween = create_tween()

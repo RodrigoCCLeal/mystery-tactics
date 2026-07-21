@@ -451,7 +451,11 @@ func has_npc_at(cell: Vector2i) -> bool:
 	return _get_npc_at(cell) != null
 
 func _open_game_menu() -> void:
-	if active_menu != null:
+	# SceneTransition.is_active: ver comentário grande naquele var — sem
+	# isso, abrir o menu (e pausar a árvore) bem no meio de um fade de porta
+	# deixava o jogo "travado" na cena seguinte (bug reportado: "if the
+	# player presses A or ESC during scene transitions the game freezes").
+	if active_menu != null or SceneTransition.is_active:
 		return
 	var menu = GAME_MENU_SCENE.instantiate()
 	add_child(menu)
@@ -460,7 +464,7 @@ func _open_game_menu() -> void:
 	get_tree().paused = true
 
 func _open_system_menu() -> void:
-	if active_menu != null:
+	if active_menu != null or SceneTransition.is_active:
 		return
 	var menu = SYSTEM_MENU_SCENE.instantiate()
 	add_child(menu)
@@ -475,7 +479,7 @@ func _open_system_menu() -> void:
 # nenhum código novo pra esse caminho específico (ver
 # _apply_pending_song_if_any abaixo).
 func _open_song_menu(item: ItemData) -> void:
-	if active_menu != null:
+	if active_menu != null or SceneTransition.is_active:
 		return
 	var menu = SONG_MENU_SCENE.instantiate()
 	add_child(menu)

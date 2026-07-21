@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0100/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0100/frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_script")
+unit_name = "Voltorb"
+sprite_frames = ExtResource("3_frames")
+portrait = ExtResource("2_portrait")
+types = Array[String](["Electric"])
+grounded = true
+weight = 1
+hp_base = 40
+attack_base = 30
+defense_base = 50
+special_attack_base = 55
+special_defense_base = 55
+speed_base = 100
+catch_rate = 0.7451
+growth_group = "Medium Fast"
+base_exp_yield = 66

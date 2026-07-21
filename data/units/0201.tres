@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0201/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0201/frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_script")
+unit_name = "Unown"
+sprite_frames = ExtResource("3_frames")
+portrait = ExtResource("2_portrait")
+types = Array[String](["Psychic"])
+grounded = true
+weight = 1
+hp_base = 48
+attack_base = 72
+defense_base = 48
+special_attack_base = 72
+special_defense_base = 48
+speed_base = 48
+catch_rate = 0.8824
+growth_group = "Medium Fast"
+base_exp_yield = 118

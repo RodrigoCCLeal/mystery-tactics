@@ -123,12 +123,8 @@ func _ready() -> void:
 	# caso real que expôs o bug: Actors com offset em oak_lab_interior.tscn).
 	grid_pos = tile_map.local_to_map(tile_map.to_local(global_position))
 	global_position = tile_map.to_global(tile_map.map_to_local(grid_pos))
-	# TODO(debug): remove depois de confirmar a animação — só pra ver no
-	# painel Output se door_sheet chegou aqui de verdade e com que tamanho.
-	print("[Door %s] _ready: door_sheet=%s grid_pos=%s" % [name, door_sheet, grid_pos])
 	if door_sheet != null:
 		_build_open_animation()
-		print("[Door %s] animação construída, anim=%s frames=%s" % [name, anim, anim.sprite_frames.get_frame_count("open") if anim else "n/a"])
 
 # Monta o AnimatedSprite2D em código (em vez de exigir montar a árvore na
 # mão pra CADA porta no editor) — mesma técnica de player.gd::build_sprite_
@@ -157,10 +153,6 @@ func _build_open_animation() -> void:
 	var step_x = frame_size.x + frame_separation.x
 	var step_y = frame_size.y + frame_separation.y
 	var origin_x = sheet_column * step_x
-	# TODO(debug): remove depois — confirma os números realmente usados no
-	# recorte. Se origin_x ficar maior que door_sheet.get_width(), a coluna
-	# pedida nem existe no arquivo.
-	print("[Door %s] sheet=%dx%d frame_size=%s separation=%s origin_x=%d" % [name, door_sheet.get_width(), door_sheet.get_height(), frame_size, frame_separation, origin_x])
 
 	for row in frame_count:
 		var atlas = AtlasTexture.new()
@@ -177,13 +169,10 @@ func _build_open_animation() -> void:
 # door_sheet configurado, não faz nada (retorna na hora) — porta muda,
 # igual sempre foi.
 func play_open_animation() -> void:
-	print("[Door %s] play_open_animation chamado, anim=%s" % [name, anim])
 	if anim == null:
 		return
 	anim.visible = true
 	anim.play("open")
-	print("[Door %s] tocando, is_playing=%s" % [name, anim.is_playing()])
 	await anim.animation_finished
-	print("[Door %s] animação terminou, segurando %.2fs" % [name, hold_open_duration])
 	if hold_open_duration > 0.0:
 		await get_tree().create_timer(hold_open_duration).timeout

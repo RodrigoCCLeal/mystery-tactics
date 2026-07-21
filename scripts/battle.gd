@@ -2387,6 +2387,7 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 		log_message("%s was defeated!" % defender.data.unit_name)
 		award_experience(attacker, defender)
 		remove_defeated_unit(defender)
+		_apply_challenge_permadeath(defender)
 		if enemy_units.is_empty() or player_units.is_empty():
 			await end_battle(defender, enemy_units.is_empty())
 			return
@@ -2831,6 +2832,16 @@ func resolve_capture(defender: Node, item: ItemData) -> void:
 		# Ball inclusa: nenhuma Ball é exceção). Time do próprio Trainer não
 		# é "livre" pra capturar, diferente de um selvagem.
 		success = false
+	elif GameState.game_mode == "challenge" and GameState.current_area != null and GameState.challenge_caught_areas.get(GameState.current_area.area_name, false):
+		# Regra 1 do Challenge (pedido do usuário: "Only one unit may be
+		# caught in each area. Trying to catch a second unit always results
+		# in failure") — mesma prioridade absoluta que a trava de trainer
+		# battle logo acima: nenhuma Ball (nem Master Ball, guaranteed_capture
+		# incluso) escapa disso enquanto a área já tiver um registro em
+		# GameState.challenge_caught_areas (gravado abaixo, no ramo de
+		# sucesso). Só entra em jogo no modo Challenge — nos outros dois
+		# game_mode não existe restrição de área nenhuma.
+		success = false
 	elif item.guaranteed_capture:
 		success = true
 	else:
@@ -2868,6 +2879,12 @@ func resolve_capture(defender: Node, item: ItemData) -> void:
 			defender.data.apply_capture_progress(defender.level, defender.hp_current)
 			defender.data.caught_location = GameState.current_area.area_name if GameState.current_area != null else ""
 			GameState.add_to_first_empty_storage_slot(defender.data)
+			# Regra 1 do Challenge (ver comentário grande logo acima, no
+			# `elif` que checa este mesmo Dictionary) — carimba a área AGORA,
+			# depois que a captura já deu certo, pra travar qualquer
+			# tentativa seguinte nesta mesma área pro resto da partida.
+			if GameState.game_mode == "challenge" and GameState.current_area != null:
+				GameState.challenge_caught_areas[GameState.current_area.area_name] = true
 		else:
 			# Unidade do JOGADOR roubada por um treinador Rocket
 			# (defender.is_enemy == false). defender.data JÁ É a mesma
@@ -2954,6 +2971,39 @@ func remove_defeated_unit(u: Node) -> void:
 			slot.queue_free()
 		unit_slots.erase(u)
 	unit_hp_labels.erase(u)
+
+# Regra 2 do Challenge (pedido do usuário: "Once a unit faints it is
+# deleted forever. The items that were in its loadout are added back to
+# the bag") — chamada logo depois de remove_defeated_unit() nos dois
+# lugares onde uma unidade de verdade desmaia em batalha (dano direto e
+# Status Condition no fim do turno; NÃO no ramo de captura de
+# resolve_capture(), que não é um desmaio). `u.data` ainda é válido aqui
+# (o nó só é destruído de fato depois da animação de morte, ver Unit.die())
+# — dá pra ler o loadout dele antes de sumir.
+#
+# not u.is_enemy: só o TIME DO JOGADOR sofre permadeath — um selvagem/
+# treinador inimigo desmaiando é derrota normal de sempre, sem efeito
+# nenhum daqui (regra do usuário fala só da unidade DO JOGADOR).
+#
+# GameState.remove_from_roster (já existia, usado por resolve_capture pro
+# caso de Rocket roubando unidade do jogador) tira a UnitData de `roster`
+# pra sempre — diferente de remove_defeated_unit() acima, que só limpa a
+# contabilidade LOCAL desta batalha; sem isso a unidade voltaria a
+# aparecer no time/Party assim que a batalha terminasse e o roster fosse
+# lido de novo, exatamente como acontece nos outros 2 modos.
+func _apply_challenge_permadeath(u: Node) -> void:
+	if GameState.game_mode != "challenge" or u.is_enemy or u.data == null:
+		return
+	for i in u.data.slots.size():
+		var action = u.data.slots[i]
+		if action is ItemData:
+			# get_slot_quantity só é > 1 pra item Stackable (Ball/TM, ver
+			# UnitData.slot_quantities) — held item comum nunca teve
+			# quantidade escrita nesse índice, então max(...,1) garante
+			# devolver pelo menos a 1 unidade física que estava equipada.
+			var amount = max(u.data.get_slot_quantity(i), 1)
+			GameState.add_item(action, amount)
+	GameState.remove_from_roster(u.data)
 
 func cancel_targeting() -> void:
 	targeting_action = null
@@ -3046,6 +3096,7 @@ func apply_end_of_turn_status(u: Node) -> bool:
 			# award_experience, que precisa de um killer) — é uma
 			# simplificação deliberada, não um esquecimento.
 			remove_defeated_unit(u)
+			_apply_challenge_permadeath(u)
 			refresh_unit_summary_hud()
 			if enemy_units.is_empty() or player_units.is_empty():
 				await end_battle(u, enemy_units.is_empty())

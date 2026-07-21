@@ -20,6 +20,14 @@ extends Resource
 @export var player_name: String = ""
 @export var money: int = 0
 @export var badges: Array[String] = []
+# Ver GameState.game_mode/challenge_caught_areas — modo escolhido na criação
+# do save ("normal"/"debugger"/"challenge") e, só pro Challenge, quais
+# EncounterArea (por area_name) já tiveram uma captura selvagem bem-sucedida
+# (regra 1: só uma unidade capturada por área). Saves de antes deste sistema
+# existir carregam os defaults abaixo (GameState.load_game trata "" como
+# "normal" por segurança, embora o próprio default já resolva isso sozinho).
+@export var game_mode: String = "normal"
+@export var challenge_caught_areas: Dictionary = {}
 @export var defeated_trainer_badges: Dictionary = {}
 # Ver GameState.vanished_trainers — treinadores Rocket somem pra sempre
 # depois da primeira batalha (vitória OU derrota), não entram nas regras

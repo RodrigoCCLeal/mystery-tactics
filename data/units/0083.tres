@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0083/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0083/frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_script")
+unit_name = "Farfetch'd"
+sprite_frames = ExtResource("3_frames")
+portrait = ExtResource("2_portrait")
+types = Array[String](["Normal", "Flying"])
+grounded = true
+weight = 1
+hp_base = 52
+attack_base = 90
+defense_base = 55
+special_attack_base = 58
+special_defense_base = 62
+speed_base = 60
+catch_rate = 0.1765
+growth_group = "Medium Fast"
+base_exp_yield = 132

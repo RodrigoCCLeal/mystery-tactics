@@ -20,6 +20,7 @@ extends CanvasLayer
 signal closed
 
 const MAX_NAME_LENGTH = 12
+const MODE_SELECT_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/mode_select_screen.tscn")
 
 @onready var name_edit: LineEdit = $Center/Panel/MarginContainer/Content/NameEdit
 @onready var confirm_label: Label = $Center/Panel/MarginContainer/Content/Confirm
@@ -53,17 +54,21 @@ func _on_confirm_gui_input(event: InputEvent) -> void:
 # Nome vazio (só espaço, ou nada digitado) não confirma — precisa de ao
 # menos 1 caractere de verdade, senão o slot/menu mostrariam um nome em
 # branco pra sempre.
+#
+# Não cria mais o save diretamente — falta escolher o modo (ver
+# mode_select_screen.gd/GameState.game_mode). Mesmo padrão de
+# save_slot_screen.gd::_open_name_entry (hide() + add_child + closed.connect
+# (show)): se o jogador voltar (Esc) da tela de modo, reaparece aqui com o
+# nome já digitado, em vez de ter que digitar de novo.
 func _try_confirm() -> void:
 	var chosen = name_edit.text.strip_edges()
 	if chosen.is_empty():
 		return
-	GameState.start_new_game(target_slot, chosen)
-	# Troca de cena direto pro overworld — diferente de todo popup do resto
-	# do projeto (que só emite `closed` e queue_free()), aqui não faz
-	# sentido "voltar" pra save_slot_screen depois de já ter criado o save e
-	# entrado no jogo; change_scene_to_file descarta a cena inteira (Title
-	# -> SaveSlotScreen -> esta tela, tudo junto) de qualquer forma.
-	get_tree().change_scene_to_file(GameState.overworld_scene_path)
+	hide()
+	var screen = MODE_SELECT_SCREEN_SCENE.instantiate()
+	add_child(screen)
+	screen.setup(target_slot, chosen)
+	screen.closed.connect(show)
 
 func _close() -> void:
 	closed.emit()

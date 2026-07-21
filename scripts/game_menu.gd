@@ -17,11 +17,11 @@ extends CanvasLayer
 
 signal closed
 
-const OPTIONS = ["Pokémon", "Bag", "Save", "Pokédex"]
 const PARTY_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/party_screen.tscn")
 const BAG_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/bag_screen.tscn")
 
 @onready var header_label: Label = $Center/Panel/MarginContainer/Options/Header
+@onready var pokedex_label: Label = $Center/Panel/MarginContainer/Options/Pokedex
 @onready var options_container: VBoxContainer = $Center/Panel/MarginContainer/Options
 
 var option_labels: Array[Label] = []
@@ -30,8 +30,22 @@ var selected_index: int = 0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_refresh_header()
+	# Pokédex ainda não existe de verdade (só o placeholder em
+	# _activate_selected abaixo) — pedido do usuário: "On normal mode, hide
+	# the pokedex option. It will be unlockable later" (e depois: "hide from
+	# challenge mode aswell"). Escondida em Normal E Challenge — só o
+	# Debugger continua mostrando, já que é o modo feito pra testar tudo.
+	# Quando o desbloqueio de verdade existir (provavelmente uma flag, ver
+	# GameState.flags), esta linha deve trocar pra checar essa flag em vez
+	# do modo.
+	pokedex_label.visible = GameState.game_mode == "debugger"
+	# Só entra em option_labels quem estiver visible=true (mesmo critério de
+	# title_screen.gd::_ready com load_game_label) — _activate_selected
+	# abaixo casa pelo NOME do node (não por índice num array paralelo),
+	# então esconder Pokedex aqui já basta pra ela sumir da navegação
+	# inteira sem precisar de mais nenhum ajuste.
 	for child in options_container.get_children():
-		if child is Label and child != header_label:
+		if child is Label and child.visible and child != header_label:
 			option_labels.append(child)
 	for i in option_labels.size():
 		var label := option_labels[i]
@@ -67,7 +81,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 func _move_selection(step: int) -> void:
-	selected_index = wrapi(selected_index + step, 0, OPTIONS.size())
+	selected_index = wrapi(selected_index + step, 0, option_labels.size())
 	_update_selection_visual()
 
 func _on_option_mouse_entered(index: int) -> void:
@@ -83,15 +97,19 @@ func _update_selection_visual() -> void:
 	for i in option_labels.size():
 		option_labels[i].modulate = Color.YELLOW if i == selected_index else Color.WHITE
 
+# Casa pelo NOME do node (ver os nodes em game_menu.tscn: Pokemon/Bag/Save/
+# Pokedex) em vez de um array OPTIONS paralelo — depois que Pokedex passou a
+# poder ficar escondida (ver _ready()), um índice fixo nesse array furava
+# assim que ela sumia; nome do node não depende de posição nenhuma.
 func _activate_selected() -> void:
-	match OPTIONS[selected_index]:
-		"Pokémon":
+	match option_labels[selected_index].name:
+		"Pokemon":
 			_open_party_screen()
 		"Bag":
 			_open_bag_screen()
 		"Save":
 			_save_game()
-		"Pokédex":
+		"Pokedex":
 			# TODO: ainda não existe tela de Pokédex — só a opção no menu por
 			# enquanto, mesmo padrão de placeholder que "PlayerName"/"Save" já
 			# usaram aqui antes de terem uma tela/efeito de verdade.

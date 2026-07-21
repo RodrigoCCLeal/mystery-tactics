@@ -449,7 +449,14 @@ static func calc_stat_static(base: int, unit_level: int) -> int:
 func gain_exp(amount: int) -> void:
 	xp += amount
 	var leveled_up = false
-	while level < ExpGroups.MAX_LEVEL and xp >= ExpGroups.total_exp_for_level(level + 1, data.growth_group):
+	# GameState.get_level_cap() devolve ExpGroups.MAX_LEVEL de sempre fora do
+	# modo Challenge — só lá que fica menor que 100, crescendo com o número
+	# de badges (ver comentário grande em GameState.LEVEL_CAPS_BY_BADGES).
+	# xp continua acumulando normalmente acima do teto (só o LEVEL para de
+	# subir), então assim que o jogador ganhar a badge seguinte e o teto
+	# subir, o excesso já guardado sobe de nível na hora, sem precisar
+	# ganhar exp de novo.
+	while level < min(ExpGroups.MAX_LEVEL, GameState.get_level_cap()) and xp >= ExpGroups.total_exp_for_level(level + 1, data.growth_group):
 		level += 1
 		leveled_up = true
 	if leveled_up:

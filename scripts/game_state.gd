@@ -88,6 +88,38 @@ func spend_money(amount: int) -> bool:
 # vazio até esse sistema existir. Existe já pra aparecer no menu/slot de save.
 var badges: Array[String] = []
 
+# Escolhido na tela de mode_select_screen.gd, logo depois do nome (ver
+# name_entry_screen.gd) — "normal", "debugger" ou "challenge". Pedido do
+# usuário: "Let's add 3 options when creating a new save file". Só
+# game_mode == "challenge" liga qualquer uma das 3 regras especiais (ver
+# get_level_cap() logo abaixo, e os pontos em battle.gd que checam este
+# mesmo valor pra captura única por área e permadeath). "debugger" só muda
+# o inventário inicial (ver _seed_inventory_for_mode) — nenhuma regra de
+# batalha ou captura se importa com ele.
+var game_mode: String = "normal"
+
+# Tetos de nível por quantidade de badges — só valem no modo Challenge (ver
+# game_mode acima). Pedido do usuário: "Units have a level limit, the limit
+# increases with each badge the player has... For now, the level caps are:
+# 15 20 25 30 35 40 45 50 100 (0 - 8 badges), but this will be changed in
+# the future" — índice 8 (100) cobre qualquer badges.size() >= 8, não só
+# exatamente 8 (clampi abaixo). Fora do Challenge, ExpGroups.MAX_LEVEL
+# (100) já é o teto de sempre, sem limite adicional nenhum.
+const LEVEL_CAPS_BY_BADGES: Array[int] = [15, 20, 25, 30, 35, 40, 45, 50, 100]
+
+func get_level_cap() -> int:
+	if game_mode != "challenge":
+		return ExpGroups.MAX_LEVEL
+	return LEVEL_CAPS_BY_BADGES[clampi(badges.size(), 0, LEVEL_CAPS_BY_BADGES.size() - 1)]
+
+# Regra 1 do Challenge (pedido do usuário: "Only one unit may be caught in
+# each area. Trying to catch a second unit always results in failure") —
+# nome da EncounterArea (ver EncounterArea.area_name) -> true assim que UMA
+# captura selvagem dá certo ali (ver battle.gd::resolve_capture). Só
+# cresce/é consultado quando game_mode == "challenge"; nos outros modos
+# fica sempre vazio e ignorado.
+var challenge_caught_areas: Dictionary = {}
+
 # Qual dos 3 slots (0, 1 ou 2 — ver SAVE_SLOT_COUNT abaixo) esta sessão está
 # usando. -1 antes de New Game/Load Game escolher um; game_menu.gd só mostra
 # a opção "Save" depois que já existe uma partida carregada, então
@@ -227,7 +259,9 @@ func _ready() -> void:
 # motivo de sempre — sem isso, uma segunda chamada reaproveitaria as MESMAS
 # instâncias já mutadas da partida anterior) em vez de só rodar
 # ensure_initialized() em cima do que já estiver lá.
-func _apply_fresh_state() -> void:
+func _apply_fresh_state(mode: String = "normal") -> void:
+	game_mode = mode
+	challenge_caught_areas = {}
 	# Time começa TOTALMENTE vazio (6 slots null) — os 3 starters fixos
 	# (Bulbasaur/Charmander/Squirtle) que nasciam aqui foram removidos a
 	# pedido do usuário, agora que eles existem como LootBalls escolhíveis
@@ -259,7 +293,7 @@ func _apply_fresh_state() -> void:
 		baldo_storage.append(null)
 	_seed_baldo_storage()
 	inventory = {}
-	_seed_starting_inventory()
+	_seed_inventory_for_mode(mode)
 	tool_shortcuts = [null, null, null, null]
 	is_biking = false
 	is_strength_active = false
@@ -322,10 +356,28 @@ func _apply_fresh_state() -> void:
 # todas as cópias da mesma espécie (aqui e uma eventual capturada depois)
 # dividiriam nível/xp/HP entre si.
 func _seed_baldo_storage() -> void:
-	for species in ALL_SPECIES:
+	# ALL_SPECIES em si NÃO está em ordem de dex (foi crescendo aos pedaços,
+	# um lote de espécies de cada vez — ver comentário grande logo acima da
+	# constante) — sem isso, Box 1 do Baldo saía com uma mistura aleatória
+	# tipo Bulbasaur, Charmander, Squirtle, Swinub... Pedido do usuário:
+	# "organize Baldo's Box by unitID". Ordena uma CÓPIA local pelo número de
+	# dex extraído do nome do arquivo (res://data/units/0025.tres -> 25) —
+	# não reordena ALL_SPECIES de verdade, então nada mais que dependa dela
+	# (ex: sorteio de encontro selvagem em unit.gd) é afetado.
+	var sorted_species: Array[UnitData] = ALL_SPECIES.duplicate()
+	sorted_species.sort_custom(func(a: UnitData, b: UnitData) -> bool:
+		return _dex_number(a) < _dex_number(b)
+	)
+	for species in sorted_species:
 		var data: UnitData = species.duplicate()
 		data.ensure_initialized(100)
 		add_to_first_empty_baldo_slot(data)
+
+# Extrai o número de dex do caminho do arquivo .tres de uma espécie
+# (res://data/units/0025.tres -> 25) — usado só por _seed_baldo_storage()
+# acima pra ordenar por unitID sem precisar de um campo novo em UnitData.
+func _dex_number(species: UnitData) -> int:
+	return species.resource_path.get_file().get_basename().to_int()
 
 func get_active_roster() -> Array[UnitData]:
 	var active: Array[UnitData] = []
@@ -436,7 +488,14 @@ func remove_from_roster(data: UnitData) -> void:
 # "está", só oferece o array inteiro; toda a lógica de qual fatia mostrar
 # mora inteiramente em pc_screen.gd.
 const SLOTS_PER_BOX = 48
-const BOX_COUNT = 6
+# 11 (528 slots) em vez de 9 (432) — Baldo's Account seeda 1 de CADA espécie
+# já implementada (_seed_baldo_storage() logo abaixo, hoje 498 espécies em
+# ALL_SPECIES), então precisa de pelo menos 11 boxes pra caber todo mundo
+# sem estourar (9 deixaria as últimas ~66 espécies de fora, silenciosamente
+# — ver add_to_first_empty_baldo_slot(), que só retorna false sem avisar
+# nada quando não sobra slot vazio). 528 também deixa uma folga pra próximas
+# espécies sem precisar mexer aqui de novo toda hora.
+const BOX_COUNT = 11
 const STORAGE_CAPACITY = SLOTS_PER_BOX * BOX_COUNT
 
 var storage: Array[UnitData] = []
@@ -461,7 +520,7 @@ func swap_storage_slots(a: int, b: int) -> void:
 # time por ela). Mesmo padrão de busca de slot vazio que give_item() já usa
 # pra loadout, só que em `storage` em vez de `target.slots`. Retorna false
 # (sem adicionar nada) se a reserva estiver TOTALMENTE cheia — bem
-# improvável (STORAGE_CAPACITY = 288), mas o caso fica registrado mesmo
+# improvável (STORAGE_CAPACITY = 528), mas o caso fica registrado mesmo
 # assim.
 func add_to_first_empty_storage_slot(data: UnitData) -> bool:
 	for i in storage.size():
@@ -686,6 +745,480 @@ const ALL_SPECIES: Array[UnitData] = [
 	preload("res://data/units/0013.tres"),
 	preload("res://data/units/0014.tres"),
 	preload("res://data/units/0015.tres"),
+	preload("res://data/units/0021.tres"),
+	preload("res://data/units/0022.tres"),
+	preload("res://data/units/0023.tres"),
+	preload("res://data/units/0024.tres"),
+	preload("res://data/units/0025.tres"),
+	preload("res://data/units/0026.tres"),
+	preload("res://data/units/0027.tres"),
+	preload("res://data/units/0028.tres"),
+	preload("res://data/units/0029.tres"),
+	preload("res://data/units/0030.tres"),
+	preload("res://data/units/0031.tres"),
+	preload("res://data/units/0032.tres"),
+	preload("res://data/units/0033.tres"),
+	preload("res://data/units/0034.tres"),
+	preload("res://data/units/0035.tres"),
+	preload("res://data/units/0036.tres"),
+	preload("res://data/units/0037.tres"),
+	preload("res://data/units/0038.tres"),
+	preload("res://data/units/0039.tres"),
+	preload("res://data/units/0040.tres"),
+	preload("res://data/units/0041.tres"),
+	preload("res://data/units/0042.tres"),
+	preload("res://data/units/0043.tres"),
+	preload("res://data/units/0044.tres"),
+	preload("res://data/units/0045.tres"),
+	preload("res://data/units/0046.tres"),
+	preload("res://data/units/0047.tres"),
+	preload("res://data/units/0048.tres"),
+	preload("res://data/units/0049.tres"),
+	preload("res://data/units/0050.tres"),
+	preload("res://data/units/0051.tres"),
+	preload("res://data/units/0052.tres"),
+	preload("res://data/units/0053.tres"),
+	preload("res://data/units/0054.tres"),
+	preload("res://data/units/0055.tres"),
+	preload("res://data/units/0056.tres"),
+	preload("res://data/units/0057.tres"),
+	preload("res://data/units/0058.tres"),
+	preload("res://data/units/0059.tres"),
+	preload("res://data/units/0060.tres"),
+	preload("res://data/units/0061.tres"),
+	preload("res://data/units/0062.tres"),
+	preload("res://data/units/0063.tres"),
+	preload("res://data/units/0064.tres"),
+	preload("res://data/units/0065.tres"),
+	preload("res://data/units/0066.tres"),
+	preload("res://data/units/0067.tres"),
+	preload("res://data/units/0068.tres"),
+	preload("res://data/units/0069.tres"),
+	preload("res://data/units/0070.tres"),
+	preload("res://data/units/0071.tres"),
+	preload("res://data/units/0072.tres"),
+	preload("res://data/units/0073.tres"),
+	preload("res://data/units/0074.tres"),
+	preload("res://data/units/0075.tres"),
+	preload("res://data/units/0076.tres"),
+	preload("res://data/units/0077.tres"),
+	preload("res://data/units/0078.tres"),
+	preload("res://data/units/0079.tres"),
+	preload("res://data/units/0080.tres"),
+	preload("res://data/units/0081.tres"),
+	preload("res://data/units/0082.tres"),
+	preload("res://data/units/0083.tres"),
+	preload("res://data/units/0084.tres"),
+	preload("res://data/units/0085.tres"),
+	preload("res://data/units/0086.tres"),
+	preload("res://data/units/0087.tres"),
+	preload("res://data/units/0088.tres"),
+	preload("res://data/units/0089.tres"),
+	preload("res://data/units/0090.tres"),
+	preload("res://data/units/0091.tres"),
+	preload("res://data/units/0092.tres"),
+	preload("res://data/units/0093.tres"),
+	preload("res://data/units/0094.tres"),
+	preload("res://data/units/0095.tres"),
+	preload("res://data/units/0096.tres"),
+	preload("res://data/units/0097.tres"),
+	preload("res://data/units/0098.tres"),
+	preload("res://data/units/0099.tres"),
+	preload("res://data/units/0100.tres"),
+	preload("res://data/units/0101.tres"),
+	preload("res://data/units/0102.tres"),
+	preload("res://data/units/0103.tres"),
+	preload("res://data/units/0104.tres"),
+	preload("res://data/units/0105.tres"),
+	preload("res://data/units/0106.tres"),
+	preload("res://data/units/0107.tres"),
+	preload("res://data/units/0108.tres"),
+	preload("res://data/units/0109.tres"),
+	preload("res://data/units/0110.tres"),
+	preload("res://data/units/0111.tres"),
+	preload("res://data/units/0112.tres"),
+	preload("res://data/units/0113.tres"),
+	preload("res://data/units/0114.tres"),
+	preload("res://data/units/0115.tres"),
+	preload("res://data/units/0116.tres"),
+	preload("res://data/units/0117.tres"),
+	preload("res://data/units/0118.tres"),
+	preload("res://data/units/0119.tres"),
+	preload("res://data/units/0120.tres"),
+	preload("res://data/units/0121.tres"),
+	preload("res://data/units/0122.tres"),
+	preload("res://data/units/0123.tres"),
+	preload("res://data/units/0124.tres"),
+	preload("res://data/units/0125.tres"),
+	preload("res://data/units/0126.tres"),
+	preload("res://data/units/0127.tres"),
+	preload("res://data/units/0128.tres"),
+	preload("res://data/units/0129.tres"),
+	preload("res://data/units/0130.tres"),
+	preload("res://data/units/0131.tres"),
+	preload("res://data/units/0132.tres"),
+	preload("res://data/units/0133.tres"),
+	preload("res://data/units/0134.tres"),
+	preload("res://data/units/0135.tres"),
+	preload("res://data/units/0136.tres"),
+	preload("res://data/units/0137.tres"),
+	preload("res://data/units/0138.tres"),
+	preload("res://data/units/0139.tres"),
+	preload("res://data/units/0140.tres"),
+	preload("res://data/units/0141.tres"),
+	preload("res://data/units/0142.tres"),
+	preload("res://data/units/0143.tres"),
+	preload("res://data/units/0144.tres"),
+	preload("res://data/units/0145.tres"),
+	preload("res://data/units/0146.tres"),
+	preload("res://data/units/0147.tres"),
+	preload("res://data/units/0148.tres"),
+	preload("res://data/units/0149.tres"),
+	preload("res://data/units/0150.tres"),
+	preload("res://data/units/0151.tres"),
+	preload("res://data/units/0152.tres"),
+	preload("res://data/units/0153.tres"),
+	preload("res://data/units/0154.tres"),
+	preload("res://data/units/0155.tres"),
+	preload("res://data/units/0156.tres"),
+	preload("res://data/units/0157.tres"),
+	preload("res://data/units/0159.tres"),
+	preload("res://data/units/0160.tres"),
+	preload("res://data/units/0161.tres"),
+	preload("res://data/units/0162.tres"),
+	preload("res://data/units/0163.tres"),
+	preload("res://data/units/0164.tres"),
+	preload("res://data/units/0165.tres"),
+	preload("res://data/units/0166.tres"),
+	preload("res://data/units/0167.tres"),
+	preload("res://data/units/0168.tres"),
+	preload("res://data/units/0169.tres"),
+	preload("res://data/units/0170.tres"),
+	preload("res://data/units/0171.tres"),
+	preload("res://data/units/0172.tres"),
+	preload("res://data/units/0173.tres"),
+	preload("res://data/units/0174.tres"),
+	preload("res://data/units/0175.tres"),
+	preload("res://data/units/0176.tres"),
+	preload("res://data/units/0177.tres"),
+	preload("res://data/units/0178.tres"),
+	preload("res://data/units/0179.tres"),
+	preload("res://data/units/0180.tres"),
+	preload("res://data/units/0181.tres"),
+	preload("res://data/units/0182.tres"),
+	preload("res://data/units/0183.tres"),
+	preload("res://data/units/0184.tres"),
+	preload("res://data/units/0185.tres"),
+	preload("res://data/units/0186.tres"),
+	preload("res://data/units/0187.tres"),
+	preload("res://data/units/0188.tres"),
+	preload("res://data/units/0189.tres"),
+	preload("res://data/units/0190.tres"),
+	preload("res://data/units/0191.tres"),
+	preload("res://data/units/0192.tres"),
+	preload("res://data/units/0193.tres"),
+	preload("res://data/units/0194.tres"),
+	preload("res://data/units/0195.tres"),
+	preload("res://data/units/0196.tres"),
+	preload("res://data/units/0197.tres"),
+	preload("res://data/units/0198.tres"),
+	preload("res://data/units/0199.tres"),
+	preload("res://data/units/0200.tres"),
+	preload("res://data/units/0201.tres"),
+	preload("res://data/units/0203.tres"),
+	preload("res://data/units/0204.tres"),
+	preload("res://data/units/0205.tres"),
+	preload("res://data/units/0206.tres"),
+	preload("res://data/units/0207.tres"),
+	preload("res://data/units/0208.tres"),
+	preload("res://data/units/0209.tres"),
+	preload("res://data/units/0210.tres"),
+	preload("res://data/units/0211.tres"),
+	preload("res://data/units/0212.tres"),
+	preload("res://data/units/0213.tres"),
+	preload("res://data/units/0214.tres"),
+	preload("res://data/units/0215.tres"),
+	preload("res://data/units/0216.tres"),
+	preload("res://data/units/0217.tres"),
+	preload("res://data/units/0218.tres"),
+	preload("res://data/units/0219.tres"),
+	preload("res://data/units/0222.tres"),
+	preload("res://data/units/0223.tres"),
+	preload("res://data/units/0224.tres"),
+	preload("res://data/units/0225.tres"),
+	preload("res://data/units/0226.tres"),
+	preload("res://data/units/0227.tres"),
+	preload("res://data/units/0228.tres"),
+	preload("res://data/units/0229.tres"),
+	preload("res://data/units/0230.tres"),
+	preload("res://data/units/0231.tres"),
+	preload("res://data/units/0232.tres"),
+	preload("res://data/units/0233.tres"),
+	preload("res://data/units/0234.tres"),
+	preload("res://data/units/0235.tres"),
+	preload("res://data/units/0236.tres"),
+	preload("res://data/units/0237.tres"),
+	preload("res://data/units/0238.tres"),
+	preload("res://data/units/0239.tres"),
+	preload("res://data/units/0240.tres"),
+	preload("res://data/units/0241.tres"),
+	preload("res://data/units/0242.tres"),
+	preload("res://data/units/0243.tres"),
+	preload("res://data/units/0244.tres"),
+	preload("res://data/units/0245.tres"),
+	preload("res://data/units/0246.tres"),
+	preload("res://data/units/0247.tres"),
+	preload("res://data/units/0248.tres"),
+	preload("res://data/units/0249.tres"),
+	preload("res://data/units/0250.tres"),
+	preload("res://data/units/0251.tres"),
+	preload("res://data/units/0252.tres"),
+	preload("res://data/units/0253.tres"),
+	preload("res://data/units/0254.tres"),
+	preload("res://data/units/0256.tres"),
+	preload("res://data/units/0257.tres"),
+	preload("res://data/units/0258.tres"),
+	preload("res://data/units/0259.tres"),
+	preload("res://data/units/0260.tres"),
+	preload("res://data/units/0261.tres"),
+	preload("res://data/units/0262.tres"),
+	preload("res://data/units/0263.tres"),
+	preload("res://data/units/0264.tres"),
+	preload("res://data/units/0265.tres"),
+	preload("res://data/units/0266.tres"),
+	preload("res://data/units/0267.tres"),
+	preload("res://data/units/0268.tres"),
+	preload("res://data/units/0269.tres"),
+	preload("res://data/units/0270.tres"),
+	preload("res://data/units/0271.tres"),
+	preload("res://data/units/0272.tres"),
+	preload("res://data/units/0273.tres"),
+	preload("res://data/units/0274.tres"),
+	preload("res://data/units/0275.tres"),
+	preload("res://data/units/0276.tres"),
+	preload("res://data/units/0277.tres"),
+	preload("res://data/units/0278.tres"),
+	preload("res://data/units/0279.tres"),
+	preload("res://data/units/0280.tres"),
+	preload("res://data/units/0281.tres"),
+	preload("res://data/units/0282.tres"),
+	preload("res://data/units/0283.tres"),
+	preload("res://data/units/0284.tres"),
+	preload("res://data/units/0285.tres"),
+	preload("res://data/units/0286.tres"),
+	preload("res://data/units/0287.tres"),
+	preload("res://data/units/0288.tres"),
+	preload("res://data/units/0289.tres"),
+	preload("res://data/units/0290.tres"),
+	preload("res://data/units/0291.tres"),
+	preload("res://data/units/0292.tres"),
+	preload("res://data/units/0293.tres"),
+	preload("res://data/units/0294.tres"),
+	preload("res://data/units/0295.tres"),
+	preload("res://data/units/0296.tres"),
+	preload("res://data/units/0297.tres"),
+	preload("res://data/units/0298.tres"),
+	preload("res://data/units/0299.tres"),
+	preload("res://data/units/0300.tres"),
+	preload("res://data/units/0301.tres"),
+	preload("res://data/units/0302.tres"),
+	preload("res://data/units/0303.tres"),
+	preload("res://data/units/0304.tres"),
+	preload("res://data/units/0305.tres"),
+	preload("res://data/units/0306.tres"),
+	preload("res://data/units/0307.tres"),
+	preload("res://data/units/0308.tres"),
+	preload("res://data/units/0309.tres"),
+	preload("res://data/units/0310.tres"),
+	preload("res://data/units/0311.tres"),
+	preload("res://data/units/0312.tres"),
+	preload("res://data/units/0313.tres"),
+	preload("res://data/units/0314.tres"),
+	preload("res://data/units/0315.tres"),
+	preload("res://data/units/0316.tres"),
+	preload("res://data/units/0317.tres"),
+	preload("res://data/units/0318.tres"),
+	preload("res://data/units/0319.tres"),
+	preload("res://data/units/0320.tres"),
+	preload("res://data/units/0321.tres"),
+	preload("res://data/units/0322.tres"),
+	preload("res://data/units/0323.tres"),
+	preload("res://data/units/0324.tres"),
+	preload("res://data/units/0325.tres"),
+	preload("res://data/units/0326.tres"),
+	preload("res://data/units/0327.tres"),
+	preload("res://data/units/0328.tres"),
+	preload("res://data/units/0329.tres"),
+	preload("res://data/units/0330.tres"),
+	preload("res://data/units/0331.tres"),
+	preload("res://data/units/0332.tres"),
+	preload("res://data/units/0333.tres"),
+	preload("res://data/units/0334.tres"),
+	preload("res://data/units/0335.tres"),
+	preload("res://data/units/0336.tres"),
+	preload("res://data/units/0337.tres"),
+	preload("res://data/units/0338.tres"),
+	preload("res://data/units/0339.tres"),
+	preload("res://data/units/0340.tres"),
+	preload("res://data/units/0341.tres"),
+	preload("res://data/units/0342.tres"),
+	preload("res://data/units/0343.tres"),
+	preload("res://data/units/0344.tres"),
+	preload("res://data/units/0345.tres"),
+	preload("res://data/units/0346.tres"),
+	preload("res://data/units/0347.tres"),
+	preload("res://data/units/0348.tres"),
+	preload("res://data/units/0349.tres"),
+	preload("res://data/units/0350.tres"),
+	preload("res://data/units/0351.tres"),
+	preload("res://data/units/0352.tres"),
+	preload("res://data/units/0353.tres"),
+	preload("res://data/units/0354.tres"),
+	preload("res://data/units/0355.tres"),
+	preload("res://data/units/0356.tres"),
+	preload("res://data/units/0357.tres"),
+	preload("res://data/units/0359.tres"),
+	preload("res://data/units/0360.tres"),
+	preload("res://data/units/0361.tres"),
+	preload("res://data/units/0362.tres"),
+	preload("res://data/units/0363.tres"),
+	preload("res://data/units/0364.tres"),
+	preload("res://data/units/0365.tres"),
+	preload("res://data/units/0366.tres"),
+	preload("res://data/units/0367.tres"),
+	preload("res://data/units/0368.tres"),
+	preload("res://data/units/0369.tres"),
+	preload("res://data/units/0370.tres"),
+	preload("res://data/units/0371.tres"),
+	preload("res://data/units/0372.tres"),
+	preload("res://data/units/0373.tres"),
+	preload("res://data/units/0374.tres"),
+	preload("res://data/units/0375.tres"),
+	preload("res://data/units/0376.tres"),
+	preload("res://data/units/0377.tres"),
+	preload("res://data/units/0378.tres"),
+	preload("res://data/units/0379.tres"),
+	preload("res://data/units/0380.tres"),
+	preload("res://data/units/0381.tres"),
+	preload("res://data/units/0382.tres"),
+	preload("res://data/units/0383.tres"),
+	preload("res://data/units/0384.tres"),
+	preload("res://data/units/0385.tres"),
+	preload("res://data/units/0386.tres"),
+	preload("res://data/units/0387.tres"),
+	preload("res://data/units/0388.tres"),
+	preload("res://data/units/0389.tres"),
+	preload("res://data/units/0390.tres"),
+	preload("res://data/units/0391.tres"),
+	preload("res://data/units/0392.tres"),
+	preload("res://data/units/0393.tres"),
+	preload("res://data/units/0394.tres"),
+	preload("res://data/units/0395.tres"),
+	preload("res://data/units/0396.tres"),
+	preload("res://data/units/0397.tres"),
+	preload("res://data/units/0398.tres"),
+	preload("res://data/units/0399.tres"),
+	preload("res://data/units/0400.tres"),
+	preload("res://data/units/0401.tres"),
+	preload("res://data/units/0402.tres"),
+	preload("res://data/units/0403.tres"),
+	preload("res://data/units/0404.tres"),
+	preload("res://data/units/0405.tres"),
+	preload("res://data/units/0406.tres"),
+	preload("res://data/units/0407.tres"),
+	preload("res://data/units/0408.tres"),
+	preload("res://data/units/0409.tres"),
+	preload("res://data/units/0410.tres"),
+	preload("res://data/units/0411.tres"),
+	preload("res://data/units/0412.tres"),
+	preload("res://data/units/0413.tres"),
+	preload("res://data/units/0414.tres"),
+	preload("res://data/units/0415.tres"),
+	preload("res://data/units/0416.tres"),
+	preload("res://data/units/0417.tres"),
+	preload("res://data/units/0418.tres"),
+	preload("res://data/units/0419.tres"),
+	preload("res://data/units/0420.tres"),
+	preload("res://data/units/0421.tres"),
+	preload("res://data/units/0422.tres"),
+	preload("res://data/units/0423.tres"),
+	preload("res://data/units/0424.tres"),
+	preload("res://data/units/0425.tres"),
+	preload("res://data/units/0426.tres"),
+	preload("res://data/units/0427.tres"),
+	preload("res://data/units/0428.tres"),
+	preload("res://data/units/0429.tres"),
+	preload("res://data/units/0430.tres"),
+	preload("res://data/units/0431.tres"),
+	preload("res://data/units/0432.tres"),
+	preload("res://data/units/0433.tres"),
+	preload("res://data/units/0434.tres"),
+	preload("res://data/units/0435.tres"),
+	preload("res://data/units/0436.tres"),
+	preload("res://data/units/0437.tres"),
+	preload("res://data/units/0438.tres"),
+	preload("res://data/units/0439.tres"),
+	preload("res://data/units/0440.tres"),
+	preload("res://data/units/0441.tres"),
+	preload("res://data/units/0442.tres"),
+	preload("res://data/units/0443.tres"),
+	preload("res://data/units/0444.tres"),
+	preload("res://data/units/0445.tres"),
+	preload("res://data/units/0446.tres"),
+	preload("res://data/units/0447.tres"),
+	preload("res://data/units/0448.tres"),
+	preload("res://data/units/0449.tres"),
+	preload("res://data/units/0450.tres"),
+	preload("res://data/units/0451.tres"),
+	preload("res://data/units/0452.tres"),
+	preload("res://data/units/0453.tres"),
+	preload("res://data/units/0454.tres"),
+	preload("res://data/units/0455.tres"),
+	preload("res://data/units/0456.tres"),
+	preload("res://data/units/0457.tres"),
+	preload("res://data/units/0458.tres"),
+	preload("res://data/units/0459.tres"),
+	preload("res://data/units/0460.tres"),
+	preload("res://data/units/0461.tres"),
+	preload("res://data/units/0462.tres"),
+	preload("res://data/units/0463.tres"),
+	preload("res://data/units/0464.tres"),
+	preload("res://data/units/0465.tres"),
+	preload("res://data/units/0466.tres"),
+	preload("res://data/units/0467.tres"),
+	preload("res://data/units/0468.tres"),
+	preload("res://data/units/0469.tres"),
+	preload("res://data/units/0470.tres"),
+	preload("res://data/units/0471.tres"),
+	preload("res://data/units/0472.tres"),
+	preload("res://data/units/0474.tres"),
+	preload("res://data/units/0475.tres"),
+	preload("res://data/units/0476.tres"),
+	preload("res://data/units/0477.tres"),
+	preload("res://data/units/0478.tres"),
+	preload("res://data/units/0479.tres"),
+	preload("res://data/units/0480.tres"),
+	preload("res://data/units/0481.tres"),
+	preload("res://data/units/0482.tres"),
+	preload("res://data/units/0483.tres"),
+	preload("res://data/units/0484.tres"),
+	preload("res://data/units/0485.tres"),
+	preload("res://data/units/0486.tres"),
+	preload("res://data/units/0487.tres"),
+	preload("res://data/units/0488.tres"),
+	preload("res://data/units/0489.tres"),
+	preload("res://data/units/0490.tres"),
+	preload("res://data/units/0491.tres"),
+	preload("res://data/units/0492.tres"),
+	preload("res://data/units/0493.tres"),
+	preload("res://data/units/0899.tres"),
+	preload("res://data/units/0901.tres"),
+	preload("res://data/units/0979.tres"),
+	preload("res://data/units/0981.tres"),
+	preload("res://data/units/0982.tres"),
+	preload("res://data/units/0016.tres"),
+	preload("res://data/units/0017.tres"),
+	preload("res://data/units/0018.tres"),
 ]
 
 # Em qual área do overworld o jogador está AGORA — world.gd seta isso (a
@@ -959,27 +1492,41 @@ var last_notified_area_name: String = ""
 # de ALL_SPECIES/ActionData (sem duplicate() nenhum, de propósito).
 var inventory: Dictionary = {}
 
-# Estoque inicial só pra Bag não abrir vazia. Sem sistema de loja/drop
-# ainda — ajustar/expandir aqui livremente conforme esses sistemas forem
-# aparecendo.
-func _seed_starting_inventory() -> void:
-	add_item(preload("res://data/items/potion.tres"), 3)
-	add_item(preload("res://data/items/super_potion.tres"), 1)
-	add_item(preload("res://data/items/oran_berry.tres"), 2)
-	add_item(preload("res://data/items/focus_band.tres"), 1)
-	add_item(preload("res://data/items/masterball.tres"), 1)   # só pra já dar pra testar captura
-	add_item(preload("res://data/items/pokeball.tres"), 5)     # 5 pra testar fracassos (Master Ball nunca falha)
-	add_item(preload("res://data/items/tm10_ice_fang.tres"), 8) # 8 pra testar Stackable + consumo em batalha
-	add_item(preload("res://data/items/bicycle.tres"), 1)       # Tool: Use liga/desliga is_biking, nunca é consumida
-	add_item(preload("res://data/items/ability_patch.tres"), 1) # pra testar revelar Sheer Force do Totodile (0158)
-	add_item(preload("res://data/items/fairy_ocarina.tres"), 1) # Tool: Use abre o popup de Songs
-	# Sem NPC/LootBall que ensine Song nenhuma ainda (ver unlock_song acima)
-	# — as 3 desbloqueadas direto aqui só pra dar pra testar o popup/menu
-	# inteiro (Fly incluída, mesmo sem efeito ainda — ver SONG_NAMES) antes
-	# de existir uma forma de verdade de aprendê-las. Pedido do usuário:
-	# "Unlock the 3 songs for testing, we will add ways to unlock them
-	# later" — mesmo espírito de masterball/pokeball acima ("só pra já dar
-	# pra testar").
+# Todo item já implementado (data/items/*.tres) — lista à mão, mesmo
+# padrão de ALL_SPECIES logo abaixo neste arquivo (preload explícito, não
+# leitura de pasta em tempo de execução): precisa ganhar uma linha nova
+# toda vez que um item novo for criado, mesmo "custo" que ALL_SPECIES já
+# tem hoje pra espécie nova.
+const ALL_ITEMS: Array[ItemData] = [
+	preload("res://data/items/potion.tres"),
+	preload("res://data/items/super_potion.tres"),
+	preload("res://data/items/oran_berry.tres"),
+	preload("res://data/items/focus_band.tres"),
+	preload("res://data/items/masterball.tres"),
+	preload("res://data/items/pokeball.tres"),
+	preload("res://data/items/tm10_ice_fang.tres"),
+	preload("res://data/items/bicycle.tres"),
+	preload("res://data/items/ability_patch.tres"),
+	preload("res://data/items/fairy_ocarina.tres"),
+	preload("res://data/items/rocketball.tres"),
+	preload("res://data/items/muscle_band.tres"),
+]
+
+# Inventário inicial de acordo com o modo escolhido em mode_select_screen.gd
+# (ver game_mode acima). Pedido do usuário, verbatim:
+#   Normal: 0 Money, No starting items
+#   Debugger: 1 of each implemented item
+#   Challenge: (só as 3 regras especiais — nada dito sobre inventário
+#     inicial, então trata igual Normal: começa zerado, sem atalho nenhum)
+# money já é zerado incondicionalmente em _apply_fresh_state() logo depois
+# desta chamada, pros 3 modos igual — não precisa repetir aqui.
+func _seed_inventory_for_mode(mode: String) -> void:
+	if mode != "debugger":
+		return
+	for item in ALL_ITEMS:
+		add_item(item, 1)
+	# Mesmo atalho de teste de sempre (ver comentário original removido
+	# daqui) — só faz sentido no modo feito pra testar tudo de uma vez.
 	unlock_song("Strength")
 	unlock_song("Surf")
 	unlock_song("Fly")
@@ -1250,6 +1797,8 @@ func save_game(slot: int) -> void:
 	data.player_name = player_name
 	data.money = money
 	data.badges = badges.duplicate()
+	data.game_mode = game_mode
+	data.challenge_caught_areas = challenge_caught_areas.duplicate()
 	data.defeated_trainer_badges = defeated_trainer_badges.duplicate()
 	data.vanished_trainers = vanished_trainers.duplicate()
 	data.trainer_positions = trainer_positions.duplicate()
@@ -1309,6 +1858,11 @@ func load_game(slot: int) -> bool:
 	player_name = data.player_name
 	money = data.money
 	badges = data.badges.duplicate()
+	# "normal" de fallback pra saves gravados antes deste campo existir
+	# (default de SaveData.game_mode já cobre isso, mas o "if" deixa
+	# explícito e protege contra um "" vazio de algum caminho futuro).
+	game_mode = data.game_mode if data.game_mode != "" else "normal"
+	challenge_caught_areas = data.challenge_caught_areas.duplicate()
 	defeated_trainer_badges = data.defeated_trainer_badges.duplicate()
 	vanished_trainers = data.vanished_trainers.duplicate()
 	trainer_positions = data.trainer_positions.duplicate()
@@ -1367,8 +1921,8 @@ func load_game(slot: int) -> bool:
 # escreve o save na hora, com o nome escolhido, pra o slot deixar de
 # aparecer como "Empty" mesmo antes do jogador dar Save pela primeira vez
 # de propósito.
-func start_new_game(slot: int, chosen_name: String) -> void:
-	_apply_fresh_state()
+func start_new_game(slot: int, chosen_name: String, mode: String = "normal") -> void:
+	_apply_fresh_state(mode)
 	player_name = chosen_name
 	current_save_slot = slot
 	save_game(slot)
