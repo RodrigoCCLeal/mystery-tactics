@@ -80,10 +80,10 @@ func set_highlighted(is_highlighted: bool) -> void:
 func _play_portrait(portrait: AnimatedSprite2D, data: UnitData, size: float) -> void:
 	if data.sprite_frames == null:
 		return
-	var anim_name = "idle_down"
-	if data.current_hp <= 0 and data.sprite_frames.has_animation("sleep_down"):
-		anim_name = "sleep_down"
-	if not data.sprite_frames.has_animation(anim_name):
+	# ver UnitData.portrait_anim_name() — mesmo fallback idle/hover/sleep de
+	# party_screen.gd::_refresh_portrait (Beedrill etc. só têm hover_down).
+	var anim_name = data.portrait_anim_name(data.current_hp <= 0)
+	if anim_name == "":
 		return
 	portrait.sprite_frames = data.sprite_frames
 	portrait.play(anim_name)

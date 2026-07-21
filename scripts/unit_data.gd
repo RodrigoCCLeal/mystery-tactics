@@ -268,3 +268,29 @@ func apply_capture_progress(captured_level: int, captured_hp: int) -> void:
 	level = captured_level
 	xp = ExpGroups.total_exp_for_level(level, growth_group)
 	current_hp = captured_hp
+
+# Nome da animação "parada, virada pra baixo" certa pra mostrar num retrato
+# fora de batalha (party_screen.gd/pc_slot.gd) — precisava do MESMO fallback
+# que unit.gd::_idle_anim_name() já usa em batalha (ver lá pro comentário
+# grande com as 3 regras), só fixado em "down" (retrato nunca vira de
+# direção). Sem isso, espécie sem idle_<dir> nenhuma (ex: Beedrill/0015, só
+# tem hover_down — voa "pairando" o tempo todo, nunca "parada no chão") ficava
+# de fora do menu de time inteiro: os dois lugares checavam só
+# has_animation("idle_down") e escondiam o retrato (e, por só desenhar a
+# unidade quando o retrato existe... na prática ela sumia da lista).
+# `fainted` (current_hp <= 0) tem prioridade sobre tudo: sleep_down se
+# existir, senão cai pro mesmo idle/hover de sempre. "" só no caso teórico de
+# uma espécie sem NENHUMA das três (não deveria acontecer com nada já
+# implementado).
+func portrait_anim_name(fainted: bool = false) -> String:
+	if sprite_frames == null:
+		return ""
+	if fainted and sprite_frames.has_animation("sleep_down"):
+		return "sleep_down"
+	var has_idle = sprite_frames.has_animation("idle_down")
+	var has_hover = sprite_frames.has_animation("hover_down")
+	if not has_hover:
+		return "idle_down" if has_idle else ""
+	if grounded and has_idle:
+		return "idle_down"
+	return "hover_down"

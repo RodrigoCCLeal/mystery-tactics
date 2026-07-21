@@ -552,15 +552,13 @@ func _refresh_slot(index: int) -> void:
 	_refresh_portrait(portrait, data)
 
 func _refresh_portrait(portrait: AnimatedSprite2D, data: UnitData) -> void:
-	if data.sprite_frames == null or not data.sprite_frames.has_animation("idle_down"):
+	# ver UnitData.portrait_anim_name() — escolhe idle_down/hover_down/
+	# sleep_down conforme o que a espécie realmente tem (Beedrill etc. só têm
+	# hover_down, nunca idle_down).
+	var anim_name = data.portrait_anim_name(data.current_hp <= 0)
+	if data.sprite_frames == null or anim_name == "":
 		portrait.visible = false
 		return
-	# Desmaiada (current_hp <= 0) usa a animação Sleep em vez de Idle — mesmo
-	# fallback de sempre se a espécie não tiver "sleep_down" (ainda não
-	# adicionamos Sleep-Anim.png a todo mundo).
-	var anim_name = "idle_down"
-	if data.current_hp <= 0 and data.sprite_frames.has_animation("sleep_down"):
-		anim_name = "sleep_down"
 	portrait.visible = true
 	if portrait.sprite_frames != data.sprite_frames or portrait.animation != anim_name:
 		portrait.sprite_frames = data.sprite_frames
@@ -568,7 +566,7 @@ func _refresh_portrait(portrait: AnimatedSprite2D, data: UnitData) -> void:
 	elif not portrait.is_playing():
 		portrait.play(anim_name)
 
-	var frame_tex = data.sprite_frames.get_frame_texture("idle_down", 0)
+	var frame_tex = data.sprite_frames.get_frame_texture(anim_name, 0)
 	if frame_tex != null:
 		var src_size = frame_tex.get_size()
 		if src_size.x > 0 and src_size.y > 0:

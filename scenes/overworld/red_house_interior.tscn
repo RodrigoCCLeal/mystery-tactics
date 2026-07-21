@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://d26pj4i16thtp" path="res://scripts/door.gd" id="4_0ktju"]
 [ext_resource type="PackedScene" uid="uid://cddnryw8qsono" path="res://scenes/npc/open_pc.tscn" id="5_m1ovl"]
 [ext_resource type="PackedScene" path="res://scenes/npc/bed.tscn" id="5_x3xrc"]
+[ext_resource type="PackedScene" path="res://scenes/npc/nurse.tscn" id="6_s3oyo"]
+[ext_resource type="Texture2D" uid="uid://ceatbmmrctmun" path="res://assets/sprites/Human/NPC/NPC 28.png" id="7_uxp17"]
 
 [node name="HouseInterior" type="Node2D" unique_id=1248770916]
 script = ExtResource("2_script")
@@ -38,6 +40,11 @@ screen_on_coord = Vector2i(7, 166)
 
 [node name="Bed" parent="Actors" unique_id=580652296 instance=ExtResource("5_x3xrc")]
 position = Vector2(-112.22012, -494.31998)
+
+[node name="Mom" parent="Actors" unique_id=1918906637 instance=ExtResource("6_s3oyo")]
+position = Vector2(78, -45)
+sheet = ExtResource("7_uxp17")
+facing = "left"
 
 [node name="Door" type="Node2D" parent="." unique_id=1916441077]
 position = Vector2(16, 106)

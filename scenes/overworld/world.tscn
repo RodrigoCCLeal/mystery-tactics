@@ -31,7 +31,6 @@
 [ext_resource type="Resource" uid="uid://cgta0is70o5ya" path="res://data/items/potion.tres" id="27_iibxu"]
 [ext_resource type="Resource" uid="uid://cusa6m2ijtesg" path="res://data/items/pokeball.tres" id="28_1k6fl"]
 [ext_resource type="Resource" uid="uid://timvhcf5r6n0" path="res://data/items/super_potion.tres" id="28_dvwc1"]
-[ext_resource type="Resource" path="res://data/items/fairy_ocarina.tres" id="28_qvfjw"]
 
 [sub_resource type="Resource" id="TrainerTeamEntry_caterpie_2_a"]
 script = ExtResource("11_t8bo0")
@@ -225,11 +224,6 @@ facing = "left"
 position = Vector2(531, -1615)
 shop_name = "Fisherman Shop"
 stock = Array[ExtResource("26_fu66s")]([SubResource("MerchantStockEntry_potion"), SubResource("Resource_fu66s")])
-
-[node name="LootBallOcarina" parent="Actors" unique_id=727472174 instance=ExtResource("18_cixbo")]
-position = Vector2(-374.66583, 37.589844)
-loot_id = "itemball_ocarina"
-reward_item = ExtResource("28_qvfjw")
 
 [node name="AreaNotification" type="CanvasLayer" parent="." unique_id=1501097989]
 script = ExtResource("5_notif")

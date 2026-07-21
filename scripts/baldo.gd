@@ -43,7 +43,7 @@ const TEXT_INPUT_PROMPT_SCENE: PackedScene = preload("res://scenes/ui/popups/tex
 # "if" repetidos, pra uma TERCEIRA senha futura ser só mais uma linha aqui
 # (ver _on_password_submitted abaixo, já genérico pra N entradas).
 const PASSWORDS = {
-	"R0K37B055": "GIOVANNI_PC_UNLOCKED",
+	"R0CK37B055": "GIOVANNI_PC_UNLOCKED",
 	"142857080500": "BALDO_PC_UNLOCKED",
 }
 
