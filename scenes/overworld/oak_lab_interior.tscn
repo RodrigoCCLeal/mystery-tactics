@@ -6,8 +6,8 @@
 [ext_resource type="Script" uid="uid://d26pj4i16thtp" path="res://scripts/door.gd" id="4_lrf4x"]
 [ext_resource type="PackedScene" path="res://scenes/npc/loot_ball.tscn" id="4_wre4m"]
 [ext_resource type="Resource" uid="uid://cq1d5gsiosefh" path="res://data/units/0001.tres" id="5_lrf4x"]
-[ext_resource type="Resource" uid="uid://c6u2qdc3o2erk" path="res://data/units/0004.tres" id="6_c7ept"]
-[ext_resource type="Resource" uid="uid://bnqc5pta08a7q" path="res://data/units/0007.tres" id="7_utgeo"]
+[ext_resource type="Resource" path="res://data/units/0155.tres" id="6_utgeo"]
+[ext_resource type="Resource" path="res://data/units/0258.tres" id="7_3flus"]
 [ext_resource type="PackedScene" uid="uid://cddnryw8qsono" path="res://scenes/npc/open_pc.tscn" id="8_utgeo"]
 
 [node name="HouseInterior" type="Node2D" unique_id=1248770916]
@@ -45,27 +45,27 @@ reward_unit = ExtResource("5_lrf4x")
 caught_location_override = "Oak's Lab"
 add_to_active_team = true
 
-[node name="StarterCharmander" parent="Actors" unique_id=1145487120 instance=ExtResource("4_wre4m")]
+[node name="StarterCyndaquil" parent="Actors" unique_id=1145487120 instance=ExtResource("4_wre4m")]
 position = Vector2(131, -206)
 reward_type = "Unit"
-loot_id = "starter_charmander"
+loot_id = "starter_cyndaquil"
 open_message = "This ball contains _UNITNAME_, will you take it?"
 confirm_before_granting = true
 exclusive_flag = "STARTER1_CHOSEN"
 blocked_message = "Don't be greedy!"
-reward_unit = ExtResource("6_c7ept")
+reward_unit = ExtResource("6_utgeo")
 caught_location_override = "Oak's Lab"
 add_to_active_team = true
 
-[node name="StarterSquirtle" parent="Actors" unique_id=1147884531 instance=ExtResource("4_wre4m")]
+[node name="StarterMudkip" parent="Actors" unique_id=1147884531 instance=ExtResource("4_wre4m")]
 position = Vector2(160, -207)
 reward_type = "Unit"
-loot_id = "starter_squirtle"
+loot_id = "starter_mudkip"
 open_message = "This ball contains _UNITNAME_, will you take it?"
 confirm_before_granting = true
 exclusive_flag = "STARTER1_CHOSEN"
 blocked_message = "Don't be greedy!"
-reward_unit = ExtResource("7_utgeo")
+reward_unit = ExtResource("7_3flus")
 caught_location_override = "Oak's Lab"
 add_to_active_team = true
 
