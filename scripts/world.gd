@@ -65,6 +65,21 @@ const FACING_TO_DIR = {
 @export var route1_area: EncounterArea
 const ROUTE1_BOUNDARY_Y = -14
 
+# ---------- Barias (retângulo, não linha) ----------
+# Pedido do usuário: "The rectangle with (-2,-57) (25,-37) for edges is the
+# town of Barias" — diferente de ARCHI/ROUTE 1 acima (uma única linha de
+# fronteira em Y), aqui os dois pontos descrevem os CANTOS opostos de um
+# retângulo de verdade, então precisa checar X e Y juntos, não só Y. Rect2i
+# em Godot é meio-aberto (position <= ponto < position+size — o canto
+# position+size NÃO conta como "dentro"), por isso size é (25-(-2)+1,
+# -37-(-57)+1) em vez de só (25-(-2), -37-(-57)): sem o +1 em cada eixo, a
+# própria borda direita/inferior descrita pelo usuário (x=25, y=-37) ficaria
+# FORA do retângulo. Checado ANTES da linha ARCHI/ROUTE 1 em
+# _area_for_position() — Barias é uma área "furada" dentro do resto do
+# mapa, não mais uma faixa que se estende pro X inteiro.
+const BARIAS_BOUNDS = Rect2i(Vector2i(-2, -57), Vector2i(28, 21))
+@export var barias_area: EncounterArea
+
 # Coordenada do tile de grama alta DENTRO do atlas do TileSet outside.tres
 # (diferente do forest_tileset.tres usado em Test — cada folha de tiles tem
 # sua própria grama num lugar diferente). O valor abaixo é só um PLACEHOLDER
@@ -146,9 +161,15 @@ func _tileset_has_custom_data(tile_set: TileSet, layer_name: String) -> bool:
 			return true
 	return false
 
-# Qual EncounterArea vale pra célula `cell` — só olha o Y (ver comentário
-# grande em ROUTE1_BOUNDARY_Y acima sobre por quê).
+# Qual EncounterArea vale pra célula `cell` — Barias primeiro (retângulo
+# fechado, ver BARIAS_BOUNDS acima), DEPOIS a linha ARCHI/ROUTE 1 (só olha
+# o Y, ver comentário grande em ROUTE1_BOUNDARY_Y). Ordem importa: se
+# Barias um dia ficar do lado ROUTE 1 da linha (y <= ROUTE1_BOUNDARY_Y), o
+# retângulo ainda precisa vencer, senão o jogador nunca veria "BARIAS" no
+# HUD lá dentro.
 func _area_for_position(cell: Vector2i) -> EncounterArea:
+	if barias_area != null and BARIAS_BOUNDS.has_point(cell):
+		return barias_area
 	if route1_area != null and cell.y <= ROUTE1_BOUNDARY_Y:
 		return route1_area
 	return encounter_area

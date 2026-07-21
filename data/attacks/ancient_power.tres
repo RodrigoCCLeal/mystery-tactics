@@ -1,17 +1,13 @@
-[gd_resource type="Resource" script_class="AttackData" format=3]
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://d0yjuw7hmmcys"]
 
-[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+[ext_resource type="Script" uid="uid://ds0uxvdng0s2r" path="res://scripts/attack_data.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
 is_special = true
 element_type = "Rock"
 power = 60
-area_of_effect = 1
-range = 1
-makes_contact = false
-is_projectile = false
 self_stat_boost_chance = 0.1
 self_stat_boost_amount = 1
 action_name = "Ancient Power"
-max_uses = 5
+max_uses = 8

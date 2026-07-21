@@ -81,6 +81,12 @@ func _make_atlas(coord: Vector2i) -> AtlasTexture:
 	atlas.region = Rect2(coord.x * ATLAS_TILE_SIZE.x, coord.y * ATLAS_TILE_SIZE.y, ATLAS_TILE_SIZE.x, ATLAS_TILE_SIZE.y)
 	return atlas
 
+# Mesma caixa genérica de 1 linha de sempre (ver player.gd::MESSAGE_BOX_SCENE
+# pro mesmo comentário) — usada só pro "esse terminal ainda não foi
+# configurado" abaixo, quando nenhuma conta foi desbloqueada ainda (ver
+# baldo.gd — fala com ele primeiro).
+const MESSAGE_BOX_SCENE: PackedScene = preload("res://scenes/ui/popups/trainer_message_box.tscn")
+
 # X de frente pro terminal (mesmo caminho de qualquer Npc — ver world.gd/
 # world.gd/house_interior.gd::_try_interact). Pedido do usuário: "activate
 # 'PC' menu" — abre a MESMA computer_screen.tscn que existia atrás da opção
@@ -89,6 +95,16 @@ func _make_atlas(coord: Vector2i) -> AtlasTexture:
 func interact() -> void:
 	if _busy:
 		return
+	# computer_screen.gd esconde "PC"/"Giovanni"/"Baldo" individualmente
+	# conforme os flags (ver _ready() lá) — mas se NENHUM dos três estiver
+	# desbloqueado ainda, abrir aquela tela mostraria um menu completamente
+	# vazio (sem nada pra selecionar). Barra a interação inteira nesse caso
+	# específico, com uma mensagem em vez de um menu em branco — pedido do
+	# usuário original das 3 contas só existirem depois de falar com Baldo
+	# (ver baldo.gd).
+	if not GameState.get_flag("PC_ACCOUNT_REGISTERED") and not GameState.get_flag("GIOVANNI_PC_UNLOCKED") and not GameState.get_flag("BALDO_PC_UNLOCKED"):
+		_show_locked_message()
+		return
 	_busy = true
 	anim.visible = true
 	anim.play("screen_on")
@@ -96,6 +112,16 @@ func interact() -> void:
 	var screen = COMPUTER_SCREEN_SCENE.instantiate()
 	add_child(screen)
 	screen.closed.connect(_on_screen_closed)
+
+func _show_locked_message() -> void:
+	get_tree().paused = true
+	var box = MESSAGE_BOX_SCENE.instantiate()
+	add_child(box)
+	box.setup("This terminal isn't set up yet.")
+	box.closed.connect(_on_locked_message_closed)
+
+func _on_locked_message_closed() -> void:
+	get_tree().paused = false
 
 func _on_screen_closed() -> void:
 	get_tree().paused = false

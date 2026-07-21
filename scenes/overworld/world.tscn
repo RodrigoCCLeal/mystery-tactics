@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://c1suh5qc74y6g" path="res://assets/tiles/tilesets/OW/sourceIMG/doors5.png" id="7_i7141"]
 [ext_resource type="Texture2D" uid="uid://bt0i87l56m863" path="res://assets/tiles/tilesets/OW/sourceIMG/doors3.png" id="7_qd0j8"]
 [ext_resource type="PackedScene" path="res://scenes/npc/trainer.tscn" id="9_5uq6f"]
+[ext_resource type="Resource" uid="uid://bac7ludy07ndg" path="res://data/areas/archi_area.tres" id="9_archi"]
+[ext_resource type="Resource" path="res://data/areas/barias_area.tres" id="9_barias"]
 [ext_resource type="Resource" uid="uid://yb07kqqc8tjr" path="res://data/areas/route1_area.tres" id="9_route1"]
 [ext_resource type="Script" uid="uid://cklcg3r7amhp7" path="res://scripts/trainer_team.gd" id="10_4o8lm"]
 [ext_resource type="Script" uid="uid://cicfhbijirymv" path="res://scripts/trainer_team_entry.gd" id="11_t8bo0"]
@@ -19,7 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://blt7g2nd81qn1" path="res://assets/sprites/Human/Trainer/trainer_CHANNELER.png" id="16_t8bo0"]
 [ext_resource type="PackedScene" path="res://scenes/npc/loot_ball.tscn" id="18_cixbo"]
 [ext_resource type="Resource" path="res://data/items/muscle_band.tres" id="20_t818m"]
-[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="21_clyph"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="21_clyph"]
 [ext_resource type="Resource" path="res://data/items/rocketball.tres" id="22_50wbd"]
 [ext_resource type="Resource" uid="uid://5igdisqid0na" path="res://data/units/0020.tres" id="23_imwcl"]
 [ext_resource type="Texture2D" uid="uid://da3e6ytfa0dpx" path="res://assets/sprites/Human/Trainer/trainer_TEAMROCKET_M.png" id="24_oer5g"]
@@ -30,9 +32,6 @@
 [ext_resource type="Resource" uid="uid://cusa6m2ijtesg" path="res://data/items/pokeball.tres" id="28_1k6fl"]
 [ext_resource type="Resource" uid="uid://timvhcf5r6n0" path="res://data/items/super_potion.tres" id="28_dvwc1"]
 [ext_resource type="Resource" path="res://data/items/fairy_ocarina.tres" id="28_qvfjw"]
-
-[sub_resource type="Resource" id="Resource_oer5g"]
-metadata/__load_path__ = "res://data/areas/startingtown_area.tres"
 
 [sub_resource type="Resource" id="TrainerTeamEntry_caterpie_2_a"]
 script = ExtResource("11_t8bo0")
@@ -95,8 +94,9 @@ metadata/_custom_type_script = "uid://34sf5hideha7"
 
 [node name="World" type="Node2D" unique_id=431092218]
 script = ExtResource("3_world_script")
-encounter_area = SubResource("Resource_oer5g")
+encounter_area = ExtResource("9_archi")
 route1_area = ExtResource("9_route1")
+barias_area = ExtResource("9_barias")
 grass_atlas_coords = Vector2i(6, 0)
 
 [node name="TileMapLayerGround" type="TileMapLayer" parent="." unique_id=480122279]
@@ -171,7 +171,7 @@ sheet_column = 1
 position = Vector2(-145, -939)
 trainer_id = "bugcatcher_Angelo"
 trainer_name = "Angelo"
-spotted_message = "I'm looking for rare bugs!"
+spotted_message = "Rare bugs appear at night!"
 iq = "Easy"
 teams = Array[ExtResource("10_4o8lm")]([SubResource("TrainerTeam_tier0"), SubResource("TrainerTeam_tier1")])
 spot_behavior = "Spinner"

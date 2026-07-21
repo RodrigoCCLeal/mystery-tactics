@@ -50,6 +50,11 @@ extends Resource
 # `storage`, só que outra caixa: o jogador só ganha acesso a ela depois de
 # certo ponto da história (ver GameState.flags, "GIOVANNI_ACCOUNT_UNLOCKED").
 @export var giovanni_storage: Array[UnitData] = []
+# "Baldo's Account" (ver GameState.baldo_storage) — 1 de cada espécie nível
+# 100, pré-preenchida. Mesmo formato/tamanho fixo de storage/
+# giovanni_storage, atrás da senha 142857080500 (ver baldo.gd/
+# BALDO_PC_UNLOCKED).
+@export var baldo_storage: Array[UnitData] = []
 
 # Inventário como DOIS arrays em vez de Dictionary (GameState.inventory é
 # ItemData -> int) — Dictionary com Resource como chave é mais arriscado de

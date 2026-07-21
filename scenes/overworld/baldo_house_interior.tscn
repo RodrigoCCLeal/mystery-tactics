@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/npc/loot_ball.tscn" id="4_b0d3n"]
 [ext_resource type="Resource" uid="uid://dt0mya0novat0" path="res://data/items/ability_patch.tres" id="6_om58f"]
 [ext_resource type="Script" uid="uid://d26pj4i16thtp" path="res://scripts/door.gd" id="6_stqft"]
+[ext_resource type="PackedScene" path="res://scenes/npc/baldo.tscn" id="7_baldo"]
 
 [node name="HouseInterior" type="Node2D" unique_id=1248770916]
 script = ExtResource("1_b0d3n")
@@ -38,6 +39,10 @@ open_message = "He won't need this..."
 reward_item = ExtResource("6_om58f")
 caught_location_override = "Oak's Lab"
 add_to_active_team = true
+
+[node name="Baldo" parent="Actors" unique_id=763887147 instance=ExtResource("7_baldo")]
+position = Vector2(48, -107)
+facing = "up"
 
 [node name="Door" type="Node2D" parent="." unique_id=1916441077]
 position = Vector2(16, 106)

@@ -39,32 +39,44 @@ const RESERVE_COLUMNS = 8
 const ATTR_PORTRAIT_SIZE = 64.0
 
 # Qual reserva a coluna do meio mostra: "storage" (padrão, reserva normal do
-# jogador, ver GameState.storage) ou "giovanni" (GameState.giovanni_storage —
+# jogador, ver GameState.storage), "giovanni" (GameState.giovanni_storage —
 # "Giovanni's Account", unidades roubadas por treinadores Rocket, ver
-# battle.gd::resolve_capture). Quem abre esta cena seta isso ANTES dela
-# entrar na árvore (ver computer_screen.gd::_open_pc_screen) — o resto do
-# arquivo nunca lê GameState.storage/giovanni_storage direto, só chama os 3
-# wrappers _reserve_* logo abaixo, que decidem qual reserva de verdade usar
-# com base neste campo. Isso é o que deixa a MESMA cena/script servir as
-# duas contas, igual house_interior.gd serve qualquer interior.
-@export_enum("storage", "giovanni") var reserve_mode: String = "storage"
+# battle.gd::resolve_capture) ou "baldo" (GameState.baldo_storage —
+# "Baldo's Account", 1 de cada espécie nível 100, ver GameState.
+# _seed_baldo_storage). Quem abre esta cena seta isso ANTES dela entrar na
+# árvore (ver computer_screen.gd::_open_pc_screen) — o resto do arquivo
+# nunca lê GameState.storage/giovanni_storage/baldo_storage direto, só chama
+# os 3 wrappers _reserve_* logo abaixo, que decidem qual reserva de verdade
+# usar com base neste campo. Isso é o que deixa a MESMA cena/script servir
+# as três contas, igual house_interior.gd serve qualquer interior.
+@export_enum("storage", "giovanni", "baldo") var reserve_mode: String = "storage"
 
 func _reserve_get_slot(index: int) -> UnitData:
-	if reserve_mode == "giovanni":
-		return GameState.get_giovanni_slot(index)
-	return GameState.get_storage_slot(index)
+	match reserve_mode:
+		"giovanni":
+			return GameState.get_giovanni_slot(index)
+		"baldo":
+			return GameState.get_baldo_slot(index)
+		_:
+			return GameState.get_storage_slot(index)
 
 func _reserve_swap_slots(a: int, b: int) -> void:
-	if reserve_mode == "giovanni":
-		GameState.swap_giovanni_slots(a, b)
-	else:
-		GameState.swap_storage_slots(a, b)
+	match reserve_mode:
+		"giovanni":
+			GameState.swap_giovanni_slots(a, b)
+		"baldo":
+			GameState.swap_baldo_slots(a, b)
+		_:
+			GameState.swap_storage_slots(a, b)
 
 func _reserve_swap_active(active_index: int, reserve_index: int) -> void:
-	if reserve_mode == "giovanni":
-		GameState.swap_active_with_giovanni(active_index, reserve_index)
-	else:
-		GameState.swap_active_with_storage(active_index, reserve_index)
+	match reserve_mode:
+		"giovanni":
+			GameState.swap_active_with_giovanni(active_index, reserve_index)
+		"baldo":
+			GameState.swap_active_with_baldo(active_index, reserve_index)
+		_:
+			GameState.swap_active_with_storage(active_index, reserve_index)
 
 @onready var team_rows_container: VBoxContainer = $Center/Panel/MarginContainer/Content/Columns/TeamColumn/TeamRows
 @onready var reserve_grid_container: GridContainer = $Center/Panel/MarginContainer/Content/Columns/ReserveColumn/ReserveGrid

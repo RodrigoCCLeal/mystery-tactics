@@ -10,16 +10,24 @@ extends CanvasLayer
 # party_screen.gd pra sub-menus:
 #   - "PC" (Label renomeado em _ready(), ver _refresh_pc_option_label —
 #     pedido do usuário: "Rename the 'PC' inside 'PC' to 'PLAYERNAME's
-#     Account'") abre a reserva NORMAL do jogador (GameState.storage).
+#     Account'") abre a reserva NORMAL do jogador (GameState.storage). Só
+#     aparece depois de GameState.flags["PC_ACCOUNT_REGISTERED"] (ver
+#     baldo.gd — registra na primeira conversa depois de escolher starter).
 #   - "Giovanni" abre "Giovanni's Account" (GameState.giovanni_storage —
 #     unidades roubadas por treinadores Rocket, ver battle.gd::
 #     resolve_capture) — pedido do usuário: "just add it as an option when
 #     I interact with the PC", depois de uma tentativa anterior (um SEGUNDO
-#     terminal físico só pra essa conta) que ele preferiu reverter. As duas
-#     opções ficam sempre visíveis, sem gate de flag nenhum por enquanto —
-#     fácil de adicionar depois (mesmo padrão de loot_ball.gd::exclusive_flag)
-#     quando existir uma história que justifique esconder "Giovanni" até o
-#     jogador descobrir essa conta.
+#     terminal físico só pra essa conta) que ele preferiu reverter. Só
+#     aparece depois de GameState.flags["GIOVANNI_PC_UNLOCKED"] (ver
+#     baldo.gd — a senha R0K37B055). Antes as duas opções ficavam sempre
+#     visíveis, sem gate nenhum (comentário antigo já previa isso: "fácil
+#     de adicionar depois... quando existir uma história que justifique
+#     esconder 'Giovanni'" — agora existe).
+#   - "Baldo" abre "Baldo's Account" (GameState.baldo_storage — 1 de cada
+#     espécie nível 100) — pedido do usuário: "make a third account called
+#     Baldo's Account". Só aparece depois de
+#     GameState.flags["BALDO_PC_UNLOCKED"] (ver baldo.gd — a senha
+#     142857080500, SEGUNDA senha válida, diferente da de Giovanni).
 #
 # "Heal" existia aqui só pra debug (curar o time sem precisar achar a Nurse)
 # e foi removido agora que existe um jeito de verdade, dentro da ficção, de
@@ -32,17 +40,13 @@ extends CanvasLayer
 
 signal closed
 
-const OPTIONS = ["PC", "Giovanni"]
 const PC_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/pc_screen.tscn")
 
 @onready var header_label: Label = $Center/Panel/MarginContainer/Options/Header
 @onready var options_container: VBoxContainer = $Center/Panel/MarginContainer/Options
 @onready var pc_option_label: Label = $Center/Panel/MarginContainer/Options/PC
-# "Giovanni" (ver Center/Panel/MarginContainer/Options/Giovanni no .tscn)
-# não precisa de @onready próprio — texto fixo, sem nome de jogador pra
-# interpolar (diferente de pc_option_label acima) — só entra na varredura
-# genérica de option_labels em _ready() abaixo, igual qualquer opção nova
-# que ganhe texto estático no futuro.
+@onready var giovanni_option_label: Label = $Center/Panel/MarginContainer/Options/Giovanni
+@onready var baldo_option_label: Label = $Center/Panel/MarginContainer/Options/Baldo
 
 var option_labels: Array[Label] = []
 var selected_index: int = 0
@@ -50,8 +54,19 @@ var selected_index: int = 0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_refresh_pc_option_label()
+	# Esconde (não remove) quem ainda não foi desbloqueado — mesmo padrão de
+	# title_screen.gd::load_game_label.visible (ver lá), e pelo MESMO motivo:
+	# só entra em option_labels quem estiver visible=true NESTE ponto, então
+	# visible precisa ser decidido ANTES do loop de baixo. open_pc.gd já
+	# barra a interação inteira se NENHUM dos dois estiver desbloqueado (ver
+	# lá), então "os dois escondidos ao mesmo tempo" não deveria acontecer
+	# de verdade — mas nada aqui QUEBRARIA se acontecesse, só mostraria uma
+	# lista vazia.
+	pc_option_label.visible = GameState.get_flag("PC_ACCOUNT_REGISTERED")
+	giovanni_option_label.visible = GameState.get_flag("GIOVANNI_PC_UNLOCKED")
+	baldo_option_label.visible = GameState.get_flag("BALDO_PC_UNLOCKED")
 	for child in options_container.get_children():
-		if child is Label and child != header_label:
+		if child is Label and child.visible and child != header_label:
 			option_labels.append(child)
 	for i in option_labels.size():
 		var label := option_labels[i]
@@ -87,7 +102,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 func _move_selection(step: int) -> void:
-	selected_index = wrapi(selected_index + step, 0, OPTIONS.size())
+	if option_labels.is_empty():
+		return
+	selected_index = wrapi(selected_index + step, 0, option_labels.size())
 	_update_selection_visual()
 
 func _on_option_mouse_entered(index: int) -> void:
@@ -104,11 +121,20 @@ func _update_selection_visual() -> void:
 		option_labels[i].modulate = Color.YELLOW if i == selected_index else Color.WHITE
 
 func _activate_selected() -> void:
-	match OPTIONS[selected_index]:
+	if option_labels.is_empty():
+		return
+	# Nome do NODE (não mais um array OPTIONS paralelo indexado junto) —
+	# mesmo motivo de title_screen.gd::_activate_selected: agora que
+	# option_labels pode ter 1 ou 2 itens dependendo dos flags (ver _ready),
+	# um array fixo separado ficaria dessincronizado do índice de verdade
+	# assim que "PC" estivesse escondido e "Giovanni" fosse o único visível.
+	match option_labels[selected_index].name:
 		"PC":
 			_open_pc_screen("storage")
 		"Giovanni":
 			_open_pc_screen("giovanni")
+		"Baldo":
+			_open_pc_screen("baldo")
 
 # mode repassado direto pra pc_screen.gd::reserve_mode — "storage" (reserva
 # normal) ou "giovanni" (GameState.giovanni_storage), ver comentário grande

@@ -27,7 +27,7 @@ offset_right = 0.0
 offset_bottom = 0.0
 
 [node name="Panel" type="Panel" parent="Center"]
-custom_minimum_size = Vector2(200, 190)
+custom_minimum_size = Vector2(200, 220)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Center/Panel"]
@@ -63,3 +63,7 @@ text = "PC"
 [node name="Giovanni" type="Label" parent="Center/Panel/MarginContainer/Options"]
 layout_mode = 2
 text = "Giovanni's Account"
+
+[node name="Baldo" type="Label" parent="Center/Panel/MarginContainer/Options"]
+layout_mode = 2
+text = "Baldo's Account"

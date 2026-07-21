@@ -242,13 +242,22 @@ func _apply_fresh_state() -> void:
 	roster = []
 	while roster.size() < MAX_TEAM_SIZE:
 		roster.append(null)
+	# "PlayerName's Account" começa TOTALMENTE vazia agora — pedido do
+	# usuário: "Delete all units from PlayerName's Account at the start of a
+	# new file". Antes _seed_testing_storage() enchia esta reserva com 1 de
+	# CADA espécie (ALL_SPECIES) nível 70 só pra facilitar teste; esse mesmo
+	# atalho continua existindo, só que mudou de dono — ver
+	# _seed_baldo_storage() logo abaixo, agora nível 100 e na conta do Baldo.
 	storage = []
 	while storage.size() < STORAGE_CAPACITY:
 		storage.append(null)
 	giovanni_storage = []
 	while giovanni_storage.size() < STORAGE_CAPACITY:
 		giovanni_storage.append(null)
-	_seed_testing_storage()
+	baldo_storage = []
+	while baldo_storage.size() < STORAGE_CAPACITY:
+		baldo_storage.append(null)
+	_seed_baldo_storage()
 	inventory = {}
 	_seed_starting_inventory()
 	tool_shortcuts = [null, null, null, null]
@@ -302,22 +311,21 @@ func _apply_fresh_state() -> void:
 	overworld_scene_path = "res://scenes/overworld/red_house_interior.tscn"
 	game_time_seconds = 8.0 * 3600.0   # 8:00 (Manhã) — ver comentário grande em game_time_seconds
 
-# Reserva "de teste": bota uma cópia de CADA espécie já implementada (ver
-# ALL_SPECIES, mais abaixo) direto na reserva do PC, todas no nível 70 — pra
-# testar ataque/interação/evolução nova (ex: Growl, ou a evolução Piloswine
-# -> Mamoswine que exige Ancient Power equipado) sem precisar caçar/subir de
-# nível cada espécie selvagem primeiro. Mesma ideia de
-# _seed_starting_inventory() logo abaixo, só que pra unidades em vez de
-# item; remover esta chamada (em _ready()) quando o jogo não precisar mais
-# desse atalho de teste.
+# "Baldo's Account" — bota uma cópia de CADA espécie já implementada (ver
+# ALL_SPECIES, mais abaixo) direto nesta reserva, todas no nível 100.
+# Pedido do usuário: "make a third account called Baldo's Account. 1 of
+# each unit level 100 to that account". Era _seed_testing_storage() (nível
+# 70, enchia `storage` — "PlayerName's Account" — como atalho de debug);
+# virou uma feature de verdade, presa atrás da senha 142857080500 (ver
+# baldo.gd/BALDO_PC_UNLOCKED), então mudou de dono e de nível.
 # .duplicate() em cada uma, mesmo motivo do roster lá em cima — sem isso,
 # todas as cópias da mesma espécie (aqui e uma eventual capturada depois)
 # dividiriam nível/xp/HP entre si.
-func _seed_testing_storage() -> void:
+func _seed_baldo_storage() -> void:
 	for species in ALL_SPECIES:
 		var data: UnitData = species.duplicate()
-		data.ensure_initialized(70)
-		add_to_first_empty_storage_slot(data)
+		data.ensure_initialized(100)
+		add_to_first_empty_baldo_slot(data)
 
 func get_active_roster() -> Array[UnitData]:
 	var active: Array[UnitData] = []
@@ -519,6 +527,57 @@ func swap_active_with_giovanni(active_index: int, giovanni_index: int) -> void:
 	roster[active_index] = giovanni_storage[giovanni_index]
 	giovanni_storage[giovanni_index] = tmp
 
+# "Baldo's Account" — terceira reserva, mesmo formato/tamanho fixo de
+# storage/giovanni_storage acima. Diferente das outras duas (que começam
+# vazias e enchem por jogo/roubo), esta já nasce PRÉ-CHEIA — 1 de cada
+# espécie nível 100 (ver _seed_baldo_storage(), chamada em
+# _apply_fresh_state()). Pedido do usuário: "make a third account called
+# Baldo's Account. 1 of each unit level 100 to that account. To unlock it,
+# must give password 142857080500" (ver baldo.gd/BALDO_PC_UNLOCKED e
+# open_pc.gd/computer_screen.gd, que escondem esta conta até isso
+# acontecer, mesmo esquema de GIOVANNI_PC_UNLOCKED).
+var baldo_storage: Array[UnitData] = []
+
+func get_baldo_slot(index: int) -> UnitData:
+	if index < 0 or index >= baldo_storage.size():
+		return null
+	return baldo_storage[index]
+
+func swap_baldo_slots(a: int, b: int) -> void:
+	if a < 0 or a >= baldo_storage.size() or b < 0 or b >= baldo_storage.size():
+		return
+	var tmp = baldo_storage[a]
+	baldo_storage[a] = baldo_storage[b]
+	baldo_storage[b] = tmp
+
+# Usada só por _seed_baldo_storage() — mesmo padrão de
+# add_to_first_empty_storage_slot/add_to_first_empty_giovanni_slot acima.
+func add_to_first_empty_baldo_slot(data: UnitData) -> bool:
+	for i in baldo_storage.size():
+		if baldo_storage[i] == null:
+			baldo_storage[i] = data
+			return true
+	return false
+
+# Gêmea de swap_active_with_storage/swap_active_with_giovanni, só que
+# trocando com baldo_storage — mesma lógica dos 4 casos (ver comentário
+# grande em swap_active_with_storage).
+func swap_active_with_baldo(active_index: int, baldo_index: int) -> void:
+	if active_index < 0 or active_index >= roster.size():
+		return
+	if baldo_index < 0 or baldo_index >= baldo_storage.size():
+		return
+	if roster[active_index] != null and baldo_storage[baldo_index] == null:
+		var active_count = 0
+		for data in roster:
+			if data != null:
+				active_count += 1
+		if active_count <= 1:
+			return
+	var tmp = roster[active_index]
+	roster[active_index] = baldo_storage[baldo_index]
+	baldo_storage[baldo_index] = tmp
+
 # Troca uma unidade do time ATIVO por uma da RESERVA (as duas únicas
 # operações que o PC sabe fazer, ver pc_screen.gd — reordenar dentro do
 # time usa swap_roster_slots, dentro da reserva usa swap_storage_slots
@@ -624,6 +683,9 @@ const ALL_SPECIES: Array[UnitData] = [
 	preload("res://data/units/0012.tres"),
 	preload("res://data/units/0019.tres"),
 	preload("res://data/units/0020.tres"),
+	preload("res://data/units/0013.tres"),
+	preload("res://data/units/0014.tres"),
+	preload("res://data/units/0015.tres"),
 ]
 
 # Em qual área do overworld o jogador está AGORA — world.gd seta isso (a
@@ -1198,6 +1260,7 @@ func save_game(slot: int) -> void:
 	data.roster = roster.duplicate()
 	data.storage = storage.duplicate()
 	data.giovanni_storage = giovanni_storage.duplicate()
+	data.baldo_storage = baldo_storage.duplicate()
 	# inventory.keys() devolve um Array comum (não tipado) — Array[ItemData](...)
 	# pareceria o jeito óbvio de "converter", mas isso é erro de sintaxe em
 	# GDScript (o Parser lê "Array[ItemData]" como uma expressão e tenta
@@ -1263,6 +1326,12 @@ func load_game(slot: int) -> bool:
 	# caixa (0..STORAGE_CAPACITY-1) ficariam fora dos limites do array.
 	while giovanni_storage.size() < STORAGE_CAPACITY:
 		giovanni_storage.append(null)
+	baldo_storage = data.baldo_storage.duplicate()
+	# Mesmo motivo do padding de giovanni_storage acima — saves de antes de
+	# baldo_storage existir carregam ele vazio (campo novo, default [] em
+	# SaveData).
+	while baldo_storage.size() < STORAGE_CAPACITY:
+		baldo_storage.append(null)
 	inventory = {}
 	for i in data.inventory_items.size():
 		inventory[data.inventory_items[i]] = data.inventory_quantities[i]
