@@ -367,6 +367,13 @@ var current_battle_tileset: BattleTileset
 @onready var undo_button: Button = $HUD/UndoButton
 @onready var flee_button: Button = $HUD/FleeButton
 @onready var action_slots: HBoxContainer = $HUD/ActionSlots
+# Sétimo "slot" de ação, fora da grade normal de 6 (ver ACTION_SLOT_COUNT) —
+# só aparece quando NENHUM dos 6 slots reais tem uma ação clicável agora
+# (loadout vazio, todo Ataque sem uso restante, ou só Habilidade/Item passivo
+# — ver has_usable_slot_action()). Pedido do usuário: "a Seventh attack
+# option that is always the same attack for every unit and just appears IF
+# and ONLY IF the unit has no available actions".
+@onready var struggle_button: Button = $HUD/StruggleButton
 @onready var battle_log_panel: PanelContainer = $HUD/BattleLog
 @onready var battle_log: RichTextLabel = $HUD/BattleLog/BattleLogText
 
@@ -395,6 +402,20 @@ var battle_log_expanded: bool = false
 # action_slots.get_child_count() (que agora devolveria 2, as colunas, não os
 # botões) como o número de slots lógicos. Ver _get_action_slot_button().
 const ACTION_SLOT_COUNT = 6
+
+# O ataque de Struggle (ver struggle_button acima e data/attacks/struggle.tres)
+# é o MESMO AttackData pra toda unidade, sem tipo, Físico, 50 de poder, 100%
+# de accuracy, encosta (makes_contact=true) e tem self_max_hp_recoil_fraction
+# = 0.25 (perde 1/4 do próprio hp_max depois de bater — ver AttackData e
+# execute_attack). max_uses = -1 nele (sem contador de PP) é o que permite
+# reaproveitar TODO o pipeline normal de Ataque (handle_targeting_input,
+# _run_player_attack, execute_attack) sem nenhum "if is struggle" espalhado:
+# passando slot_index = STRUGGLE_SLOT_INDEX (nunca um índice real de
+# UnitData.slots), o "attack.max_uses > 0" que guarda o desconto de
+# slot_uses em execute_attack já dá false sozinho, então esse índice nunca é
+# de fato usado pra indexar nada.
+const STRUGGLE_ATTACK: AttackData = preload("res://data/attacks/struggle.tres")
+const STRUGGLE_SLOT_INDEX = -1
 
 # UnitSummary (a fileira de portraits em cima do mapa, ver battle.tscn) agora
 # É a visualização da fila de turnos inteira — jogador E inimigo juntos, na
@@ -517,6 +538,7 @@ func _ready() -> void:
 	end_turn_button.pressed.connect(_on_end_turn_pressed)
 	undo_button.pressed.connect(_on_undo_pressed)
 	flee_button.pressed.connect(_on_flee_pressed)
+	struggle_button.pressed.connect(_on_struggle_pressed)
 	for i in ACTION_SLOT_COUNT:
 		var button: Button = _get_action_slot_button(i)
 		button.pressed.connect(_on_slot_pressed.bind(i))
@@ -525,6 +547,7 @@ func _ready() -> void:
 	undo_button.visible = false
 	flee_button.visible = false
 	action_slots.visible = false
+	struggle_button.visible = false
 	refresh_start_button()
 
 # Sorteia um BATTLE_TILESETS e aplica o .tile_set dele nas 4 TileMapLayer da
@@ -1360,6 +1383,7 @@ func begin_current_turn() -> void:
 		# nós (attacker/defender/tilemap) já destruídos e crashava. Ver também
 		# a guarda extra dentro de _on_flee_pressed() logo abaixo.
 		flee_button.visible = false
+		struggle_button.visible = false
 		run_enemy_turn(u)
 		return
 
@@ -1514,6 +1538,31 @@ const SLOT_BG_COLOR = Color(0.1, 0.1, 0.12, 0.85)
 # passivo, ataque sem uso/já usado no turno) mesmo com a borda colorida.
 const SLOT_DISABLED_ALPHA = 0.35
 
+# true se `u` tem PELO MENOS UM slot clicável agora — mesmas 3 regras que
+# refresh_action_slots_hud() já aplica slot por slot (Habilidade nunca é
+# clicável; Item só conta se for Ball/TM com carga > 0; Ataque só conta se
+# max_uses <= 0 ou ainda sobrar uso), só que aqui sem mexer em nenhum botão,
+# usado só pra decidir se struggle_button deve aparecer (ver
+# refresh_action_slots_hud logo abaixo). Pedido do usuário: Struggle
+# "appears IF and ONLY IF the unit has no available actions", que ele mesmo
+# resume em 3 casos — loadout vazio, todo Ataque sem uso, ou só Habilidade/
+# Item passivo no loadout. Os 3 casos são, na prática, o MESMO caso: nenhum
+# slot passa em nenhuma das checagens abaixo.
+func has_usable_slot_action(u: Node) -> bool:
+	for i in u.data.slots.size():
+		var action: ActionData = u.data.slots[i]
+		if action == null or action is AbilityData:
+			continue
+		if action is ItemData:
+			if action.category == "Ball" or action.category == "TM":
+				if u.data.get_slot_quantity(i) > 0:
+					return true
+			continue   # Held Item/Medicine/Berry: nunca clicável em batalha
+		if action is AttackData:
+			if action.max_uses <= 0 or (i < u.slot_uses.size() and u.slot_uses[i] > 0):
+				return true
+	return false
+
 # Atualiza o texto/estado dos 6 botões de ação com o loadout da unidade da
 # vez. Caixa pequena, conteúdo mínimo: Ataque mostra Nome + usos; Habilidade
 # só o Nome (toda Habilidade é passiva, marcar isso no texto virou redundante
@@ -1621,6 +1670,20 @@ func refresh_action_slots_hud() -> void:
 		button.tooltip_text = _build_attack_tooltip(action, current.slot_uses[i])
 		var border_color: Color = TYPE_BORDER_COLORS.get(action.element_type, TYPE_BORDER_COLORS["Normal"])
 		_apply_slot_border(button, border_color)
+
+	# struggle_button (ver comentário grande onde é declarada) — só aparece
+	# pra unidade do JOGADOR (inimigo nem chega a montar esse HUD, ver
+	# begin_current_turn), com ataque ainda disponível neste turno E nenhum
+	# dos 6 slots reais clicável agora (has_usable_slot_action). Sempre
+	# habilitado quando visível — Struggle não tem PP pra "acabar" (max_uses
+	# = -1 em struggle.tres), então não existe um estado "desabilitado, mas
+	# visível" pra ele, diferente dos outros 6 botões.
+	if current != null and not current.is_enemy and current.attacks_remaining > 0 and not has_usable_slot_action(current):
+		struggle_button.visible = true
+		struggle_button.disabled = false
+		struggle_button.tooltip_text = _build_attack_tooltip(STRUGGLE_ATTACK, 0)
+	else:
+		struggle_button.visible = false
 
 # Texto do tooltip (hover do mouse) de um Ataque — as informações mais
 # importantes pra decidir se vale usar: tipo, físico/especial, poder,
@@ -1793,6 +1856,23 @@ func _on_slot_pressed(index: int) -> void:
 	deselect()
 	targeting_action = action
 	targeting_slot_index = index
+
+# Gêmeo de _on_slot_pressed() acima pro struggle_button — mais simples
+# porque Struggle não vem de UnitData.slots (não existe índice real pra
+# checar/travar): o próprio botão só fica visível quando já é legítimo usar
+# Struggle (ver refresh_action_slots_hud()/has_usable_slot_action()), então
+# as checagens de segurança aqui são só "por garantia", mesmo espírito das
+# de _on_slot_pressed. targeting_action = STRUGGLE_ATTACK entra no MESMO
+# handle_targeting_input()/_run_player_attack() que qualquer Ataque normal
+# usa — Struggle não tem is_status nem is_projectile, então cai direto no
+# ramo de ataque comum (mira 1 alvo adjacente).
+func _on_struggle_pressed() -> void:
+	var current = get_current_unit()
+	if current == null or current.attacks_remaining <= 0:
+		return
+	deselect()
+	targeting_action = STRUGGLE_ATTACK
+	targeting_slot_index = STRUGGLE_SLOT_INDEX
 
 # Atalho de teclado (1-6, ver ACTION_SLOT_ACTIONS/_unhandled_input) pro
 # mesmo botão de ação — respeita EXATAMENTE o estado do botão (button.
@@ -2391,6 +2471,52 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 		if enemy_units.is_empty() or player_units.is_empty():
 			await end_battle(defender, enemy_units.is_empty())
 			return
+
+	# Recoil (ver AttackData.self_max_hp_recoil_fraction — Struggle é o
+	# primeiro caso, 0.25) — SEMPRE que o golpe causou dano de verdade
+	# (chegamos até aqui, então acertou), depois de resolver o destino do
+	# defensor acima, nunca antes. max(1, ...) pela mesma razão de
+	# calculate_damage: um recoil "de mentirinha" (0 de dano) seria
+	# confuso, melhor sempre custar pelo menos 1 de HP. Mesmo padrão de
+	# "morte fora do execute_attack normal" que apply_end_of_turn_status já
+	# usa pro tick de Poison: sem exp (não tem "quem matou", ver
+	# award_experience), remove_defeated_unit + _apply_challenge_permadeath
+	# + checagem de fim de batalha na mão, porque quem morreu aqui é quem
+	# ATACOU, não o `defender` de sempre.
+	if attack.self_max_hp_recoil_fraction > 0.0:
+		var recoil_damage = max(1, int(round(attacker.hp_max * attack.self_max_hp_recoil_fraction)))
+		attacker.take_damage(recoil_damage)
+		log_message("%s is damaged by recoil!" % attacker.data.unit_name)
+		if attacker.hp_current <= 0:
+			log_message("%s fainted from recoil!" % attacker.data.unit_name)
+			remove_defeated_unit(attacker)
+			_apply_challenge_permadeath(attacker)
+			if enemy_units.is_empty() or player_units.is_empty():
+				await end_battle(attacker, enemy_units.is_empty())
+			else:
+				# attacker (a unidade DA VEZ) morreu do próprio recoil, mas o
+				# time dela ainda tem gente — remove_defeated_unit() já
+				# reindexou current_turn_index pra apontar pra PRÓXIMA
+				# unidade da fila (ver comentário lá dentro). Chamar
+				# check_auto_end_turn() normalmente aqui seria errado:
+				# get_current_unit() já não é mais quem atacou, e a PRÓXIMA
+				# unidade ainda está com move_budget_left/attacks_remaining
+				# do turno anterior (não resetados pra ela ainda) —
+				# begin_current_turn() é quem faz esse reset direito. Mas
+				# NÃO pode ser chamado direto aqui: quem chamou execute_attack
+				# (_run_player_attack) ainda tem duas linhas pra rodar DEPOIS
+				# do await (action_in_progress = false; flee_button.visible =
+				# true incondicional), e essas linhas rodariam DEPOIS de
+				# qualquer begin_current_turn() síncrono, sobrescrevendo por
+				# cima o flee_button.visible=false que begin_current_turn()
+				# acabou de decidir certo (ex: se a PRÓXIMA unidade for
+				# inimiga). call_deferred adia a chamada pro final do frame
+				# atual — depois que _run_player_attack já terminou de
+				# limpar — garantindo que begin_current_turn() sempre fala a
+				# última palavra sobre o HUD.
+				call_deferred("begin_current_turn")
+			return
+
 	refresh_unit_summary_hud()
 	check_auto_end_turn()
 

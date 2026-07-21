@@ -202,6 +202,17 @@ extends ActionData
 # sem efeito, mesmo com self_stat_boost_chance > 0.
 @export var self_stat_boost_amount: int = 0
 
+# ---------- Recoil (dano no próprio atacante) ----------
+# Fração do PRÓPRIO hp_max (não do dano causado, nem do hp_current) que quem
+# usa esse ataque perde, SEMPRE que o golpe acerta e causa dano de verdade —
+# ver battle.gd::execute_attack, aplicado depois do dano no defensor e dos
+# efeitos secundários. 0.0 (padrão) = sem recoil nenhum, comportamento igual
+# a antes desse campo existir. Struggle é o primeiro caso: 0.25 (perde 25%
+# do próprio hp_max) — mesma convenção da série principal (fração do hp_max,
+# não do dano causado, e SEM checar Rock Head ou qualquer outra Habilidade
+# que algum dia venha a cancelar recoil, já que nenhuma existe ainda).
+@export_range(0.0, 1.0) var self_max_hp_recoil_fraction: float = 0.0
+
 # ---------- Tags ----------
 # Rótulos livres pra agrupar ataques por CATEGORIA além do element_type — ex:
 # "Wind" (Powder Snow), pra futuras interações que dependam de "isso é um

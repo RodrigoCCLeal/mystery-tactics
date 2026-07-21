@@ -307,6 +307,20 @@ func _apply_fresh_state(mode: String = "normal") -> void:
 	vanished_trainers = {}
 	trainer_positions = {}
 	trainer_facings = {}
+	# Faltavam aqui — bug reportado pelo usuário: "when creating a new
+	# debugger save, there were things already done. The starter was
+	# already picked and the ball was missing." Causa: collected_loot e
+	# flags (ver declaração/comentário grande de cada um mais abaixo neste
+	# arquivo) nunca eram limpos por _apply_fresh_state(), só existiam desde
+	# o var declaration (= {} uma vez só, no autoload inteiro). Criar uma
+	# save nova na MESMA sessão em que outra save já tinha aberto a LootBall
+	# do starter deixava loot_id em collected_loot e STARTER1_CHOSEN em
+	# flags travados de uma save pra outra: a LootBall do laboratório do Oak
+	# via loot_ball.gd::_ready() e se autodestruía na hora (achando que já
+	# tinha sido aberta antes), dando exatamente a impressão de "starter já
+	# escolhido, bolinha sumida" numa save que deveria estar zerada.
+	collected_loot = {}
+	flags = {}
 	# Pedido do usuário: "When creating a new save file, the player starts
 	# in red_house_interior (0,16)" — has_saved_position=true (não false
 	# como antes) É o que faz world.gd/house_interior.gd::
