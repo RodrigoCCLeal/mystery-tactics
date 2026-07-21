@@ -70,6 +70,21 @@ extends ActionData
 # buff). 0 = sem efeito, mesmo com stat_change_stat preenchido.
 @export var stat_change_amount: int = 0
 
+# Nome de um clima (ver battle.gd::WEATHER_*) que esse ataque de Status
+# ativa — "" (padrão) = não mexe em clima nenhum. Só lido quando
+# is_status=true, igual stat_change_stat acima, mas SEM depender de achar
+# ninguém na área mirada (ver battle.gd::execute_status_attack): diferente
+# de stat_change_stat (que precisa de um inimigo pra fazer efeito, e loga
+# "But it failed!" sem um), clima é um efeito de CAMPO, não mira ninguém de
+# verdade — o jogador ainda clica uma direção (mesmo fluxo de mira de
+# qualquer ataque de Status, ver is_valid_target_cell), mas o que tem ou não
+# na célula clicada não importa nada pro resultado. Sunny Day (ver
+# data/attacks/sunny_day.tres) é o primeiro caso: "Sunny". `attacker` vira o
+# `activator` de battle.gd::try_set_weather() — um item que estende clima
+# (ver ItemData.extends_weather) equipado por quem usa este ataque funciona
+# normalmente.
+@export var sets_weather: String = ""
+
 # Se esse ataque encosta fisicamente no alvo (ex: Tackle) ou não (ex: Ember,
 # que acerta de longe com fogo). Não afeta nada ainda — vai importar no
 # futuro pra Habilidades/efeitos que só disparam "em contato" (ex: uma

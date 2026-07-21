@@ -376,10 +376,192 @@ var current_battle_tileset: BattleTileset
 @onready var struggle_button: Button = $HUD/StruggleButton
 @onready var battle_log_panel: PanelContainer = $HUD/BattleLog
 @onready var battle_log: RichTextLabel = $HUD/BattleLog/BattleLogText
-# Logo abaixo da fileira de portraits (UnitSummary) — mostra o clima ativo
-# (ver try_set_weather/refresh_weather_hud) ou fica escondido (visible =
-# false, ver .tscn) sem clima nenhum ativo.
+# Referência direta à CanvasLayer HUD inteira (não só um filho dela, como
+# todo outro @onready deste bloco) — usado por play_weather_anim() pra
+# instanciar a animação de entrada de clima como filho DELA (não de Battle),
+# ver comentário grande lá sobre por que isso importa (posição em pixel de
+# tela, não de mundo).
+@onready var hud: CanvasLayer = $HUD
+
+# À DIREITA do mapa (ver comentário grande de get_staging_position sobre a
+# conta screen = world - camera + viewport/2 — o mapa cai exatamente em
+# x:[336,816]/y:[132,468] na tela, é dessa conta que TODOS os offsets do
+# .tscn relacionados ao campo de batalha vêm) — mostra o nome do clima ativo
+# + quantas rodadas faltam, se houver (ver refresh_weather_label). Pedido do
+# usuário: "Move the weather name from above the battlefield to the right
+# with a turn counter (if there is one)". Escondido (visible = false, ver
+# .tscn) sem clima nenhum ativo.
 @onready var weather_label: Label = $HUD/WeatherLabel
+
+# ColorRect do MESMO tamanho exato do mapa em tela (x:[336,816]/y:[132,468],
+# ver comentário de weather_label acima) — pinta o campo de batalha inteiro
+# (mapa E unidades por cima, já que HUD é uma CanvasLayer, sempre desenhada
+# por cima do World2D) com a cor do clima ativo, um pouco transparente
+# (ver WEATHER_MASK_COLORS/refresh_weather_mask). Pedido do usuário: "Mask
+# the whole battlefield with the according colors, slightly" — e, pros
+# climas de Sol especificamente, só depois da animação de entrada terminar
+# (ver play_weather_anim/try_set_weather: "play this animation... and THEN
+# apply the mask"). mouse_filter = 2 (MOUSE_FILTER_IGNORE, ver .tscn) é
+# OBRIGATÓRIO aqui — sem isso este Control cobriria o mapa inteiro e
+# engoliria todo clique do jogador nele ANTES de chegar em
+# _unhandled_input (que é quem move/mira unidade), já que Control por
+# padrão BLOQUEIA mouse (MOUSE_FILTER_STOP), mesmo sem nenhum sinal
+# conectado.
+@onready var weather_mask: ColorRect = $HUD/WeatherMask
+
+# Só os 4 climas com cor pedida pelo usuário — Strong Winds fica de fora de
+# propósito (nenhuma cor foi pedida pra ele), refresh_weather_mask() esconde
+# a máscara nesse caso (e sem clima nenhum). Harsh Sunlight/Heavy Rain
+# reusam a cor do clima normal correspondente (Sunny/Rain) — o usuário só
+# listou as 4 formas normais, e visualmente são "a mesma coisa, só mais
+# forte", não uma cor à parte.
+const WEATHER_MASK_COLORS := {
+	WEATHER_SUNNY: Color(1.0, 0.9, 0.1, 0.18),
+	WEATHER_HARSH_SUNLIGHT: Color(1.0, 0.9, 0.1, 0.18),
+	WEATHER_RAIN: Color(0.2, 0.4, 1.0, 0.18),
+	WEATHER_HEAVY_RAIN: Color(0.2, 0.4, 1.0, 0.18),
+	WEATHER_SANDSTORM: Color(0.55, 0.35, 0.15, 0.22),
+	WEATHER_SNOW: Color(1.0, 1.0, 1.0, 0.22),
+}
+
+const WEATHER_ANIM_SCENE: PackedScene = preload("res://scenes/effects/weather_anim.tscn")
+
+# Quadros da animação de ENTRADA de cada clima de Sol — sprites em
+# assets/sprites/weather/sun (13 arquivos, 000.png a 024.png de 2 em 2,
+# mesmo formato "vários arquivos separados" de STATUS_EMOTE_FRAME_ARRAYS/
+# BURNED_EMOTE_FRAMES em unit.gd). Harsh Sunlight reusa os MESMOS quadros de
+# Sunny — o usuário pediu só "an animation for the sun weathers", sem
+# distinguir a forma extrema (visualmente são o mesmo sol, só mais forte).
+const SUN_WEATHER_ANIM_FRAMES: Array[Texture2D] = [
+	preload("res://assets/sprites/weather/sun/000.png"),
+	preload("res://assets/sprites/weather/sun/002.png"),
+	preload("res://assets/sprites/weather/sun/004.png"),
+	preload("res://assets/sprites/weather/sun/006.png"),
+	preload("res://assets/sprites/weather/sun/008.png"),
+	preload("res://assets/sprites/weather/sun/010.png"),
+	preload("res://assets/sprites/weather/sun/012.png"),
+	preload("res://assets/sprites/weather/sun/014.png"),
+	preload("res://assets/sprites/weather/sun/016.png"),
+	preload("res://assets/sprites/weather/sun/018.png"),
+	preload("res://assets/sprites/weather/sun/020.png"),
+	preload("res://assets/sprites/weather/sun/022.png"),
+	preload("res://assets/sprites/weather/sun/024.png"),
+]
+
+# Clima -> quadros da animação de entrada dele (formato "vários arquivos
+# separados", ver WeatherAnim.play()). Ausente daqui (Sandstorm/Snow/Strong
+# Winds hoje) = sem animação DESSE FORMATO pra esse clima — pode ainda
+# assim ter uma no formato "tira única" (ver WEATHER_STRIP_ANIM_TEXTURES
+# logo abaixo); sem entrada em NENHUM dos dois dicionários, play_weather_anim()
+# retorna na hora, sem segurar nada, e o mask aparece junto com o nome,
+# exatamente como antes desta feature existir.
+const WEATHER_ANIM_FRAMES := {
+	WEATHER_SUNNY: SUN_WEATHER_ANIM_FRAMES,
+	WEATHER_HARSH_SUNLIGHT: SUN_WEATHER_ANIM_FRAMES,
+}
+
+# Chuva: tira única 80x16 (5 quadros de 16x16, ver WeatherAnim.play_strip())
+# — formato DIFERENTE do Sol de propósito (o usuário mandou a arte já nesse
+# formato). Heavy Rain reusa a MESMA tira (mesmo espírito de Harsh Sunlight
+# reusando os quadros de Sunny logo acima — "a mesma chuva, só mais forte").
+const RAIN_ANIM_TEXTURE: Texture2D = preload("res://assets/sprites/weather/rain/Rain.None.png")
+const WEATHER_STRIP_ANIM_TEXTURES := {
+	WEATHER_RAIN: RAIN_ANIM_TEXTURE,
+	WEATHER_HEAVY_RAIN: RAIN_ANIM_TEXTURE,
+}
+
+# Pedido do usuário: "1 animation in a random location for each 2x2 tile"
+# — divide o grid jogável (MAP_WIDTH x MAP_HEIGHT tiles, TILE_SIZE px cada)
+# em blocos de até RAIN_ANIM_TILE_BLOCK x RAIN_ANIM_TILE_BLOCK tiles e
+# sorteia uma posição DENTRO de cada bloco (ver _get_rain_anim_anchors
+# abaixo) — bem mais denso que a versão anterior (blocos de 4x4). Blocos na
+# borda direita/de baixo ficam MENORES que 2x2 quando MAP_WIDTH/MAP_HEIGHT
+# não são múltiplos exatos (20x14 com blocos de 2 dá exatamente 10 colunas x
+# 7 linhas = 70 instâncias por rodada, sem sobra nenhuma dessa vez), mas
+# ainda ganham uma âncora própria, só que sorteada dentro do bloco menor.
+const RAIN_ANIM_TILE_BLOCK = 2
+
+# Uma posição ALEATÓRIA (não mais fixa no centro) dentro de CADA bloco de
+# RAIN_ANIM_TILE_BLOCK x RAIN_ANIM_TILE_BLOCK tiles do grid jogável, em
+# pixel de TELA (336.0/132.0 = canto superior esquerdo do MAPA em tela,
+# mesma conta de sempre — ver get_staging_position). Chamada de novo a cada
+# RODADA (ver play_weather_anim) — como é tudo sorteado na hora, cada
+# chamada já devolve posições DIFERENTES sozinha, sem precisar de nenhum
+# parâmetro extra: é assim que "choose new locations when replaying the
+# animation" funciona.
+func _get_rain_anim_anchors() -> Array[Vector2]:
+	var anchors: Array[Vector2] = []
+	var x0 = 0
+	while x0 < MAP_WIDTH:
+		var block_w = mini(RAIN_ANIM_TILE_BLOCK, MAP_WIDTH - x0)
+		var y0 = 0
+		while y0 < MAP_HEIGHT:
+			var block_h = mini(RAIN_ANIM_TILE_BLOCK, MAP_HEIGHT - y0)
+			anchors.append(Vector2(
+				336.0 + (x0 + randf_range(0.0, block_w)) * TILE_SIZE,
+				132.0 + (y0 + randf_range(0.0, block_h)) * TILE_SIZE,
+			))
+			y0 += RAIN_ANIM_TILE_BLOCK
+		x0 += RAIN_ANIM_TILE_BLOCK
+	return anchors
+
+# Pedido do usuário: "start each instance of the animation with a delay of
+# 0 to 0.2 seconds" — substituiu a abordagem anterior (começar cada cópia
+# num QUADRO diferente, ver WeatherAnim.play_strip). Cada instância (uma
+# por âncora de _get_rain_anim_anchors) sorteia seu PRÓPRIO delay dentro
+# deste intervalo.
+const RAIN_ANIM_MAX_START_DELAY = 0.2
+
+# Pedido do usuário: "3 times total" — em vez de cada instância dar várias
+# voltas PARADA no mesmo lugar, RAIN_ANIM_ROUNDS rodadas INTEIRAS rodam em
+# sequência, cada uma chamando _get_rain_anim_anchors() de novo (posições
+# NOVAS a cada rodada, ver comentário lá) e esperando a rodada terminar
+# antes de sortear a próxima — "choose new locations when replaying the
+# animation (3 times total)".
+const RAIN_ANIM_ROUNDS = 3
+
+# Toca a animação de entrada de `weather` (se houver uma, ver
+# WEATHER_ANIM_FRAMES/WEATHER_STRIP_ANIM_TEXTURES) e só RETORNA quando ela
+# termina (mesmo padrão de fire_projectile esperando Projectile.arrived).
+# Instanciada como filho de `hud` (a CanvasLayer, não Battle) de propósito
+# — ver comentário grande no @onready var hud. Chamada por try_set_weather()
+# ANTES de refresh_weather_mask() — pedido do usuário: "play this
+# animation... and THEN apply the mask".
+func play_weather_anim(weather: String) -> void:
+	if WEATHER_ANIM_FRAMES.has(weather):
+		# Sol: UMA cópia só, sempre no mesmo canto — ver comentário grande
+		# de weather_label sobre x:[336,816]/y:[132,468] em tela.
+		var anim = WEATHER_ANIM_SCENE.instantiate()
+		hud.add_child(anim)
+		anim.position = Vector2(336.0, 132.0)
+		anim.play(WEATHER_ANIM_FRAMES[weather])
+		await anim.finished
+		return
+	if WEATHER_STRIP_ANIM_TEXTURES.has(weather):
+		var texture: Texture2D = WEATHER_STRIP_ANIM_TEXTURES[weather]
+		var frame_size = int(texture.get_height())
+		var frame_count = max(1, int(texture.get_width()) / frame_size)
+		var round_duration = RAIN_ANIM_MAX_START_DELAY + frame_count * WeatherAnim.FRAME_DURATION
+		for round_index in RAIN_ANIM_ROUNDS:
+			# Um por bloco de RAIN_ANIM_TILE_BLOCK x RAIN_ANIM_TILE_BLOCK
+			# tiles (ver _get_rain_anim_anchors) — chamado de novo A CADA
+			# rodada, então as posições mudam de rodada pra rodada.
+			for anchor in _get_rain_anim_anchors():
+				var anim = WEATHER_ANIM_SCENE.instantiate()
+				hud.add_child(anim)
+				# clamp garante que o quadro INTEIRO continua dentro do
+				# campo de batalha, mesmo pras âncoras sorteadas rente à
+				# borda de um bloco de canto/borda.
+				anim.position = Vector2(
+					clampf(anchor.x - frame_size / 2.0, 336.0, 816.0 - frame_size),
+					clampf(anchor.y - frame_size / 2.0, 132.0, 468.0 - frame_size),
+				)
+				anim.play_strip(texture, randf_range(0.0, RAIN_ANIM_MAX_START_DELAY))
+			# Espera essa rodada terminar (pior caso: maior delay possível +
+			# o ciclo INTEIRO de quadros) antes de sortear a rodada
+			# seguinte — só assim faz sentido chamar _get_rain_anim_anchors()
+			# de novo (rodada anterior já sumiu da tela).
+			await get_tree().create_timer(round_duration).timeout
 
 # Caixa de log: no estado normal (colapsado) só mostra as últimas
 # BATTLE_LOG_COLLAPSED_LINES mensagens, bem rente ao mapa. Um clique nela
@@ -617,7 +799,16 @@ func try_set_weather(new_weather: String, activator: Node = null, permanent: boo
 		weather_turns_left = WEATHER_EXTENDED_DURATION if _activator_extends_weather(new_weather, activator) else WEATHER_BASE_DURATION
 	if new_weather != WEATHER_NONE:
 		log_message(WEATHER_START_MESSAGES.get(new_weather, "The weather changed to %s!" % new_weather))
-	refresh_weather_hud()
+	# Nome/contador aparecem NA HORA — só o mask (o "tingir a tela") espera a
+	# animação de entrada, quando o clima tiver uma (ver play_weather_anim/
+	# WEATHER_ANIM_FRAMES) — pedido do usuário: "play this animation on top
+	# left of the battlefield and THEN apply the mask". Sem animação
+	# registrada pro clima, play_weather_anim() retorna na mesma linha (sem
+	# ceder o frame), então refresh_weather_mask() roda praticamente junto
+	# com refresh_weather_label(), igual sempre foi antes desta feature.
+	refresh_weather_label()
+	await play_weather_anim(new_weather)
+	refresh_weather_mask()
 	return true
 
 const WEATHER_START_MESSAGES := {
@@ -1630,6 +1821,38 @@ func build_unit_summary_hud() -> void:
 
 	refresh_unit_summary_hud()
 
+# Chamada por try_set_weather() (ativou/trocou clima) e _advance_weather_turn()
+# (desconta rodada, ou encerra o clima) — nunca precisa ser chamada de mais
+# nenhum outro lugar, essas duas cobrem toda mudança possível de
+# current_weather/weather_turns_left. Separada de refresh_weather_mask()
+# logo abaixo (que antes era a MESMA função, refresh_weather_hud) porque o
+# nome/contador aparecem NA HORA, enquanto o mask pode esperar a animação de
+# entrada terminar primeiro (ver play_weather_anim/try_set_weather) — pedido
+# do usuário: "play this animation on top left of the battlefield and THEN
+# apply the mask". weather_turns_left < 0 (permanente, ver comentário
+# grande na declaração) mostra só o nome, sem contador — não faz sentido
+# escrever "turns left" de algo que não desconta sozinho.
+func refresh_weather_label() -> void:
+	if current_weather == WEATHER_NONE:
+		weather_label.visible = false
+		return
+	weather_label.visible = true
+	if weather_turns_left < 0:
+		weather_label.text = current_weather
+	else:
+		weather_label.text = "%s\n%d turn%s left" % [current_weather, weather_turns_left, "" if weather_turns_left == 1 else "s"]
+
+# Ver comentário grande de refresh_weather_label acima sobre por que isto é
+# uma função separada agora. Sem entrada em WEATHER_MASK_COLORS (só Strong
+# Winds hoje, ver comentário lá) = sem máscara nenhuma, mesmo com clima
+# ativo — só o texto de refresh_weather_label aparece.
+func refresh_weather_mask() -> void:
+	if current_weather == WEATHER_NONE or not WEATHER_MASK_COLORS.has(current_weather):
+		weather_mask.visible = false
+		return
+	weather_mask.color = WEATHER_MASK_COLORS[current_weather]
+	weather_mask.visible = true
+
 # Atualiza o texto de nível/HP de todo mundo e a borda de quem está na vez —
 # AZUL se for a vez de uma unidade do jogador, VERMELHA se for a vez de um
 # inimigo (antes a borda era sempre azul e só existia pra player_units, já
@@ -1638,22 +1861,6 @@ func build_unit_summary_hud() -> void:
 # olhando a cor). Chamar sempre que o turno mudar, o HP de alguém mudar, ou
 # alguém subir de nível. Mostra nível aqui só por debug por enquanto — xp não
 # aparece ainda (vamos precisar disso no futuro, ver ExpGroups.exp_to_next_level).
-# Chamada por try_set_weather() (ativou/trocou clima) e _advance_weather_turn()
-# (desconta rodada, ou encerra o clima) — nunca precisa ser chamada de mais
-# nenhum outro lugar, essas duas cobrem toda mudança possível de
-# current_weather/weather_turns_left. weather_turns_left < 0 (permanente,
-# ver comentário grande na declaração) mostra só o nome, sem contador — não
-# faz sentido escrever "turns left" de algo que não desconta sozinho.
-func refresh_weather_hud() -> void:
-	if current_weather == WEATHER_NONE:
-		weather_label.visible = false
-		return
-	weather_label.visible = true
-	if weather_turns_left < 0:
-		weather_label.text = current_weather
-	else:
-		weather_label.text = "%s (%d)" % [current_weather, weather_turns_left]
-
 func refresh_unit_summary_hud() -> void:
 	var current = get_current_unit()
 	for u in unit_slots.keys():
@@ -1818,10 +2025,15 @@ func refresh_action_slots_hud() -> void:
 			button.text = "%s\n%dx" % [action.action_name, quantity]
 			button.disabled = current.attacks_remaining <= 0 or quantity <= 0
 			if tm_attack != null:
+				# "Status" (ver AttackData.is_status) igual _build_attack_tooltip
+				# já faz pro ramo de Ataque comum logo abaixo — sem isso, TM
+				# 11/Sunny Day (Status) aparecia rotulado "Físico" por engano
+				# (era só um "else" sem terceira opção antes desta correção).
+				var kind = "Status" if tm_attack.is_status else ("Especial" if tm_attack.is_special else "Físico")
 				button.tooltip_text = "%s\nTipo: %s (%s)\nPoder: %d\nCargas restantes: %d" % [
 					tm_attack.action_name,
 					tm_attack.element_type,
-					"Especial" if tm_attack.is_special else "Físico",
+					kind,
 					tm_attack.power,
 					quantity,
 				]
@@ -2289,6 +2501,18 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 			if current.status_condition == "Confused" and randf() < 1.0 / 6.0:
 				actual_target = resolve_confused_target(current, action)
 			_run_player_attack(current, actual_target, action, index)
+	elif current != null and action is ItemData and action.category == "TM" and action.tm_attack != null and action.tm_attack.is_status and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
+		# Gêmeo do primeiro ramo (AttackData.is_status) lá em cima, só que
+		# pra um TM que ensina um ataque de Status (ver ItemData.tm_attack)
+		# — TM 11/Sunny Day é o primeiro caso. Precisa vir ANTES do ramo de
+		# TM comum logo abaixo (mesma ordem "is_status primeiro" do topo
+		# desta função): sem isso, um TM de Status cairia no ramo de baixo,
+		# que exige achar um INIMIGO na célula clicada antes de disparar —
+		# Sunny Day nunca mira ninguém de verdade (ver AttackData.
+		# sets_weather), então nunca acharia um "target" e o TM nunca
+		# dispararia (nem gastaria carga, nem faria nada, sem aviso nenhum).
+		var dir = Vector2i(sign(clicked_cell.x - current.grid_pos.x), sign(clicked_cell.y - current.grid_pos.y))
+		_run_player_tm_status_attack(current, action, dir, index)
 	elif current != null and action is ItemData and action.category == "TM" and action.tm_attack != null and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
 		# Mesma lógica de resolução de alvo do ramo AttackData acima, só que
 		# em cima de action.tm_attack (que TEM is_projectile/range de
@@ -2839,7 +3063,15 @@ func _try_apply_self_stat_boost(attacker: Node, attack: AttackData) -> void:
 # convenção 8-way de sign(delta) usada no resto do jogo.
 func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, slot_index: int) -> void:
 	attacker.face_towards(attacker.grid_pos + dir)
-	attacker.play_attack_animation(attack.is_special)
+	# SEMPRE a animação "especial" (shoot_<dir>, ou charge_<dir> se a espécie
+	# não tiver shoot — ver Unit.play_attack_animation) pra ataque de Status,
+	# nunca attack_<dir> — pedido do usuário: "Use the special animation for
+	# status moves (either shoot or charge)". attack.is_special É irrelevante
+	# pra Status (ver comentário grande em AttackData.is_status), então usar
+	# ele aqui era só coincidência: Growl (is_special=true) já saía certo,
+	# mas Sunny Day/Rain Dance (is_special=false, o padrão) tocariam
+	# attack_<dir> por engano sem essa troca pra `true` fixo.
+	attacker.play_attack_animation(true)
 	# Cast effect (ver AttackData.cast_frames_by_direction) — Growl é o
 	# primeiro caso: a onda sonora saindo do próprio usuário do ataque, 1
 	# tile à frente, viajando até `attack.range`. Aqui já temos `dir` pronto
@@ -2856,7 +3088,22 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 	var hit_delay = attacker.data.special_hit_delay if attack.is_special else attacker.data.attack_hit_delay
 	await get_tree().create_timer(hit_delay).timeout
 
-	var area_cells: Array[Vector2i] = get_cone_cells(attacker.grid_pos, dir, attack.range) if attack.area_shape == "Cone" else [attacker.grid_pos + dir * attack.range]
+	# Bug corrigido aqui: um ternário com Array[Vector2i] de um lado (retorno
+	# de get_cone_cells) e um literal `[...]` cru do outro CRASHAVA em
+	# runtime ("Trying to assign an array of type 'Array' to a variable of
+	# type 'Array[Vector2i]'") — literal de array dentro de expressão sai
+	# SEM tipo (Array genérico), e GDScript recusa atribuir isso a uma
+	# variável tipada, mesmo dentro do braço "else" nunca escolhido pro caso
+	# Cone. Nunca disparava antes porque Growl (o único ataque de Status até
+	# então) é sempre "Cone" — Sunny Day foi o primeiro "Single", que cai
+	# bem nesse branch. if/else normal em vez de ternário evita o problema
+	# (mesmo truque já usado em game_state.gd::extra_loadout, ver comentário
+	# lá sobre o mesmo erro com Array[ActionData]).
+	var area_cells: Array[Vector2i] = []
+	if attack.area_shape == "Cone":
+		area_cells = get_cone_cells(attacker.grid_pos, dir, attack.range)
+	else:
+		area_cells = [attacker.grid_pos + dir * attack.range]
 
 	var targets: Array[Node] = []
 	for cell in area_cells:
@@ -2866,7 +3113,14 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		if u != null and u.is_enemy != attacker.is_enemy and not targets.has(u):
 			targets.append(u)
 
-	if targets.is_empty():
+	# sets_weather (ver AttackData.sets_weather/Sunny Day) NUNCA "falha" por
+	# falta de alvo — é um efeito de campo, não mira ninguém de verdade (ver
+	# comentário grande lá). Só cai no "But it failed!" de sempre quando o
+	# ataque NÃO tem clima nenhum pra ativar e também não achou ninguém pro
+	# stat_change_stat.
+	if attack.sets_weather != "":
+		await try_set_weather(attack.sets_weather, attacker)
+	elif targets.is_empty():
 		log_message("But it failed!")
 	for target in targets:
 		apply_stat_change(target, attack.stat_change_stat, attack.stat_change_amount)
@@ -2935,6 +3189,23 @@ func play_cast_effect(texture: Texture2D, attacker: Node, dir: Vector2i, cast_ra
 # execute_ball_throw logo abaixo.
 func execute_tm_attack(attacker: Node, defender: Node, tm_item: ItemData, slot_index: int) -> void:
 	await execute_attack(attacker, defender, tm_item.tm_attack, slot_index, false)
+	if phase != Phase.BATTLE:
+		return
+	attacker.data.set_slot_quantity(slot_index, attacker.data.get_slot_quantity(slot_index) - 1)
+	if attacker.data.get_slot_quantity(slot_index) <= 0:
+		attacker.data.slots[slot_index] = null
+	refresh_action_slots_hud()
+
+# Gêmeo de execute_tm_attack() acima pra um TM cujo tm_attack é de Status
+# (ver AttackData.is_status/ItemData.tm_attack) — mesma ideia de
+# execute_status_attack existir separada de execute_attack (ver comentário
+# grande em AttackData.is_status), só que pro TM: chama
+# execute_status_attack em vez de execute_attack, e SÓ DEPOIS desconta a
+# carga do item (mesmo "consumo sempre no fim, nunca antes" de
+# execute_tm_attack — dir vem pronto de quem chama, igual
+# execute_status_attack já espera). TM 11/Sunny Day é o primeiro caso.
+func execute_tm_status_attack(attacker: Node, tm_item: ItemData, dir: Vector2i, slot_index: int) -> void:
+	await execute_status_attack(attacker, tm_item.tm_attack, dir, slot_index)
 	if phase != Phase.BATTLE:
 		return
 	attacker.data.set_slot_quantity(slot_index, attacker.data.get_slot_quantity(slot_index) - 1)
@@ -3189,6 +3460,16 @@ func _run_player_tm_attack(attacker: Node, defender: Node, item: ItemData, index
 	action_in_progress = true
 	flee_button.visible = false
 	await execute_tm_attack(attacker, defender, item, index)
+	action_in_progress = false
+	if phase == Phase.BATTLE:
+		flee_button.visible = true
+
+# Gêmeo de _run_player_tm_attack acima pra execute_tm_status_attack — ver
+# comentário grande lá (TM 11/Sunny Day).
+func _run_player_tm_status_attack(attacker: Node, item: ItemData, dir: Vector2i, index: int) -> void:
+	action_in_progress = true
+	flee_button.visible = false
+	await execute_tm_status_attack(attacker, item, dir, index)
 	action_in_progress = false
 	if phase == Phase.BATTLE:
 		flee_button.visible = true
@@ -3507,7 +3788,12 @@ func _advance_weather_turn() -> void:
 		current_weather = WEATHER_NONE
 		weather_turns_left = 0
 		weather_overridable = true
-	refresh_weather_hud()
+	# Sem animação aqui de propósito — essa é só pra ATIVAÇÃO (ver
+	# try_set_weather/play_weather_anim), nunca pra desconto de rodada ou
+	# fim natural do clima. O mask precisa sumir/mudar NA HORA, junto com o
+	# nome.
+	refresh_weather_label()
+	refresh_weather_mask()
 
 # Sandstorm: todo mundo perde 1/16 do PRÓPRIO hp_max ao passar o turno,
 # exceto Ground/Steel/Rock (pedido do usuário) — mesmo "cano" de

@@ -1529,6 +1529,8 @@ const ALL_ITEMS: Array[ItemData] = [
 	preload("res://data/items/masterball.tres"),
 	preload("res://data/items/pokeball.tres"),
 	preload("res://data/items/tm10_ice_fang.tres"),
+	preload("res://data/items/tm11_sunny_day.tres"),
+	preload("res://data/items/tm12_rain_dance.tres"),
 	preload("res://data/items/bicycle.tres"),
 	preload("res://data/items/ability_patch.tres"),
 	preload("res://data/items/fairy_ocarina.tres"),

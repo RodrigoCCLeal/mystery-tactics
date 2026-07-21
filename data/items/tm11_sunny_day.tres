@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/item_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/Machines/machine_FIRE.png" id="2"]
+[ext_resource type="Resource" path="res://data/attacks/sunny_day.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+action_name = "TM 11 - Sunny Day"
+icon = ExtResource("2")
+category = "TM"
+effect_description = "Ensina Sunny Day. Item consumível: usar em batalha gasta 1 carga do próprio TM."
+can_give = true
+stackable = true
+tm_attack = ExtResource("3")
