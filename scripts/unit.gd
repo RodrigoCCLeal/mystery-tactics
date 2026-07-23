@@ -151,26 +151,38 @@ const STAT_STAGE_MULTIPLIERS := {
 }
 
 # ---------- Status Conditions ----------
-# "" = nenhuma condição. Não empilham (ver apply_status_condition) e são
-# resetadas sozinhas todo combate — Unit é recriado do zero a cada batalha
-# (ver UNIT_SCENE.instantiate() em battle.gd), então não precisa de nenhum
-# código extra pra "curar ao fim do combate": o valor padrão já é "sem
-# condição" sempre que uma unidade nova entra em cena.
+# EMPILHÁVEIS (pedido do usuário, 2026-07-22: "Change status effects to be
+# stackable (different ones, you cant have 2 instances of sleep)") — uma
+# unidade pode estar Poisoned E Confused ao mesmo tempo, por exemplo, mas
+# nunca duas instâncias da MESMA condição (ver apply_status_condition, que se
+# recusa se a CHAVE já existir no dicionário, não mais se HOUVER qualquer
+# outra condição ativa, como era antes). `status_conditions` é resetado
+# sozinho todo combate — Unit é recriado do zero a cada batalha (ver
+# UNIT_SCENE.instantiate() em battle.gd), então não precisa de nenhum código
+# extra pra "curar ao fim do combate": o valor padrão já é "sem condição
+# nenhuma" sempre que uma unidade nova entra em cena.
 #
 # Duração em turnos de quem tem prazo fixo (Poisoned e Burned não têm — só
 # saem por cura; Flinched também não usa isso, ver comentário em
-# battle.gd::begin_current_turn). O contador desce no fim do turno da PRÓPRIA
-# unidade afetada (ver battle.gd::apply_end_of_turn_status), nunca no turno
-# de quem aplicou a condição.
+# battle.gd::begin_current_turn; Charged também não, ver comentário grande
+# dela lá embaixo). O contador desce no fim do turno da PRÓPRIA unidade
+# afetada (ver battle.gd::apply_end_of_turn_status, que agora itera TODAS as
+# condições ativas, não só uma), nunca no turno de quem aplicou a condição.
 const STATUS_DURATIONS := {
 	"Frozen": 2, "Paralyzed": 2, "Confused": 2, "Blind": 2, "Asleep": 3,
 }
 
-# Quais condições bloqueiam o quê — segue a letra do design (Frozen só trava
-# movimento, Paralyzed só trava ataque, Asleep trava os dois; Flinched trava
-# os dois mas só por 1 turno e é tratado à parte em begin_current_turn).
+# Quais condições bloqueiam o quê — reescrito pro pedido do usuário
+# (2026-07-22): Frozen agora trava os DOIS (movimento e ataque — antes só
+# travava movimento; "Change Freeze to not be able to attack aswell"),
+# Paralyzed SAIU do bloqueio automático de ataque (agora é um rolamento por
+# turno, ver Unit.fully_paralyzed_this_turn/battle.gd::begin_current_turn,
+# mais a redução de Speed em get_effective_stat — Paralyzed continua sem
+# entrada NENHUMA nestas duas listas, de propósito), Asleep continua travando
+# os dois, Flinched trava os dois mas só por 1 turno (tratado à parte em
+# begin_current_turn).
 const MOVEMENT_BLOCKING_STATUS = ["Frozen", "Asleep", "Flinched"]
-const ATTACK_BLOCKING_STATUS = ["Paralyzed", "Asleep", "Flinched"]
+const ATTACK_BLOCKING_STATUS = ["Frozen", "Asleep", "Flinched"]
 
 const POISON_DAMAGE_PERCENT = 8  # Poisoned: 8/100 do hp_max, por turno
 
@@ -178,13 +190,15 @@ const POISON_DAMAGE_PERCENT = 8  # Poisoned: 8/100 do hp_max, por turno
 # dos tipos listados aqui nunca pega essa condição (apply_status_condition
 # simplesmente recusa, ver lá). Regra do design: Steel/Poison são imunes a
 # Poisoned, Fire é imune a Burned, Electric é imune a Paralyzed, Ice é imune
-# a Frozen. Condições sem entrada aqui (Confused/Asleep/Flinched/Blind) não
-# têm imunidade de tipo nenhuma.
+# a Frozen, Grass é imune a Seeded (regra oficial da série principal — Grass
+# nunca pega Leech Seed, mesmo espírito das outras 4). Condições sem entrada
+# aqui (Confused/Asleep/Flinched/Blind) não têm imunidade de tipo nenhuma.
 const STATUS_TYPE_IMMUNITIES := {
 	"Poisoned": ["Steel", "Poison"],
 	"Burned": ["Fire"],
 	"Paralyzed": ["Electric"],
 	"Frozen": ["Ice"],
+	"Seeded": ["Grass"],
 }
 
 # ---------- Indicadores visuais de Status Condition ----------
@@ -241,13 +255,22 @@ func mark_as_enemy() -> void:
 	health_bar_bg.visible = false
 	health_bar_fill.visible = false
 
-# Recalcula modulate a partir só da "máscara" de Status Condition
-# (STATUS_TINT_COLORS) — sem status, fica branco (sem tint nenhum, nem de
-# inimigo). Chamado sempre que status_condition muda. modulate:a (opacidade)
-# fica de fora de propósito: quem mexe nisso é o Tween de morte (ver die()),
-# então só tocamos R/G/B aqui.
+# Recalcula modulate a partir da "máscara" de Status Condition
+# (STATUS_TINT_COLORS) — sem status (ou só com status sem tint próprio, ex:
+# Confused), fica branco (sem tint nenhum, nem de inimigo). Chamado sempre
+# que status_conditions muda. Como agora dá pra ter VÁRIAS condições ativas
+# ao mesmo tempo (ver comentário grande de status_conditions), a ORDEM das
+# chaves em STATUS_TINT_COLORS vira a prioridade de qual tint "vence" (Frozen
+# antes de Poisoned, hoje) — só importa no caso raro de as duas condições
+# coincidirem na mesma unidade. modulate:a (opacidade) fica de fora de
+# propósito: quem mexe nisso é o Tween de morte (ver die()), então só
+# tocamos R/G/B aqui.
 func _refresh_tint() -> void:
-	var status_tint: Color = STATUS_TINT_COLORS.get(status_condition, Color.WHITE)
+	var status_tint: Color = Color.WHITE
+	for s in STATUS_TINT_COLORS:
+		if status_conditions.has(s):
+			status_tint = STATUS_TINT_COLORS[s]
+			break
 	modulate = Color(status_tint.r, status_tint.g, status_tint.b, modulate.a)
 
 # UnitData de origem — guardado pra poder recalcular os stats reais sempre
@@ -312,11 +335,84 @@ var attacks_remaining: int = 1
 # some sozinho quando a unidade é recriada no próximo combate.
 var stat_stages: Dictionary = {"attack": 0, "defense": 0, "special_attack": 0, "special_defense": 0, "speed": 0}
 
-# "" = sem Status Condition. status_turns_left só é relevante pra quem está
-# em STATUS_DURATIONS (-1 = não se aplica, ex: Poisoned/Burned, que só saem
-# por cura).
-var status_condition: String = ""
-var status_turns_left: int = -1
+# Dicionário status ativo (String) -> turnos restantes (int, -1 = sem prazo,
+# ver STATUS_DURATIONS) — SUBSTITUI o antigo par status_condition (String
+# única) + status_turns_left (int único) pra permitir empilhar condições
+# DIFERENTES ao mesmo tempo (pedido do usuário, 2026-07-22, ver comentário
+# grande lá em cima de STATUS_DURATIONS). Chave = nome da condição, presença
+# da chave = "está ativa agora"; nunca guarda `false`/ausência explícita, só
+# apply_status_condition/cure_status_condition mexem aqui (ver as duas
+# abaixo) — qualquer outro código deveria ler via has_status(), nunca acessar
+# o dicionário direto, pra não duplicar a regra de "chave presente = ativo"
+# espalhada pelo projeto todo.
+var status_conditions: Dictionary = {}
+
+# Dicionário PARALELO a status_conditions: status ativo (String) -> Node de
+# quem APLICOU essa condição (só preenchido pra condições que precisam
+# lembrar disso — a maioria não usa esta chave nunca). Leech Seed é o
+# primeiro caso: "Seeded" precisa saber QUEM curar quando o dano de fim de
+# turno sair (ver battle.gd::apply_end_of_turn_status/_apply_leech_seed_
+# heal), já que quem recebe a cura não é a própria unidade Seeded, é quem
+# usou o golpe nela. Populado pelo parâmetro opcional `source` de
+# apply_status_condition() (ver abaixo), lido via get_status_source(),
+# limpo junto no cure_status_condition() correspondente — nunca acessado
+# direto de fora, mesma regra de status_conditions.
+var status_source: Dictionary = {}
+
+# "Charged" (Flash Fire, ver AbilityData.flash_fire) virou uma Status
+# Condition igual qualquer outra em vez de um bool à parte (flash_fire_armed
+# foi removido) — pedido do usuário: "Change Flash Fire charged to a status,
+# this may unbloat attack logic". Sem entrada em STATUS_DURATIONS (fica -1,
+# "sem prazo" — mesmo padrão de Poisoned/Burned), sem entrada em
+# STATUS_TYPE_IMMUNITIES (nunca é recusada por tipo), sem tint/emote/anim
+# própria (some pelos "buracos" dos matches de cor/emote/animação sem
+# precisar de caso nenhum lá) — arma quando esta unidade é atingida por um
+# ataque tipo Fire enquanto carrega essa Habilidade (mesmo que o dano saia 0
+# por imunidade total — ver battle.gd::execute_attack/has_type_immunity_
+# ability) via apply_status_condition("Charged"), e é consumida (cure_
+# status_condition("Charged")) assim que ESTA unidade usa um ataque Fire de
+# verdade (ver battle.gd::calculate_damage_modifiers pro bônus x1.5 em si).
+# Continua sendo um "cartucho" de um uso só, não um bônus permanente
+# (diferente de Blaze, que é sempre condicional a HP baixo, sem estado
+# nenhum pra lembrar).
+
+# Rolagem de Paralyzed "trava total" (movimento E ataque) NESTE turno — 1/8
+# de chance a cada início de turno enquanto Paralyzed está ativo (pedido do
+# usuário: "be a random roll to be fully paralyzed at the start of turn
+# (cant move nor attack) 1/8 chance"), decidida e resetada em battle.gd::
+# begin_current_turn a cada turno desta unidade (NUNCA aqui em Unit — Unit só
+# guarda o resultado do rolamento, quem rola é battle.gd, mesmo padrão de
+# outros efeitos por turno tipo Sandstorm). Diferente de MOVEMENT_BLOCKING_
+# STATUS/ATTACK_BLOCKING_STATUS (que travam enquanto a condição EXISTIR),
+# isso trava só o turno em que a sorte saiu ruim — no resto do tempo,
+# Paralyzed só reduz Speed pela metade (ver get_effective_stat), sem travar
+# nada. Lido por can_move()/can_attack() abaixo, igual as duas listas.
+var fully_paralyzed_this_turn: bool = false
+
+# Contador de "uso consecutivo" do MESMO AttackData (ver battle.gd::
+# _track_attack_use, chamado no início de execute_attack/execute_status_
+# attack/execute_attack_burst, então cobre TM e ataque comum, jogador e
+# inimigo, igual) — Rollout é o primeiro caso a ler isso de verdade (ver
+# AttackData.scales_with_consecutive_use), pra saber "essa é a Nª vez
+# SEGUIDA que uso Rollout", mas o contador em si é genérico: qualquer ataque
+# reseta pra 1 quem usa ele, e usar QUALQUER OUTRO ataque no meio quebra a
+# sequência de volta pra 1 (pedido do usuário: "we won't lock the user into
+# only using Rollout" — nada IMPEDE trocar de ataque, só reseta a escalada).
+# `last_attack_used` guarda QUAL AttackData foi usado por último, pra saber
+# se o próximo uso é "consecutivo" (mesmo Resource) ou não.
+var last_attack_used: AttackData = null
+var consecutive_attack_uses: int = 0
+
+# "Já usei ESTE AttackData alguma vez nesta batalha (não precisa ser agora
+# nem seguido)" — chave é o próprio Resource (mesma instância compartilhada
+# entre unidades da espécie, ver comentário grande em LearnsetEntry.action),
+# valor sempre true (só interessa a PRESENÇA da chave). Genérico de
+# propósito: Rollout é o primeiro a consultar isso (AttackData.
+# consecutive_use_boost_prerequisite = Defense Curl, "If that unit has used
+# Defense Curl during any time this combat, the base power starts at 60"),
+# mas qualquer golpe futuro com um pré-requisito "já usou X antes" pode
+# reaproveitar o mesmo dicionário sem precisar de um campo novo.
+var used_attacks_this_battle: Dictionary = {}
 
 # Duas formas de aplicar UnitData (aparência + stats base) nesta instância —
 # ambas precisam ser chamadas DEPOIS de add_child(), pra que @onready var anim
@@ -490,7 +586,7 @@ func _on_attack_animation_finished() -> void:
 	# cura Flinched bem no início do turno seguinte) — hurt_<dir> tem
 	# loop=false, então sem isso esse mesmo sinal (animation_finished) já
 	# devolveria pro idle sozinho assim que o hurt tocasse uma vez.
-	if status_condition == "Flinched":
+	if status_conditions.has("Flinched"):
 		_play_anim("hurt_" + facing)
 		return
 	_play_anim(_idle_anim_name())
@@ -587,7 +683,7 @@ func get_accuracy_multiplier() -> float:
 	for action in data.slots:
 		if action is ItemData:
 			multiplier *= action.accuracy_multiplier
-	if status_condition == "Blind":
+	if status_conditions.has("Blind"):
 		multiplier *= 0.5
 	return multiplier
 
@@ -615,8 +711,20 @@ func modify_stat_stage(stat: String, delta: int) -> void:
 # engano), devolve o valor cru sem tocar em nada — HP/peso nunca têm estágio.
 # `get(stat)` lê a var pelo NOME (string) — funciona porque attack/defense/
 # etc. são vars comuns declaradas nesta mesma classe.
+#
+# Paralyzed corta Speed pela metade (pedido do usuário: "Change paralysis to
+# reduce speed by 1/2") — aplicado AQUI (não em _effective_stat_with_stage)
+# de propósito: os dois métodos "para Crítico" abaixo (get_offensive_stat_
+# for_crit/get_defensive_stat_for_crit) nunca leem "speed" na prática (não é
+# um stat ofensivo/defensivo de dano), então cortar só aqui evita duplicar a
+# regra. move_range (acima) já lê Speed via este método, então o penalti de
+# Paralyzed também reduz o alcance de movimento automaticamente, sem precisar
+# de nenhum código extra lá.
 func get_effective_stat(stat: String) -> int:
-	return _effective_stat_with_stage(stat, stat_stages.get(stat, 0))
+	var value: int = _effective_stat_with_stage(stat, stat_stages.get(stat, 0))
+	if stat == "speed" and status_conditions.has("Paralyzed"):
+		value = maxi(1, int(value / 2.0))
+	return value
 
 # ---------- Stat Stages: versões pra Acerto Crítico ----------
 # Um Acerto Crítico (ver battle.gd::calculate_damage/CRITICAL_HIT_CHANCE)
@@ -646,27 +754,62 @@ func _effective_stat_with_stage(stat: String, stage: int) -> int:
 
 # ---------- Status Conditions: API pública ----------
 
-# "Status Conditions não se acumulam... a antiga se preserva" — cobre os dois
-# casos do design (condição NOVA tentando substituir uma diferente, e a MESMA
-# condição tentando reiniciar o próprio contador) com uma regra só: se já tem
-# alguma coisa, essa chamada não faz nada. Devolve se conseguiu aplicar, útil
-# pra quem chamar (ex: efeito secundário futuro) saber se "gastou" o efeito.
-# Também recusa se a unidade for de um tipo imune a essa condição (ver
-# STATUS_TYPE_IMMUNITIES/is_immune_to_status) — mesma sinalização (false) que
-# o caso "já tem outra condição", quem chamou não precisa distinguir os dois.
-func apply_status_condition(new_status: String) -> bool:
-	if status_condition != "":
+# true se a chave `status` estiver presente em status_conditions agora — ÚNICO
+# jeito "certo" de perguntar "essa unidade está com tal condição", usado no
+# lugar de toda comparação antiga `status_condition == "X"` espalhada por
+# battle.gd/unit.gd.
+func has_status(status: String) -> bool:
+	return status_conditions.has(status)
+
+# Recusa se essa MESMA condição já estiver ativa (empilhar Sleep em cima de
+# Sleep não faz sentido — pedido do usuário: "you cant have 2 instances of
+# sleep") — mas condições DIFERENTES podem coexistir livremente agora (ver
+# comentário grande de status_conditions lá em cima). Devolve se conseguiu
+# aplicar, útil pra quem chamar (ex: efeito secundário) saber se "gastou" o
+# efeito. Também recusa se a unidade for de um tipo imune a essa condição
+# (ver STATUS_TYPE_IMMUNITIES/is_immune_to_status) — mesma sinalização
+# (false) que o caso "já tem essa condição", quem chamou não precisa
+# distinguir os dois.
+#
+# `source` opcional (ver status_source lá em cima) — só populado se quem
+# chamou passar alguém; Leech Seed é o primeiro a usar isso de verdade
+# (ver battle.gd::execute_status_attack, inflicts_status branch, que passa
+# `attacker`). A maioria das condições nunca precisa disso e simplesmente
+# ignora o parâmetro (fica null, status_source nunca ganha aquela chave).
+func apply_status_condition(new_status: String, source: Node = null) -> bool:
+	if status_conditions.has(new_status):
 		return false
 	if is_immune_to_status(new_status):
 		return false
-	status_condition = new_status
-	status_turns_left = STATUS_DURATIONS.get(new_status, -1)
+	status_conditions[new_status] = STATUS_DURATIONS.get(new_status, -1)
+	if source != null:
+		status_source[new_status] = source
 	_on_status_condition_changed()
 	return true
 
-func cure_status_condition() -> void:
-	status_condition = ""
-	status_turns_left = -1
+# Quem aplicou `status` nesta unidade, se alguém foi passado em
+# apply_status_condition (ver status_source lá em cima) — null se a condição
+# não estiver ativa, ou se estiver ativa mas ninguém passou `source` (a
+# maioria dos casos). Quem chamar isso (ex: battle.gd::_apply_leech_seed_
+# heal) ainda precisa checar is_instance_valid() antes de mexer no Node
+# devolvido — quem aplicou pode ter desmaiado/saído da batalha antes do
+# efeito disparar.
+func get_status_source(status: String) -> Node:
+	return status_source.get(status, null)
+
+# `status` vazio ("", o padrão) cura TUDO de uma vez (ex: item que cura
+# qualquer status) — passar um nome cura só AQUELA condição, deixando as
+# outras empilhadas intactas (ex: Poisoned continua ativo mesmo depois de
+# Asleep ser curada por ter sido atacada, ver battle.gd::execute_attack).
+# status_source segue status_conditions em ambos os casos, pra nunca deixar
+# uma chave "órfã" (fonte lembrada de uma condição que já foi curada).
+func cure_status_condition(status: String = "") -> void:
+	if status == "":
+		status_conditions.clear()
+		status_source.clear()
+	else:
+		status_conditions.erase(status)
+		status_source.erase(status)
 	_on_status_condition_changed()
 
 # Ex: Charmander (Fire) tentando ser Burned — devolve true, apply_status_
@@ -681,51 +824,83 @@ func is_immune_to_status(status: String) -> bool:
 			return true
 	return false
 
+# fully_paralyzed_this_turn (rolamento 1/8 do turno, ver comentário grande da
+# var e battle.gd::begin_current_turn) trava os dois igual uma condição de
+# MOVEMENT_BLOCKING_STATUS/ATTACK_BLOCKING_STATUS normal travaria, mas só
+# nesta rodada — checado ANTES das listas porque Paralyzed em si não está
+# em nenhuma das duas (ver comentário grande delas).
 func can_move() -> bool:
-	return not MOVEMENT_BLOCKING_STATUS.has(status_condition)
+	if fully_paralyzed_this_turn:
+		return false
+	for s in MOVEMENT_BLOCKING_STATUS:
+		if status_conditions.has(s):
+			return false
+	return true
 
 func can_attack() -> bool:
-	return not ATTACK_BLOCKING_STATUS.has(status_condition)
+	if fully_paralyzed_this_turn:
+		return false
+	for s in ATTACK_BLOCKING_STATUS:
+		if status_conditions.has(s):
+			return false
+	return true
 
-# Reage à MUDANÇA de status_condition (chamado por apply_status_condition e
+# Reage à MUDANÇA de status_conditions (chamado por apply_status_condition e
 # cure_status_condition — nunca direto): tint, tremor de Paralyzed, emote de
 # Confused/Blind/Burned e a animação própria de quem tem uma (Frozen pausa
-# tudo, Asleep dorme, Flinched fica com cara de dor). Poisoned não mexe em
-# animação nenhuma, só na cor (STATUS_TINT_COLORS já cobre isso via
-# _refresh_tint).
+# tudo, Asleep dorme, Flinched fica com cara de dor). Poisoned e Charged não
+# mexem em animação/emote nenhum, só Poisoned na cor (STATUS_TINT_COLORS já
+# cobre isso via _refresh_tint) — Charged não tem indicador visual nenhum de
+# propósito (é "invisível" pro jogador, só afeta a lógica de dano).
+#
+# Como agora VÁRIAS condições podem estar ativas ao mesmo tempo, cada canal
+# visual (tint/tremor/emote/animação) é resolvido INDEPENDENTE dos outros —
+# checa "essa condição específica está ativa?" em vez de "status_condition
+# É exatamente isso?" como no match antigo. Onde duas condições concorrem
+# pelo MESMO canal (ex: Frozen e Asleep, os dois querendo controlar a
+# animação), a ORDEM dos ifs abaixo decide a prioridade — julgamento de
+# design registrado aqui, não confirmado à parte com o usuário por ser um
+# caso visual raro (Frozen > Asleep > Flinched, mesma ordem de sempre de
+# MOVEMENT_BLOCKING_STATUS).
 func _on_status_condition_changed() -> void:
 	_refresh_tint()
 
-	if status_condition != "Paralyzed":
+	if status_conditions.has("Paralyzed"):
+		if _status_shake_tween == null:
+			_start_paralyze_shake()
+	else:
 		_stop_paralyze_shake()
-	if not STATUS_EMOTE_TEXTURES.has(status_condition) and not STATUS_EMOTE_FRAME_ARRAYS.has(status_condition):
+
+	var emote_status := ""
+	for s in status_conditions:
+		if STATUS_EMOTE_TEXTURES.has(s) or STATUS_EMOTE_FRAME_ARRAYS.has(s):
+			emote_status = s
+			break
+	if emote_status != "":
+		_start_status_emote(emote_status)
+	else:
 		_stop_status_emote()
 
-	match status_condition:
-		"Frozen":
-			# pause() (não stop()) mantém o frame atual visível — "não
-			# performa animação ao fazer nada" enquanto congelada. Ver
-			# _play_anim(), que bloqueia qualquer NOVO play() vindo de
-			# outro lugar (attack/hurt/walk/idle) enquanto isso durar.
-			anim.pause()
-		"Asleep":
-			# Só existe a variação "_down" desse sprite sheet (foi feito
-			# originalmente pro retrato da tela de Party, sem depender de
-			# direção) — por isso ignora `facing` aqui, diferente de
-			# idle_<dir>/hurt_<dir>/etc.
-			_play_anim("sleep_down")
-		"Flinched":
-			_play_anim("hurt_" + facing)
-		"Paralyzed":
-			_start_paralyze_shake()
-		"Confused", "Blind", "Burned":
-			_start_status_emote(status_condition)
-		"":
-			# Cura de QUALQUER condição — importante sobretudo saindo de
-			# Frozen (anim.play(nome) sempre retoma mesmo se estava
-			# pausado) e de Asleep/Flinched (volta pro idle de verdade,
-			# não só continua o sleep/hurt que estava tocando).
-			_play_anim(_idle_anim_name())
+	if status_conditions.has("Frozen"):
+		# pause() (não stop()) mantém o frame atual visível — "não
+		# performa animação ao fazer nada" enquanto congelada. Ver
+		# _play_anim(), que bloqueia qualquer NOVO play() vindo de
+		# outro lugar (attack/hurt/walk/idle) enquanto isso durar.
+		anim.pause()
+	elif status_conditions.has("Asleep"):
+		# Só existe a variação "_down" desse sprite sheet (foi feito
+		# originalmente pro retrato da tela de Party, sem depender de
+		# direção) — por isso ignora `facing` aqui, diferente de
+		# idle_<dir>/hurt_<dir>/etc.
+		_play_anim("sleep_down")
+	elif status_conditions.has("Flinched"):
+		_play_anim("hurt_" + facing)
+	else:
+		# Sem nenhuma condição que controle animação — importante
+		# sobretudo saindo de Frozen (anim.play(nome) sempre retoma mesmo
+		# se estava pausado) e de Asleep/Flinched (volta pro idle de
+		# verdade, não só continua o sleep/hurt que estava tocando).
+		_play_anim(_idle_anim_name())
 
 # Nome da animação de "descanso" a usar AGORA, olhando pra 3 coisas: se a
 # espécie tem hover_<dir> (voa/flutua parada em vez de ficar em pé — ex:
@@ -759,7 +934,7 @@ func _idle_anim_name() -> String:
 # A sequência de MORTE (die()/_on_attack_animation_finished quando is_dying)
 # passa direto por anim.play(), sem esse filtro — morrer não é opcional.
 func _play_anim(anim_name: String) -> void:
-	if status_condition == "Frozen":
+	if status_conditions.has("Frozen"):
 		return
 	anim.play(anim_name)
 
@@ -849,24 +1024,25 @@ func _stop_emote_bob() -> void:
 # resultado (aplicar o dano, checar morte, etc.) — essa função aqui só
 # calcula o número, não mexe em hp_current nem dispara die().
 func get_status_tick_damage() -> int:
-	if status_condition == "Poisoned":
+	if status_conditions.has("Poisoned"):
 		@warning_ignore("integer_division")
 		return hp_max * POISON_DAMAGE_PERCENT / 100
 	return 0
 
 # statusBonus da fórmula de captura (ver battle.gd::resolve_capture): 1.0
-# sem status nenhum, 2.0 se Asleep/Frozen (a unidade não pode reagir, mais
-# fácil de capturar), 1.5 pra qualquer outro status (ainda mais fácil que
-# saudável, só que menos que Asleep/Frozen). Valores fixos que vieram
-# direto da especificação da fórmula, não calculados de nenhum outro campo.
+# sem status nenhum, 2.0 se Asleep/Frozen estiver entre as condições ativas
+# (a unidade não pode reagir, mais fácil de capturar) — checado ANTES do
+# caso genérico porque, empilhado ou não, Asleep/Frozen sempre vence pro
+# efeito de captura — 1.5 pra qualquer outro status/combinação de status
+# (ainda mais fácil que saudável, só que menos que Asleep/Frozen). Valores
+# fixos que vieram direto da especificação da fórmula, não calculados de
+# nenhum outro campo.
 func get_capture_status_bonus() -> float:
-	match status_condition:
-		"":
-			return 1.0
-		"Asleep", "Frozen":
-			return 2.0
-		_:
-			return 1.5
+	if status_conditions.has("Asleep") or status_conditions.has("Frozen"):
+		return 2.0
+	if not status_conditions.is_empty():
+		return 1.5
+	return 1.0
 
 # Sequência de morte: repete hurt_<dir> por DEATH_HURT_CYCLES voltas enquanto
 # pisca a opacidade (Tween em loop, some do modulate.a sem mexer no tint de

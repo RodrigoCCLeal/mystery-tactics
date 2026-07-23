@@ -94,3 +94,31 @@ extends ActionData
 # como `permanent`. Desolate Land (Groudon, ver data/abilities/
 # desolate_land.tres) é a primeira: "Harsh Sunlight".
 @export var sets_weather_on_battle_start: String = ""
+
+# Flash Fire: true = essa Habilidade tem o "cartucho de um uso" descrito na
+# Status Condition "Charged" (ver Unit.status_conditions — antes era um bool
+# à parte, Unit.flash_fire_armed, convertido pro sistema genérico de status
+# empilhável a pedido do usuário: "Change Flash Fire charged to a status,
+# this may unbloat attack logic") — aplica "Charged" quando quem carrega ela
+# é atingida por um ataque Fire (ver battle.gd::execute_attack/
+# execute_attack_burst), e o PRÓXIMO ataque Fire que ELA MESMA usar sai com
+# x1.5 de dano (ver battle.gd::calculate_damage_modifiers/
+# FLASH_FIRE_MULTIPLIER), consumindo o cartucho. Igual sheer_force/speed_boost
+# acima: comportamento fixo demais pra valer a pena um campo configurável
+# (multiplicador sempre 1.5, mesmo espírito de SHEER_FORCE_MULTIPLIER ser uma
+# constante de regra, não um dado). A imunidade TOTAL a Fire que Flash Fire
+# também concede não precisa de campo novo nenhum — já é o mesmíssimo
+# immune_type="Fire" que Levitate usa pra Ground (ver comentário lá).
+@export var flash_fire: bool = false
+
+# Chlorophyll: true = enquanto o clima da batalha for Sunny OU Harsh
+# Sunlight, esta unidade ganha +1 em Unit.attacks_remaining no início do
+# próprio turno (ver battle.gd::has_chlorophyll/begin_current_turn) — pedido
+# EXATO do usuário: "If the weather is Sun (either Sunny or Harsh
+# Sunlight), this unit has an extra action point". Diferente da série
+# principal (que dobra Speed), essa é a tradução do usuário pro grid tático:
+# um "action point" extra em vez de mais velocidade, reaproveitando
+# Unit.attacks_remaining já ser um int (não bool) de propósito, pensado
+# desde o início pra um efeito assim (ver comentário grande do campo em
+# unit.gd). Ivysaur/Venusaur é o primeiro caso.
+@export var chlorophyll: bool = false

@@ -1,8 +1,122 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bgk83q7o4fqns"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0155/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0155/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ca6krg7lyw341" path="res://assets/sprites/Pokemon/Sprites/0155/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://crx0jogj4m8a4" path="res://assets/sprites/Pokemon/Sprites/0155/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="4_le"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_ad"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="6_evo"]
+[ext_resource type="Resource" uid="uid://ct7suodvsykqh" path="res://data/units/0156.tres" id="7_quilava"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="10_leer"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="11_tackle"]
+[ext_resource type="Resource" path="res://data/attacks/smokescreen.tres" id="12_smokescreen"]
+[ext_resource type="Resource" uid="uid://mnli3jceyhpm" path="res://data/attacks/ember.tres" id="13_ember"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="14_quick_attack"]
+[ext_resource type="Resource" path="res://data/attacks/flame_wheel.tres" id="15_flame_wheel"]
+[ext_resource type="Resource" path="res://data/attacks/defense_curl.tres" id="16_defense_curl"]
+[ext_resource type="Resource" path="res://data/attacks/flame_charge.tres" id="17_flame_charge"]
+[ext_resource type="Resource" path="res://data/attacks/swift.tres" id="18_swift"]
+[ext_resource type="Resource" path="res://data/attacks/lava_plume.tres" id="19_lava_plume"]
+[ext_resource type="Resource" path="res://data/attacks/flamethrower.tres" id="20_flamethrower"]
+[ext_resource type="Resource" path="res://data/attacks/inferno.tres" id="21_inferno"]
+[ext_resource type="Resource" path="res://data/attacks/rollout.tres" id="22_rollout"]
+[ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="23_double_edge"]
+[ext_resource type="Resource" path="res://data/attacks/overheat.tres" id="24_overheat"]
+[ext_resource type="Resource" path="res://data/attacks/eruption.tres" id="25_eruption"]
+[ext_resource type="Resource" path="res://data/abilities/blaze.tres" id="30_blaze"]
+[ext_resource type="Resource" path="res://data/abilities/flash_fire.tres" id="31_flash_fire"]
+
+[sub_resource type="Resource" id="EvolutionOption_0155"]
+script = ExtResource("6_evo")
+target = ExtResource("7_quilava")
+min_level = 14
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_leer"]
+script = ExtResource("4_le")
+action = ExtResource("10_leer")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_tackle"]
+script = ExtResource("4_le")
+action = ExtResource("11_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_blaze"]
+script = ExtResource("4_le")
+action = ExtResource("30_blaze")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_flash_fire"]
+script = ExtResource("4_le")
+action = ExtResource("31_flash_fire")
+is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_smokescreen"]
+script = ExtResource("4_le")
+level = 6
+action = ExtResource("12_smokescreen")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_ember"]
+script = ExtResource("4_le")
+level = 10
+action = ExtResource("13_ember")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_quick_attack"]
+script = ExtResource("4_le")
+level = 13
+action = ExtResource("14_quick_attack")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_flame_wheel"]
+script = ExtResource("4_le")
+level = 19
+action = ExtResource("15_flame_wheel")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_defense_curl"]
+script = ExtResource("4_le")
+level = 22
+action = ExtResource("16_defense_curl")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_flame_charge"]
+script = ExtResource("4_le")
+level = 28
+action = ExtResource("17_flame_charge")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_swift"]
+script = ExtResource("4_le")
+level = 31
+action = ExtResource("18_swift")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_lava_plume"]
+script = ExtResource("4_le")
+level = 37
+action = ExtResource("19_lava_plume")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_flamethrower"]
+script = ExtResource("4_le")
+level = 40
+action = ExtResource("20_flamethrower")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_inferno"]
+script = ExtResource("4_le")
+level = 46
+action = ExtResource("21_inferno")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_rollout"]
+script = ExtResource("4_le")
+level = 49
+action = ExtResource("22_rollout")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_double_edge"]
+script = ExtResource("4_le")
+level = 55
+action = ExtResource("23_double_edge")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_overheat"]
+script = ExtResource("4_le")
+level = 58
+action = ExtResource("24_overheat")
+
+[sub_resource type="Resource" id="LearnsetEntry_0155_eruption"]
+script = ExtResource("4_le")
+level = 64
+action = ExtResource("25_eruption")
 
 [resource]
 script = ExtResource("1_script")
@@ -10,8 +124,8 @@ unit_name = "Cyndaquil"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Fire"])
-grounded = true
-weight = 1
+slots = Array[ExtResource("5_ad")]([ExtResource("11_tackle"), ExtResource("13_ember"), ExtResource("30_blaze")])
+learnset = Array[ExtResource("4_le")]([SubResource("LearnsetEntry_0155_leer"), SubResource("LearnsetEntry_0155_tackle"), SubResource("LearnsetEntry_0155_blaze"), SubResource("LearnsetEntry_0155_flash_fire"), SubResource("LearnsetEntry_0155_smokescreen"), SubResource("LearnsetEntry_0155_ember"), SubResource("LearnsetEntry_0155_quick_attack"), SubResource("LearnsetEntry_0155_flame_wheel"), SubResource("LearnsetEntry_0155_defense_curl"), SubResource("LearnsetEntry_0155_flame_charge"), SubResource("LearnsetEntry_0155_swift"), SubResource("LearnsetEntry_0155_lava_plume"), SubResource("LearnsetEntry_0155_flamethrower"), SubResource("LearnsetEntry_0155_inferno"), SubResource("LearnsetEntry_0155_rollout"), SubResource("LearnsetEntry_0155_double_edge"), SubResource("LearnsetEntry_0155_overheat"), SubResource("LearnsetEntry_0155_eruption")])
 hp_base = 39
 attack_base = 52
 defense_base = 43
@@ -19,5 +133,5 @@ special_attack_base = 60
 special_defense_base = 50
 speed_base = 65
 catch_rate = 0.1765
-growth_group = "Medium Slow"
 base_exp_yield = 62
+evolution_options = Array[ExtResource("6_evo")]([SubResource("EvolutionOption_0155")])

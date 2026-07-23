@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+is_special = true
+element_type = "Fire"
+power = 130
+accuracy = 0.9
+area_shape = "Cone"
+stat_change_stat = "special_attack"
+stat_change_amount = -2
+stat_change_target = "Self"
+action_name = "Overheat"
+max_uses = 5
+range = 3

@@ -11,6 +11,11 @@
 [ext_resource type="Resource" path="res://data/abilities/overgrow.tres" id="7"]
 [ext_resource type="Resource" uid="uid://bymxe4i5vv7ff" path="res://data/attacks/growl.tres" id="8"]
 [ext_resource type="Resource" path="res://data/abilities/chlorophyll.tres" id="9"]
+[ext_resource type="Resource" path="res://data/attacks/growth.tres" id="10"]
+[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="11"]
+[ext_resource type="Resource" path="res://data/attacks/razor_leaf.tres" id="12"]
+[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="13"]
+[ext_resource type="Resource" path="res://data/attacks/sleep_powder.tres" id="14"]
 
 [sub_resource type="Resource" id="LearnsetEntry_0003_tackle"]
 script = ExtResource("5")
@@ -24,6 +29,31 @@ action = ExtResource("8")
 script = ExtResource("5")
 level = 3
 action = ExtResource("6")
+
+[sub_resource type="Resource" id="LearnsetEntry_0003_growth"]
+script = ExtResource("5")
+level = 6
+action = ExtResource("10")
+
+[sub_resource type="Resource" id="LearnsetEntry_0003_leech_seed"]
+script = ExtResource("5")
+level = 9
+action = ExtResource("11")
+
+[sub_resource type="Resource" id="LearnsetEntry_0003_razor_leaf"]
+script = ExtResource("5")
+level = 12
+action = ExtResource("12")
+
+[sub_resource type="Resource" id="LearnsetEntry_0003_poison_powder"]
+script = ExtResource("5")
+level = 15
+action = ExtResource("13")
+
+[sub_resource type="Resource" id="LearnsetEntry_0003_sleep_powder"]
+script = ExtResource("5")
+level = 15
+action = ExtResource("14")
 
 [sub_resource type="Resource" id="LearnsetEntry_0003_overgrow"]
 script = ExtResource("5")
@@ -43,7 +73,7 @@ attack_hit_delay = 0.7
 special_hit_delay = 0.8
 types = Array[String](["Grass", "Poison"])
 slots = Array[ExtResource("5_venusaur")]([ExtResource("4"), ExtResource("6"), ExtResource("7")])
-learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0003_tackle"), SubResource("LearnsetEntry_0003_growl"), SubResource("LearnsetEntry_0003_vine_whip"), SubResource("LearnsetEntry_0003_overgrow"), SubResource("LearnsetEntry_0003_chlorophyll")])
+learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0003_tackle"), SubResource("LearnsetEntry_0003_growl"), SubResource("LearnsetEntry_0003_vine_whip"), SubResource("LearnsetEntry_0003_growth"), SubResource("LearnsetEntry_0003_leech_seed"), SubResource("LearnsetEntry_0003_razor_leaf"), SubResource("LearnsetEntry_0003_poison_powder"), SubResource("LearnsetEntry_0003_sleep_powder"), SubResource("LearnsetEntry_0003_overgrow"), SubResource("LearnsetEntry_0003_chlorophyll")])
 weight = 2
 hp_base = 80
 attack_base = 82

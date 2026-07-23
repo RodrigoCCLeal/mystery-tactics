@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+is_special = true
+element_type = "Fire"
+power = 150
+power_scales_with_own_hp = true
+area_shape = "Burst"
+area_min_range = 3
+action_name = "Eruption"
+max_uses = 5
+range = 5

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/attacks/defense_curl.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Rock"
+accuracy = 0.9
+makes_contact = true
+scales_with_consecutive_use = true
+consecutive_use_base_power = 30
+consecutive_use_max_power = 480
+consecutive_use_boost_prerequisite = ExtResource("2")
+consecutive_use_boosted_base_power = 60
+consecutive_use_boosted_max_power = 960
+consecutive_use_max_range = 5
+action_name = "Rollout"
+max_uses = 12
+range = 5

@@ -33,7 +33,16 @@ const SLOT_COUNT = 6
 
 @onready var title_label: Label = $Center/Pair/SlotsBox/MarginContainer/Content/Title
 @onready var rows_container: VBoxContainer = $Center/Pair/SlotsBox/MarginContainer/Content/Rows
-@onready var picker_list: VBoxContainer = $Center/Pair/OptionsBox/MarginContainer/PickerContent/PickerList
+@onready var picker_list: VBoxContainer = $Center/Pair/OptionsBox/MarginContainer/PickerContent/PickerScroll/PickerList
+
+# ScrollContainer em volta de picker_list (ver unit_loadout.tscn) — bug
+# reportado pelo usuário: "the loadout screen needs to be scrollable, there
+# are too many options and they dont all fit there" (uma espécie com
+# learnset grande, tipo Typhlosion, tinha mais opções do que cabia na altura
+# fixa de OptionsBox). Usado em _update_picker_visual() pra garantir que a
+# opção realçada (setas pra cima/baixo) sempre fique visível, rolando a
+# lista sozinha se precisar — ver ensure_control_visible().
+@onready var picker_scroll: ScrollContainer = $Center/Pair/OptionsBox/MarginContainer/PickerContent/PickerScroll
 
 var data: UnitData
 var focus_column: Column = Column.SLOTS
@@ -221,6 +230,11 @@ func _on_picker_gui_input(event: InputEvent, index: int) -> void:
 func _update_picker_visual() -> void:
 	for i in picker_labels.size():
 		picker_labels[i].modulate = Color.YELLOW if i == picker_selected else Color.WHITE
+	# Rola a lista sozinha pra manter a opção realçada visível — sem isso,
+	# navegar com as setas além do que cabe na tela deixava o cursor "sumir"
+	# por trás da borda do ScrollContainer, mesmo bug reportado pelo usuário.
+	if picker_selected >= 0 and picker_selected < picker_labels.size():
+		picker_scroll.ensure_control_visible(picker_labels[picker_selected])
 
 func _choose_picker_option() -> void:
 	var old_action = data.slots[selected_row]

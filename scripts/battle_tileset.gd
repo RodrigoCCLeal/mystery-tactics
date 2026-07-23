@@ -34,7 +34,7 @@ extends Resource
 # dá esse direito sozinho.
 @export var fluid_pass_type: String = ""
 
-# Status Condition (mesmo vocabulário de Unit.status_condition) aplicada a
+# Status Condition (mesmo vocabulário de Unit.status_conditions) aplicada a
 # QUALQUER unidade que pise numa célula de fluido (ver battle.gd::
 # _on_unit_tile_entered) — "" (padrão, água) = nenhum efeito. "Burned" pro
 # tileset de lava: tentamos aplicar em todo mundo que entra, mas quem é do
