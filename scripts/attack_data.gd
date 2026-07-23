@@ -86,7 +86,16 @@ extends ActionData
 # Resolvido pela MESMA função de Burst (ver battle.gd::execute_attack_burst)
 # — só a geometria de quem é achado muda, o resto (roll de acerto único,
 # aplicar em cada alvo, boost/recoil uma vez só no fim) é idêntico.
-@export_enum("Single", "Cone", "Burst", "Line") var area_shape: String = "Single"
+# "Wide" = 3 células NUMA FILA SÓ, perpendicular à direção mirada, todas a
+# exatamente `range` passos de distância na direção mirada (não um leque que
+# cresce com a distância feito Cone, nem um raio ao redor feito Burst) —
+# Rock Slide é o primeiro caso (pedido do usuário, com exemplo exato: "user
+# on (1,1), hits on (2,0)(2,1)(2,2)" mirando pra direita, range=1). Ver
+# battle.gd::get_wide_cells — cell central = origin + dir*range, e as outras
+# duas são cell central ± o vetor perpendicular a dir (rotação de 90°:
+# Vector2i(-dir.y, dir.x)). Igual Cone/Line, atinge TODO MUNDO (aliado E
+# inimigo) nas 3 células — resolvido pela mesma execute_attack_burst.
+@export_enum("Single", "Cone", "Burst", "Line", "Wide") var area_shape: String = "Single"
 
 # ---------- Mudança de Stat (ataques de Status) ----------
 # "" = sem mudança de stat. Vocabulário igual Unit.STAGE_STATS ("attack",
@@ -185,6 +194,18 @@ extends ActionData
 # ImpactEffect.play(), mesma ideia de secondary_status_texture acima) — null
 # (padrão) = sem efeito visual nenhum.
 @export var inflicts_status_texture: Texture2D
+
+# false (padrão) = inflicts_status mira o(s) INIMIGO(S) encontrado(s) na área,
+# igual sempre. true = Protect é o primeiro caso — a Status Condition acima
+# (aqui, "Protected") é aplicada em QUEM ATACA, nunca em quem foi clicado, o
+# clique só confirma o uso (mesmo espírito de stat_change_target=="Self"/
+# self_heal_fraction, ver is_self_target_status). "75% chance to give user
+# full immunity until its next turn" (pedido do usuário) já é coberto pelo
+# roll de acerto que TODO golpe de Status agora tem (ver o "We need to
+# implement accuracy checks for status moves" desta mesma sessão) — Protect
+# só precisa de accuracy=0.75 no .tres, sem campo novo pra "chance de
+# funcionar" separado da accuracy normal.
+@export var inflicts_status_on_self: bool = false
 
 # Nome de um clima (ver battle.gd::WEATHER_*) que esse ataque de Status
 # ativa — "" (padrão) = não mexe em clima nenhum. Só lido quando
@@ -344,6 +365,26 @@ extends ActionData
 # sem efeito, mesmo com self_stat_boost_chance > 0.
 @export var self_stat_boost_amount: int = 0
 
+# ---------- Efeito secundário: muda 1 stat do DEFENSOR, com % de chance ----------
+# Rock Smash é o primeiro caso: "50% chance to lower Defense" (pedido do
+# usuário, "same as bite" só confirmou reaproveitar o número exato da série
+# principal). Três variantes de "stat muda por causa de um ataque" já
+# existiam e NENHUMA cobria isso: stat_change_stat/_amount/_target lá em
+# cima é SEMPRE garantido, sem chance (Growl/Flame Charge); self_stat_boost_
+# chance/_amount sobe os 5 stats JUNTOS, sempre no próprio ATACANTE (Ancient
+# Power). Este aqui é o terceiro caso que faltava: 1 stat só, com %, no
+# DEFENSOR — mesmo texto/vocabulário de stat (ver STAT_DISPLAY_NAMES em
+# battle.gd), amount negativo pra abaixar (Rock Smash: -1) ou positivo pra
+# subir, se algum golpe futuro precisar do inverso. "" (padrão) = sem esse
+# efeito. Rolado de forma independente de secondary_status/_2 (mesmo
+# espírito de Ice Fang ter dois rolls próprios) e cancelado por Sheer Force
+# igual eles (ver battle.gd::has_sheer_force/_try_apply_secondary_stat_change
+# — chamado no mesmo bloco `if not has_sheer_force(attacker)` que já protege
+# secondary_status).
+@export var secondary_stat_change_stat: String = ""
+@export var secondary_stat_change_amount: int = 0
+@export_range(0.0, 1.0) var secondary_stat_change_chance: float = 0.0
+
 # ---------- Recoil (dano no próprio atacante) ----------
 # Fração do PRÓPRIO hp_max (não do dano causado, nem do hp_current) que quem
 # usa esse ataque perde, SEMPRE que o golpe acerta e causa dano de verdade —
@@ -440,6 +481,20 @@ extends ActionData
 # the burn chance and conditional doubling if the target is BURNED exactly"
 # (pedido do usuário — só Burned conta, não qualquer Status Condition).
 @export var power_doubles_if_target_has_status: String = ""
+
+# false (padrão) = power nunca muda por causa do clima. true = Solar Beam é
+# o primeiro caso — pedido do usuário (2026-07-23): "Solar Beam's power
+# needs to be halved during Sand, Rain and Snow". Deliberadamente só essas
+# TRÊS (ver battle.gd::get_effective_power) — Sunny/Harsh Sunlight (o golpe
+# já dispara na hora nesses dois, ver AttackData.instant_in_sun) e o clima
+# NEUTRO (WEATHER_NONE) continuam com o power cheio, e Heavy Rain/Strong
+# Winds ficaram de fora por não terem sido citados — decisão minha, não
+# confirmada com o Rodrigo, revisar se algum dia isso importar. Nome
+# diferente de propósito do "bad weather" de Synthesis (self_heal_fraction_
+# in_bad_weather) — lá "ruim" significa QUALQUER clima fora do baseline,
+# aqui significa só estes três nomeados, escopos diferentes que não devem
+# se confundir.
+@export var power_halved_in_rain_sand_snow: bool = false
 
 # -1.0 (padrão) = usa a chance de Acerto Crítico GLOBAL de sempre (ver
 # battle.gd::CRITICAL_HIT_CHANCE, 1/16 = 6.25%). >= 0.0 = SUBSTITUI a chance

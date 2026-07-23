@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Rock"
+power = 75
+accuracy = 0.9
+area_shape = "Wide"
+secondary_status = "Flinched"
+secondary_status_chance = 0.3
+action_name = "Rock Slide"
+max_uses = 10
+range = 1

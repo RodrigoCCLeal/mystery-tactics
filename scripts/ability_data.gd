@@ -122,3 +122,13 @@ extends ActionData
 # desde o início pra um efeito assim (ver comentário grande do campo em
 # unit.gd). Ivysaur/Venusaur é o primeiro caso.
 @export var chlorophyll: bool = false
+
+# Damp: pedido do usuário (2026-07-23) — "Damp prevents 'Explosion' moves and
+# abilities from working". Groundwork puro por enquanto: nenhum golpe ou
+# Habilidade de Explosão existe ainda no projeto (mesma ideia de
+# AttackData.tags existir sem nada lendo ainda) — quando um golpe desse tipo
+# for implementado, o ponto de checagem certo é perguntar "algum inimigo OU
+# aliado no raio de explosão carrega Damp?" antes de deixar o golpe/
+# Habilidade disparar, não checar só quem ATACA. Mudkip/Marshtomp/Swampert é
+# o primeiro caso, Hidden Ability.
+@export var damp: bool = false

@@ -1,13 +1,14 @@
-[gd_resource type="Resource" script_class="AttackData" format=3]
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://cdmrqfvjb8ksf"]
 
-[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+[ext_resource type="Script" uid="uid://ds0uxvdng0s2r" path="res://scripts/attack_data.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
-element_type = "Grass"
 is_special = true
+element_type = "Grass"
 power = 120
 area_shape = "Line"
+power_halved_in_rain_sand_snow = true
 is_charge_move = true
 instant_in_sun = true
 action_name = "Solar Beam"

@@ -165,11 +165,23 @@ const STAT_STAGE_MULTIPLIERS := {
 # Duração em turnos de quem tem prazo fixo (Poisoned e Burned não têm — só
 # saem por cura; Flinched também não usa isso, ver comentário em
 # battle.gd::begin_current_turn; Charged também não, ver comentário grande
-# dela lá embaixo). O contador desce no fim do turno da PRÓPRIA unidade
-# afetada (ver battle.gd::apply_end_of_turn_status, que agora itera TODAS as
-# condições ativas, não só uma), nunca no turno de quem aplicou a condição.
+# dela lá embaixo; Protected (Protect) também não — mesmo tratamento de
+# Flinched, curada NA HORA em begin_current_turn assim que chega o próximo
+# turno de quem usou, nunca por contador; Aqua Ring também não — sem prazo
+# pedido pelo usuário, fica curando 1/16 HP por turno até desmaiar ou a
+# batalha acabar, igual Poisoned/Burned (ver battle.gd::get_aqua_ring_heal)).
+# O contador desce no fim do turno
+# da PRÓPRIA unidade afetada (ver battle.gd::apply_end_of_turn_status, que
+# agora itera TODAS as condições ativas, não só uma), nunca no turno de quem
+# aplicou a condição.
 const STATUS_DURATIONS := {
 	"Frozen": 2, "Paralyzed": 2, "Confused": 2, "Blind": 2, "Asleep": 3,
+	# Rooted (Sand Tomb, ver battle.gd::get_rooted_tick_damage) — pedido do
+	# usuário: "Change the duration to 2 turns" (mainline usa 4-5, aqui foi
+	# encurtado de propósito). Decrementada pelo MESMO laço genérico que já
+	# cuida das condições acima, sem tratamento especial nenhum — só o dano
+	# por turno que precisou de uma função própria.
+	"Rooted": 2,
 }
 
 # Quais condições bloqueiam o quê — reescrito pro pedido do usuário
@@ -180,8 +192,14 @@ const STATUS_DURATIONS := {
 # mais a redução de Speed em get_effective_stat — Paralyzed continua sem
 # entrada NENHUMA nestas duas listas, de propósito), Asleep continua travando
 # os dois, Flinched trava os dois mas só por 1 turno (tratado à parte em
-# begin_current_turn).
-const MOVEMENT_BLOCKING_STATUS = ["Frozen", "Asleep", "Flinched"]
+# begin_current_turn). Protected (Protect) também fica DE FORA das duas de
+# propósito — ela não trava NADA de quem usou, só bloqueia ataques ALHEIOS
+# recebidos enquanto ativa (ver battle.gd::execute_attack/execute_attack_
+# burst/execute_status_attack). Rooted (Sand Tomb) é o primeiro caso
+# ASSIMÉTRICO de verdade: trava só MOVIMENTO (pedido do usuário: "Rooted
+# Pokémon can't move"), de propósito FORA de ATTACK_BLOCKING_STATUS — quem
+# está Rooted continua atacando normalmente.
+const MOVEMENT_BLOCKING_STATUS = ["Frozen", "Asleep", "Flinched", "Rooted"]
 const ATTACK_BLOCKING_STATUS = ["Frozen", "Asleep", "Flinched"]
 
 const POISON_DAMAGE_PERCENT = 8  # Poisoned: 8/100 do hp_max, por turno

@@ -46,7 +46,7 @@ signal closed
 # trocar unidades de posição enquanto se escolhe o alvo de um item).
 signal unit_picked(index: int)
 var picker_mode: bool = false
-var picker_prompt: String = "Escolha o alvo.   (Z: cancelar)"
+var picker_prompt: String = "Escolha o alvo."
 
 # Filtro opcional pra picker_mode: recebe a UnitData de um slot preenchido,
 # retorna se ela é um alvo VÁLIDO (ex: item_list_screen.gd usa isso pra
@@ -493,9 +493,9 @@ func _refresh_all() -> void:
 	if picker_mode:
 		prompt_label.text = picker_prompt
 	elif picked_index == -1:
-		prompt_label.text = "Escolha um Pokémon.   (X: opções   Z: fechar)"
+		prompt_label.text = "Escolha um Pokémon."
 	else:
-		prompt_label.text = "Escolha o slot pra trocar.   (X: trocar/cancelar   Z: cancelar)"
+		prompt_label.text = "Escolha o slot pra trocar."
 
 func _refresh_slot(index: int) -> void:
 	var row = slot_nodes[index]

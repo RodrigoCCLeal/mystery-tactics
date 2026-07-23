@@ -1763,6 +1763,21 @@ func begin_current_turn() -> void:
 	if u.fully_paralyzed_this_turn:
 		log_message("%s is fully paralyzed!" % u.data.unit_name)
 
+	# Protected (ver AttackData.inflicts_status_on_self/Protect, pedido do
+	# usuário: "full immunity until its next turn") — mesmo espírito de
+	# Flinched logo abaixo (cura NA HORA aqui, não por contador decrescente),
+	# só que Protected NUNCA trava movimento nem ataque desta unidade (por
+	# isso não entra em MOVEMENT_BLOCKING_STATUS/ATTACK_BLOCKING_STATUS) —
+	# ela só bloqueia ataques ALHEIOS enquanto ativa (ver has_status(
+	# "Protected") em execute_attack/execute_attack_burst/
+	# execute_status_attack). "Até o próximo turno" = literalmente até bem
+	# aqui, no início do PRÓXIMO begin_current_turn desta mesma unidade,
+	# então isso precisa rodar ANTES do resto da função decidir
+	# move_budget_left/attacks_remaining (embora Protected não mude nenhum
+	# dos dois, diferente de Flinched).
+	if u.has_status("Protected"):
+		u.cure_status_condition("Protected")
+
 	# Flinched é diferente das outras Status Conditions com duração: ela só
 	# deveria custar UM turno inteiro (movimento e ataque zerados) e sumir
 	# "no começo do turno seguinte" — ou seja, bem aqui, agora, no início
@@ -2196,6 +2211,8 @@ func _build_attack_tooltip(action: AttackData, uses_current: int) -> String:
 		area_suffix = " (projétil)"
 	elif action.area_shape == "Cone":
 		area_suffix = " (cone)"
+	elif action.area_shape == "Wide":
+		area_suffix = " (frente)"
 	var lines = [
 		action.action_name,
 		"Tipo: %s (%s)" % [action.element_type, kind],
@@ -2405,17 +2422,17 @@ func _trigger_action_slot_shortcut(index: int) -> void:
 #   própria ItemData ficam sem uso nenhum pra TM, só existem por herdar de
 #   ActionData).
 # Um AttackData conta como "auto-alvo" (afeta só quem usou o golpe, nunca uma
-# célula clicada) em dois casos hoje: stat_change_target=="Self" (Growth,
-# Defense Curl) OU self_heal_fraction > 0.0 (Synthesis — não usa
-# stat_change_target pra nada, então não dava pra checar só esse campo).
-# Extraído como função própria (2026-07-23, correção do bug de range 1 vs
-# range 0 apontado pelo Rodrigo) pra is_valid_target_cell e
-# update_attack_highlight usarem exatamente o MESMO critério — antes,
-# update_attack_highlight só olhava stat_change_target=="Self" e deixava
-# Synthesis cair no destaque genérico (seguindo o mouse), inconsistente com
-# o próprio golpe só afetar quem usou.
+# célula clicada) em TRÊS casos hoje: stat_change_target=="Self" (Growth,
+# Defense Curl), self_heal_fraction > 0.0 (Synthesis), ou
+# inflicts_status_on_self (Protect — nenhum dos outros dois cobre "aplica uma
+# Status Condition em si mesmo", só stat/cura). Extraído como função própria
+# (2026-07-23, correção do bug de range 1 vs range 0 apontado pelo Rodrigo)
+# pra is_valid_target_cell e update_attack_highlight usarem exatamente o
+# MESMO critério — antes, update_attack_highlight só olhava
+# stat_change_target=="Self" e deixava Synthesis cair no destaque genérico
+# (seguindo o mouse), inconsistente com o próprio golpe só afetar quem usou.
 func is_self_target_status(action: ActionData) -> bool:
-	return action is AttackData and action.is_status and (action.stat_change_target == "Self" or action.self_heal_fraction > 0.0)
+	return action is AttackData and action.is_status and (action.stat_change_target == "Self" or action.self_heal_fraction > 0.0 or action.inflicts_status_on_self)
 
 func is_valid_target_cell(origin: Vector2i, target: Vector2i, action: ActionData, attacker: Node = null) -> bool:
 	var effective_action: ActionData = action
@@ -2479,6 +2496,15 @@ func is_valid_target_cell(origin: Vector2i, target: Vector2i, action: ActionData
 		var is_straight_line = delta.x == 0 or delta.y == 0 or abs(delta.x) == abs(delta.y)
 		return is_straight_line and dist <= effective_range
 
+	# Wide (ver AttackData.area_shape/get_wide_cells — Rock Slide): diferente
+	# de Cone/Line, só EXATAMENTE 3 células contam (a fila fixa a `range`
+	# passos de distância) — sem checagem de dist <= range separada, só
+	# membership mesmo, já que get_wide_cells nunca devolve nada fora dessas
+	# 3 células.
+	if effective_action is AttackData and effective_action.area_shape == "Wide":
+		var dir = Vector2i(sign(delta.x), sign(delta.y))
+		return target in get_wide_cells(origin, dir, effective_range)
+
 	return dist == effective_range
 
 # Todas as células dentro de um "leque" (cone) que se abre a partir de
@@ -2530,6 +2556,23 @@ func get_cone_cells(origin: Vector2i, dir: Vector2i, max_range: int) -> Array[Ve
 				if forward > 0 and abs(lateral) < forward:
 					cells.append(origin + Vector2i(dx, dy))
 	return cells
+
+# Área "Wide" (ver AttackData.area_shape — Rock Slide é o primeiro caso):
+# 3 células NUMA FILA SÓ, perpendicular a `dir`, todas centradas em
+# origin + dir*range (não um leque que cresce com a distância feito
+# get_cone_cells acima). O vetor perpendicular a `dir` é sempre a rotação de
+# 90° dele (Vector2i(-dir.y, dir.x)) — funciona igual pra direção cardeal ou
+# diagonal, sem precisar de um `if is_diagonal` separado feito Cone (a
+# assimetria cardeal/diagonal aqui é só uma CONSEQUÊNCIA natural da rotação
+# de 90°, não precisa de fórmula própria pra cada caso). Exemplo confirmado
+# pelo usuário: origin=(1,1), dir=(1,0) [direita], range=1 -> center=(2,1),
+# perp=(0,1) -> células (2,0), (2,1), (2,2).
+func get_wide_cells(origin: Vector2i, dir: Vector2i, range_value: int) -> Array[Vector2i]:
+	if dir == Vector2i.ZERO:
+		return []
+	var center = origin + dir * range_value
+	var perp = Vector2i(-dir.y, dir.x)
+	return [center - perp, center, center + perp]
 
 # Anda em linha reta de origin em direção a target (mesma direção 8-way do
 # resto do jogo), célula por célula, até no máximo max_range passos, e
@@ -2645,6 +2688,14 @@ func update_attack_highlight() -> void:
 				break
 			line_cell = next_cell
 			attack_highlight_layer.set_cell(line_cell, 0, Vector2i(13, 1))
+	elif attack != null and attack.area_shape == "Wide":
+		# Wide: destaca as 3 células da fila inteira (não só a célula sob o
+		# mouse) na direção mirada — mesma geometria de get_wide_cells.
+		var dir = Vector2i(sign(cell.x - current.grid_pos.x), sign(cell.y - current.grid_pos.y))
+		for wide_cell in get_wide_cells(current.grid_pos, dir, attack.range):
+			if wide_cell.x < 0 or wide_cell.x >= MAP_WIDTH or wide_cell.y < 0 or wide_cell.y >= MAP_HEIGHT:
+				continue
+			attack_highlight_layer.set_cell(wide_cell, 0, Vector2i(13, 1))
 	else:
 		attack_highlight_layer.set_cell(cell, 0, Vector2i(13, 1))
 	current.face_towards(cell)
@@ -2670,7 +2721,7 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 		# sentido "embaralhar direção" pra quem já é uma área inteira).
 		var dir = Vector2i(sign(clicked_cell.x - current.grid_pos.x), sign(clicked_cell.y - current.grid_pos.y))
 		_run_player_status_attack(current, action, dir, index)
-	elif current != null and action is AttackData and (action.area_shape == "Burst" or action.area_shape == "Line" or action.area_shape == "Cone") and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
+	elif current != null and action is AttackData and (action.area_shape == "Burst" or action.area_shape == "Line" or action.area_shape == "Cone" or action.area_shape == "Wide") and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
 		# Ataque de área "Burst", "Line" ou "Cone" QUE CAUSA DANO (ver
 		# AttackData.area_shape/execute_attack_burst — Lava Plume,
 		# Flamethrower e Overheat): mesmo raciocínio do ramo is_status logo
@@ -3143,6 +3194,11 @@ func get_effective_power(attacker: Node, attack: AttackData, defender: Node = nu
 		# ELE MESMO acabou de queimar o alvo não conta em dobro nesse mesmo
 		# golpe — só se o alvo JÁ chegou queimado.
 		return attack.power * 2
+	if attack.power_halved_in_rain_sand_snow and (current_weather == WEATHER_RAIN or current_weather == WEATHER_SANDSTORM or current_weather == WEATHER_SNOW):
+		# Solar Beam (ver comentário grande em AttackData.
+		# power_halved_in_rain_sand_snow) — só estes três, Sol/clima neutro
+		# continuam com o power cheio.
+		return max(1, attack.power / 2)
 	return attack.power
 
 # Range de verdade a usar na hora de RESOLVER o alvo (ver handle_targeting_
@@ -3315,6 +3371,19 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# "Charged" já estiver ativa (defensor já tinha levado outro Fire antes
 	# de gastar o próprio) — por isso só loga a mensagem se REALMENTE
 	# aplicou agora.
+	# Protected (ver AttackData.inflicts_status_on_self/Protect): golpe
+	# ACERTOU (já passou o roll de acerto acima), mas o alvo está com o
+	# escudo de Protect ativo — bloqueia TUDO (dano, Flash Fire, descongelar,
+	# efeito secundário), sem contar como erro pra fins de
+	# consecutive_attack_uses (é diferente de um miss de verdade: o golpe
+	# conectou, só não teve efeito nenhum, mesmo tratamento que imunidade de
+	# tipo já recebe).
+	if defender.has_status("Protected"):
+		log_message("%s protected itself!" % defender.data.unit_name)
+		refresh_unit_summary_hud()
+		check_auto_end_turn()
+		return
+
 	if attack.element_type == "Fire" and has_flash_fire(defender) and defender.apply_status_condition("Charged"):
 		log_message("%s's Flash Fire was triggered!" % defender.data.unit_name)
 
@@ -3427,6 +3496,7 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 		if defender.hp_current > 0:
 			_try_apply_secondary_status(defender, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture)
 			_try_apply_secondary_status(defender, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2)
+			_try_apply_secondary_stat_change(defender, attack)
 
 	if defender.hp_current <= 0:
 		log_message("%s was defeated!" % defender.data.unit_name)
@@ -3628,6 +3698,16 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 			var u = get_unit_at(cell)
 			if u != null and u != attacker and not targets.has(u):
 				targets.append(u)
+	elif attack.area_shape == "Wide":
+		# Mesma geometria de get_wide_cells (ver AttackData.area_shape) —
+		# TODO MUNDO nas 3 células (aliado incluso), Rock Slide é o primeiro
+		# caso.
+		for cell in get_wide_cells(attacker.grid_pos, dir, attack.range):
+			if cell.x < 0 or cell.x >= MAP_WIDTH or cell.y < 0 or cell.y >= MAP_HEIGHT:
+				continue
+			var u = get_unit_at(cell)
+			if u != null and u != attacker and not targets.has(u):
+				targets.append(u)
 	else:
 		# area_min_range (ver AttackData — Eruption é o primeiro caso: "hits
 		# all units on a 3 to 5 range from the user, doesnt hit units up to 2
@@ -3653,6 +3733,16 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 	var total_damage_dealt = 0
 
 	for target in targets:
+		# Protected (ver AttackData.inflicts_status_on_self/Protect — golpe
+		# QUE CAUSA DANO em área, então checa por alvo: quem está Protected
+		# fica de fora por COMPLETO (nem dano, nem Flash Fire, nem
+		# descongela, nem efeito secundário nenhum), mas outros alvos na
+		# mesma rajada continuam sendo atingidos normalmente — Protect só
+		# protege quem usou, nunca aliados por perto.
+		if target.has_status("Protected"):
+			log_message("%s protected itself!" % target.data.unit_name)
+			continue
+
 		if attack.element_type == "Fire" and has_flash_fire(target) and target.apply_status_condition("Charged"):
 			log_message("%s's Flash Fire was triggered!" % target.data.unit_name)
 
@@ -3693,6 +3783,7 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 		if not has_sheer_force(attacker) and target.hp_current > 0:
 			_try_apply_secondary_status(target, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture)
 			_try_apply_secondary_status(target, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2)
+			_try_apply_secondary_stat_change(target, attack)
 
 		if target.hp_current <= 0:
 			log_message("%s was defeated!" % target.data.unit_name)
@@ -3764,6 +3855,18 @@ func _try_apply_secondary_status(defender: Node, status: String, chance: float, 
 		log_message("%s was %s!" % [defender.data.unit_name, status])
 		if texture != null:
 			play_impact_effect(texture, defender.position)
+
+# Efeito secundário de AttackData.secondary_stat_change_stat/_amount/_chance
+# (ver comentário grande lá — Rock Smash é o primeiro caso: "50% chance to
+# lower Defense"). stat == "" sai de cara sem rolar nada (nenhum golpe sem
+# esse efeito paga custo de randf() à toa). Reaproveita apply_stat_change()
+# de novo (mesma função/efeito visual de Growl/Ancient Power/Flame Charge) —
+# ela já cuida sozinha da mensagem "won't go any lower/higher" se o estágio
+# já estiver no limite, então não precisa de tratamento especial aqui.
+func _try_apply_secondary_stat_change(defender: Node, attack: AttackData) -> void:
+	if attack.secondary_stat_change_stat == "" or randf() >= attack.secondary_stat_change_chance:
+		return
+	apply_stat_change(defender, attack.secondary_stat_change_stat, attack.secondary_stat_change_amount)
 
 # Efeito secundário de AttackData.self_stat_boost_chance/_amount (ex: Ancient
 # Power) — diferente de _try_apply_secondary_status acima (1 status, no
@@ -3950,6 +4053,21 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		# golpe hoje que precise de alvos diferentes pros dois.
 		if attack.stat_change_stat_2 != "":
 			apply_stat_change(attacker, attack.stat_change_stat_2, amount_2)
+	# inflicts_status_on_self (ver AttackData — Protect é o primeiro caso):
+	# aplica AttackData.inflicts_status (reaproveitado — mesmo campo/textura
+	# que os golpes de status "pra inimigo" já usam, só que aqui o alvo é
+	# QUEM ATACA) direto no attacker, sem passar pela busca de inimigo em
+	# targets — mesmo espírito de self_heal_fraction/stat_change_target==
+	# "Self" logo acima. "But it failed!" se apply_status_condition()
+	# devolver false (ex: já estar Protected de um uso anterior que ainda
+	# não expirou — não deveria rolar hoje já que Protected sempre cura no
+	# início do próximo turno, mas o guard existe do mesmo jeito que Synthesis
+	# guarda "já com HP cheio").
+	elif attack.inflicts_status_on_self and attack.inflicts_status != "":
+		if attacker.apply_status_condition(attack.inflicts_status):
+			log_message("%s protected itself!" % attacker.data.unit_name)
+		else:
+			log_message("But it failed!")
 	elif attack.sets_weather != "":
 		await try_set_weather(attack.sets_weather, attacker)
 	elif targets.is_empty():
@@ -3971,6 +4089,13 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		# silencioso de "não pegou" que Frozen+Sol já usa, ver
 		# _try_apply_secondary_status).
 		if attack.tags.has("Powder") and target.data.types.has("Grass"):
+			continue
+		# Protected (ver AttackData.inflicts_status_on_self/Protect): bloqueia
+		# golpe de Status igual bloqueia dano — mesma mensagem/`continue` do
+		# ramo Powder logo acima, só que aqui vale pra QUALQUER golpe de
+		# Status mirado num inimigo (Growl, Poison Powder, Leech Seed, etc.).
+		if target.has_status("Protected"):
+			log_message("%s protected itself!" % target.data.unit_name)
 			continue
 		if attack.stat_change_target != "Self":
 			apply_stat_change(target, attack.stat_change_stat, attack.stat_change_amount)
@@ -4707,14 +4832,53 @@ func get_weather_tick_damage(u: Node) -> int:
 # SANDSTORM_DAMAGE_FRACTION_DENOMINATOR logo acima), não uma conta em cima de
 # 100 (que exigiria um float pra representar "12,5" sem arredondar errado
 # antes da divisão inteira). Coincide, de propósito, com o valor real de
-# Leech Seed na série principal (1/8 do HP máximo).
-const LEECH_SEED_DAMAGE_FRACTION_DENOMINATOR = 8
+# Leech Seed na série principal (1/8 do HP máximo). Renomeada de
+# LEECH_SEED_DAMAGE_FRACTION_DENOMINATOR (2026-07-23) quando Sand Tomb/Rooted
+# virou o segundo efeito a usar a MESMA fração — pedido do usuário: "keep
+# over-time damage percentage the same" (fez questão de manter os 12,5% de
+# Leech Seed pro tick de Rooted também) — ver get_rooted_tick_damage abaixo.
+const BINDING_DAMAGE_FRACTION_DENOMINATOR = 8
 
 func get_seeded_tick_damage(u: Node) -> int:
 	if not u.has_status("Seeded"):
 		return 0
 	@warning_ignore("integer_division")
-	return max(1, u.hp_max / LEECH_SEED_DAMAGE_FRACTION_DENOMINATOR)
+	return max(1, u.hp_max / BINDING_DAMAGE_FRACTION_DENOMINATOR)
+
+# Rooted (ver AttackData.secondary_status/Sand Tomb — pedido do usuário:
+# "gives 'Rooted' status. Rooted Pokémon can't move... Change the duration
+# to 2 turns, keep over-time damage percentage the same"). Diferente de
+# Seeded, não cura NINGUÉM — é só dano direto na própria unidade presa, sem
+# fonte pra "devolver" HP (Sand Tomb não é um dreno). Duração real (2 turnos)
+# mora em Unit.STATUS_DURATIONS["Rooted"], decrementada pelo mesmo laço
+# genérico de fim-de-turno que já cuida de Frozen/Paralyzed/Confused/Blind —
+# este tick de dano só soma no HP perdido, não mexe na duração.
+func get_rooted_tick_damage(u: Node) -> int:
+	if not u.has_status("Rooted"):
+		return 0
+	@warning_ignore("integer_division")
+	return max(1, u.hp_max / BINDING_DAMAGE_FRACTION_DENOMINATOR)
+
+# Aqua Ring (ver AttackData.inflicts_status_on_self — mesmo mecanismo de
+# Protect, só que o status aplicado é benéfico em vez de bloquear ataques
+# alheios): pedido do usuário: "Self cast, gives 1/16 HP regeneration at the
+# end of each turn... Create a status for it, since it isn't stackable with
+# itself". O "não empilha com ele mesmo" já sai de graça: apply_status_
+# condition() (ver lá em cima) recusa sozinho se a MESMA chave já estiver em
+# status_conditions, então usar Aqua Ring de novo enquanto já ativo simplesmente
+# não faz nada (mesma regra de Sleep citada no comentário grande de
+# status_conditions) — nenhum código extra precisou ser escrito pra isso.
+# Sem entrada em STATUS_DURATIONS (fica -1, "sem prazo") — diferente de Rooted,
+# não foi pedido um número de turnos, então fica ativo até a unidade desmaiar
+# ou a batalha acabar, igual Poisoned/Burned. Sem entrada em MOVEMENT_BLOCKING_
+# STATUS/ATTACK_BLOCKING_STATUS (é benéfico, nunca trava nada de quem tem).
+const AQUA_RING_HEAL_FRACTION_DENOMINATOR = 16
+
+func get_aqua_ring_heal(u: Node) -> int:
+	if not u.has_status("Aqua Ring"):
+		return 0
+	@warning_ignore("integer_division")
+	return max(1, u.hp_max / AQUA_RING_HEAL_FRACTION_DENOMINATOR)
 
 # "HP reduced by this effect is granted to Leech Seed user as healing" — cura
 # QUEM aplicou "Seeded" em `seeded_unit` (ver Unit.get_status_source), não
@@ -4766,11 +4930,18 @@ func apply_end_of_turn_status(u: Node) -> bool:
 	var tick_damage = u.get_status_tick_damage()
 	var weather_tick_damage = get_weather_tick_damage(u)
 	var seed_damage = get_seeded_tick_damage(u)
+	var rooted_damage = get_rooted_tick_damage(u)
 	if weather_tick_damage > 0:
 		tick_damage += weather_tick_damage
 		log_message("%s is buffeted by the sandstorm!" % u.data.unit_name)
 	if seed_damage > 0:
 		tick_damage += seed_damage
+	if rooted_damage > 0:
+		# Rooted (ver Sand Tomb): diferente de seed_damage, não cura ninguém
+		# — só soma no dano bruto deste tick, sem tratamento à parte antes do
+		# take_damage.
+		tick_damage += rooted_damage
+		log_message("%s is hurt by Rooted!" % u.data.unit_name)
 	if tick_damage > 0:
 		var hp_lost = min(tick_damage, u.hp_current)
 		u.take_damage(tick_damage)
@@ -4786,6 +4957,18 @@ func apply_end_of_turn_status(u: Node) -> bool:
 			if enemy_units.is_empty() or player_units.is_empty():
 				await end_battle(u, enemy_units.is_empty())
 			return true
+
+	# Aqua Ring (ver get_aqua_ring_heal acima): roda DEPOIS do bloco de dano
+	# (que já retornou true e saiu se a unidade morreu ali), então só cura
+	# quem sobreviveu ao próprio tick. Cura diretamente (sem passar por
+	# take_damage, que é só pra dano) e trava em hp_max via min(), mesmo
+	# cuidado de _apply_leech_seed_heal logo abaixo.
+	var aqua_ring_heal = get_aqua_ring_heal(u)
+	if aqua_ring_heal > 0 and u.hp_current > 0:
+		u.hp_current = min(u.hp_current + aqua_ring_heal, u.hp_max)
+		u.update_health_bar()
+		u.sync_to_data()
+		log_message("%s's Aqua Ring restored its HP!" % u.data.unit_name)
 
 	# .duplicate() antes de iterar: cure_status_condition(status) apaga a
 	# chave do dicionário DE VERDADE (ver Unit.cure_status_condition) — mexer

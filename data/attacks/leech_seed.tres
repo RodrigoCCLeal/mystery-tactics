@@ -1,15 +1,14 @@
-[gd_resource type="Resource" script_class="AttackData" format=3]
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://cglxkxh5ebx4g"]
 
-[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+[ext_resource type="Script" uid="uid://ds0uxvdng0s2r" path="res://scripts/attack_data.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
 is_special = true
 element_type = "Grass"
-accuracy = 0.9
 is_status = true
-is_projectile = true
+accuracy = 0.9
 inflicts_status = "Seeded"
+is_projectile = true
 action_name = "Leech Seed"
 max_uses = 10
-range = 1

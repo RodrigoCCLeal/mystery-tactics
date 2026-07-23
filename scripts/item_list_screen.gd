@@ -274,7 +274,7 @@ func _open_party_picker(item: ItemData, mode: String) -> void:
 	var screen = PARTY_SCREEN_SCENE.instantiate()
 	screen.picker_mode = true
 	if mode == "use":
-		screen.picker_prompt = "Use %s em qual unidade?   (Z: cancelar)" % item.action_name
+		screen.picker_prompt = "Use %s em qual unidade?" % item.action_name
 		# Item que só cura (heal_amount > 0) não faz nada numa unidade com HP
 		# já cheio — "se o item não vai fazer nada, ele não pode ser usado"
 		# (Potion/Super Potion/Oran Berry). Item sem cura nenhuma (futuro
@@ -289,7 +289,7 @@ func _open_party_picker(item: ItemData, mode: String) -> void:
 			screen.picker_filter = _has_unrevealed_hidden_ability
 			screen.picker_filter_hint = "(sem Habilidade Hidden)"
 	else:
-		screen.picker_prompt = "Dar %s pra qual unidade?   (Z: cancelar)" % item.action_name
+		screen.picker_prompt = "Dar %s pra qual unidade?" % item.action_name
 	add_child(screen)
 	screen.unit_picked.connect(_on_party_target_picked.bind(item, mode))
 	screen.closed.connect(_on_party_picker_closed)

@@ -11,10 +11,10 @@
 [ext_resource type="Resource" uid="uid://bymxe4i5vv7ff" path="res://data/attacks/growl.tres" id="8"]
 [ext_resource type="Resource" uid="uid://dnw2nt1os14f3" path="res://data/units/0002.tres" id="9"]
 [ext_resource type="Resource" path="res://data/attacks/growth.tres" id="10"]
-[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="11"]
+[ext_resource type="Resource" uid="uid://cglxkxh5ebx4g" path="res://data/attacks/leech_seed.tres" id="11"]
 [ext_resource type="Resource" path="res://data/attacks/razor_leaf.tres" id="12"]
-[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="13"]
-[ext_resource type="Resource" path="res://data/attacks/sleep_powder.tres" id="14"]
+[ext_resource type="Resource" uid="uid://cpxtdp5ofau0o" path="res://data/attacks/poison_powder.tres" id="13"]
+[ext_resource type="Resource" uid="uid://bn5dp47yjv3v8" path="res://data/attacks/sleep_powder.tres" id="14"]
 [ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="15"]
 [ext_resource type="Resource" path="res://data/attacks/magical_leaf.tres" id="16"]
 [ext_resource type="Resource" path="res://data/attacks/synthesis.tres" id="17"]
@@ -67,10 +67,6 @@ script = ExtResource("5")
 level = 15
 action = ExtResource("14")
 
-[sub_resource type="Resource" id="LearnsetEntry_0001_overgrow"]
-script = ExtResource("5")
-action = ExtResource("7")
-
 [sub_resource type="Resource" id="LearnsetEntry_0001_take_down"]
 script = ExtResource("5")
 level = 25
@@ -105,6 +101,10 @@ action = ExtResource("21")
 script = ExtResource("5")
 level = 55
 action = ExtResource("20")
+
+[sub_resource type="Resource" id="LearnsetEntry_0001_overgrow"]
+script = ExtResource("5")
+action = ExtResource("7")
 
 [resource]
 script = ExtResource("1")

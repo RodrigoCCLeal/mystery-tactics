@@ -316,11 +316,14 @@ func _activate_cursor() -> void:
 	_perform_move(picked_column, picked_index, cursor_column, cursor_index)
 	_update_prompt()
 
+# Antes mostrava um texto de dica de tecla ("Setas: mover cursor. X:
+# selecionar Z: fechar" / variante "mover/cancelar") — removido a pedido do
+# usuário (2026-07-23): "Remove 'Key: What it does' from all menus, it
+# bloats everything". prompt_label continua existindo (é @onready, outras
+# telas/estados podem voltar a usá-lo pra uma mensagem de verdade no
+# futuro), só não recebe mais dica de tecla nenhuma.
 func _update_prompt() -> void:
-	if picked_column == "":
-		prompt_label.text = "Setas: mover cursor.   X: selecionar   Z: fechar"
-	else:
-		prompt_label.text = "Setas: mover cursor.   X: mover/cancelar   Z: cancelar"
+	prompt_label.text = ""
 
 func _get_data(column: String, index: int) -> UnitData:
 	if column == "team":

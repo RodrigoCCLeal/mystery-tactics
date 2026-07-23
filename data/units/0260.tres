@@ -1,8 +1,150 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://c86e0nvcwe3pi"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0260/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0260/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_ectbd"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bu5gt1n3gu4jt" path="res://assets/sprites/Pokemon/Sprites/0260/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://7frquig1qu71" path="res://assets/sprites/Pokemon/Sprites/0260/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="4_learnset"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="7_tackle"]
+[ext_resource type="Resource" uid="uid://bymxe4i5vv7ff" path="res://data/attacks/growl.tres" id="8_growl"]
+[ext_resource type="Resource" uid="uid://btlvk86vy3q41" path="res://data/attacks/water_gun.tres" id="9_water_gun"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="10_take_down"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="11_amnesia"]
+[ext_resource type="Resource" path="res://data/abilities/torrent.tres" id="12_torrent"]
+[ext_resource type="Resource" path="res://data/abilities/damp.tres" id="13_damp"]
+[ext_resource type="Resource" path="res://data/attacks/sludge_wave.tres" id="15_sludge_wave"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="16_bite"]
+[ext_resource type="Resource" path="res://data/attacks/rock_smash.tres" id="17_rock_smash"]
+[ext_resource type="Resource" path="res://data/attacks/rock_throw.tres" id="18_rock_throw"]
+[ext_resource type="Resource" path="res://data/attacks/protect.tres" id="19_protect"]
+[ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="20_supersonic"]
+[ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="21_bubble_beam"]
+[ext_resource type="Resource" path="res://data/attacks/rock_slide.tres" id="22_rock_slide"]
+[ext_resource type="Resource" path="res://data/attacks/sand_tomb.tres" id="23_sand_tomb"]
+[ext_resource type="Resource" path="res://data/attacks/aqua_ring.tres" id="24_aqua_ring"]
+[ext_resource type="Resource" path="res://data/attacks/surf.tres" id="25_surf"]
+[ext_resource type="Resource" path="res://data/attacks/mud_shot.tres" id="26_mud_shot"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="27_screech"]
+[ext_resource type="Resource" path="res://data/attacks/sludge_bomb.tres" id="28_sludge_bomb"]
+[ext_resource type="Resource" path="res://data/attacks/muddy_water.tres" id="29_muddy_water"]
+[ext_resource type="Resource" path="res://data/attacks/earthquake.tres" id="30_earthquake"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="31_hydro_pump"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_bite"]
+script = ExtResource("4_learnset")
+action = ExtResource("16_bite")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_sand_tomb"]
+script = ExtResource("4_learnset")
+action = ExtResource("23_sand_tomb")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_growl"]
+script = ExtResource("4_learnset")
+action = ExtResource("8_growl")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_tackle"]
+script = ExtResource("4_learnset")
+action = ExtResource("7_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_water_gun"]
+script = ExtResource("4_learnset")
+level = 3
+action = ExtResource("9_water_gun")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_rock_smash"]
+script = ExtResource("4_learnset")
+level = 6
+action = ExtResource("17_rock_smash")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_rock_throw"]
+script = ExtResource("4_learnset")
+level = 11
+action = ExtResource("18_rock_throw")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_protect"]
+script = ExtResource("4_learnset")
+level = 14
+action = ExtResource("19_protect")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_supersonic"]
+script = ExtResource("4_learnset")
+level = 18
+action = ExtResource("20_supersonic")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_bubble_beam"]
+script = ExtResource("4_learnset")
+level = 22
+action = ExtResource("21_bubble_beam")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_rock_slide"]
+script = ExtResource("4_learnset")
+level = 26
+action = ExtResource("22_rock_slide")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_take_down"]
+script = ExtResource("4_learnset")
+level = 28
+action = ExtResource("10_take_down")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_amnesia"]
+script = ExtResource("4_learnset")
+level = 30
+action = ExtResource("11_amnesia")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_sludge_wave"]
+script = ExtResource("4_learnset")
+level = 60
+action = ExtResource("15_sludge_wave")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_aqua_ring"]
+script = ExtResource("4_learnset")
+level = 33
+action = ExtResource("24_aqua_ring")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_surf"]
+script = ExtResource("4_learnset")
+level = 36
+action = ExtResource("25_surf")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_mud_shot"]
+script = ExtResource("4_learnset")
+level = 36
+action = ExtResource("26_mud_shot")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_screech"]
+script = ExtResource("4_learnset")
+level = 38
+action = ExtResource("27_screech")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_sludge_bomb"]
+script = ExtResource("4_learnset")
+level = 40
+action = ExtResource("28_sludge_bomb")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_muddy_water"]
+script = ExtResource("4_learnset")
+level = 46
+action = ExtResource("29_muddy_water")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_earthquake"]
+script = ExtResource("4_learnset")
+level = 50
+action = ExtResource("30_earthquake")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_hydro_pump"]
+script = ExtResource("4_learnset")
+level = 55
+action = ExtResource("31_hydro_pump")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_torrent"]
+script = ExtResource("4_learnset")
+action = ExtResource("12_torrent")
+
+[sub_resource type="Resource" id="LearnsetEntry_0260_damp"]
+script = ExtResource("4_learnset")
+action = ExtResource("13_damp")
+is_hidden_ability = true
 
 [resource]
 script = ExtResource("1_script")
@@ -10,8 +152,8 @@ unit_name = "Swampert"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Water", "Ground"])
-grounded = true
-weight = 1
+slots = Array[ExtResource("5_action")]([ExtResource("7_tackle"), ExtResource("9_water_gun"), ExtResource("12_torrent")])
+learnset = Array[ExtResource("4_learnset")]([SubResource("LearnsetEntry_0260_bite"), SubResource("LearnsetEntry_0260_sand_tomb"), SubResource("LearnsetEntry_0260_growl"), SubResource("LearnsetEntry_0260_tackle"), SubResource("LearnsetEntry_0260_water_gun"), SubResource("LearnsetEntry_0260_rock_smash"), SubResource("LearnsetEntry_0260_rock_throw"), SubResource("LearnsetEntry_0260_protect"), SubResource("LearnsetEntry_0260_supersonic"), SubResource("LearnsetEntry_0260_bubble_beam"), SubResource("LearnsetEntry_0260_rock_slide"), SubResource("LearnsetEntry_0260_take_down"), SubResource("LearnsetEntry_0260_amnesia"), SubResource("LearnsetEntry_0260_aqua_ring"), SubResource("LearnsetEntry_0260_surf"), SubResource("LearnsetEntry_0260_mud_shot"), SubResource("LearnsetEntry_0260_screech"), SubResource("LearnsetEntry_0260_sludge_bomb"), SubResource("LearnsetEntry_0260_muddy_water"), SubResource("LearnsetEntry_0260_earthquake"), SubResource("LearnsetEntry_0260_hydro_pump"), SubResource("LearnsetEntry_0260_sludge_wave"), SubResource("LearnsetEntry_0260_torrent"), SubResource("LearnsetEntry_0260_damp")])
 hp_base = 100
 attack_base = 110
 defense_base = 90
@@ -19,5 +161,4 @@ special_attack_base = 85
 special_defense_base = 90
 speed_base = 60
 catch_rate = 0.1765
-growth_group = "Medium Slow"
 base_exp_yield = 241
