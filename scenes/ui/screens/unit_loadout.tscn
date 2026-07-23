@@ -28,7 +28,7 @@ offset_bottom = 0.0
 
 [node name="Pair" type="HBoxContainer" parent="Center"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 16
 
 [node name="SlotsBox" type="Panel" parent="Center/Pair"]
 custom_minimum_size = Vector2(260, 340)
@@ -72,11 +72,15 @@ horizontal_alignment = 1
 autowrap_mode = 2
 text = "Setas: navegar   ←→: trocar coluna   X: escolher   Z: fechar"
 
-[node name="OptionsBox" type="Panel" parent="Center/Pair"]
-custom_minimum_size = Vector2(280, 340)
+[node name="OptionsRow" type="HBoxContainer" parent="Center/Pair"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AttackBox" type="Panel" parent="Center/Pair/OptionsRow"]
+custom_minimum_size = Vector2(170, 340)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Center/Pair/OptionsBox"]
+[node name="MarginContainer" type="MarginContainer" parent="Center/Pair/OptionsRow/AttackBox"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
@@ -85,30 +89,154 @@ offset_left = 0.0
 offset_top = 0.0
 offset_right = 0.0
 offset_bottom = 0.0
-theme_override_constants/margin_left = 18
+theme_override_constants/margin_left = 14
 theme_override_constants/margin_top = 18
-theme_override_constants/margin_right = 18
+theme_override_constants/margin_right = 14
 theme_override_constants/margin_bottom = 18
 
-[node name="PickerContent" type="VBoxContainer" parent="Center/Pair/OptionsBox/MarginContainer"]
+[node name="PickerContent" type="VBoxContainer" parent="Center/Pair/OptionsRow/AttackBox/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="PickerHeader" type="Label" parent="Center/Pair/OptionsBox/MarginContainer/PickerContent"]
+[node name="PickerHeader" type="Label" parent="Center/Pair/OptionsRow/AttackBox/MarginContainer/PickerContent"]
 layout_mode = 2
 horizontal_alignment = 1
-text = "Escolha uma ação"
+text = "Attack"
 
-[node name="PickerSep" type="HSeparator" parent="Center/Pair/OptionsBox/MarginContainer/PickerContent"]
+[node name="PickerSep" type="HSeparator" parent="Center/Pair/OptionsRow/AttackBox/MarginContainer/PickerContent"]
 layout_mode = 2
 
-[node name="PickerScroll" type="ScrollContainer" parent="Center/Pair/OptionsBox/MarginContainer/PickerContent"]
+[node name="PickerScroll" type="ScrollContainer" parent="Center/Pair/OptionsRow/AttackBox/MarginContainer/PickerContent"]
 custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="PickerList" type="VBoxContainer" parent="Center/Pair/OptionsBox/MarginContainer/PickerContent/PickerScroll"]
+[node name="PickerList" type="VBoxContainer" parent="Center/Pair/OptionsRow/AttackBox/MarginContainer/PickerContent/PickerScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="SupportBox" type="Panel" parent="Center/Pair/OptionsRow"]
+custom_minimum_size = Vector2(170, 340)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Center/Pair/OptionsRow/SupportBox"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 18
+
+[node name="PickerContent" type="VBoxContainer" parent="Center/Pair/OptionsRow/SupportBox/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PickerHeader" type="Label" parent="Center/Pair/OptionsRow/SupportBox/MarginContainer/PickerContent"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Support"
+
+[node name="PickerSep" type="HSeparator" parent="Center/Pair/OptionsRow/SupportBox/MarginContainer/PickerContent"]
+layout_mode = 2
+
+[node name="PickerScroll" type="ScrollContainer" parent="Center/Pair/OptionsRow/SupportBox/MarginContainer/PickerContent"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="PickerList" type="VBoxContainer" parent="Center/Pair/OptionsRow/SupportBox/MarginContainer/PickerContent/PickerScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="AbilityBox" type="Panel" parent="Center/Pair/OptionsRow"]
+custom_minimum_size = Vector2(170, 340)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Center/Pair/OptionsRow/AbilityBox"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 18
+
+[node name="PickerContent" type="VBoxContainer" parent="Center/Pair/OptionsRow/AbilityBox/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PickerHeader" type="Label" parent="Center/Pair/OptionsRow/AbilityBox/MarginContainer/PickerContent"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Ability"
+
+[node name="PickerSep" type="HSeparator" parent="Center/Pair/OptionsRow/AbilityBox/MarginContainer/PickerContent"]
+layout_mode = 2
+
+[node name="PickerScroll" type="ScrollContainer" parent="Center/Pair/OptionsRow/AbilityBox/MarginContainer/PickerContent"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="PickerList" type="VBoxContainer" parent="Center/Pair/OptionsRow/AbilityBox/MarginContainer/PickerContent/PickerScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="ItemBox" type="Panel" parent="Center/Pair/OptionsRow"]
+visible = false
+custom_minimum_size = Vector2(170, 340)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Center/Pair/OptionsRow/ItemBox"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 18
+
+[node name="PickerContent" type="VBoxContainer" parent="Center/Pair/OptionsRow/ItemBox/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PickerHeader" type="Label" parent="Center/Pair/OptionsRow/ItemBox/MarginContainer/PickerContent"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Item"
+
+[node name="PickerSep" type="HSeparator" parent="Center/Pair/OptionsRow/ItemBox/MarginContainer/PickerContent"]
+layout_mode = 2
+
+[node name="PickerScroll" type="ScrollContainer" parent="Center/Pair/OptionsRow/ItemBox/MarginContainer/PickerContent"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="PickerList" type="VBoxContainer" parent="Center/Pair/OptionsRow/ItemBox/MarginContainer/PickerContent/PickerScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8

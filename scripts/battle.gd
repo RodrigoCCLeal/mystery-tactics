@@ -744,6 +744,21 @@ const EXTREME_WEATHERS = [WEATHER_HARSH_SUNLIGHT, WEATHER_HEAVY_RAIN, WEATHER_ST
 func is_sun_weather() -> bool:
 	return current_weather == WEATHER_SUNNY or current_weather == WEATHER_HARSH_SUNLIGHT
 
+# Fração de hp_max a curar de VERDADE (ver AttackData.self_heal_fraction/
+# _in_sun/_in_bad_weather — Synthesis é o primeiro caso) — pedido do usuário:
+# "Strong winds or no weather, 1/2 hp. Sun 2/3 hp. Any other weather, 1/4
+# hp". Sol tem prioridade (se algum dia um golpe tivesse os dois >= 0.0 ao
+# mesmo tempo, o que não acontece hoje); "sem clima" e Strong Winds usam a
+# fração PADRÃO (self_heal_fraction), não a de "clima ruim" — só
+# Rain/Heavy Rain/Sandstorm/Snow contam como "clima ruim" pra este cálculo.
+func get_effective_self_heal_fraction(attack: AttackData) -> float:
+	if is_sun_weather() and attack.self_heal_fraction_in_sun >= 0.0:
+		return attack.self_heal_fraction_in_sun
+	var is_baseline_weather = current_weather == WEATHER_NONE or current_weather == WEATHER_STRONG_WINDS
+	if not is_baseline_weather and attack.self_heal_fraction_in_bad_weather >= 0.0:
+		return attack.self_heal_fraction_in_bad_weather
+	return attack.self_heal_fraction
+
 const WEATHER_BASE_DURATION = 4
 const WEATHER_EXTENDED_DURATION = 7
 
@@ -1772,6 +1787,36 @@ func begin_current_turn() -> void:
 		if u.can_attack() and has_chlorophyll(u) and is_sun_weather():
 			u.attacks_remaining += 1
 
+	# Golpe de carga pendente (ver Unit.charging_attack/AttackData.
+	# is_charge_move — Solar Beam) — "as soon as the unit has another action
+	# point, it fires... at the start of the user's next turn, they will
+	# fire before being able to do anything else" (pedido do usuário). Por
+	# isso mora bem aqui, DEPOIS de attacks_remaining já estar com o valor
+	# final do turno (incluindo bônus de Chlorophyll acima) e ANTES de
+	# qualquer HUD/IA rodar. `u.attacks_remaining > 0` cobre os dois casos:
+	# unidade travada (Frozen/Asleep/paralisia total) não dispara nada este
+	# turno — o golpe continua guardado, tenta de novo no turno seguinte —
+	# e uma unidade com Chlorophyll ainda gasta só 1 dos possíveis 2 Action
+	# Points no disparo, sobrando o outro pra agir normalmente depois.
+	if u.charging_attack != null and u.attacks_remaining > 0:
+		var charged_attack: AttackData = u.charging_attack
+		var charged_dir: Vector2i = u.charging_dir
+		var charged_slot: int = u.charging_slot_index
+		u.charging_attack = null
+		u.charging_dir = Vector2i.ZERO
+		u.charging_slot_index = -1
+		await execute_attack_burst(u, charged_attack, charged_dir, charged_slot, true)
+		# execute_attack_burst() pode ter encadeado check_auto_end_turn() ->
+		# _on_end_turn_pressed() -> begin_current_turn() da PRÓXIMA unidade
+		# (ou até encerrado a batalha) enquanto este await estava suspenso —
+		# mesmo padrão de recursão que o resto do arquivo já usa (ver
+		# check_auto_end_turn no fim desta função). Se isso aconteceu, quem
+		# dera continuar preenchendo HUD/IA pra ESTA unidade com estado
+		# velho: sai na hora, a chamada mais interna da recursão já deixou
+		# tudo certo pra unidade de verdade atual.
+		if phase != Phase.BATTLE or get_current_unit() != u:
+			return
+
 	refresh_unit_summary_hud()
 
 	# Turno de inimigo: nenhum HUD de ação do jogador faz sentido pra unidade
@@ -2359,15 +2404,42 @@ func _trigger_action_slot_shortcut(index: int) -> void:
 #   tudo em cima de tm_attack em vez de action (o `range`/`is_projectile` da
 #   própria ItemData ficam sem uso nenhum pra TM, só existem por herdar de
 #   ActionData).
+# Um AttackData conta como "auto-alvo" (afeta só quem usou o golpe, nunca uma
+# célula clicada) em dois casos hoje: stat_change_target=="Self" (Growth,
+# Defense Curl) OU self_heal_fraction > 0.0 (Synthesis — não usa
+# stat_change_target pra nada, então não dava pra checar só esse campo).
+# Extraído como função própria (2026-07-23, correção do bug de range 1 vs
+# range 0 apontado pelo Rodrigo) pra is_valid_target_cell e
+# update_attack_highlight usarem exatamente o MESMO critério — antes,
+# update_attack_highlight só olhava stat_change_target=="Self" e deixava
+# Synthesis cair no destaque genérico (seguindo o mouse), inconsistente com
+# o próprio golpe só afetar quem usou.
+func is_self_target_status(action: ActionData) -> bool:
+	return action is AttackData and action.is_status and (action.stat_change_target == "Self" or action.self_heal_fraction > 0.0)
+
 func is_valid_target_cell(origin: Vector2i, target: Vector2i, action: ActionData, attacker: Node = null) -> bool:
+	var effective_action: ActionData = action
+	if action is ItemData and action.category == "TM" and action.tm_attack != null:
+		effective_action = action.tm_attack
+
+	# Auto-alvo (Growth/Synthesis/Defense Curl e afins — ver
+	# is_self_target_status abaixo): quem é afetado é sempre quem ataca, nunca
+	# uma célula vizinha. Rodrigo apontou (2026-07-23) que a UI pedia pra
+	# clicar um tile de RANGE 1 (adjacente) pra confirmar esses golpes, o que
+	# não fazia sentido — o único "alvo" válido pra esse tipo de ataque é o
+	# PRÓPRIO tile de quem ataca (delta ZERO, "range 0"), então aqui a gente
+	# ignora attack.range de propósito e só aceita target == origin. Isso
+	# também corrige o caso de is_status com self_heal_fraction (Synthesis),
+	# que antes caía no ramo genérico "dist == effective_range" lá embaixo
+	# igual qualquer ataque normal (nunca dava match porque delta==ZERO
+	# retornava false antes mesmo de chegar lá).
+	if is_self_target_status(effective_action):
+		return target == origin
+
 	var delta = target - origin
 	if delta == Vector2i.ZERO:
 		return false
 	var dist = max(abs(delta.x), abs(delta.y))
-
-	var effective_action: ActionData = action
-	if action is ItemData and action.category == "TM" and action.tm_attack != null:
-		effective_action = action.tm_attack
 
 	# `attacker` (opcional, null = compatível com todo call site de antes
 	# deste parâmetro existir) só importa pra AttackData.
@@ -2531,12 +2603,12 @@ func update_attack_highlight() -> void:
 	elif targeting_action is ItemData and targeting_action.category == "TM":
 		attack = targeting_action.tm_attack
 
-	if attack != null and attack.is_status and attack.stat_change_target == "Self":
-		# Defense Curl e afins (ver AttackData.stat_change_target=="Self"):
+	if is_self_target_status(attack):
+		# Defense Curl/Growth/Synthesis e afins (ver is_self_target_status):
 		# quem é afetado de verdade é QUEM ATACA, não a célula clicada —
 		# destaca só o PRÓPRIO tile de quem ataca, sem seguir o mouse
-		# (ainda precisa clicar uma célula válida pra confirmar, ver
-		# is_valid_target_cell acima, só o destaque que não muda com isso).
+		# (ainda precisa clicar uma célula válida pra confirmar — agora só o
+		# próprio tile mesmo, "range 0", ver is_valid_target_cell acima).
 		attack_highlight_layer.set_cell(current.grid_pos, 0, Vector2i(13, 1))
 	elif attack != null and attack.area_shape == "Cone":
 		# Cone: destaca o LEQUE inteiro (não só a célula sob o mouse) — comunica
@@ -3425,6 +3497,31 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	refresh_unit_summary_hud()
 	check_auto_end_turn()
 
+# Fase de CARGA de um golpe com AttackData.is_charge_move (Solar Beam é o
+# primeiro caso) — chamado de dentro de execute_attack_burst quando o golpe
+# ainda não deve disparar neste turno. Bem mais simples que um ataque de
+# verdade: sem roll de acerto, sem alvo nenhum resolvido, sem dano — só
+# consome a ação/PP deste turno e guarda o golpe + direção em
+# Unit.charging_attack/charging_dir/charging_slot_index pra
+# begin_current_turn() disparar de verdade no próximo Action Point desta
+# unidade (ver comentário grande lá).
+func execute_charge_attack(attacker: Node, attack: AttackData, dir: Vector2i, slot_index: int) -> void:
+	if dir != Vector2i.ZERO:
+		attacker.face_towards(attacker.grid_pos + dir)
+	attacker.play_attack_animation(attack.is_special)
+	log_message("%s used %s." % [attacker.data.unit_name, attack.action_name])
+	log_message("%s began charging power!" % attacker.data.unit_name)
+	if attack.max_uses > 0:
+		attacker.slot_uses[slot_index] -= 1
+	attacker.attacks_remaining -= 1
+	refresh_action_slots_hud()
+	_track_attack_use(attacker, attack)
+	attacker.charging_attack = attack
+	attacker.charging_dir = dir
+	attacker.charging_slot_index = slot_index
+	refresh_unit_summary_hud()
+	check_auto_end_turn()
+
 # Gêmeo de execute_attack acima, mas pra AttackData.area_shape == "Burst" OU
 # "Line" (ver comentário grande lá — Lava Plume e Flamethrower são os dois
 # primeiros casos): em vez de UM `defender` já resolvido, recebe `dir`
@@ -3443,14 +3540,39 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 # Unit.get_accuracy_multiplier() só depende de quem ATACA mesmo (Blind/Focus
 # Band do atacante), nunca do alvo — então rolar por alvo daria sempre o
 # mesmo resultado, só gastando randf() à toa.
-func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slot_index: int) -> void:
+# `charge_release` (novo, 2026-07-23 — ver AttackData.is_charge_move/Solar
+# Beam): false pra toda chamada normal de sempre. true SÓ quando quem chama é
+# begin_current_turn() disparando um golpe que ficou guardado em
+# Unit.charging_attack — nesse caso a "ação" de usar o golpe já rolou (e já
+# gastou 1 uso/PP) no turno em que ele foi CARREGADO (ver
+# execute_charge_attack), então aqui a gente pula o desconto de slot_uses de
+# novo (senão Solar Beam custaria 2 PP em vez de 1, diferente da série
+# principal) e troca a mensagem de log pra deixar claro que é o DISPARO, não
+# um novo uso. attacks_remaining ainda desconta normalmente — disparar
+# consome o Action Point novo que a unidade acabou de ganhar, mesmo se o uso
+# em si já foi "pago" antes.
+func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slot_index: int, charge_release: bool = false) -> void:
+	if attack.is_charge_move and not charge_release and not (attack.instant_in_sun and is_sun_weather()):
+		# Fase de CARGA (ver AttackData.is_charge_move) — pedido do usuário:
+		# "Solar Beam charges and consumes 1 action point. Then, as soon as
+		# the unit has another action point, it fires". Sem Sol ativo (ou com
+		# Sol mas sem instant_in_sun, embora Solar Beam sempre tenha ambos
+		# juntos hoje), NÃO dispara nada agora — só guarda o golpe/direção e
+		# sai. `attack.instant_in_sun and is_sun_weather()` é a ÚNICA forma de
+		# pular a carga: aí cai direto pro resto da função de baixo, idêntico
+		# a um golpe normal de 1 turno.
+		await execute_charge_attack(attacker, attack, dir, slot_index)
+		return
 	if dir != Vector2i.ZERO:
 		attacker.face_towards(attacker.grid_pos + dir)
 	attacker.play_attack_animation(attack.is_special)
 	if attack.cast_frames_by_direction != null:
 		play_cast_effect(attack.cast_frames_by_direction, attacker, dir, attack.range)
-	log_message("%s used %s." % [attacker.data.unit_name, attack.action_name])
-	if attack.max_uses > 0:
+	if charge_release:
+		log_message("%s unleashed %s!" % [attacker.data.unit_name, attack.action_name])
+	else:
+		log_message("%s used %s." % [attacker.data.unit_name, attack.action_name])
+	if attack.max_uses > 0 and not charge_release:
 		attacker.slot_uses[slot_index] -= 1
 	attacker.attacks_remaining -= 1
 	refresh_action_slots_hud()
@@ -3697,6 +3819,31 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 	var hit_delay = attacker.data.special_hit_delay if attack.is_special else attacker.data.attack_hit_delay
 	await get_tree().create_timer(hit_delay).timeout
 
+	# Roll de acerto — pedido do usuário (2026-07-22): "We need to implement
+	# accuracy checks for status moves, it makes no sense no having them".
+	# Até aqui, execute_status_attack não tinha roll NENHUM: todo ataque de
+	# Status sempre acertava, não importa o que AttackData.accuracy dissesse
+	# (o campo existia mas nunca era lido aqui). Mesmo formato do roll de
+	# execute_attack (ver comentário grande lá): usa attacker.
+	# get_accuracy_multiplier() (Focus Band, Blind), respeita never_misses,
+	# e accuracy == 1.0 (padrão de AttackData) pula o randf() de propósito —
+	# ou seja, golpes que NUNCA setaram accuracy (Growl, Smokescreen, Defense
+	# Curl, Sunny Day, Growth...) continuam 100% garantidos, exatamente como
+	# se comportavam antes desta mudança; só quem realmente tem um accuracy
+	# < 1.0 (Poison Powder/Sleep Powder a 0.75, Leech Seed a 0.9 — os .tres
+	# foram atualizados junto com esta mudança) passa a poder falhar de
+	# verdade agora. Mesma quebra de sequência de uso consecutivo do miss de
+	# execute_attack (ver Unit.consecutive_attack_uses) — nenhum golpe de
+	# Status usa scales_with_consecutive_use hoje, mas mantém os dois
+	# caminhos consistentes caso um dia algum use.
+	var final_accuracy = attack.accuracy * attacker.get_accuracy_multiplier()
+	if not attack.never_misses and final_accuracy < 1.0 and randf() >= final_accuracy:
+		log_message("%s's attack missed!" % attacker.data.unit_name)
+		attacker.consecutive_attack_uses = 0
+		refresh_unit_summary_hud()
+		check_auto_end_turn()
+		return
+
 	# Bug corrigido aqui: um ternário com Array[Vector2i] de um lado (retorno
 	# de get_cone_cells) e um literal `[...]` cru do outro CRASHAVA em
 	# runtime ("Trying to assign an array of type 'Array' to a variable of
@@ -3762,13 +3909,30 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 			if u != null and u.is_enemy != attacker.is_enemy:
 				targets.append(u)
 
+	# self_heal_fraction (ver AttackData — Synthesis é o primeiro caso): cura
+	# QUEM ATACA em vez de mirar em qualquer coisa, mesmo espírito de
+	# stat_change_target=="Self" logo abaixo (por isso vem ANTES, como o
+	# primeiro elo da mesma cadeia `if/elif` — os quatro casos são mutuamente
+	# exclusivos na prática, nenhum golpe hoje combina cura com mudança de
+	# stat/clima). "But it failed!" se quem usa já estiver com HP cheio,
+	# mesmo critério de "não fez nada de verdade" usado noutros lugares.
+	if attack.self_heal_fraction > 0.0:
+		if attacker.hp_current >= attacker.hp_max:
+			log_message("But it failed!")
+		else:
+			var heal_fraction = get_effective_self_heal_fraction(attack)
+			var heal_amount = int(round(attacker.hp_max * heal_fraction))
+			attacker.hp_current = min(attacker.hp_current + heal_amount, attacker.hp_max)
+			attacker.update_health_bar()
+			attacker.sync_to_data()
+			log_message("%s's HP was restored!" % attacker.data.unit_name)
 	# stat_change_target == "Self" (ver AttackData — Defense Curl é o primeiro
 	# caso) NUNCA "falha" por falta de alvo, mesmo espírito de sets_weather
 	# logo abaixo: aplica em QUEM ATACA direto, sem passar pela busca de
 	# inimigo em area_cells/targets nenhuma (por isso vem ANTES, com `elif`
 	# encadeado — as três condições são mutuamente exclusivas na prática, já
 	# que nenhum golpe hoje combina Self com sets_weather).
-	if attack.stat_change_target == "Self" and attack.stat_change_stat != "":
+	elif attack.stat_change_target == "Self" and attack.stat_change_stat != "":
 		# stat_change_doubles_in_sun (ver AttackData — Growth é o primeiro
 		# caso): dobra os DOIS valores juntos, não só o primeiro — o roll de
 		# clima é lido UMA vez aqui, antes de aplicar qualquer um dos dois,

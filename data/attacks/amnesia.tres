@@ -4,12 +4,11 @@
 
 [resource]
 script = ExtResource("1")
-element_type = "Grass"
-accuracy = 0.75
+element_type = "Psychic"
 is_status = true
-area_shape = "Burst"
-inflicts_status = "Asleep"
-tags = Array[String](["Powder"])
-action_name = "Sleep Powder"
-max_uses = 15
+stat_change_stat = "special_defense"
+stat_change_amount = 2
+stat_change_target = "Self"
+action_name = "Amnesia"
+max_uses = 20
 range = 1

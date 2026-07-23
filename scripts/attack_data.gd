@@ -134,6 +134,37 @@ extends ActionData
 # independente de clima nenhum.
 @export var stat_change_doubles_in_sun: bool = false
 
+# ---------- Cura em si mesmo (Synthesis e afins) ----------
+# 0.0 (padrão) = golpe não cura ninguém. > 0.0 = golpe de Status que cura o
+# PRÓPRIO usuário em uma fração de hp_max, sempre em QUEM ATACA (não existe
+# "curar o inimigo") — ver battle.gd::execute_status_attack, que checa este
+# campo ANTES de stat_change_target=="Self"/sets_weather (os três são
+# mutuamente exclusivos na prática: nenhum golpe hoje combina cura com
+# mudança de stat ou clima). Synthesis é o primeiro caso — este valor aqui é
+# a fração "padrão" (sem Sol nem clima ruim, ver comentário grande dos dois
+# campos abaixo): pedido do usuário, "Strong winds or no weather, 1/2 hp".
+# Falha ("But it failed!") se quem usa já estiver com HP cheio, mesmo
+# comportamento de cura de item/série principal.
+@export var self_heal_fraction: float = 0.0
+
+# -1.0 (padrão) = SEM caso especial de Sol, usa self_heal_fraction normal
+# mesmo com Sunny/Harsh Sunlight ativo. >= 0.0 = SUBSTITUI self_heal_fraction
+# só enquanto o clima for de Sol (ver battle.gd::is_sun_weather) — Synthesis:
+# "Sun 2/3 hp". Padrão de "-1 = sem caso especial, senão substitui" igual
+# crit_chance_override acima, mesmo motivo (0.0 seria ambíguo com "cura 0%
+# de propósito", que nenhum golpe real usaria, mas -1 deixa a intenção
+# explícita mesmo assim).
+@export var self_heal_fraction_in_sun: float = -1.0
+
+# -1.0 (padrão) = SEM caso especial de clima ruim. >= 0.0 = SUBSTITUI
+# self_heal_fraction enquanto o clima for QUALQUER coisa que não seja Sol
+# nem Strong Winds nem "sem clima" (ver battle.gd::
+# get_effective_self_heal_fraction — Rain/Heavy Rain/Sandstorm/Snow) —
+# Synthesis: "Any other weather, 1/4 hp". Strong Winds SAI desta categoria
+# de propósito (pedido do usuário: "Strong winds or no weather, 1/2 hp" —
+# mesma fração do caso sem clima nenhum, não a de clima ruim).
+@export var self_heal_fraction_in_bad_weather: float = -1.0
+
 # "" = sem Status Condition nenhuma aplicada. Vocabulário igual
 # Unit.status_conditions (ex: "Blind", "Poisoned"...) — diferente de
 # secondary_status/secondary_status_2 acima (que só existem em ataques QUE
@@ -420,6 +451,50 @@ extends ActionData
 # neste projeto). Reaproveitável por qualquer golpe futuro de alta-crítico
 # (Slash, Karate Chop, Crabhammer, etc.) sem precisar de campo novo.
 @export var crit_chance_override: float = -1.0
+
+# ---------- Golpes de carga ("2 Action Point moves") ----------
+# false (padrão) = golpe normal, dispara assim que usado (todo golpe até
+# agora). true = Solar Beam é o primeiro caso — pedido do usuário (2026-07-23):
+# "Solar Beam charges and consumes 1 action point. Then, as soon as the unit
+# has another action point, it fires". Ou seja, o USO em si (ver
+# battle.gd::execute_charge_attack) só gasta 1 ação e guarda o golpe/direção
+# em Unit.charging_attack/charging_dir — NENHUM dano acontece nessa hora. O
+# disparo de verdade só roda no PRÓXIMO Action Point que essa unidade
+# receber (ver begin_current_turn, checado logo depois de calcular
+# attacks_remaining do turno — "as soon as the unit has another action
+# point" quase sempre = "no começo do próximo turno dela", já que a maioria
+# das unidades só recebe 1 Action Point por turno; a exceção rara seria uma
+# unidade com Chlorophyll ainda tendo 1 AP sobrando no MESMO turno que
+# carregou, mas isso não é possível pra Solar Beam especificamente porque
+# instant_in_sun abaixo já dispara na hora sempre que há Chlorophyll ativo
+# de qualquer jeito, os dois dependendo do mesmo clima de Sol).
+#
+# Se a unidade ficar travada (Frozen/Asleep/paralisia total) bem no turno em
+# que deveria disparar, o golpe carregado simplesmente continua esperando
+# pro turno seguinte (attacks_remaining vem 0 nesse caso, então
+# begin_current_turn não tenta disparar) — decisão minha, não confirmada
+# com o Rodrigo; a série principal tem regras mais específicas pra isso,
+# revisar se algum dia importar.
+@export var is_charge_move: bool = false
+
+# false (padrão) = sempre carrega primeiro (1 turno) antes de disparar no
+# seguinte, nunca instantâneo. true = Solar Beam de novo — pedido do
+# usuário: "During Sun weather, it requires 1 fewer action point, so it will
+# activate instantly" — ou seja, com Sunny/Harsh Sunlight ativo (ver
+# battle.gd::is_sun_weather), o golpe pula a fase de carga inteira e
+# dispara na hora, igual qualquer golpe normal (só importa se is_charge_move
+# também for true — sem carga nenhuma, este campo não faz nada).
+@export var instant_in_sun: bool = false
+
+# Golpes de RECARGA (Giga Impact/Hyper Beam/Blast Burn — pedido do usuário,
+# "future moves... They come out when used, but consume the next action
+# point the unit would have") são o OPOSTO deste mecanismo: disparam na
+# HORA (sem fase de carga), só que "gastam" o PRÓXIMO Action Point da
+# unidade depois de disparar (turno de recarga, sem poder agir). Ainda não
+# implementado — nenhum golpe da Bulbasaur/Ivysaur/Venusaur usa isso, só
+# fica documentado aqui pra quando chegar a hora de um golpe assim de
+# verdade (Groundwork, mesmo espírito de outros campos "ainda não lidos em
+# lugar nenhum" deste arquivo).
 
 # ---------- Tags ----------
 # Rótulos livres pra agrupar ataques por CATEGORIA além do element_type — ex:

@@ -330,6 +330,20 @@ var slot_uses: Array[int] = []
 # nisso, essa trava é só pra Ataque (ver ActionData -> AttackData).
 var attacks_remaining: int = 1
 
+# Golpe de carga pendente (ver AttackData.is_charge_move — Solar Beam é o
+# primeiro caso, pedido do usuário 2026-07-23: "Solar Beam charges and
+# consumes 1 action point. Then, as soon as the unit has another action
+# point, it fires"). null (padrão/quase sempre) = nenhum golpe carregado.
+# Setado por battle.gd::execute_charge_attack() quando o golpe é usado (a
+# carga em si só gasta a ação, sem disparar nada ainda) e lido/limpo por
+# begin_current_turn() no início do PRÓXIMO turno desta unidade, disparando
+# de verdade com a direção guardada em charging_dir. Fica no Unit (não em
+# battle.gd) pelo mesmo motivo de status_conditions/status_source morarem
+# aqui: é estado que pertence à UNIDADE, precisa sobreviver entre turnos.
+var charging_attack: AttackData = null
+var charging_dir: Vector2i = Vector2i.ZERO
+var charging_slot_index: int = -1
+
 # Estágio atual de cada stat alterável (ver STAGE_STATS/STAT_STAGE_MULTIPLIERS
 # acima) — 0 = normal, igual attacks_remaining/slot_uses isso é só de batalha,
 # some sozinho quando a unidade é recriada no próximo combate.

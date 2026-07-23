@@ -4,12 +4,10 @@
 
 [resource]
 script = ExtResource("1")
-is_special = true
-element_type = "Grass"
-accuracy = 0.9
-is_status = true
-is_projectile = true
-inflicts_status = "Seeded"
-action_name = "Leech Seed"
-max_uses = 10
-range = 1
+element_type = "Normal"
+power = 90
+accuracy = 0.85
+makes_contact = true
+self_recoil_fraction_of_damage_dealt = 0.25
+action_name = "Take Down"
+max_uses = 20

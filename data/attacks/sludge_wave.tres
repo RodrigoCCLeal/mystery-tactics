@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource("1")
-element_type = "Grass"
-accuracy = 0.75
-is_status = true
+element_type = "Poison"
+is_special = true
+power = 95
 area_shape = "Burst"
-inflicts_status = "Asleep"
-tags = Array[String](["Powder"])
-action_name = "Sleep Powder"
-max_uses = 15
+secondary_status = "Poisoned"
+secondary_status_chance = 0.1
+action_name = "Sludge Wave"
+max_uses = 10
 range = 1

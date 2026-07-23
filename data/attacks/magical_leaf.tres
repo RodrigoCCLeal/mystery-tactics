@@ -4,12 +4,11 @@
 
 [resource]
 script = ExtResource("1")
+is_special = true
 element_type = "Grass"
-accuracy = 0.75
-is_status = true
-area_shape = "Burst"
-inflicts_status = "Asleep"
-tags = Array[String](["Powder"])
-action_name = "Sleep Powder"
-max_uses = 15
-range = 1
+power = 60
+never_misses = true
+is_projectile = true
+action_name = "Magical Leaf"
+max_uses = 20
+range = 3

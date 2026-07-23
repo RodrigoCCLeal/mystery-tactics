@@ -5,11 +5,10 @@
 [resource]
 script = ExtResource("1")
 element_type = "Grass"
-accuracy = 0.75
 is_status = true
-area_shape = "Burst"
-inflicts_status = "Asleep"
-tags = Array[String](["Powder"])
-action_name = "Sleep Powder"
-max_uses = 15
+self_heal_fraction = 0.5
+self_heal_fraction_in_sun = 0.6667
+self_heal_fraction_in_bad_weather = 0.25
+action_name = "Synthesis"
+max_uses = 10
 range = 1

@@ -15,6 +15,13 @@
 [ext_resource type="Resource" path="res://data/attacks/razor_leaf.tres" id="12"]
 [ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="13"]
 [ext_resource type="Resource" path="res://data/attacks/sleep_powder.tres" id="14"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="15"]
+[ext_resource type="Resource" path="res://data/attacks/magical_leaf.tres" id="16"]
+[ext_resource type="Resource" path="res://data/attacks/synthesis.tres" id="17"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="18"]
+[ext_resource type="Resource" path="res://data/attacks/sludge_wave.tres" id="19"]
+[ext_resource type="Resource" path="res://data/attacks/solar_beam.tres" id="20"]
+[ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="21"]
 [ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="evo_opt_script"]
 
 [sub_resource type="Resource" id="EvolutionOption_1"]
@@ -64,6 +71,41 @@ action = ExtResource("14")
 script = ExtResource("5")
 action = ExtResource("7")
 
+[sub_resource type="Resource" id="LearnsetEntry_0001_take_down"]
+script = ExtResource("5")
+level = 25
+action = ExtResource("15")
+
+[sub_resource type="Resource" id="LearnsetEntry_0001_magical_leaf"]
+script = ExtResource("5")
+level = 30
+action = ExtResource("16")
+
+[sub_resource type="Resource" id="LearnsetEntry_0001_synthesis"]
+script = ExtResource("5")
+level = 35
+action = ExtResource("17")
+
+[sub_resource type="Resource" id="LearnsetEntry_0001_amnesia"]
+script = ExtResource("5")
+level = 40
+action = ExtResource("18")
+
+[sub_resource type="Resource" id="LearnsetEntry_0001_sludge_wave"]
+script = ExtResource("5")
+level = 42
+action = ExtResource("19")
+
+[sub_resource type="Resource" id="LearnsetEntry_0001_double_edge"]
+script = ExtResource("5")
+level = 45
+action = ExtResource("21")
+
+[sub_resource type="Resource" id="LearnsetEntry_0001_solar_beam"]
+script = ExtResource("5")
+level = 55
+action = ExtResource("20")
+
 [resource]
 script = ExtResource("1")
 unit_name = "Bulbasaur"
@@ -73,7 +115,7 @@ attack_hit_delay = 0.7
 special_hit_delay = 0.8
 types = Array[String](["Grass", "Poison"])
 slots = Array[ExtResource("5_8aucw")]([ExtResource("4"), ExtResource("6"), ExtResource("7")])
-learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0001_tackle"), SubResource("LearnsetEntry_0001_growl"), SubResource("LearnsetEntry_0001_vine_whip"), SubResource("LearnsetEntry_0001_growth"), SubResource("LearnsetEntry_0001_leech_seed"), SubResource("LearnsetEntry_0001_razor_leaf"), SubResource("LearnsetEntry_0001_poison_powder"), SubResource("LearnsetEntry_0001_sleep_powder"), SubResource("LearnsetEntry_0001_overgrow")])
+learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0001_tackle"), SubResource("LearnsetEntry_0001_growl"), SubResource("LearnsetEntry_0001_vine_whip"), SubResource("LearnsetEntry_0001_growth"), SubResource("LearnsetEntry_0001_leech_seed"), SubResource("LearnsetEntry_0001_razor_leaf"), SubResource("LearnsetEntry_0001_poison_powder"), SubResource("LearnsetEntry_0001_sleep_powder"), SubResource("LearnsetEntry_0001_take_down"), SubResource("LearnsetEntry_0001_magical_leaf"), SubResource("LearnsetEntry_0001_synthesis"), SubResource("LearnsetEntry_0001_amnesia"), SubResource("LearnsetEntry_0001_sludge_wave"), SubResource("LearnsetEntry_0001_double_edge"), SubResource("LearnsetEntry_0001_solar_beam"), SubResource("LearnsetEntry_0001_overgrow")])
 attack_base = 49
 defense_base = 49
 special_attack_base = 65
