@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemData" format=3]
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://g27m23yfdpxc"]
 
 [ext_resource type="Script" uid="uid://c8w8n0ts68l77" path="res://scripts/item_data.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://dr6shd7pdpfas" path="res://assets/sprites/items/Held Items/ICYROCK.png" id="2"]
@@ -8,8 +8,8 @@ script = ExtResource("1")
 icon = ExtResource("2")
 category = "Held Items"
 effect_description = "Quando no loadout de quem ativa o clima Snow, estende a duração dele de 4 para 7 rodadas."
-can_give = true
 buy_price = 8000
 sell_price = 2000
+can_give = true
 extends_weather = "Snow"
 action_name = "Icy Rock"

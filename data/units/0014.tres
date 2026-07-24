@@ -3,12 +3,12 @@
 [ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_7ftef"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="2_3y611"]
 [ext_resource type="Resource" uid="uid://bv77oe6uiacyn" path="res://data/units/0015.tres" id="2_gqi5a"]
-[ext_resource type="Resource" path="res://data/abilities/compound_eyes.tres" id="3_gqi5a"]
-[ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="4_me8ou"]
+[ext_resource type="Resource" uid="uid://c76k2bffcqblj" path="res://data/abilities/shed_skin.tres" id="3_gqi5a"]
 [ext_resource type="Texture2D" uid="uid://crdj1ca0xs8ft" path="res://assets/sprites/Pokemon/Sprites/0014/Normal.png" id="6_me8ou"]
 [ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="6_vloxy"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="7_yh36h"]
 [ext_resource type="SpriteFrames" uid="uid://ca0qs6ga33me1" path="res://assets/sprites/Pokemon/Sprites/0014/frames.tres" id="8_vgwys"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="9_harden"]
 
 [sub_resource type="Resource" id="Resource_syt0m"]
 script = ExtResource("1_7ftef")
@@ -16,14 +16,13 @@ target = ExtResource("2_gqi5a")
 min_level = 10
 metadata/_custom_type_script = "uid://dukviaasrbc5h"
 
-[sub_resource type="Resource" id="LearnsetEntry_0012_compound_eyes"]
+[sub_resource type="Resource" id="LearnsetEntry_0014_shed_skin"]
 script = ExtResource("2_3y611")
 action = ExtResource("3_gqi5a")
 
-[sub_resource type="Resource" id="LearnsetEntry_0012_tinted_lens"]
+[sub_resource type="Resource" id="LearnsetEntry_0014_harden"]
 script = ExtResource("2_3y611")
-action = ExtResource("4_me8ou")
-is_hidden_ability = true
+action = ExtResource("9_harden")
 
 [resource]
 script = ExtResource("6_vloxy")
@@ -33,8 +32,8 @@ portrait = ExtResource("6_me8ou")
 attack_hit_delay = 0.55
 special_hit_delay = 0.8
 types = Array[String](["Bug", "Poison"])
-slots = Array[ExtResource("7_yh36h")]([ExtResource("3_gqi5a")])
-learnset = Array[ExtResource("2_3y611")]([SubResource("LearnsetEntry_0012_compound_eyes"), SubResource("LearnsetEntry_0012_tinted_lens")])
+slots = Array[ExtResource("7_yh36h")]([ExtResource("9_harden"), ExtResource("3_gqi5a")])
+learnset = Array[ExtResource("2_3y611")]([SubResource("LearnsetEntry_0014_shed_skin"), SubResource("LearnsetEntry_0014_harden")])
 attack_base = 25
 defense_base = 50
 special_attack_base = 25

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Poison"
+is_status = true
+accuracy = 0.9
+never_misses_if_user_type = "Poison"
+inflicts_status = "Badly Poisoned"
+stat_change_stat = "defense"
+stat_change_amount = -1
+stat_change_stat_2 = "special_defense"
+stat_change_amount_2 = -1
+action_name = "Toxic"
+max_uses = 10
+range = 1

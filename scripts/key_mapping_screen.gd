@@ -31,6 +31,7 @@ const ROW_STYLE_SELECTED = Color(1, 1, 0.3, 0.25)
 const ROW_SIZE = Vector2(320, 32)
 
 @onready var rows_container: VBoxContainer = $Center/Panel/MarginContainer/Content/Scroll/Rows
+@onready var scroll_container: ScrollContainer = $Center/Panel/MarginContainer/Content/Scroll
 @onready var reset_label: Label = $Center/Panel/MarginContainer/Content/ResetAll
 @onready var back_label: Label = $Center/Panel/MarginContainer/Content/Back
 
@@ -152,6 +153,14 @@ func _update_selection_visual() -> void:
 	for i in rows.size():
 		var style = rows[i].panel.get_theme_stylebox("panel") as StyleBoxFlat
 		style.bg_color = ROW_STYLE_SELECTED if i == selected_index else ROW_STYLE_NORMAL
+	# Rola a lista sozinha pra manter a linha realçada visível — pedido do
+	# usuário (2026-07-24): "Moving down using arrows doesn't scroll down the
+	# options". Mesmo bug (e mesmo remédio) de unit_loadout.gd::
+	# _update_picker_visual — sem isso, passar de ~8 ações (16 no total, mais
+	# do que cabe no painel) deixava o cursor "sumir" por trás da borda do
+	# ScrollContainer em vez de rolar pra acompanhar.
+	if selected_index >= 0 and selected_index < rows.size():
+		scroll_container.ensure_control_visible(rows[selected_index].panel)
 
 func _activate_selected() -> void:
 	if rows.is_empty():

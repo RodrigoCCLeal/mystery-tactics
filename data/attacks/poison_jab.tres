@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Poison"
+power = 80
+makes_contact = true
+secondary_status = "Poisoned"
+secondary_status_chance = 0.3
+action_name = "Poison Jab"
+max_uses = 20
+range = 1

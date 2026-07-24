@@ -189,3 +189,74 @@ extends ActionData
 # mencionou chance nenhuma. Confused/Blind/Flinched/etc. NÃO são curadas (só
 # as 4 nomeadas). Ver battle.gd::has_shed_skin/apply_end_of_turn_status.
 @export var shed_skin: bool = false
+
+# Sniper: pedido do usuário (2026-07-24, Beedrill, Hidden) — "Critical hits
+# landed are 2x multiplier instead of 1.5x (easier to just make crits x4/3)".
+# Em vez de SUBSTITUIR CRITICAL_HIT_MULTIPLIER (1.5) por um valor fixo
+# separado, multiplica o resultado por 4/3 (1.5 * 4/3 = 2.0 exato) — assim
+# compõe corretamente com qualquer outro modificador de crítico que apareça
+# no futuro, em vez de dois valores "mágicos" competindo. Ver battle.gd::
+# has_sniper/calculate_damage/SNIPER_CRIT_MULTIPLIER.
+@export var sniper: bool = false
+
+# Swarm: pedido do usuário (2026-07-24, Beedrill) — "Same as overgrowth,
+# torrent and blaze but for Bug type moves". Reaproveita o MESMO mecanismo
+# genérico de element_type/hp_threshold/damage_multiplier que Blaze/Overgrow/
+# Torrent já usam (ver comentários deles acima) — nenhum campo novo
+# necessário, só um AbilityData novo com element_type="Bug", hp_threshold=0.25,
+# damage_multiplier=1.3 (mesmos números dos outros três, ver data/abilities/
+# swarm.tres).
+
+# Wonder Skin: pedido do usuário (2026-07-24, Venomoth, Hidden) — "All enemy
+# Status moves targeted at this unit have Accuracy x0.5". Diferente de
+# Compound Eyes/Tinted Lens (que mexem no lado de quem ATACA), este é do lado
+# de quem DEFENDE, e só afeta golpes de STATUS (is_status=true) — golpes que
+# causam dano ignoram isso por completo. Ver battle.gd::has_wonder_skin/
+# execute_status_attack (onde o roll de acerto é ajustado se QUALQUER alvo
+# resolvido carregar esta Habilidade).
+@export var wonder_skin: bool = false
+
+# Effect Spore: pedido do usuário (2026-07-24, Shroomish) — "Counts as a
+# Powder move, when taking contact attack, 30% chance to make target
+# Paralyzed, Sleep or Poisoned. Status condition is chosen randomly". Quem
+# DEFENDE carrega isso; dispara contra quem ATACA (inverso de Shield Dust/Run
+# Away, que reagem a dano recebido só na PRÓPRIA unidade) — só se o golpe
+# encostar de verdade (AttackData.makes_contact). "Counts as a Powder move"
+# (pedido do usuário) = Grass é imune ao efeito, mesma regra que os golpes
+# tagged "Powder" já seguem em execute_status_attack (ver AttackData.tags).
+# Ver battle.gd::has_effect_spore/_try_effect_spore.
+@export var effect_spore: bool = false
+
+# Poison Heal: pedido do usuário (2026-07-24, Shroomish) — "When poisoned,
+# user will Heal 1/8 of its HP instead of taking Poison damage each turn".
+# Vale tanto pra "Poisoned" quanto "Badly Poisoned" (Toxic) — as duas contam
+# como "envenenado" pra esta Habilidade. Ver battle.gd::has_poison_heal/
+# apply_end_of_turn_status (onde troca o bloco de dano por um de cura).
+@export var poison_heal: bool = false
+
+# Quick Feet: pedido do usuário (2026-07-24, Shroomish, Hidden) — "x1.5 speed
+# if user is Poisoned, Paralyzed or Burned. Additionally, does not lose speed
+# when paralyzed". Diferente da maioria das Habilidades daqui (checadas em
+# battle.gd), esta é lida DIRETO em Unit.get_effective_stat()/_has_quick_feet
+# (ver comentário lá) porque não faz sentido esse cálculo de Speed depender
+# de uma referência a battle.gd.
+@export var quick_feet: bool = false
+
+# Technician: pedido do usuário (2026-07-24, Breloom) — "If the base power of
+# a move is less than or equal 60, multiply it by x1,5". Usa get_effective_
+# power() (não AttackData.power cru) na hora de comparar com 60, pra golpes
+# que escalam (Rollout/Eruption/etc) serem julgados pelo poder REAL daquele
+# uso, não o campo bruto. Ver battle.gd::has_technician/
+# TECHNICIAN_MULTIPLIER/calculate_damage_modifiers.
+@export var technician: bool = false
+
+# Insomnia (e qualquer Habilidade futura de "imune a UMA Status Condition
+# específica por nome, não por tipo"): "" (padrão) = nenhuma. Nome de uma
+# Status Condition (vocabulário igual Unit.status_conditions) que esta
+# Habilidade bloqueia por completo, mesmo espírito de Unit.
+# STATUS_TYPE_IMMUNITIES (ver is_immune_to_status), só que por HABILIDADE em
+# vez de TIPO. Worry Seed é o primeiro caso a CRIAR uma Habilidade assim em
+# runtime (ver AttackData.replaces_target_ability) — Insomnia (data/abilities/
+# insomnia.tres) seta immune_status="Asleep", pedido do usuário: "replace with
+# Insomnia (Can't sleep)".
+@export var immune_status: String = ""

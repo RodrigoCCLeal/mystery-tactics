@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Normal"
+power = 70
+makes_contact = true
+secondary_status = "Flinched"
+secondary_status_chance = 0.3
+action_name = "Headbutt"
+max_uses = 15
+range = 1

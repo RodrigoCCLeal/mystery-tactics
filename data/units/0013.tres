@@ -3,12 +3,15 @@
 [ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_iym38"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="2_mjyxb"]
 [ext_resource type="Resource" uid="uid://37f8sbrw2p2o" path="res://data/units/0014.tres" id="2_tc1jx"]
-[ext_resource type="Resource" path="res://data/abilities/compound_eyes.tres" id="3_tc1jx"]
-[ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="4_nco3c"]
+[ext_resource type="Resource" path="res://data/abilities/shield_dust.tres" id="3_tc1jx"]
+[ext_resource type="Resource" path="res://data/abilities/run_away.tres" id="4_nco3c"]
 [ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="6_a6ric"]
 [ext_resource type="Texture2D" uid="uid://cbgw73ur7117n" path="res://assets/sprites/Pokemon/Sprites/0013/Normal.png" id="6_nco3c"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="7_2gg4a"]
 [ext_resource type="SpriteFrames" uid="uid://bc784pquephvw" path="res://assets/sprites/Pokemon/Sprites/0013/frames.tres" id="8_7ldby"]
+[ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="9_poison_sting"]
+[ext_resource type="Resource" path="res://data/attacks/string_shot.tres" id="10_string_shot"]
+[ext_resource type="Resource" path="res://data/attacks/bug_bite.tres" id="11_bug_bite"]
 
 [sub_resource type="Resource" id="Resource_tw2fg"]
 script = ExtResource("1_iym38")
@@ -16,14 +19,27 @@ target = ExtResource("2_tc1jx")
 min_level = 7
 metadata/_custom_type_script = "uid://dukviaasrbc5h"
 
-[sub_resource type="Resource" id="LearnsetEntry_0012_compound_eyes"]
+[sub_resource type="Resource" id="LearnsetEntry_0013_shield_dust"]
 script = ExtResource("2_mjyxb")
 action = ExtResource("3_tc1jx")
 
-[sub_resource type="Resource" id="LearnsetEntry_0012_tinted_lens"]
+[sub_resource type="Resource" id="LearnsetEntry_0013_run_away"]
 script = ExtResource("2_mjyxb")
 action = ExtResource("4_nco3c")
 is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0013_poison_sting"]
+script = ExtResource("2_mjyxb")
+action = ExtResource("9_poison_sting")
+
+[sub_resource type="Resource" id="LearnsetEntry_0013_string_shot"]
+script = ExtResource("2_mjyxb")
+action = ExtResource("10_string_shot")
+
+[sub_resource type="Resource" id="LearnsetEntry_0013_bug_bite"]
+script = ExtResource("2_mjyxb")
+level = 9
+action = ExtResource("11_bug_bite")
 
 [resource]
 script = ExtResource("6_a6ric")
@@ -33,8 +49,8 @@ portrait = ExtResource("6_nco3c")
 attack_hit_delay = 0.55
 special_hit_delay = 0.8
 types = Array[String](["Bug", "Poison"])
-slots = Array[ExtResource("7_2gg4a")]([ExtResource("3_tc1jx")])
-learnset = Array[ExtResource("2_mjyxb")]([SubResource("LearnsetEntry_0012_compound_eyes"), SubResource("LearnsetEntry_0012_tinted_lens")])
+slots = Array[ExtResource("7_2gg4a")]([ExtResource("9_poison_sting"), ExtResource("10_string_shot"), ExtResource("3_tc1jx")])
+learnset = Array[ExtResource("2_mjyxb")]([SubResource("LearnsetEntry_0013_shield_dust"), SubResource("LearnsetEntry_0013_run_away"), SubResource("LearnsetEntry_0013_poison_sting"), SubResource("LearnsetEntry_0013_string_shot"), SubResource("LearnsetEntry_0013_bug_bite")])
 hp_base = 40
 attack_base = 35
 defense_base = 30

@@ -121,21 +121,40 @@ func has_unrevealed_hidden_ability() -> bool:
 			return true
 	return false
 
-# Loadout AUTOMÁTICO de inimigo: as até `max_slots` ações mais RECENTES que
-# essa espécie já teria aprendido até `level` — uma fila FIFO de tamanho
-# max_slots (quem aprendeu por último entra, quem é mais antigo sai quando
-# não tem mais espaço). Diferente do time do jogador (que usa `slots` tal
-# como foi montado/editado no menu de Loadout), inimigo nunca teve um loadout
-# escolhido à mão — ver Unit.apply_fresh_data(), único lugar que chama isso.
-#
-# Ordena por nível de aprendizado; em caso de empate (duas ações no mesmo
-# nível), mantém a ordem de declaração no learnset — sort_custom() do
-# GDScript não garante estabilidade, então o índice original entra como
-# critério de desempate explícito.
+# Loadout AUTOMÁTICO de inimigo: até `max_slots - 1` ATAQUES mais RECENTES
+# que essa espécie já teria aprendido até `level` (fila FIFO, mesma lógica de
+# sempre — quem aprendeu por último entra, o mais antigo sai quando não tem
+# mais espaço), MAIS exatamente 1 Habilidade sorteada pro último slot — pedido
+# do usuário (2026-07-24): "Slot 6 is always 1 ability... The other 5 slots
+# follow the same former logic, they will be the last 5 learned MOVES".
+# Diferente de antes (Habilidade e Ataque disputavam os mesmos 6 espaços na
+# MESMA fila de recência), agora são dois grupos separados: Ataques usam a
+# fila de recência (ver _get_recent_moves logo abaixo), Habilidade usa um
+# sorteio à parte (ver _pick_random_ability). Diferente do time do jogador
+# (que usa `slots` tal como foi montado/editado no menu de Loadout), inimigo
+# nunca teve um loadout escolhido à mão — ver Unit.apply_fresh_data(), único
+# lugar que chama isso.
 func get_recent_loadout(level: int, max_slots: int = 6) -> Array[ActionData]:
+	var ability = _pick_random_ability(level)
+	# Reserva 1 slot pra Habilidade só se achou alguma pra sortear — uma
+	# espécie (hipotética) sem Habilidade nenhuma no learnset continua usando
+	# TODOS os max_slots só pra Ataques, em vez de desperdiçar um espaço vazio.
+	var move_slots = max_slots - 1 if ability != null else max_slots
+	var loadout: Array[ActionData] = _get_recent_moves(level, move_slots)
+	if ability != null:
+		loadout.append(ability)
+	return loadout
+
+# Só os Ataques (AttackData) do learnset, mesma fila FIFO de recência de
+# sempre (ordena por nível de aprendizado; em caso de empate, mantém a ordem
+# de declaração no learnset — sort_custom() do GDScript não garante
+# estabilidade, então o índice original entra como critério de desempate
+# explícito). Habilidades NUNCA entram aqui — ver get_recent_loadout acima.
+func _get_recent_moves(level: int, max_slots: int) -> Array[ActionData]:
 	var indexed: Array = []
 	for i in learnset.size():
-		indexed.append({"entry": learnset[i], "order": i})
+		if learnset[i].action is AttackData:
+			indexed.append({"entry": learnset[i], "order": i})
 	indexed.sort_custom(func(a, b):
 		if a["entry"].level != b["entry"].level:
 			return a["entry"].level < b["entry"].level
@@ -151,6 +170,56 @@ func get_recent_loadout(level: int, max_slots: int = 6) -> Array[ActionData]:
 		if loadout.size() > max_slots:
 			loadout.remove_at(0)   # descarta a mais antiga — fila cheia
 	return loadout
+
+# Sorteia QUAL Habilidade equipar no slot 6 — pedido do usuário (2026-07-24,
+# verbatim): "49.5% chance to be Ability 1 (99% if no Ability 2, 50% if no
+# Hidden, 100% if neither), 49.5% chance to be Ability 2 (50% if no hidden)
+# and 1% for Hidden ability". "Ability 1"/"Ability 2" = a 1ª e 2ª Habilidade
+# NÃO-Hidden encontradas no learnset, na ORDEM de declaração (mesmo critério
+# de desempate que _get_recent_moves usa pra Ataques) — "Hidden" = a entrada
+# com is_hidden_ability=true (no máximo uma por espécie, mesma regra de
+# is_ability_hidden()). null se a espécie não tiver Habilidade NENHUMA
+# disponível neste `level` (não filtra por hidden_ability_revealed de
+# propósito — loadout automático de inimigo sempre pode incluir a Hidden,
+# diferente do menu de equipar do jogador, ver get_available_actions).
+func _pick_random_ability(level: int) -> ActionData:
+	var ability_1: ActionData = null
+	var ability_2: ActionData = null
+	var hidden: ActionData = null
+	for entry in learnset:
+		if entry.level > level or not (entry.action is AbilityData):
+			continue
+		if entry.is_hidden_ability:
+			if hidden == null:
+				hidden = entry.action
+		elif ability_1 == null:
+			ability_1 = entry.action
+		elif ability_2 == null:
+			ability_2 = entry.action
+
+	if ability_1 == null:
+		return null
+
+	# Pesos EXATOS do pedido do usuário pra cada combinação de "o que existe"
+	# — não uma fórmula genérica, os números de cada caso já vêm redistribuídos
+	# certinho (49.5/49.5/1, 50/50, 99/1, 100).
+	var weights: Dictionary = {}
+	if ability_2 != null and hidden != null:
+		weights = {ability_1: 0.495, ability_2: 0.495, hidden: 0.01}
+	elif ability_2 != null:
+		weights = {ability_1: 0.5, ability_2: 0.5}
+	elif hidden != null:
+		weights = {ability_1: 0.99, hidden: 0.01}
+	else:
+		weights = {ability_1: 1.0}
+
+	var roll = randf()
+	var cumulative = 0.0
+	for candidate in weights:
+		cumulative += weights[candidate]
+		if roll < cumulative:
+			return candidate
+	return ability_1   # fallback de arredondamento (roll >= soma por um triz)
 
 @export_group("Stats base")
 @export var weight: int = 1             # 0 a 4 — inerente à unidade, não muda com o nível

@@ -589,6 +589,23 @@ extends ActionData
 # acima — existe só pra já vir documentado nos dados do ataque.
 @export var tags: Array[String] = []
 
+# ---------- Golpes de múltiplos acertos (ex: Pin Missile) ----------
+# true = este golpe QUE CAUSA DANO acerta de 2 a 5 vezes seguidas no MESMO
+# alvo, cada vez rolando seu próprio Acerto Crítico e seu próprio dano
+# separadamente ("Treat each one as a different attack", pedido do usuário,
+# Beedrill, Pin Missile) — mas a Accuracy é checada UMA vez só, no começo
+# (mesmo roll de sempre em execute_attack), não por acerto individual. A
+# contagem de vezes usa a MESMA distribuição de probabilidade da série
+# principal pros golpes "2-5 hits" (2 e 3 vezes com 37.5% cada, 4 e 5 vezes
+# com 12.5% cada — ver battle.gd::_roll_multi_hit_count/MULTI_HIT_WEIGHTS),
+# sortitada de novo a cada uso. Só gasta 1 PP no total, não importa quantas
+# vezes acertou de verdade (pedido do usuário: "Only consumes 1 PP regardless
+# of roll") — já é assim de graça, porque max_uses só desconta 1 por USO do
+# slot (ver execute_attack), não por acerto individual dentro do mesmo uso.
+# Ver battle.gd::_resolve_multi_hit_damage, chamado no lugar do cálculo de
+# dano de sempre quando este campo é true.
+@export var is_multi_hit: bool = false
+
 # ---------- Roubo de Berry (ex: Bug Bite) ----------
 # true = ao acertar um alvo que sobreviveu ao golpe, se esse alvo carregar
 # QUALQUER ItemData category=="Berry" equipado no loadout, quem ATACA rouba e
@@ -616,3 +633,59 @@ extends ActionData
 # grande de execute_whirlwind_push pras regras exatas de colisão). false
 # (padrão) = golpe de Status comum, sem empurrão nenhum.
 @export var push_mechanic: bool = false
+
+# ---------- Roubo de vida (ex: Leech Life/Absorb/Mega Drain/Giga Drain) ----------
+# 0.0 (padrão) = golpe não cura quem ataca. > 0.0 = fração do HP REALMENTE
+# PERDIDO pelo defensor (não do `damage` bruto — mesmo cuidado de overkill
+# de hp_lost, ver comentário grande em battle.gd::execute_attack) que quem
+# ATACA recupera de volta, sempre que o golpe acerta e causa dano de verdade.
+# Venonat/Shroomish são os primeiros casos: Leech Life "Heals user for 50% of
+# damage dealt (HP reduced)" e Absorb/Mega Drain/Giga Drain, mesma fração
+# (0.5) — todos reaproveitam este único campo, sem precisar de um por golpe.
+@export_range(0.0, 1.0) var drain_fraction: float = 0.0
+
+# ---------- Disable (Venonat) ----------
+# true = este golpe de Status NÃO aplica stat/status comum nenhum no alvo —
+# em vez disso, aplica a Status Condition "Disabled" e "trava" especificamente
+# o AttackData que o alvo usou por ÚLTIMO (ver Unit.last_attack_used/
+# disabled_attack, battle.gd::execute_status_attack). Falha ("But it failed!")
+# se o alvo ainda não usou NENHUM golpe nesta batalha (last_attack_used ==
+# null) — nada pra desabilitar ainda. false (padrão) = golpe de Status comum.
+@export var disables_target_last_move: bool = false
+
+# ---------- Roubo de Habilidade (Worry Seed) ----------
+# true = este golpe de Status NÃO aplica stat/status comum nenhum no alvo —
+# em vez disso, se o alvo carregar QUALQUER AbilityData equipada no loadout,
+# sorteia UMA aleatória entre elas e a SUBSTITUI por Insomnia (ver
+# data/abilities/insomnia.tres/AbilityData.immune_status) — pedido do
+# usuário, Worry Seed: "IF opponent has an ability in its loadout, choose a
+# random one to replace with Insomnia (Can't sleep)". "But it failed!" se o
+# alvo não tiver Habilidade nenhuma equipada. false (padrão) = golpe comum.
+@export var replaces_target_ability: bool = false
+
+# ---------- Nunca erra condicional (Toxic) ----------
+# "" (padrão) = usa accuracy normal, pode falhar igual qualquer golpe. Nome de
+# um TIPO (vocabulário igual UnitData.types) — se quem USA o golpe tiver esse
+# tipo, o golpe NUNCA erra (mesmo espírito de never_misses, mas condicional
+# ao tipo de quem ataca em vez de incondicional). Toxic é o primeiro caso,
+# pedido do usuário: "Never misses if user is Poison type".
+@export var never_misses_if_user_type: String = ""
+
+# ---------- Atravessa Protect (Feint) ----------
+# false (padrão) = Protected bloqueia este golpe normalmente (ver
+# execute_attack). true = Feint é o primeiro caso, pedido do usuário: "If
+# target was Protected hit anyways and remove Protect status" — o golpe
+# CONECTA de verdade (dano normal) e ainda remove a Status Condition
+# "Protected" do alvo, em vez de só logar "protegeu a si mesmo" e sair.
+@export var pierces_protect: bool = false
+
+# ---------- Remove telas (Brick Break) ----------
+# true = ANTES de causar dano, remove as Status Conditions "Light Screen",
+# "Reflect" e "Aurora Veil" do alvo, se ele tiver alguma (ver execute_attack).
+# Groundwork puro por enquanto — nenhum golpe deste projeto cria essas 3
+# condições ainda (mesmo espírito de AbilityData.damp/AttackData.tags
+# existirem antes de qualquer coisa que realmente as dispare), mas Brick
+# Break já funciona certo sozinho no instante em que um golpe de "tela" for
+# implementado. false (padrão) = golpe comum, não mexe em Status Condition
+# nenhuma do alvo antes do dano.
+@export var removes_screens: bool = false

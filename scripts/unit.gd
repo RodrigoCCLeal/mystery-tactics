@@ -198,7 +198,43 @@ const STATUS_DURATIONS := {
 	# ATTACK_BLOCKING_STATUS de propósito, ela só trava a ESCOLHA de golpes de
 	# Status, nunca movimento nem ataque comum.
 	"Taunted": 3,
+	# Focus Energy (Beedrill) — pedido do usuário: "Doubles critical hit chance
+	# for 4 turns". O dobro em si mora em battle.gd::get_effective_crit_chance
+	# (checa attacker.has_status("Focus Energy")), auto-aplicado via
+	# inflicts_status_on_self exatamente como Protect/Aqua Ring (ver
+	# battle.gd::is_self_target_status/SELF_STATUS_EFFECT_MESSAGES).
+	"Focus Energy": 4,
+	# Disabled (Disable, Venonat, pedido do usuário: "disables it for 3
+	# turns") — ver disabled_attack logo abaixo pra saber QUAL golpe (esta
+	# entrada só controla a duração, igual qualquer outra condição com prazo).
+	"Disabled": 3,
+	# Counter (Counter, Breloom, pedido do usuário: "Gives Counter status for
+	# 2 turns") — ver battle.gd::_try_counter pro efeito em si.
+	"Counter": 2,
 }
+
+# Qual AttackData está bloqueado enquanto a Status Condition "Disabled"
+# estiver ativa (ver STATUS_DURATIONS["Disabled"] acima e battle.gd::
+# execute_status_attack/AttackData.disables_target_last_move) — precisa
+# viver FORA de status_conditions (que só guarda String->int) porque Disable
+# lembra de um Resource específico, não só um nome. null = nada desabilitado
+# agora (ou a condição nunca foi aplicada, ou já expirou/foi curada — ver
+# cure_status_condition abaixo, que zera isto junto quando "Disabled" sai).
+# Checado em battle.gd::refresh_action_slots_hud/_plan_easy_action/
+# _plan_medium_action/_pick_medium_status_action/_search_best_attack pra
+# impedir SÓ esse golpe específico de ser escolhido, deixando os outros 5
+# slots livres — diferente de Taunted (Unit.status_conditions), que bloqueia
+# TODO golpe de Status de uma vez.
+var disabled_attack: AttackData = null
+
+# Quantos turnos seguidos "Badly Poisoned" (Toxic, ver STATUS_TYPE_IMMUNITIES/
+# get_status_tick_damage abaixo) já ficou ativa NESTA aplicação — dano sobe
+# 1/16 do hp_max a cada turno (1/16, depois 2/16, 3/16...), mesma progressão
+# da série principal. Incrementado dentro de get_status_tick_damage() (a
+# cada vez que o dano é calculado, ver comentário lá) e zerado de volta em
+# cure_status_condition() quando "Badly Poisoned" sai (cura ou uma nova
+# aplicação futura começa do zero de novo).
+var badly_poison_turns: int = 0
 
 # Quais Status Conditions ficam BLOQUEADAS enquanto "Safeguarded" está ativo —
 # pedido do usuário, Safeguard: "While safeguarded, can't be Paralyzed,
@@ -243,6 +279,11 @@ const STATUS_TYPE_IMMUNITIES := {
 	"Paralyzed": ["Electric"],
 	"Frozen": ["Ice"],
 	"Seeded": ["Grass"],
+	# Badly Poisoned (Toxic, Shroomish/Breloom, pedido do usuário) — mesma
+	# imunidade de tipo que Poisoned normal, já que é a MESMA condição de
+	# veneno na prática, só que com dano crescente (ver battle.gd::
+	# get_status_tick_damage/badly_poison_turns).
+	"Badly Poisoned": ["Steel", "Poison"],
 }
 
 # ---------- Indicadores visuais de Status Condition ----------
@@ -786,7 +827,14 @@ func modify_stat_stage(stat: String, delta: int) -> void:
 # de nenhum código extra lá.
 func get_effective_stat(stat: String) -> int:
 	var value: int = _effective_stat_with_stage(stat, stat_stages.get(stat, 0))
-	if stat == "speed" and status_conditions.has("Paralyzed"):
+	# Quick Feet (ver AbilityData.quick_feet, pedido do usuário, Shroomish
+	# Hidden: "x1.5 speed if user is Poisoned, Paralyzed or Burned.
+	# Additionally, does not lose speed when paralyzed") — a parte "does not
+	# lose speed" CANCELA o corte de Paralyzed logo abaixo (por isso checado
+	# ANTES dele, com o `and not` no if), não soma em cima do valor já
+	# cortado.
+	var has_quick_feet_now = stat == "speed" and _has_quick_feet()
+	if stat == "speed" and status_conditions.has("Paralyzed") and not has_quick_feet_now:
 		value = maxi(1, int(value / 2.0))
 	# Tailwind (ver STATUS_DURATIONS/battle.gd::begin_current_turn, pedido do
 	# usuário: "For 2 turns, gain 2x speed and extra action point") — dobra
@@ -796,7 +844,20 @@ func get_effective_stat(stat: String) -> int:
 	# depois dobra o resultado já cortado).
 	if stat == "speed" and status_conditions.has("Tailwind"):
 		value *= 2
+	if has_quick_feet_now and (status_conditions.has("Poisoned") or status_conditions.has("Badly Poisoned") or status_conditions.has("Paralyzed") or status_conditions.has("Burned")):
+		value = int(value * 1.5)
 	return value
+
+# true se esta unidade carrega uma Habilidade com quick_feet=true equipada
+# (ver AbilityData.quick_feet) — helper LOCAL (não em battle.gd, diferente de
+# has_shed_skin/has_flash_fire/etc. de lá) porque get_effective_stat() acima
+# precisa dele e mora aqui em unit.gd, mesmo padrão que get_accuracy_
+# multiplier() já usa pra Compound Eyes (ver comentário lá).
+func _has_quick_feet() -> bool:
+	for action in data.slots:
+		if action is AbilityData and action.quick_feet:
+			return true
+	return false
 
 # ---------- Stat Stages: versões pra Acerto Crítico ----------
 # Um Acerto Crítico (ver battle.gd::calculate_damage/CRITICAL_HIT_CHANCE)
@@ -886,6 +947,17 @@ func cure_status_condition(status: String = "") -> void:
 	else:
 		status_conditions.erase(status)
 		status_source.erase(status)
+	# Disabled (ver disabled_attack acima) — o golpe travado só faz sentido
+	# enquanto a Status Condition existir; curá-la (prazo ou item futuro que
+	# cure status) já libera o golpe de novo, sem precisar de código extra em
+	# nenhum outro lugar que já chame cure_status_condition.
+	if status == "" or status == "Disabled":
+		disabled_attack = null
+	# Badly Poisoned (ver badly_poison_turns acima) — zera o contador de
+	# turnos ao curar, pra uma aplicação FUTURA de Toxic começar do 1/16 de
+	# novo, em vez de continuar de onde a anterior parou.
+	if status == "" or status == "Badly Poisoned":
+		badly_poison_turns = 0
 	_on_status_condition_changed()
 
 # Ex: Charmander (Fire) tentando ser Burned — devolve true, apply_status_
@@ -897,6 +969,15 @@ func is_immune_to_status(status: String) -> bool:
 	var immune_types: Array = STATUS_TYPE_IMMUNITIES.get(status, [])
 	for t in immune_types:
 		if data.types.has(t):
+			return true
+	# Insomnia (ver AbilityData.immune_status, pedido do usuário, Worry Seed:
+	# "replace with Insomnia (Can't sleep)") — imunidade por HABILIDADE em vez
+	# de TIPO (diferente do laço acima) — vocabulário genérico (String) em vez
+	# de um bool "prevents_sleep" fixo, pra qualquer Habilidade futura de
+	# imunidade a UMA condição específica reaproveitar o mesmo campo sem
+	# precisar de outro bool cada vez.
+	for action in data.slots:
+		if action is AbilityData and action.immune_status == status:
 			return true
 	return false
 
@@ -1103,6 +1184,18 @@ func get_status_tick_damage() -> int:
 	if status_conditions.has("Poisoned"):
 		@warning_ignore("integer_division")
 		return hp_max * POISON_DAMAGE_PERCENT / 100
+	# Badly Poisoned (Toxic, ver STATUS_TYPE_IMMUNITIES/badly_poison_turns
+	# acima) — dano cresce 1/16 do hp_max a cada turno que passa (1/16, 2/16,
+	# 3/16...), mesma progressão da série principal. O incremento acontece
+	# AQUI (não em battle.gd::apply_end_of_turn_status), porque esta função já
+	# é chamada exatamente 1x por turno de quem está com a condição — se
+	# Poison Heal (ver AbilityData.poison_heal) estiver ativo, battle.gd NEM
+	# chama esta função (cura em vez de calcular dano, ver comentário lá), o
+	# que também tem o efeito colateral correto de "não crescer" o contador
+	# enquanto a Habilidade estiver curando em vez de causar dano.
+	if status_conditions.has("Badly Poisoned"):
+		badly_poison_turns += 1
+		return int(hp_max * badly_poison_turns / 16.0)
 	return 0
 
 # statusBonus da fórmula de captura (ver battle.gd::resolve_capture): 1.0

@@ -1543,6 +1543,7 @@ const ALL_ITEMS: Array[ItemData] = [
 	preload("res://data/items/damp_rock.tres"),
 	preload("res://data/items/smooth_rock.tres"),
 	preload("res://data/items/icy_rock.tres"),
+	preload("res://data/items/leftovers.tres"),
 ]
 
 # Inventário inicial de acordo com o modo escolhido em mode_select_screen.gd

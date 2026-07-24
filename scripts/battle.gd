@@ -603,6 +603,13 @@ const ACTION_SLOT_COUNT = 6
 const STRUGGLE_ATTACK: AttackData = preload("res://data/attacks/struggle.tres")
 const STRUGGLE_SLOT_INDEX = -1
 
+# Habilidade que Worry Seed "planta" no lugar de uma aleatória do alvo (ver
+# AttackData.replaces_target_ability, pedido do usuário: "replace with
+# Insomnia (Can't sleep)") — mesma instância de Resource compartilhada por
+# todo mundo que sofrer isso, igual qualquer outro preload de dado deste
+# arquivo (ROCKET_BALL_ITEM/STRUGGLE_ATTACK acima).
+const INSOMNIA_ABILITY: AbilityData = preload("res://data/abilities/insomnia.tres")
+
 # UnitSummary (a fileira de portraits em cima do mapa, ver battle.tscn) agora
 # É a visualização da fila de turnos inteira — jogador E inimigo juntos, na
 # ordem de turn_queue (ver build_unit_summary_hud()). O node no .tscn é bem
@@ -1430,6 +1437,27 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton and event.pressed):
 		return
 
+	# Botão direito = "Cancelar" (pedido do usuário, 2026-07-24: "Right mouse
+	# button to be a 'Cancel' button, just like Left mouse button is Confirm
+	# or Select") — sempre disponível, não depende de estar em cima de
+	# nenhuma célula específica. Em modo de mira, cancela a mira (mesmo
+	# cancel_targeting() que um clique esquerdo fora do alcance já dispara,
+	# ver handle_targeting_input); fora de mira, desseleciona a unidade atual
+	# (mesmo deselect() do "else" de handle_deploy_input/handle_battle_input).
+	# Os dois são seguros de chamar mesmo sem nada selecionado (viram no-op).
+	if event.button_index == MOUSE_BUTTON_RIGHT:
+		if targeting_action != null:
+			cancel_targeting()
+		else:
+			deselect()
+		return
+
+	# Antes desta correção, QUALQUER botão do mouse (inclusive o direito, e o
+	# do meio) caía no fluxo de Confirmar/Selecionar abaixo — só o botão
+	# esquerdo deveria fazer isso agora que o direito virou Cancelar.
+	if event.button_index != MOUSE_BUTTON_LEFT:
+		return
+
 	var clicked_cell = tilemap.local_to_map(tilemap.to_local(get_global_mouse_position()))
 	var clicked_unit = get_unit_at(clicked_cell)
 
@@ -2188,7 +2216,11 @@ func refresh_action_slots_hud() -> void:
 		# 2026-07-23, Butterfree: "They gain Taunt status. For 3 turns can't
 		# use any Status moves") — trava só golpe is_status=true, ataque comum
 		# continua liberado normalmente.
-		var attack_locked = action is AttackData and (current.attacks_remaining <= 0 or (action.is_status and current.has_status("Taunted")))
+		# Disabled (ver Unit.disabled_attack/STATUS_DURATIONS["Disabled"],
+		# pedido do usuário, Venonat: "disables it for 3 turns") — trava só
+		# ESSE slot específico (o AttackData que Disable travou), diferente
+		# de Taunted (trava TODO golpe de Status de uma vez).
+		var attack_locked = action is AttackData and (current.attacks_remaining <= 0 or (action.is_status and current.has_status("Taunted")) or current.disabled_attack == action)
 
 		button.disabled = out_of_uses or attack_locked
 		button.text = label
@@ -2464,6 +2496,16 @@ func is_valid_target_cell(origin: Vector2i, target: Vector2i, action: ActionData
 	if is_self_target_status(effective_action):
 		return target == origin
 
+	# Clima (sets_weather, ver Sunny Day/Rain Dance) e area_shape=="Team" (ver
+	# Tailwind) não miram NADA de verdade — o clique só confirma o uso, igual
+	# self-target-status acima, só que aqui QUALQUER célula do grid serve
+	# (inclusive a própria, ver pedido do usuário 2026-07-23: "Weather moves
+	# confirmation indicator should be entire battlefield"/"Tailwind highlight
+	# should be all allies" — os dois efeitos não dependem de posição nenhuma,
+	# então travar num "range" específico nunca fez sentido pra eles).
+	if effective_action is AttackData and (effective_action.sets_weather != "" or effective_action.area_shape == "Team"):
+		return true
+
 	var delta = target - origin
 	if delta == Vector2i.ZERO:
 		return false
@@ -2485,6 +2527,18 @@ func is_valid_target_cell(origin: Vector2i, target: Vector2i, action: ActionData
 	if is_projectile_like:
 		var is_straight_line = delta.x == 0 or delta.y == 0 or abs(delta.x) == abs(delta.y)
 		return is_straight_line and dist <= effective_range
+
+	# Burst (ver AttackData.area_shape/execute_attack_burst/execute_status_
+	# attack — Lava Plume, Poison Powder, Safeguard...): CENTRADO em quem
+	# ataca, sem direção nenhuma — bug reportado pelo usuário (2026-07-24):
+	# faltava esta checagem, então QUALQUER golpe Burst com range > 1 só
+	# aceitava clicar EXATAMENTE na borda externa (caía no `return dist ==
+	# effective_range` genérico lá embaixo), quando na verdade qualquer célula
+	# DENTRO do raio (ou do anel, se area_min_range > 0 — ver Eruption)
+	# deveria confirmar igual, já que todo mundo no raio é atingido de
+	# qualquer jeito, não só quem está na ponta.
+	if effective_action is AttackData and effective_action.area_shape == "Burst":
+		return dist <= effective_range and dist >= effective_action.area_min_range
 
 	# Cone (ver AttackData.area_shape/get_cone_cells): a direção do leque é a
 	# mesma direção 8-way de sempre (sign do delta, igual find_projectile_target/
@@ -2664,6 +2718,22 @@ func update_attack_highlight() -> void:
 		# (ainda precisa clicar uma célula válida pra confirmar — agora só o
 		# próprio tile mesmo, "range 0", ver is_valid_target_cell acima).
 		attack_highlight_layer.set_cell(current.grid_pos, 0, Vector2i(13, 1))
+	elif attack != null and attack.sets_weather != "":
+		# Clima (ver AttackData.sets_weather/is_valid_target_cell acima) —
+		# pedido do usuário: "Weather moves confirmation indicator should be
+		# entire battlefield". Não depende de direção nenhuma, então destaca
+		# TODO o grid jogável de uma vez, sem seguir o mouse.
+		for x in MAP_WIDTH:
+			for y in MAP_HEIGHT:
+				attack_highlight_layer.set_cell(Vector2i(x, y), 0, Vector2i(13, 1))
+	elif attack != null and attack.area_shape == "Team":
+		# Tailwind é o primeiro caso — pedido do usuário: "Tailwind highlight
+		# should be all allies". Destaca só quem está do MESMO lado de quem usa
+		# (incluindo quem usa), igual o alvo de verdade em execute_status_
+		# attack (ver o ramo area_shape=="Team" lá).
+		for u in player_units + enemy_units:
+			if u.is_enemy == current.is_enemy:
+				attack_highlight_layer.set_cell(u.grid_pos, 0, Vector2i(13, 1))
 	elif attack != null and attack.area_shape == "Cone":
 		# Cone: destaca o LEQUE inteiro (não só a célula sob o mouse) — comunica
 		# de verdade que esse ataque cobre uma área, não só 1 tile (ver
@@ -2972,25 +3042,119 @@ func calculate_damage(attacker: Node, defender: Node, attack: AttackData, is_cri
 		modifiers *= TINTED_LENS_MULTIPLIER
 	if is_critical:
 		modifiers *= CRITICAL_HIT_MULTIPLIER
+		# Sniper (ver AbilityData.sniper, pedido do usuário, 2026-07-24,
+		# Beedrill Hidden: "Critical hits landed are 2x multiplier instead of
+		# 1.5x (easier to just make crits x4/3)") — multiplica o resultado
+		# JÁ COM o x1.5 padrão por mais 4/3, dando exatamente 2.0 no final
+		# (1.5 * 4/3 = 2.0), em vez de um valor fixo separado competindo com
+		# CRITICAL_HIT_MULTIPLIER.
+		if has_sniper(attacker):
+			modifiers *= SNIPER_CRIT_MULTIPLIER
 	damage = int(damage * modifiers)
 
 	return max(1, damage)
 
 # 1/16 = 6.25% — mesma fração clássica de acerto crítico dos jogos Pokémon
-# (sem nenhum item/Habilidade que aumente a chance implementado ainda; se um
-# dia existir um "Scope Lens" ou parecido, é aqui que ele multiplicaria).
+# (sem nenhum item que aumente a chance implementado ainda; se um dia existir
+# um "Scope Lens" ou parecido, é aqui que ele multiplicaria).
 const CRITICAL_HIT_CHANCE = 0.0625
 const CRITICAL_HIT_MULTIPLIER = 1.5
+
+# Ver AbilityData.sniper — 4/3 EXATO (não um multiplicador "fofo"), porque o
+# pedido do usuário foi literal: "1.5x -> 2x", e 1.5 * (4/3) = 2.0 sem erro de
+# arredondamento (4/3 period bate exato com float de qualquer jeito, já que
+# GDScript usa double de 64 bits — a imprecisão de ponto flutuante aqui é
+# desprezível pra fins de dano inteiro truncado).
+const SNIPER_CRIT_MULTIPLIER = 4.0 / 3.0
+
+func has_sniper(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.sniper:
+			return true
+	return false
+
+# Pin Missile (ver AttackData.is_multi_hit, pedido do usuário, Beedrill:
+# "randomly decide if they will fire 2 (37.5%), 3 (37.5%), 4 (12.5%) or 5
+# (12.5%) times") — pesos EXATOS do pedido, somam 1.0 (0.375+0.375+0.125+0.125).
+const MULTI_HIT_WEIGHTS := {2: 0.375, 3: 0.375, 4: 0.125, 5: 0.125}
+
+# Sorteia quantas vezes um golpe multi-hit conecta, seguindo MULTI_HIT_WEIGHTS
+# acima — soma cumulativa simples (2 primeiro, depois 3, 4, 5), já que a ORDEM
+# das chaves do dicionário em GDScript é a ordem de inserção (garantida desde
+# o Godot 4), então iterar `MULTI_HIT_WEIGHTS.keys()` dá sempre [2, 3, 4, 5].
+func _roll_multi_hit_count() -> int:
+	var roll = randf()
+	var cumulative = 0.0
+	for count in MULTI_HIT_WEIGHTS.keys():
+		cumulative += MULTI_HIT_WEIGHTS[count]
+		if roll < cumulative:
+			return count
+	return 5
+
+# Resolve um golpe multi-hit (ver AttackData.is_multi_hit) inteiro: sorteia
+# quantas vezes ele conecta (_roll_multi_hit_count) e repete a animação de
+# hurt + efeito de impacto + roll de crítico + cálculo de dano UMA VEZ PRA
+# CADA acerto — "Treat each one as a different attack" (pedido do usuário).
+# Pedido do usuário (2026-07-24, correção depois do primeiro build): "Pin
+# missile is only hitting 1 time, I think it stops shooting after killing a
+# target, it should keep going" — DIFERENTE da série principal (que corta a
+# rajada assim que o alvo desmaia no meio dela), aqui a rajada SEMPRE resolve
+# os N acertos sorteados por _roll_multi_hit_count, mesmo que o alvo já
+# tenha desmaiado num acerto anterior (acertos "de sobra" continuam
+# acontecendo, só não tiram HP de quem já está com 0 — ver max(...,0) no
+# hp_lost de cada rodada, pra não contar dano negativo no total). Retorna o
+# total de HP realmente perdido pelo alvo (soma de cada acerto, já limitado
+# pelo HP restante em cada rodada) — é isso que execute_attack usa como
+# `hp_lost` pro recoil (ver comentário grande lá sobre por que hp_lost !=
+# damage bruto).
+#
+# NÃO chama defender.face_towards/cure Asleep/toca "não teve efeito"/aplica
+# efeito secundário/Bug Bite/checa morte — tudo isso continua acontecendo UMA
+# vez só, em execute_attack, depois que esta função retorna (mesmo formato de
+# sempre, só o "meio" da função — dano em si — que se repete).
+func _resolve_multi_hit_damage(attacker: Node, defender: Node, attack: AttackData) -> int:
+	var hit_count = _roll_multi_hit_count()
+	var total_hp_lost = 0
+	for i in range(hit_count):
+		if i > 0:
+			# O primeiro "hurt"/impacto já foi tocado por execute_attack antes
+			# de chamar esta função (ver ali) — a partir do 2º acerto, cada
+			# rodada toca a própria reação visual. play_hurt_animation() num
+			# alvo já desmaiado simplesmente não anima nada de novo (ver
+			# comentário de Unit._play_anim sobre estados que travam
+			# animação) — seguro de chamar mesmo depois do alvo ter morrido
+			# num acerto anterior.
+			defender.play_hurt_animation()
+			if attack.impact_texture != null or attack.impact_texture_2 != null or not attack.impact_frames.is_empty():
+				play_impact_effect(attack.impact_texture, defender.position, attack.impact_texture_2, attack.impact_frames)
+		var is_critical = randf() < get_effective_crit_chance(attack, attacker)
+		var damage = calculate_damage(attacker, defender, attack, is_critical)
+		var hp_lost = min(damage, max(defender.hp_current, 0))
+		defender.take_damage(damage)
+		total_hp_lost += hp_lost
+		if is_critical:
+			log_message("A critical hit!")
+	log_message("Hit %d time(s)!" % hit_count)
+	return total_hp_lost
 
 # Chance de Acerto Crítico de VERDADE a usar no roll (ver AttackData.
 # crit_chance_override) — CRITICAL_HIT_CHANCE global, A NÃO SER que o golpe
 # tenha um valor próprio (>= 0.0) marcado, caso em que esse valor substitui
 # o global por completo (não multiplica, SUBSTITUI). Razor Leaf é o primeiro
-# caso, ver comentário grande do campo em attack_data.gd.
-func get_effective_crit_chance(attack: AttackData) -> float:
+# caso, ver comentário grande do campo em attack_data.gd. `attacker` opcional
+# (null = compatível com qualquer call site de antes deste parâmetro existir)
+# — só usado pra checar Focus Energy (ver Unit.status_conditions/data/attacks/
+# focus_energy.tres, pedido do usuário, Beedrill: "Doubles critical hit chance
+# for 4 turns"), que DOBRA o resultado por cima (multiplica, não substitui —
+# diferente de crit_chance_override, os dois efeitos compõem juntos se um
+# golpe raro tiver os dois algum dia).
+func get_effective_crit_chance(attack: AttackData, attacker: Node = null) -> float:
+	var chance = CRITICAL_HIT_CHANCE
 	if attack.crit_chance_override >= 0.0:
-		return attack.crit_chance_override
-	return CRITICAL_HIT_CHANCE
+		chance = attack.crit_chance_override
+	if attacker != null and attacker.has_status("Focus Energy"):
+		chance *= 2.0
+	return chance
 
 # A parte "Modificadores" da fórmula acima que NÃO é efetividade de tipo
 # (essa fica separada em calculate_damage, por causa do caso especial de
@@ -3087,6 +3251,13 @@ func calculate_damage_modifiers(attacker: Node, defender: Node, attack: AttackDa
 	for action in defender.data.slots:
 		if action is AbilityData and action.resist_types.has(attack.element_type):
 			modifiers *= action.resist_multiplier
+
+	# Technician (ver AbilityData.technician, pedido do usuário, Breloom: "If
+	# the base power of a move is less than or equal 60, multiply it by
+	# x1,5") — usa get_effective_power() (não attack.power cru) pra golpes que
+	# escalam (Rollout/Eruption/etc) serem julgados pelo poder REAL deste uso.
+	if has_technician(attacker) and get_effective_power(attacker, attack, defender) <= TECHNICIAN_POWER_THRESHOLD:
+		modifiers *= TECHNICIAN_MULTIPLIER
 
 	return modifiers
 
@@ -3190,6 +3361,79 @@ func has_shed_skin(u: Node) -> bool:
 			return true
 	return false
 
+# true se `u` carrega uma Habilidade com wonder_skin=true equipada (ver
+# AbilityData.wonder_skin) — usado em _status_move_hits_wonder_skin, chamado
+# de dentro de execute_status_attack antes do roll de acerto.
+func has_wonder_skin(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.wonder_skin:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com effect_spore=true equipada (ver
+# AbilityData.effect_spore) — usado em _try_effect_spore, chamado quando `u`
+# é quem DEFENDE um golpe de CONTATO.
+func has_effect_spore(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.effect_spore:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com poison_heal=true equipada (ver
+# AbilityData.poison_heal) — usado em apply_end_of_turn_status().
+func has_poison_heal(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.poison_heal:
+			return true
+	return false
+
+# 1/8 = 12.5%, valor fixo da Habilidade (ver AbilityData.poison_heal, pedido
+# do usuário: "Heal 1/8 of its HP instead of taking Poison damage") —
+# constante de REGRA, mesmo padrão de AQUA_RING_HEAL_FRACTION_DENOMINATOR e
+# afins.
+const POISON_HEAL_FRACTION = 1.0 / 8.0
+
+# true se `u` carrega uma Habilidade com technician=true equipada (ver
+# AbilityData.technician) — usado em calculate_damage_modifiers().
+func has_technician(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.technician:
+			return true
+	return false
+
+# 1.5x fixo (ver AbilityData.technician, pedido do usuário, Breloom: "If the
+# base power of a move is less than or equal 60, multiply it by x1,5") —
+# constante de REGRA, mesmo padrão de SHEER_FORCE_MULTIPLIER/FLASH_FIRE_
+# MULTIPLIER acima.
+const TECHNICIAN_MULTIPLIER = 1.5
+const TECHNICIAN_POWER_THRESHOLD = 60
+
+# Effect Spore (ver AbilityData.effect_spore, pedido do usuário, Shroomish:
+# "Counts as a Powder move, when taking contact attack, 30% chance to make
+# target Paralyzed, Sleep or Poisoned. Status condition is chosen randomly")
+# — chamado depois que `defender` (quem carrega a Habilidade) leva um golpe
+# de CONTATO (ver AttackData.makes_contact), independente de `defender` ter
+# sobrevivido ou não (o contato já aconteceu no instante do impacto, antes de
+# resolver o destino do defensor — mesmo espírito de Run Away, que só olha
+# "defender sobreviveu", mas aqui o efeito é em QUEM ATACOU, então nem
+# precisa dessa checagem). "Counts as a Powder move" (pedido do usuário) =
+# Grass é imune, mesma regra que os golpes tagged "Powder" já seguem (ver
+# execute_status_attack) — aqui replicada manualmente porque não existe
+# tag nenhuma num golpe QUE CAUSA DANO pra checar.
+const EFFECT_SPORE_CHANCE = 0.3
+const EFFECT_SPORE_STATUSES = ["Paralyzed", "Asleep", "Poisoned"]
+
+func _try_effect_spore(attacker: Node, defender: Node, attack: AttackData) -> void:
+	if not attack.makes_contact or not has_effect_spore(defender):
+		return
+	if attacker.data.types.has("Grass"):
+		return
+	if randf() >= EFFECT_SPORE_CHANCE:
+		return
+	var status_name: String = EFFECT_SPORE_STATUSES[randi() % EFFECT_SPORE_STATUSES.size()]
+	if attacker.apply_status_condition(status_name, defender):
+		log_message("%s's Effect Spore inflicted %s on %s!" % [defender.data.unit_name, status_name, attacker.data.unit_name])
+
 # Run Away (ver AbilityData.run_away, pedido do usuário, 2026-07-23, Caterpie
 # Hidden: "When damaged with an attack, the user moves 1 tile away from the
 # enemy that damaged it") — chamado logo depois de defender.take_damage() nos
@@ -3209,7 +3453,13 @@ func _try_run_away(defender: Node, attacker: Node) -> void:
 	if dir == Vector2i.ZERO:
 		return
 	var target_cell = defender.grid_pos + dir
-	if is_wall_or_border(target_cell) or get_unit_at(target_cell) != null:
+	# Pedido do usuário (2026-07-24): "Run away can't move units through fluid
+	# tiles if they can't naturally move there" — mesma checagem de
+	# can_unit_cross_fluid() que get_reachable_tiles()/movimento normal já usa
+	# (ver comentário grande de can_cross_fluid): se o destino é fluido E esta
+	# unidade não atravessa fluido (nem por tipo/grounded/Levitate), trata IGUAL
+	# a esbarrar numa parede — simplesmente não se move, sem mensagem.
+	if is_wall_or_border(target_cell) or get_unit_at(target_cell) != null or (fluid_cells.has(target_cell) and not can_unit_cross_fluid(defender)):
 		return
 	defender.move_to(target_cell)
 	log_message("%s ran away from the attack!" % defender.data.unit_name)
@@ -3472,10 +3722,29 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# conectou, só não teve efeito nenhum, mesmo tratamento que imunidade de
 	# tipo já recebe).
 	if defender.has_status("Protected"):
-		log_message("%s protected itself!" % defender.data.unit_name)
-		refresh_unit_summary_hud()
-		check_auto_end_turn()
-		return
+		# Feint (ver AttackData.pierces_protect, pedido do usuário: "If target
+		# was Protected hit anyways and remove Protect status") — em vez do
+		# bloqueio normal, remove o escudo e deixa o resto da função continuar
+		# como se Protected nunca tivesse existido (dano normal acontece).
+		if attack.pierces_protect:
+			defender.cure_status_condition("Protected")
+			log_message("%s's Protect was broken through!" % defender.data.unit_name)
+		else:
+			log_message("%s protected itself!" % defender.data.unit_name)
+			refresh_unit_summary_hud()
+			check_auto_end_turn()
+			return
+
+	# Brick Break (ver AttackData.removes_screens) — remove as 3 Status
+	# Conditions de "tela" do alvo ANTES do dano, se ele tiver alguma
+	# (groundwork: nenhum golpe deste projeto ainda CRIA essas 3 condições,
+	# ver comentário grande do campo em attack_data.gd — este bloco já
+	# funciona certo sozinho assim que uma existir).
+	if attack.removes_screens:
+		for screen_name in ["Light Screen", "Reflect", "Aurora Veil"]:
+			if defender.has_status(screen_name):
+				defender.cure_status_condition(screen_name)
+				log_message("%s's %s shattered!" % [defender.data.unit_name, screen_name])
 
 	if attack.element_type == "Fire" and has_flash_fire(defender) and defender.apply_status_condition("Charged"):
 		log_message("%s's Flash Fire was triggered!" % defender.data.unit_name)
@@ -3513,13 +3782,6 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	if defender.has_status("Asleep"):
 		defender.cure_status_condition("Asleep")
 
-	# Rolado UMA vez só, antes de calcular o dano (ver comentário grande em
-	# calculate_damage sobre por que is_critical vem pronto de fora em vez de
-	# a função sortear ela mesma). get_effective_crit_chance() troca pela
-	# chance própria do golpe se ele tiver uma (ver AttackData.
-	# crit_chance_override — Razor Leaf é o primeiro caso).
-	var is_critical = randf() < get_effective_crit_chance(attack)
-	var damage = calculate_damage(attacker, defender, attack, is_critical)
 	# hp_lost (não `damage` cru) é o que self_recoil_fraction_of_damage_dealt
 	# usa mais abaixo — bug reportado pelo usuário: um golpe que causa MUITO
 	# mais dano do que o HP restante do alvo (overkill, ex: Typhlosion nível
@@ -3528,12 +3790,58 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# realmente tinha pra perder. Capturado ANTES de take_damage, já que
 	# depois disso hp_current já reflete o alvo morto (0), perdendo a
 	# diferença.
-	var hp_lost = min(damage, defender.hp_current)
-	defender.take_damage(damage)
+	var hp_lost = 0
+	# Pin Missile (ver AttackData.is_multi_hit, pedido do usuário, Beedrill:
+	# "randomly decide if they will fire 2/3/4/5 times... Only consumes 1 PP
+	# regardless of roll. Treat each one as a different attack") — cada
+	# acerto rola crítico e dano DE NOVO (_resolve_multi_hit_damage), em vez
+	# do único roll de is_critical/damage abaixo. O roll de ACERTO (accuracy)
+	# continua sendo UMA vez só pro golpe inteiro (feito bem antes, fora
+	# desta função) — só o NÚMERO de vezes que conecta é sorteado aqui.
+	if attack.is_multi_hit:
+		hp_lost = _resolve_multi_hit_damage(attacker, defender, attack)
+	else:
+		# Rolado UMA vez só, antes de calcular o dano (ver comentário grande em
+		# calculate_damage sobre por que is_critical vem pronto de fora em vez de
+		# a função sortear ela mesma). get_effective_crit_chance() troca pela
+		# chance própria do golpe se ele tiver uma (ver AttackData.
+		# crit_chance_override — Razor Leaf é o primeiro caso) e dobra se
+		# `attacker` estiver com Focus Energy (ver status novo, Beedrill).
+		var is_critical = randf() < get_effective_crit_chance(attack, attacker)
+		var damage = calculate_damage(attacker, defender, attack, is_critical)
+		hp_lost = min(damage, defender.hp_current)
+		defender.take_damage(damage)
+		if is_critical:
+			log_message("A critical hit!")
+
 	# Run Away (ver AbilityData.run_away/has_run_away/_try_run_away) — só se
 	# `defender` sobreviveu, sem depender de Sheer Force nem de mais nada
-	# (mecanismo independente dos efeitos secundários abaixo).
+	# (mecanismo independente dos efeitos secundários abaixo). Pra multi-hit,
+	# roda só UMA vez, depois de todos os acertos (não a cada acerto) — mais
+	# simples e evita o alvo "escapando" no meio de uma rajada que já mirou
+	# nele.
 	_try_run_away(defender, attacker)
+
+	# Effect Spore (ver AbilityData.effect_spore/_try_effect_spore) — reação
+	# de QUEM DEFENDE contra QUEM ATACA, independente de Sheer Force (não é um
+	# "efeito secundário do golpe" contado por attack_has_secondary_effect,
+	# é uma Habilidade do defensor) e independente do defensor ter sobrevivido
+	# (o contato já aconteceu, ver comentário grande da função).
+	_try_effect_spore(attacker, defender, attack)
+
+	# Roubo de vida (ver AttackData.drain_fraction, pedido do usuário,
+	# Venonat/Shroomish: "Heals user for 50% of damage dealt (HP reduced)") —
+	# usa hp_lost (não `damage` bruto), mesmo cuidado de overkill do comentário
+	# grande acima. Só cura se o golpe realmente tirou HP de alguém (hp_lost >
+	# 0) e só quem atacou ainda estiver vivo (Counter logo abaixo pode matar o
+	# atacante ANTES daqui? não — Counter só roda depois do bloco de recoil,
+	# mais abaixo, então `attacker` sempre está vivo neste ponto).
+	if attack.drain_fraction > 0.0 and hp_lost > 0:
+		var drain_amount = max(1, int(round(hp_lost * attack.drain_fraction)))
+		attacker.hp_current = min(attacker.hp_current + drain_amount, attacker.hp_max)
+		attacker.update_health_bar()
+		attacker.sync_to_data()
+		log_message("%s had its energy drained!" % defender.data.unit_name)
 
 	# Consome a Status Condition "Charged" (ver Unit.status_conditions) SÓ
 	# AQUI — depois que o dano REAL desse golpe já saiu de calculate_damage()
@@ -3544,9 +3852,6 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# verdade sai.
 	if attack.element_type == "Fire" and attacker.has_status("Charged") and has_flash_fire(attacker):
 		attacker.cure_status_condition("Charged")
-
-	if is_critical:
-		log_message("A critical hit!")
 
 	# Mensagem de efetividade — mesma lógica de calculate_damage (efetividade
 	# de tipo x Habilidade de imunidade), recalculada aqui só pra decidir o
@@ -3667,8 +3972,47 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 				call_deferred("begin_current_turn")
 			return
 
+	# Counter (ver Unit.status_conditions/STATUS_DURATIONS["Counter"], pedido
+	# do usuário, Breloom: "Gives Counter status for 2 turns. Whenever hit by
+	# a physical, range 1 move, deals back x2 the hp reduced") — só golpes
+	# FÍSICOS, alcance EXATAMENTE 1, sem ser projétil (mesmo critério de
+	# "contato direto" que Feint/Brick Break já tratam acima), e só se o
+	# golpe realmente tirou HP de verdade (hp_lost > 0 — um golpe imune a 0
+	# de dano não deveria disparar retaliação nenhuma). Chegar até aqui já
+	# implica que `defender` sobreviveu ao próprio golpe (ver o "return" logo
+	# acima quando defender.hp_current <= 0).
+	if defender.has_status("Counter") and not attack.is_special and attack.range == 1 and not attack.is_projectile and hp_lost > 0:
+		var battle_ended_by_counter = await _try_counter(defender, attacker, hp_lost)
+		if battle_ended_by_counter:
+			return
+
 	refresh_unit_summary_hud()
 	check_auto_end_turn()
+
+# Reflete x2 o HP que `defender` (quem tem "Counter" ativo) REALMENTE perdeu
+# pro golpe que acabou de acertar — chamado de dentro de execute_attack,
+# nunca sozinho. Mesmo tratamento de morte "fora do fluxo normal" que o
+# bloco de recoil logo acima já usa (sem exp — não é um golpe de verdade de
+# `defender` contra `attacker`, ver award_experience — remove_defeated_unit +
+# _apply_challenge_permadeath + checagem de fim de batalha na mão). Devolve
+# true se a batalha acabou aqui (mesmo contrato de execute_whirlwind_push).
+func _try_counter(defender: Node, attacker: Node, hp_lost: int) -> bool:
+	var counter_damage = max(1, hp_lost * 2)
+	attacker.take_damage(counter_damage)
+	log_message("%s countered the attack!" % defender.data.unit_name)
+	if attacker.hp_current <= 0:
+		log_message("%s fainted from the counter!" % attacker.data.unit_name)
+		remove_defeated_unit(attacker)
+		_apply_challenge_permadeath(attacker)
+		if enemy_units.is_empty() or player_units.is_empty():
+			await end_battle(attacker, enemy_units.is_empty())
+		else:
+			# Mesmo raciocínio de call_deferred do bloco de recoil acima —
+			# quem chamou execute_attack ainda tem linhas pra rodar depois do
+			# await, então adiamos begin_current_turn pro final do frame.
+			call_deferred("begin_current_turn")
+		return true
+	return false
 
 # Fase de CARGA de um golpe com AttackData.is_charge_move (Solar Beam é o
 # primeiro caso) — chamado de dentro de execute_attack_burst quando o golpe
@@ -3862,8 +4206,9 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 			target.cure_status_condition("Asleep")
 
 		# Mesma troca de get_effective_crit_chance() do ramo de alvo único
-		# em execute_attack (ver comentário lá).
-		var is_critical = randf() < get_effective_crit_chance(attack)
+		# em execute_attack (ver comentário lá) — `attacker` passado também
+		# aqui pra Focus Energy (Beedrill) valer em golpes Burst/Line.
+		var is_critical = randf() < get_effective_crit_chance(attack, attacker)
 		var damage = calculate_damage(attacker, target, attack, is_critical)
 		# hp_lost em vez de `damage` cru — mesmo bug de overkill do
 		# comentário grande em execute_attack (Typhlosion nível 100 batendo
@@ -4056,6 +4401,7 @@ func _try_bug_bite_steal_berry(attacker: Node, defender: Node, attack: AttackDat
 const SELF_STATUS_EFFECT_MESSAGES := {
 	"Protected": "%s protected itself!",
 	"Aqua Ring": "%s is enveloped by a veil of water!",
+	"Focus Energy": "%s is getting pumped!",
 }
 
 # Mesma ideia de SELF_STATUS_EFFECT_MESSAGES acima, só que pro caso de um
@@ -4069,6 +4415,55 @@ const GROUP_STATUS_EFFECT_MESSAGES := {
 	"Tailwind": "%s got a burst of speed from the Tailwind!",
 	"Taunted": "%s fell for the taunt!",
 }
+
+# Wonder Skin (ver AbilityData.wonder_skin/has_wonder_skin) — precisa saber
+# ANTES do roll de acerto (rodado logo no início de execute_status_attack,
+# antes de `targets` ser resolvido de verdade mais abaixo na função) se
+# QUALQUER inimigo na área deste golpe de Status carrega a Habilidade, pra
+# cortar a accuracy pela metade só nesse caso. Reconstrói uma versão
+# RESUMIDA da MESMA geometria que o bloco "var targets" mais abaixo calcula
+# (Cone/Burst/projétil/Single) — duplicado de propósito em vez de mover
+# aquele bloco (já testado, cheio de comentário) pra cima do roll: mais
+# seguro reimplementar só a checagem de Habilidade aqui do que reordenar
+# tudo perto do prazo. "Team"/self-target/sets_weather nunca miram inimigo
+# nenhum, então nem entram na checagem (Wonder Skin só importa pra golpe que
+# afeta INIMIGOS de quem usa).
+func _status_move_hits_wonder_skin(attacker: Node, attack: AttackData, dir: Vector2i) -> bool:
+	if attack.area_shape == "Cone":
+		for cell in get_cone_cells(attacker.grid_pos, dir, attack.range):
+			if cell.x < 0 or cell.x >= MAP_WIDTH or cell.y < 0 or cell.y >= MAP_HEIGHT:
+				continue
+			var u = get_unit_at(cell)
+			if u != null and u.is_enemy != attacker.is_enemy and has_wonder_skin(u):
+				return true
+		return false
+	if attack.area_shape == "Burst" and not attack.targets_allies:
+		for u in player_units + enemy_units:
+			if u == attacker or u.is_enemy == attacker.is_enemy:
+				continue
+			var delta = u.grid_pos - attacker.grid_pos
+			var dist = max(abs(delta.x), abs(delta.y))
+			if dist <= attack.range and dist >= attack.area_min_range and has_wonder_skin(u):
+				return true
+		return false
+	if attack.is_projectile:
+		var cell = attacker.grid_pos
+		for step in attack.range:
+			var next_cell = cell + dir
+			if is_wall_or_border(next_cell):
+				break
+			cell = next_cell
+			var u = get_unit_at(cell)
+			if u != null and u.is_enemy != attacker.is_enemy:
+				return has_wonder_skin(u)
+		return false
+	if attack.area_shape == "Single":
+		var cell = attacker.grid_pos + dir * attack.range
+		if cell.x >= 0 and cell.x < MAP_WIDTH and cell.y >= 0 and cell.y < MAP_HEIGHT:
+			var u = get_unit_at(cell)
+			if u != null and u.is_enemy != attacker.is_enemy:
+				return has_wonder_skin(u)
+	return false
 
 func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, slot_index: int) -> void:
 	attacker.face_towards(attacker.grid_pos + dir)
@@ -4116,7 +4511,20 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 	# Status usa scales_with_consecutive_use hoje, mas mantém os dois
 	# caminhos consistentes caso um dia algum use.
 	var final_accuracy = attack.accuracy * attacker.get_accuracy_multiplier()
-	if not attack.never_misses and final_accuracy < 1.0 and randf() >= final_accuracy:
+	# Wonder Skin (ver AbilityData.wonder_skin, pedido do usuário, Venomoth
+	# Hidden: "All enemy Status moves targeted at this unit have Accuracy
+	# x0.5") — checado ANTES de resolver `targets` de verdade (ver comentário
+	# grande de _status_move_hits_wonder_skin sobre por que essa checagem é
+	# duplicada em vez de mover o bloco de `targets` pra cima do roll).
+	if _status_move_hits_wonder_skin(attacker, attack, dir):
+		final_accuracy *= 0.5
+	# Toxic (ver AttackData.never_misses_if_user_type, pedido do usuário:
+	# "Never misses if user is Poison type") — condicional ao TIPO de quem
+	# ataca, diferente de never_misses (incondicional, ver Swift). Os dois se
+	# somam no "pula o roll" (um golpe poderia ter os dois, embora nenhum hoje
+	# tenha).
+	var skips_accuracy_roll = attack.never_misses or (attack.never_misses_if_user_type != "" and attacker.data.types.has(attack.never_misses_if_user_type))
+	if not skips_accuracy_roll and final_accuracy < 1.0 and randf() >= final_accuracy:
 		# Pedido do usuário (2026-07-23): "On self cast status move fail,
 		# message should be 'But it failed!'" — golpe auto-mirado (Protect,
 		# Aqua Ring, ver is_self_target_status) não "erra" um alvo, ele só não
@@ -4141,7 +4549,18 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 	# empurrado é resolvida dentro da própria execute_whirlwind_push, incluindo
 	# aliados, que os ramos abaixo excluem de propósito).
 	if attack.push_mechanic:
-		await execute_whirlwind_push(attacker, dir)
+		# execute_whirlwind_push devolve true se a batalha JÁ acabou dentro
+		# dela (ver comentário grande lá) — bug reportado pelo usuário: o jogo
+		# travava quando o último inimigo morria de dano de colisão/parede do
+		# empurrão, porque check_auto_end_turn() ainda rodava DEPOIS de
+		# end_battle() já ter encerrado tudo (mesma classe de bug que
+		# execute_attack/execute_attack_burst já evitam com um `return` logo
+		# depois do `await end_battle(...)`, ver comentário lá — só que aqui
+		# quem decide "a batalha acabou" é a função de baixo, não este ponto,
+		# então precisa devolver isso pra quem chamou saber).
+		var battle_ended = await execute_whirlwind_push(attacker, dir)
+		if battle_ended:
+			return
 		refresh_unit_summary_hud()
 		check_auto_end_turn()
 		return
@@ -4331,8 +4750,43 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		if target.has_status("Protected"):
 			log_message("%s protected itself!" % target.data.unit_name)
 			continue
+		# Disable (ver AttackData.disables_target_last_move, pedido do
+		# usuário, Venonat: "Opponent gets Disabled status. It saves the
+		# targets last used move and disables it for 3 turns") — `continue`
+		# no final porque este golpe NÃO aplica stat_change/inflicts_status
+		# genérico nenhum, é um efeito totalmente à parte.
+		if attack.disables_target_last_move:
+			if target.last_attack_used == null or not target.apply_status_condition("Disabled", attacker):
+				log_message("But it failed!")
+			else:
+				target.disabled_attack = target.last_attack_used
+				log_message("%s's %s was disabled!" % [target.data.unit_name, target.disabled_attack.action_name])
+			continue
+		# Worry Seed (ver AttackData.replaces_target_ability, pedido do
+		# usuário: "IF opponent has an ability in its loadout, choose a random
+		# one to replace with Insomnia") — mesmo `continue` isolado de Disable
+		# acima, efeito totalmente à parte do stat_change/inflicts_status
+		# genérico.
+		if attack.replaces_target_ability:
+			var ability_indices: Array[int] = []
+			for i in target.data.slots.size():
+				if target.data.slots[i] is AbilityData:
+					ability_indices.append(i)
+			if ability_indices.is_empty():
+				log_message("But it failed!")
+			else:
+				var chosen_index: int = ability_indices[randi() % ability_indices.size()]
+				target.data.slots[chosen_index] = INSOMNIA_ABILITY
+				log_message("%s's Ability was replaced with Insomnia!" % target.data.unit_name)
+			continue
 		if attack.stat_change_target != "Self":
 			apply_stat_change(target, attack.stat_change_stat, attack.stat_change_amount)
+			# stat_change_stat_2 (ver AttackData — até aqui só lido no ramo
+			# "Self", ver Growth/Quiver Dance acima) — Toxic é o primeiro golpe
+			# a precisar de DOIS stats mudados no ALVO (não em quem ataca):
+			# "Poisons target and reduces Defense and Sp.Def by 1".
+			if attack.stat_change_stat_2 != "":
+				apply_stat_change(target, attack.stat_change_stat_2, attack.stat_change_amount_2)
 		# Igual stat_change_stat acima: SEM chance nenhuma, sempre aplica se
 		# achou o alvo (ver comentário grande em AttackData.inflicts_status
 		# sobre por que isso é diferente de secondary_status). apply_status_
@@ -4386,7 +4840,16 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 # mirada), nunca na mesma "linha" de empurrão umas das outras — por isso não
 # precisa se preocupar com a ordem de processamento entre elas (uma não
 # atravessa o caminho da outra).
-func execute_whirlwind_push(attacker: Node, dir: Vector2i) -> void:
+#
+# Devolve true se a batalha já acabou dentro desta função (ver comentário no
+# ponto de chamada, execute_status_attack::push_mechanic) — igual todo outro
+# lugar que mata unidade em battle.gd, chama end_battle() e SAI imediatamente
+# (return true) em vez de continuar processando o resto de hit_units; bug
+# reportado pelo usuário: o jogo travava se o último inimigo morresse de dano
+# de colisão/parede, porque antes desta correção o "return" só existia no
+# CALLER (depois de já ter tentado check_auto_end_turn numa batalha que já
+# tinha terminado).
+func execute_whirlwind_push(attacker: Node, dir: Vector2i) -> bool:
 	var hit_units: Array[Node] = []
 	for cell in get_wide_cells(attacker.grid_pos, dir, 1):
 		if cell.x < 0 or cell.x >= MAP_WIDTH or cell.y < 0 or cell.y >= MAP_HEIGHT:
@@ -4413,6 +4876,19 @@ func execute_whirlwind_push(attacker: Node, dir: Vector2i) -> void:
 			current_cell = next_cell
 			path.append(current_cell)
 
+		# Pedido do usuário (2026-07-24): "Units pushed into fluids they can't
+		# stand on are moved to the closest free standable tile" — diferente
+		# de esbarrar em parede/unidade (que causa dano E para o empurrão),
+		# aterrissar num fluido que esta unidade não atravessa NÃO é uma
+		# colisão de verdade (get_wide_cells/is_wall_or_border não sabem nada
+		# de fluido) — só redireciona o pouso final pro tile andável mais
+		# próximo, sem dano nenhum por isso. Só importa se current_cell mudou
+		# de verdade (path não vazio) — se o empurrão nem saiu do lugar
+		# (parede logo no 1º passo), não há pouso nenhum pra corrigir.
+		if not path.is_empty() and fluid_cells.has(current_cell) and not can_unit_cross_fluid(u):
+			current_cell = _find_nearest_standable_cell(current_cell, u)
+			path.append(current_cell)
+
 		if not path.is_empty():
 			u.move_along_path(path)
 
@@ -4423,21 +4899,57 @@ func execute_whirlwind_push(attacker: Node, dir: Vector2i) -> void:
 			if u.hp_current <= 0:
 				remove_defeated_unit(u)
 				_apply_challenge_permadeath(u)
+				if enemy_units.is_empty() or player_units.is_empty():
+					await end_battle(u, enemy_units.is_empty())
+					return true
 		elif collided_unit != null:
 			var damage_to_u = max(1, collided_unit.weight * 5)
 			var damage_to_collided = max(1, u.weight * 5)
 			u.take_damage(damage_to_u)
 			collided_unit.take_damage(damage_to_collided)
 			log_message("%s collided with %s!" % [u.data.unit_name, collided_unit.data.unit_name])
-			if u.hp_current <= 0:
+			var u_died = u.hp_current <= 0
+			var collided_died = collided_unit.hp_current <= 0
+			if u_died:
 				remove_defeated_unit(u)
 				_apply_challenge_permadeath(u)
-			if collided_unit.hp_current <= 0:
+			if collided_died:
 				remove_defeated_unit(collided_unit)
 				_apply_challenge_permadeath(collided_unit)
+			if (u_died or collided_died) and (enemy_units.is_empty() or player_units.is_empty()):
+				await end_battle(u if u_died else collided_unit, enemy_units.is_empty())
+				return true
 
-	if enemy_units.is_empty() or player_units.is_empty():
-		await end_battle(attacker, enemy_units.is_empty())
+	return false
+
+# BFS 8-direções a partir de `origin` (que a esta altura já se sabe que NÃO
+# serve — fluido que `u` não atravessa) procurando a célula ANDÁVEL mais
+# próxima: sem parede/borda, sem outra unidade em cima, e sem ser fluido que
+# `u` não atravessa (mesma checagem de can_unit_cross_fluid). BFS garante
+# "mais próxima" de verdade (primeira encontrada na busca em largura, não só
+# a primeira testada). Pedido do usuário, ver execute_whirlwind_push acima.
+# Fallback (`origin` de volta) só existiria num mapa impossível de preencher
+# só de parede/fluido — nunca deveria acontecer na prática.
+func _find_nearest_standable_cell(origin: Vector2i, u: Node) -> Vector2i:
+	var visited := {origin: true}
+	var queue: Array[Vector2i] = [origin]
+	var head := 0
+	var neighbor_offsets = [Vector2i(0, -1), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(1, 0),
+		Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(1, 1)]
+	while head < queue.size():
+		var cell: Vector2i = queue[head]
+		head += 1
+		if cell != origin and not is_wall_or_border(cell) and get_unit_at(cell) == null and not (fluid_cells.has(cell) and not can_unit_cross_fluid(u)):
+			return cell
+		for offset in neighbor_offsets:
+			var n = cell + offset
+			if n.x < 0 or n.x >= MAP_WIDTH or n.y < 0 or n.y >= MAP_HEIGHT:
+				continue
+			if visited.has(n):
+				continue
+			visited[n] = true
+			queue.append(n)
+	return origin
 
 # Aplica UMA mudança de stat_stage em `target` (ver Unit.modify_stat_stage) e
 # toca o efeito visual correspondente (ver play_stat_change_effect), exceto
@@ -5200,6 +5712,25 @@ func get_aqua_ring_heal(u: Node) -> int:
 	@warning_ignore("integer_division")
 	return max(1, u.hp_max / AQUA_RING_HEAL_FRACTION_DENOMINATOR)
 
+# Leftovers (ver ItemData.heal_fraction_per_turn, pedido do usuário: "at the
+# end of each turn, heals user by 1/16 of their HP") — mesmo "cano" de
+# get_aqua_ring_heal acima (só calcula o número, quem soma/aplica é
+# apply_end_of_turn_status), mas lendo do ITEM equipado em vez de um Status
+# Condition, por isso itera u.data.slots (mesmo padrão de has_shed_skin/
+# has_flash_fire pra Habilidade, só que checando ItemData aqui). Soma TODOS os
+# itens equipados com essa fração (hoje só existe Leftovers, mas nada impede
+# um segundo item igual algum dia — improvável de acontecer na prática, já
+# que só há 1 slot de Held Item por unidade, mas a soma cobre o caso mesmo
+# assim em vez de só pegar "o primeiro achado").
+func get_leftovers_heal(u: Node) -> int:
+	var total_fraction = 0.0
+	for action in u.data.slots:
+		if action is ItemData and action.heal_fraction_per_turn > 0.0:
+			total_fraction += action.heal_fraction_per_turn
+	if total_fraction <= 0.0:
+		return 0
+	return max(1, int(u.hp_max * total_fraction))
+
 # "HP reduced by this effect is granted to Leech Seed user as healing" — cura
 # QUEM aplicou "Seeded" em `seeded_unit` (ver Unit.get_status_source), não
 # necessariamente quem está na vez agora. `amount` já vem PRONTO de quem
@@ -5257,11 +5788,30 @@ func apply_end_of_turn_status(u: Node) -> bool:
 	# usuário não citou chance). Confused/Blind/Flinched/Rooted/etc. ficam de
 	# fora — só as 4 condições nomeadas.
 	if has_shed_skin(u):
-		for status_name in ["Poisoned", "Paralyzed", "Frozen", "Asleep"]:
+		# "Badly Poisoned" (Toxic, ver Unit.badly_poison_turns) entra na MESMA
+		# lista que "Poisoned" — pro efeito de Shed Skin, as duas são só
+		# "está envenenado", igual Poison Heal logo abaixo trata as duas iguais.
+		for status_name in ["Poisoned", "Badly Poisoned", "Paralyzed", "Frozen", "Asleep"]:
 			if u.has_status(status_name):
 				u.cure_status_condition(status_name)
 				log_message("%s's Shed Skin cured its %s!" % [u.data.unit_name, status_name])
-	var tick_damage = u.get_status_tick_damage()
+	# Poison Heal (ver AbilityData.poison_heal, pedido do usuário, Shroomish:
+	# "When poisoned, user will Heal 1/8 of its HP instead of taking Poison
+	# damage each turn") — TROCA o tick de dano de Poisoned/Badly Poisoned por
+	# uma cura, em vez de somar no tick_damage normal como Sandstorm/Seeded/
+	# Rooted fazem logo abaixo. get_status_tick_damage() nem chega a ser
+	# chamado neste caso — o que também tem o efeito colateral correto de
+	# NÃO incrementar Unit.badly_poison_turns enquanto Poison Heal estiver
+	# ativo (ver comentário lá).
+	var tick_damage = 0
+	if has_poison_heal(u) and (u.has_status("Poisoned") or u.has_status("Badly Poisoned")):
+		var poison_heal_amount = max(1, int(u.hp_max * POISON_HEAL_FRACTION))
+		u.hp_current = min(u.hp_current + poison_heal_amount, u.hp_max)
+		u.update_health_bar()
+		u.sync_to_data()
+		log_message("%s restored HP with Poison Heal!" % u.data.unit_name)
+	else:
+		tick_damage = u.get_status_tick_damage()
 	var weather_tick_damage = get_weather_tick_damage(u)
 	var seed_damage = get_seeded_tick_damage(u)
 	var rooted_damage = get_rooted_tick_damage(u)
@@ -5303,6 +5853,16 @@ func apply_end_of_turn_status(u: Node) -> bool:
 		u.update_health_bar()
 		u.sync_to_data()
 		log_message("%s's Aqua Ring restored its HP!" % u.data.unit_name)
+
+	# Leftovers (ver get_leftovers_heal acima): tick independente do de Aqua
+	# Ring — os dois podem empilhar (uma unidade Aqua Ring segurando Leftovers
+	# cura os dois no mesmo turno), cada um com sua própria mensagem.
+	var leftovers_heal = get_leftovers_heal(u)
+	if leftovers_heal > 0 and u.hp_current > 0:
+		u.hp_current = min(u.hp_current + leftovers_heal, u.hp_max)
+		u.update_health_bar()
+		u.sync_to_data()
+		log_message("%s restored a little HP using its Leftovers!" % u.data.unit_name)
 
 	# .duplicate() antes de iterar: cure_status_condition(status) apaga a
 	# chave do dicionário DE VERDADE (ver Unit.cure_status_condition) — mexer
@@ -5683,7 +6243,10 @@ func _plan_easy_action(u: Node) -> Dictionary:
 			# Taunted (ver comentário grande em refresh_action_slots_hud) — a
 			# IA "Easy" também não pode sortear um golpe de Status enquanto
 			# travada.
-			if action is AttackData and not (action.is_status and u.has_status("Taunted")) and (action.max_uses <= 0 or slot_index >= u.slot_uses.size() or u.slot_uses[slot_index] > 0):
+			# Disabled (ver Unit.disabled_attack) — mesmo espírito de Taunted
+			# logo acima, mas travando só o golpe específico marcado, não
+			# todo golpe de Status.
+			if action is AttackData and not (action.is_status and u.has_status("Taunted")) and u.disabled_attack != action and (action.max_uses <= 0 or slot_index >= u.slot_uses.size() or u.slot_uses[slot_index] > 0):
 				usable_slots.append(slot_index)
 
 		if not usable_slots.is_empty():
@@ -5741,6 +6304,8 @@ func _plan_medium_action(u: Node) -> Dictionary:
 			var action = u.data.slots[slot_index]
 			if not (action is AttackData):
 				continue   # Habilidade é passiva, nunca é "usada" ativamente
+			if u.disabled_attack == action:
+				continue   # Disabled (ver Unit.disabled_attack) — esse golpe específico está travado
 			if action.max_uses > 0 and slot_index < u.slot_uses.size() and u.slot_uses[slot_index] <= 0:
 				continue   # sem usos sobrando nesse slot
 			for ally in allies:
@@ -5783,6 +6348,8 @@ func _pick_medium_status_action(u: Node, allies: Array, candidate_cells: Array[V
 		var action = u.data.slots[slot_index]
 		if not (action is AttackData) or not action.is_status:
 			continue
+		if u.disabled_attack == action:
+			continue   # Disabled (ver Unit.disabled_attack)
 		if action.max_uses > 0 and slot_index < u.slot_uses.size() and u.slot_uses[slot_index] <= 0:
 			continue
 		for ally in allies:
@@ -5827,6 +6394,8 @@ func _best_possible_damage(p: Node, defender: Node) -> int:
 		var action = p.data.slots[slot_index]
 		if not (action is AttackData) or action.is_status:
 			continue
+		if p.disabled_attack == action:
+			continue   # Disabled (ver Unit.disabled_attack)
 		if action.max_uses > 0 and slot_index < p.slot_uses.size() and p.slot_uses[slot_index] <= 0:
 			continue
 		var damage = calculate_damage(p, defender, action)
@@ -5900,6 +6469,8 @@ func _search_best_attack(u: Node, targets: Array, candidate_cells: Array[Vector2
 		var action = u.data.slots[slot_index]
 		if not (action is AttackData) or action.is_status:
 			continue
+		if u.disabled_attack == action:
+			continue   # Disabled (ver Unit.disabled_attack)
 		if action.max_uses > 0 and slot_index < u.slot_uses.size() and u.slot_uses[slot_index] <= 0:
 			continue
 		for target in targets:

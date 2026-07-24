@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Grass"
+is_status = true
+accuracy = 1.0
+area_shape = "Burst"
+inflicts_status = "Asleep"
+tags = Array[String](["Powder"])
+action_name = "Spore"
+max_uses = 15
+range = 1

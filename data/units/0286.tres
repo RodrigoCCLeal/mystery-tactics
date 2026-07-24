@@ -3,6 +3,125 @@
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0286/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0286/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Resource" path="res://data/abilities/effect_spore.tres" id="6_effect_spore"]
+[ext_resource type="Resource" path="res://data/abilities/poison_heal.tres" id="7_poison_heal"]
+[ext_resource type="Resource" path="res://data/abilities/technician.tres" id="8_technician"]
+[ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="9_absorb"]
+[ext_resource type="Resource" path="res://data/attacks/growth.tres" id="10_growth"]
+[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="11_leech_seed"]
+[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="12_poison_powder"]
+[ext_resource type="Resource" path="res://data/attacks/stun_spore.tres" id="13_stun_spore"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="14_tackle"]
+[ext_resource type="Resource" path="res://data/attacks/toxic.tres" id="15_toxic"]
+[ext_resource type="Resource" path="res://data/attacks/mega_drain.tres" id="16_mega_drain"]
+[ext_resource type="Resource" path="res://data/attacks/headbutt.tres" id="17_headbutt"]
+[ext_resource type="Resource" path="res://data/attacks/feint.tres" id="18_feint"]
+[ext_resource type="Resource" path="res://data/attacks/counter.tres" id="19_counter"]
+[ext_resource type="Resource" path="res://data/attacks/mach_punch.tres" id="20_mach_punch"]
+[ext_resource type="Resource" path="res://data/attacks/force_palm.tres" id="21_force_palm"]
+[ext_resource type="Resource" path="res://data/attacks/worry_seed.tres" id="22_worry_seed"]
+[ext_resource type="Resource" path="res://data/attacks/brick_break.tres" id="23_brick_break"]
+[ext_resource type="Resource" path="res://data/attacks/seed_bomb.tres" id="24_seed_bomb"]
+[ext_resource type="Resource" path="res://data/attacks/dynamic_punch.tres" id="25_dynamic_punch"]
+[ext_resource type="Resource" path="res://data/attacks/focus_punch.tres" id="26_focus_punch"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_effect_spore"]
+script = ExtResource("4_learn")
+action = ExtResource("6_effect_spore")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_poison_heal"]
+script = ExtResource("4_learn")
+action = ExtResource("7_poison_heal")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_technician"]
+script = ExtResource("4_learn")
+action = ExtResource("8_technician")
+is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_absorb"]
+script = ExtResource("4_learn")
+action = ExtResource("9_absorb")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_growth"]
+script = ExtResource("4_learn")
+action = ExtResource("10_growth")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_leech_seed"]
+script = ExtResource("4_learn")
+action = ExtResource("11_leech_seed")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_poison_powder"]
+script = ExtResource("4_learn")
+action = ExtResource("12_poison_powder")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_stun_spore"]
+script = ExtResource("4_learn")
+action = ExtResource("13_stun_spore")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("14_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_toxic"]
+script = ExtResource("4_learn")
+action = ExtResource("15_toxic")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_mega_drain"]
+script = ExtResource("4_learn")
+level = 12
+action = ExtResource("16_mega_drain")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_headbutt"]
+script = ExtResource("4_learn")
+level = 15
+action = ExtResource("17_headbutt")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_feint"]
+script = ExtResource("4_learn")
+level = 19
+action = ExtResource("18_feint")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_counter"]
+script = ExtResource("4_learn")
+level = 22
+action = ExtResource("19_counter")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_mach_punch"]
+script = ExtResource("4_learn")
+level = 23
+action = ExtResource("20_mach_punch")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_force_palm"]
+script = ExtResource("4_learn")
+level = 28
+action = ExtResource("21_force_palm")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_worry_seed"]
+script = ExtResource("4_learn")
+level = 33
+action = ExtResource("22_worry_seed")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_brick_break"]
+script = ExtResource("4_learn")
+level = 39
+action = ExtResource("23_brick_break")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_seed_bomb"]
+script = ExtResource("4_learn")
+level = 44
+action = ExtResource("24_seed_bomb")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_dynamic_punch"]
+script = ExtResource("4_learn")
+level = 50
+action = ExtResource("25_dynamic_punch")
+
+[sub_resource type="Resource" id="LearnsetEntry_0286_focus_punch"]
+script = ExtResource("4_learn")
+level = 55
+action = ExtResource("26_focus_punch")
 
 [resource]
 script = ExtResource("1_script")
@@ -12,6 +131,8 @@ portrait = ExtResource("2_portrait")
 types = Array[String](["Grass", "Fighting"])
 grounded = true
 weight = 1
+slots = Array[ExtResource("5_action")]([ExtResource("14_tackle"), ExtResource("9_absorb"), ExtResource("6_effect_spore")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0286_effect_spore"), SubResource("LearnsetEntry_0286_poison_heal"), SubResource("LearnsetEntry_0286_technician"), SubResource("LearnsetEntry_0286_absorb"), SubResource("LearnsetEntry_0286_growth"), SubResource("LearnsetEntry_0286_leech_seed"), SubResource("LearnsetEntry_0286_poison_powder"), SubResource("LearnsetEntry_0286_stun_spore"), SubResource("LearnsetEntry_0286_tackle"), SubResource("LearnsetEntry_0286_toxic"), SubResource("LearnsetEntry_0286_mega_drain"), SubResource("LearnsetEntry_0286_headbutt"), SubResource("LearnsetEntry_0286_feint"), SubResource("LearnsetEntry_0286_counter"), SubResource("LearnsetEntry_0286_mach_punch"), SubResource("LearnsetEntry_0286_force_palm"), SubResource("LearnsetEntry_0286_worry_seed"), SubResource("LearnsetEntry_0286_brick_break"), SubResource("LearnsetEntry_0286_seed_bomb"), SubResource("LearnsetEntry_0286_dynamic_punch"), SubResource("LearnsetEntry_0286_focus_punch")])
 hp_base = 60
 attack_base = 130
 defense_base = 80

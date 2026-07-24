@@ -32,6 +32,7 @@ const UnitScript = preload("res://scripts/unit.gd")
 
 @onready var title_label: Label = $Center/Panel/MarginContainer/Content/Title
 @onready var rows_container: VBoxContainer = $Center/Panel/MarginContainer/Content/RowsScroll/Rows
+@onready var rows_scroll: ScrollContainer = $Center/Panel/MarginContainer/Content/RowsScroll
 @onready var close_label: Label = $Center/Panel/MarginContainer/Content/Close
 
 var current_category: String = ""
@@ -154,6 +155,12 @@ func _update_row_visuals() -> void:
 	for i in row_panels.size():
 		var style = row_panels[i].get_theme_stylebox("panel") as StyleBoxFlat
 		style.bg_color = ROW_STYLE_SELECTED if i == selected_row else ROW_STYLE_NORMAL
+	# Rola a lista sozinha pra manter o item realçado visível — mesmo bug/
+	# remédio de unit_loadout.gd::_update_picker_visual e
+	# key_mapping_screen.gd::_update_selection_visual (pedido do usuário,
+	# 2026-07-24: "Moving down using arrows doesn't scroll down the options").
+	if selected_row >= 0 and selected_row < row_panels.size():
+		rows_scroll.ensure_control_visible(row_panels[selected_row])
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible or _input_locked:

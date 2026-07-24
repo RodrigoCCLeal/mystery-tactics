@@ -105,6 +105,18 @@ var category: String = "Medicine"
 # boosted to 7 if the unit that activated it is holding a specific item".
 @export var extends_weather: String = ""
 
+# Fração do PRÓPRIO hp_max curada ao final de CADA turno de quem carrega este
+# item equipado no loadout — 0.0 (padrão) = sem esse efeito. Leftovers é o
+# primeiro caso: "at the end of each turn, heals user by 1/16 of their HP"
+# (pedido do usuário, 2026-07-24) — mesma fração e o MESMO "cano" de tick que
+# a Status Condition "Aqua Ring" já usa (ver battle.gd::get_aqua_ring_heal/
+# AQUA_RING_HEAL_FRACTION_DENOMINATOR), só que por ITEM equipado em vez de
+# status aplicado por golpe — os dois efeitos empilham livremente se uma
+# unidade tiver as duas coisas ao mesmo tempo (ver battle.gd::
+# get_leftovers_heal, somado ao lado do tick de Aqua Ring em
+# apply_end_of_turn_status).
+@export var heal_fraction_per_turn: float = 0.0
+
 # Se true, um ÚNICO slot de loadout pode guardar de 1 a 99 unidades deste
 # item ao mesmo tempo (ver UnitData.slot_quantities/get_slot_quantity) — a
 # quantidade é escolhida no momento do "Give" (ver item_list_screen.gd ->

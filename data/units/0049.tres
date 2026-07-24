@@ -3,6 +3,110 @@
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0049/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0049/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Resource" path="res://data/abilities/shield_dust.tres" id="6_shield_dust"]
+[ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="7_tinted_lens"]
+[ext_resource type="Resource" path="res://data/abilities/wonder_skin.tres" id="8_wonder_skin"]
+[ext_resource type="Resource" path="res://data/attacks/disable.tres" id="9_disable"]
+[ext_resource type="Resource" path="res://data/attacks/quiver_dance.tres" id="10_quiver_dance"]
+[ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="11_supersonic"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="12_tackle"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="13_confusion"]
+[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="14_poison_powder"]
+[ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="15_psybeam"]
+[ext_resource type="Resource" path="res://data/attacks/stun_spore.tres" id="16_stun_spore"]
+[ext_resource type="Resource" path="res://data/attacks/bug_buzz.tres" id="17_bug_buzz"]
+[ext_resource type="Resource" path="res://data/attacks/sleep_powder.tres" id="18_sleep_powder"]
+[ext_resource type="Resource" path="res://data/attacks/air_slash.tres" id="19_air_slash"]
+[ext_resource type="Resource" path="res://data/attacks/leech_life.tres" id="20_leech_life"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="21_zen_headbutt"]
+[ext_resource type="Resource" path="res://data/attacks/poison_fang.tres" id="22_poison_fang"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="23_psychic"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_shield_dust"]
+script = ExtResource("4_learn")
+action = ExtResource("6_shield_dust")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_tinted_lens"]
+script = ExtResource("4_learn")
+action = ExtResource("7_tinted_lens")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_wonder_skin"]
+script = ExtResource("4_learn")
+action = ExtResource("8_wonder_skin")
+is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_disable"]
+script = ExtResource("4_learn")
+action = ExtResource("9_disable")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_quiver_dance"]
+script = ExtResource("4_learn")
+action = ExtResource("10_quiver_dance")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_supersonic"]
+script = ExtResource("4_learn")
+action = ExtResource("11_supersonic")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("12_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_confusion"]
+script = ExtResource("4_learn")
+level = 11
+action = ExtResource("13_confusion")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_poison_powder"]
+script = ExtResource("4_learn")
+level = 13
+action = ExtResource("14_poison_powder")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_psybeam"]
+script = ExtResource("4_learn")
+level = 17
+action = ExtResource("15_psybeam")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_stun_spore"]
+script = ExtResource("4_learn")
+level = 23
+action = ExtResource("16_stun_spore")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_bug_buzz"]
+script = ExtResource("4_learn")
+level = 25
+action = ExtResource("17_bug_buzz")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_sleep_powder"]
+script = ExtResource("4_learn")
+level = 29
+action = ExtResource("18_sleep_powder")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_air_slash"]
+script = ExtResource("4_learn")
+level = 31
+action = ExtResource("19_air_slash")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_leech_life"]
+script = ExtResource("4_learn")
+level = 37
+action = ExtResource("20_leech_life")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_zen_headbutt"]
+script = ExtResource("4_learn")
+level = 41
+action = ExtResource("21_zen_headbutt")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_poison_fang"]
+script = ExtResource("4_learn")
+level = 47
+action = ExtResource("22_poison_fang")
+
+[sub_resource type="Resource" id="LearnsetEntry_0049_psychic"]
+script = ExtResource("4_learn")
+level = 55
+action = ExtResource("23_psychic")
 
 [resource]
 script = ExtResource("1_script")
@@ -10,8 +114,10 @@ unit_name = "Venomoth"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Poison"])
-grounded = true
+grounded = false
 weight = 1
+slots = Array[ExtResource("5_action")]([ExtResource("12_tackle"), ExtResource("9_disable"), ExtResource("6_shield_dust")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0049_shield_dust"), SubResource("LearnsetEntry_0049_tinted_lens"), SubResource("LearnsetEntry_0049_wonder_skin"), SubResource("LearnsetEntry_0049_disable"), SubResource("LearnsetEntry_0049_quiver_dance"), SubResource("LearnsetEntry_0049_supersonic"), SubResource("LearnsetEntry_0049_tackle"), SubResource("LearnsetEntry_0049_confusion"), SubResource("LearnsetEntry_0049_poison_powder"), SubResource("LearnsetEntry_0049_psybeam"), SubResource("LearnsetEntry_0049_stun_spore"), SubResource("LearnsetEntry_0049_bug_buzz"), SubResource("LearnsetEntry_0049_sleep_powder"), SubResource("LearnsetEntry_0049_air_slash"), SubResource("LearnsetEntry_0049_leech_life"), SubResource("LearnsetEntry_0049_zen_headbutt"), SubResource("LearnsetEntry_0049_poison_fang"), SubResource("LearnsetEntry_0049_psychic")])
 hp_base = 70
 attack_base = 65
 defense_base = 60

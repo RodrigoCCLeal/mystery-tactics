@@ -2,21 +2,79 @@
 
 [ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_ypj7p"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="2_rbgf5"]
-[ext_resource type="Resource" path="res://data/abilities/compound_eyes.tres" id="3_kkn37"]
-[ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="4_ogmch"]
+[ext_resource type="Resource" path="res://data/abilities/swarm.tres" id="3_kkn37"]
+[ext_resource type="Resource" path="res://data/abilities/sniper.tres" id="4_ogmch"]
 [ext_resource type="Texture2D" uid="uid://ceknksm1w1ox3" path="res://assets/sprites/Pokemon/Sprites/0015/Normal.png" id="5_ypj7p"]
 [ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="6_7ax3a"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="7_4vin8"]
 [ext_resource type="SpriteFrames" uid="uid://gjukymmtm5le" path="res://assets/sprites/Pokemon/Sprites/0015/frames.tres" id="8_t4hx8"]
+[ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="9_poison_sting"]
+[ext_resource type="Resource" path="res://data/attacks/string_shot.tres" id="10_string_shot"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="11_harden"]
+[ext_resource type="Resource" path="res://data/attacks/pin_missile.tres" id="12_pin_missile"]
+[ext_resource type="Resource" path="res://data/attacks/focus_energy.tres" id="13_focus_energy"]
+[ext_resource type="Resource" path="res://data/attacks/brutal_swing.tres" id="14_brutal_swing"]
+[ext_resource type="Resource" path="res://data/attacks/x_scissor.tres" id="15_x_scissor"]
+[ext_resource type="Resource" path="res://data/attacks/bug_buzz.tres" id="16_bug_buzz"]
+[ext_resource type="Resource" path="res://data/attacks/lunge.tres" id="17_lunge"]
+[ext_resource type="Resource" path="res://data/attacks/poison_jab.tres" id="18_poison_jab"]
 
-[sub_resource type="Resource" id="LearnsetEntry_0012_compound_eyes"]
+[sub_resource type="Resource" id="LearnsetEntry_0015_swarm"]
 script = ExtResource("2_rbgf5")
 action = ExtResource("3_kkn37")
 
-[sub_resource type="Resource" id="LearnsetEntry_0012_tinted_lens"]
+[sub_resource type="Resource" id="LearnsetEntry_0015_sniper"]
 script = ExtResource("2_rbgf5")
 action = ExtResource("4_ogmch")
 is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0015_poison_sting"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("9_poison_sting")
+
+[sub_resource type="Resource" id="LearnsetEntry_0015_string_shot"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("10_string_shot")
+
+[sub_resource type="Resource" id="LearnsetEntry_0015_harden"]
+script = ExtResource("2_rbgf5")
+level = 7
+action = ExtResource("11_harden")
+
+[sub_resource type="Resource" id="LearnsetEntry_0015_pin_missile"]
+script = ExtResource("2_rbgf5")
+level = 10
+action = ExtResource("12_pin_missile")
+
+[sub_resource type="Resource" id="LearnsetEntry_0015_focus_energy"]
+script = ExtResource("2_rbgf5")
+level = 15
+action = ExtResource("13_focus_energy")
+
+[sub_resource type="Resource" id="LearnsetEntry_0015_brutal_swing"]
+script = ExtResource("2_rbgf5")
+level = 20
+action = ExtResource("14_brutal_swing")
+
+[sub_resource type="Resource" id="LearnsetEntry_0015_x_scissor"]
+script = ExtResource("2_rbgf5")
+level = 25
+action = ExtResource("15_x_scissor")
+
+[sub_resource type="Resource" id="LearnsetEntry_0015_bug_buzz"]
+script = ExtResource("2_rbgf5")
+level = 27
+action = ExtResource("16_bug_buzz")
+
+[sub_resource type="Resource" id="LearnsetEntry_0015_lunge"]
+script = ExtResource("2_rbgf5")
+level = 33
+action = ExtResource("17_lunge")
+
+[sub_resource type="Resource" id="LearnsetEntry_0015_poison_jab"]
+script = ExtResource("2_rbgf5")
+level = 35
+action = ExtResource("18_poison_jab")
 
 [resource]
 script = ExtResource("6_7ax3a")
@@ -27,8 +85,8 @@ attack_hit_delay = 0.55
 special_hit_delay = 0.8
 types = Array[String](["Bug", "Poison"])
 grounded = false
-slots = Array[ExtResource("7_4vin8")]([ExtResource("3_kkn37")])
-learnset = Array[ExtResource("2_rbgf5")]([SubResource("LearnsetEntry_0012_compound_eyes"), SubResource("LearnsetEntry_0012_tinted_lens")])
+slots = Array[ExtResource("7_4vin8")]([ExtResource("9_poison_sting"), ExtResource("10_string_shot"), ExtResource("3_kkn37")])
+learnset = Array[ExtResource("2_rbgf5")]([SubResource("LearnsetEntry_0015_swarm"), SubResource("LearnsetEntry_0015_sniper"), SubResource("LearnsetEntry_0015_poison_sting"), SubResource("LearnsetEntry_0015_string_shot"), SubResource("LearnsetEntry_0015_harden"), SubResource("LearnsetEntry_0015_pin_missile"), SubResource("LearnsetEntry_0015_focus_energy"), SubResource("LearnsetEntry_0015_brutal_swing"), SubResource("LearnsetEntry_0015_x_scissor"), SubResource("LearnsetEntry_0015_bug_buzz"), SubResource("LearnsetEntry_0015_lunge"), SubResource("LearnsetEntry_0015_poison_jab")])
 hp_base = 65
 attack_base = 90
 defense_base = 40

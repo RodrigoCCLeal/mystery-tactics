@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Fighting"
+power = 150
+makes_contact = true
+tags = Array[String](["Punch"])
+is_charge_move = true
+action_name = "Focus Punch"
+max_uses = 20
+range = 1

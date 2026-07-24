@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="AttackData" format=3]
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://bqxtp816nxj23"]
 
-[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+[ext_resource type="Script" uid="uid://ds0uxvdng0s2r" path="res://scripts/attack_data.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
 element_type = "Normal"
 is_status = true
 accuracy = 0.75
-is_projectile = true
 inflicts_status = "Confused"
+is_projectile = true
 tags = Array[String](["Sound"])
 action_name = "Supersonic"
 max_uses = 20
