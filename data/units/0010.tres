@@ -9,6 +9,9 @@
 [ext_resource type="Resource" path="res://data/abilities/run_away.tres" id="6"]
 [ext_resource type="Resource" uid="uid://df5oxagkg6gq2" path="res://data/units/0011.tres" id="7"]
 [ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="evo_opt_script"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="8_tackle"]
+[ext_resource type="Resource" path="res://data/attacks/string_shot.tres" id="9_string_shot"]
+[ext_resource type="Resource" path="res://data/attacks/bug_bite.tres" id="10_bug_bite"]
 
 [sub_resource type="Resource" id="EvolutionOption_1"]
 script = ExtResource("evo_opt_script")
@@ -24,6 +27,19 @@ script = ExtResource("4")
 action = ExtResource("6")
 is_hidden_ability = true
 
+[sub_resource type="Resource" id="LearnsetEntry_0010_tackle"]
+script = ExtResource("4")
+action = ExtResource("8_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0010_string_shot"]
+script = ExtResource("4")
+action = ExtResource("9_string_shot")
+
+[sub_resource type="Resource" id="LearnsetEntry_0010_bug_bite"]
+script = ExtResource("4")
+level = 9
+action = ExtResource("10_bug_bite")
+
 [resource]
 script = ExtResource("1")
 unit_name = "Caterpie"
@@ -32,8 +48,8 @@ portrait = ExtResource("3")
 attack_hit_delay = 0.7
 special_hit_delay = 0.1
 types = Array[String](["Bug"])
-slots = Array[ExtResource("4_caterpie")]([ExtResource("5")])
-learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0010_shield_dust"), SubResource("LearnsetEntry_0010_run_away")])
+slots = Array[ExtResource("4_caterpie")]([ExtResource("8_tackle"), ExtResource("9_string_shot"), ExtResource("5")])
+learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0010_shield_dust"), SubResource("LearnsetEntry_0010_run_away"), SubResource("LearnsetEntry_0010_tackle"), SubResource("LearnsetEntry_0010_string_shot"), SubResource("LearnsetEntry_0010_bug_bite")])
 attack_base = 30
 defense_base = 35
 special_attack_base = 20

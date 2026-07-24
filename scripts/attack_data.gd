@@ -95,7 +95,24 @@ extends ActionData
 # duas são cell central ± o vetor perpendicular a dir (rotação de 90°:
 # Vector2i(-dir.y, dir.x)). Igual Cone/Line, atinge TODO MUNDO (aliado E
 # inimigo) nas 3 células — resolvido pela mesma execute_attack_burst.
-@export_enum("Single", "Cone", "Burst", "Line", "Wide") var area_shape: String = "Single"
+# "Team" = sem mira nenhuma, sem geometria de grid nenhuma — atinge TODO MUNDO
+# do MESMO lado de quem usa (aliados E quem usa, ver battle.gd::
+# execute_status_attack), não importa a posição/distância de ninguém. Pensado
+# pra efeitos de time inteiro tipo Tailwind ("All allies gain Tailwind
+# Status", pedido do usuário, SEM nenhum número de alcance dado — diferente de
+# Safeguard, que ganhou "burst range 3" explícito, por isso os dois usam
+# mecanismos diferentes: Safeguard é Burst+targets_allies, Tailwind é Team).
+# Só faz sentido em ataque de Status (is_status=true), igual Burst/Cone/Line.
+@export_enum("Single", "Cone", "Burst", "Line", "Wide", "Team") var area_shape: String = "Single"
+
+# true = a geometria Burst (ver area_shape acima) atinge ALIADOS (incluindo
+# quem usa) em vez de INIMIGOS — inverte o filtro padrão de execute_status_
+# attack's ramo Burst, que normalmente pula quem é do mesmo lado. Safeguard é
+# o primeiro caso: "All allies in burst range 3 gain Safeguard status"
+# (pedido do usuário) — quem usa TAMBÉM entra (é um efeito de proteção, faz
+# sentido o próprio usuário se beneficiar também, mesmo espírito de Tailwind/
+# area_shape=="Team"). false (padrão) = comportamento de sempre, mira inimigo.
+@export var targets_allies: bool = false
 
 # ---------- Mudança de Stat (ataques de Status) ----------
 # "" = sem mudança de stat. Vocabulário igual Unit.STAGE_STATS ("attack",
@@ -135,6 +152,18 @@ extends ActionData
 # Mind, Bulk Up, Dragon Dance, etc.) sem precisar de campo novo cada vez.
 @export var stat_change_stat_2: String = ""
 @export var stat_change_amount_2: int = 0
+
+# Terceiro stat mexido pelo MESMO golpe, além de stat_change_stat/_2 — ""
+# (padrão) = golpe de até 2 stats, como antes deste campo existir. Quiver
+# Dance é o primeiro caso: sobe Special Attack/Special Defense/Speed, os TRÊS
+# de uma vez, sempre em quem usa (stat_change_target=="Self") — não reaproveita
+# self_stat_boost_chance/_amount (Ancient Power) porque aquele mecanismo é
+# SEMPRE os 5 stats de STAGE_STATS com uma % de chance; este é um número FIXO
+# de stats ESCOLHIDOS, sempre garantido (sem chance nenhuma), igual stat_
+# change_stat/_2. Nunca precisa de "stat 4" — se um golpe futuro precisar de
+# mais que 3, essa lista vira Array em vez de crescer campo por campo.
+@export var stat_change_stat_3: String = ""
+@export var stat_change_amount_3: int = 0
 
 # true = stat_change_amount E stat_change_amount_2 DOBRAM de valor enquanto o
 # clima da batalha for Sunny/Harsh Sunlight (ver battle.gd::is_sun_weather) —
@@ -559,3 +588,31 @@ extends ActionData
 # Groundwork: nenhum código ainda lê isso, mesma ideia de area_of_effect
 # acima — existe só pra já vir documentado nos dados do ataque.
 @export var tags: Array[String] = []
+
+# ---------- Roubo de Berry (ex: Bug Bite) ----------
+# true = ao acertar um alvo que sobreviveu ao golpe, se esse alvo carregar
+# QUALQUER ItemData category=="Berry" equipado no loadout, quem ATACA rouba e
+# consome ela na hora (mesmo efeito que o alvo teria — hoje só existe cura via
+# ItemData.heal_amount, ver Oran Berry — mas o mecanismo lê qualquer efeito de
+# Berry que já exista, sem precisar de campo novo se uma Berry futura tiver
+# outro efeito além de cura). Se o alvo carregar MAIS de uma Berry ao mesmo
+# tempo, sorteia UMA aleatória entre elas (pedido do usuário, Bug Bite: "If
+# there are more than one berry, consume a random one"). false (padrão) = sem
+# esse efeito, golpe comum. Ver battle.gd::_try_bug_bite_steal_berry.
+@export var steals_target_berry: bool = false
+
+# ---------- Empurrão (ex: Whirlwind) ----------
+# true = este golpe de Status NÃO aplica stat/status/clima nenhum — em vez
+# disso, empurra cada unidade encontrada na área (ver battle.gd::
+# execute_whirlwind_push) `5 - peso_da_unidade` tiles na MESMA direção mirada
+# (pedido do usuário, Whirlwind: "Pushes all units in rock slide range (3
+# tiles range 1) a number of tiles equal to 5-target's weight"). Reaproveita
+# a geometria "Wide" de area_shape (mesma de Rock Slide) pra achar quem é
+# empurrado, mas SEM o filtro "só inimigo" que Cone/Burst/projétil usam em
+# execute_status_attack normalmente — Whirlwind empurra TODO MUNDO (aliado E
+# inimigo) na área, mesma regra de "sem isenção de fogo amigo" que toda área de
+# dano (Cone/Burst/Line/Wide) já segue. Se o empurrão esbarrar em parede/borda
+# ou outra unidade no meio do caminho, para ali e causa dano (ver comentário
+# grande de execute_whirlwind_push pras regras exatas de colisão). false
+# (padrão) = golpe de Status comum, sem empurrão nenhum.
+@export var push_mechanic: bool = false

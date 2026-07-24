@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Psychic"
+is_special = true
+power = 65
+is_projectile = true
+secondary_status = "Confused"
+secondary_status_chance = 0.1
+action_name = "Psybeam"
+max_uses = 20
+range = 3

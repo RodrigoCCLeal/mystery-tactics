@@ -132,3 +132,60 @@ extends ActionData
 # Habilidade disparar, não checar só quem ATACA. Mudkip/Marshtomp/Swampert é
 # o primeiro caso, Hidden Ability.
 @export var damp: bool = false
+
+# Shield Dust: pedido do usuário (2026-07-23, Caterpie) — "Immune to secondary
+# effects of opponent's attacks". Quando quem DEFENDE carrega isso, todo
+# secondary_status/secondary_status_2/secondary_stat_change de um golpe
+# INIMIGO simplesmente não aplica (dano normal continua batendo igual sempre —
+# só o efeito EXTRA que some). Ver battle.gd::has_shield_dust, checado bem no
+# topo de _try_apply_secondary_status/_try_apply_secondary_stat_change (mesmo
+# ponto único que os dois mecanismos já passam, então cobrir os dois ali cobre
+# qualquer golpe futuro que use qualquer um dos dois, sem precisar mexer em
+# cada golpe individualmente).
+@export var shield_dust: bool = false
+
+# Run Away: pedido do usuário (2026-07-23, Caterpie, Hidden) — "When damaged
+# with an attack, the user moves 1 tile away from the enemy that damaged it".
+# Diferente da série principal (só permite fugir de encontro selvagem), aqui
+# virou um efeito TÁTICO de verdade: sempre que quem carrega isso é atingido
+# por um ataque de DANO (não por tick de status/clima — mesma distinção que
+# Asleep só cura "ao ser atacada de verdade", ver comentário em execute_attack)
+# e sobrevive, anda 1 tile na direção OPOSTA a quem bateu, se a célula estiver
+# livre (sem parede/borda/outra unidade — senão simplesmente não se move,
+# sem erro). Ver battle.gd::has_run_away/_try_run_away, chamado logo depois de
+# defender.take_damage() nos dois caminhos de dano (execute_attack de alvo
+# único e execute_attack_burst).
+@export var run_away: bool = false
+
+# Compound Eyes: pedido do usuário (2026-07-23, Butterfree) — "Increases
+# accuracy of moves by x1.3". Multiplica a Accuracy de QUEM ATACA (não do
+# defensor) — mesmo x1.3 fixo de sempre, sem campo de multiplicador
+# configurável (mesmo espírito de FLASH_FIRE_MULTIPLIER ser uma constante de
+# regra, não um dado). Aproveitado dentro do MESMO cálculo que já existia pra
+# Focus Band/Blind (ver Unit.get_accuracy_multiplier) — Compound Eyes só soma
+# mais um fator ali, cobrindo golpe de dano E de Status ao mesmo tempo, já que
+# os dois já leem esse multiplicador (ver battle.gd::execute_attack/
+# execute_status_attack).
+@export var compound_eyes: bool = false
+
+# Tinted Lens: pedido do usuário (2026-07-23, Butterfree, Hidden) — "Doubles
+# the damage on not very effective moves used". Só entra em jogo quando a
+# efetividade de tipo do golpe (ver battle.gd::get_weather_adjusted_
+# effectiveness) é MENOR que 1.0 e MAIOR que 0.0 (ou seja, "não muito eficaz"
+# de verdade — imunidade total, x0, continua batendo 0 de dano mesmo com isso
+# equipado, dobrar zero ainda é zero). x2 fixo, mesmo padrão de Compound Eyes
+# acima. Ver battle.gd::has_tinted_lens/calculate_damage.
+@export var tinted_lens: bool = false
+
+# Shed Skin: pedido do usuário (2026-07-23, Metapod) — "at the end of each
+# turn, recovers from Poison, Paralysis, Freeze and Sleep. Heals from poison
+# before being damaged". A parte "antes de ser atingido" é o detalhe que
+# importa: diferente de uma cura comum (que rodaria DEPOIS do tick de dano de
+# Poisoned já ter acontecido), Shed Skin cura ESSAS QUATRO condições bem no
+# INÍCIO de apply_end_of_turn_status, antes até de calcular tick_damage — então
+# se a unidade estava Poisoned, ela já não está mais quando o dano seria
+# calculado, e simplesmente não tosse o dano daquele turno. SEMPRE (sem chance
+# nenhuma, diferente da série principal que usa 33%) — pedido do usuário não
+# mencionou chance nenhuma. Confused/Blind/Flinched/etc. NÃO são curadas (só
+# as 4 nomeadas). Ver battle.gd::has_shed_skin/apply_end_of_turn_status.
+@export var shed_skin: bool = false

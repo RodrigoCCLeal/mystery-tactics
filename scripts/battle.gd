@@ -1801,6 +1801,13 @@ func begin_current_turn() -> void:
 		# ganhar NENHUM ataque extra — 0 + 1 seria um bug, não um bônus.
 		if u.can_attack() and has_chlorophyll(u) and is_sun_weather():
 			u.attacks_remaining += 1
+		# Tailwind (ver Unit.STATUS_DURATIONS, pedido do usuário, Butterfree:
+		# "For 2 turns, gain 2x speed and extra action point") — mesmo padrão
+		# de Chlorophyll acima, só que checando a Status Condition da própria
+		# unidade em vez do clima da batalha. O 2x Speed já é lido à parte em
+		# Unit.get_effective_stat(), sem precisar de nada aqui.
+		if u.can_attack() and u.has_status("Tailwind"):
+			u.attacks_remaining += 1
 
 	# Golpe de carga pendente (ver Unit.charging_attack/AttackData.
 	# is_charge_move — Solar Beam) — "as soon as the unit has another action
@@ -2177,7 +2184,11 @@ func refresh_action_slots_hud() -> void:
 			label += "\n%d/%d" % [current.slot_uses[i], action.max_uses]
 
 		# Ataque só pode ser usado 1x por turno (ver Unit.attacks_remaining).
-		var attack_locked = action is AttackData and current.attacks_remaining <= 0
+		# Taunted (ver Unit.status_conditions/Rage Powder, pedido do usuário,
+		# 2026-07-23, Butterfree: "They gain Taunt status. For 3 turns can't
+		# use any Status moves") — trava só golpe is_status=true, ataque comum
+		# continua liberado normalmente.
+		var attack_locked = action is AttackData and (current.attacks_remaining <= 0 or (action.is_status and current.has_status("Taunted")))
 
 		button.disabled = out_of_uses or attack_locked
 		button.text = label
@@ -2951,6 +2962,14 @@ func calculate_damage(attacker: Node, defender: Node, attack: AttackData, is_cri
 	var damage = (level_factor * get_effective_power(attacker, attack, defender) * atk_stat / def_stat) / 50 + 2
 
 	var modifiers = calculate_damage_modifiers(attacker, defender, attack) * effectiveness
+	# Tinted Lens (ver AbilityData.tinted_lens, pedido do usuário, 2026-07-23,
+	# Butterfree Hidden: "Doubles the damage on not very effective moves
+	# used") — só quando a efetividade combinada é "não muito eficaz" de
+	# verdade (entre 0 exclusivo e 1.0 exclusivo). effectiveness == 0.0
+	# (imunidade total) fica de fora de propósito: dobrar 0 continua 0, não faz
+	# sentido gastar o bônus nesse caso.
+	if effectiveness > 0.0 and effectiveness < 1.0 and has_tinted_lens(attacker):
+		modifiers *= TINTED_LENS_MULTIPLIER
 	if is_critical:
 		modifiers *= CRITICAL_HIT_MULTIPLIER
 	damage = int(damage * modifiers)
@@ -3126,6 +3145,80 @@ func has_chlorophyll(u: Node) -> bool:
 		if action is AbilityData and action.chlorophyll:
 			return true
 	return false
+
+# true se `u` carrega uma Habilidade com shield_dust=true equipada (ver
+# AbilityData.shield_dust) — usado em _try_apply_secondary_status/
+# _try_apply_secondary_stat_change pra cancelar o efeito secundário de um
+# golpe INIMIGO quando `u` é quem DEFENDE. Mesmo padrão de has_sheer_force
+# acima, só que do lado de quem RECEBE o golpe, não de quem o usa.
+func has_shield_dust(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.shield_dust:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com run_away=true equipada (ver
+# AbilityData.run_away) — usado em _try_run_away, chamado depois que `u`
+# (quem DEFENDE) sobrevive a um golpe que causa dano.
+func has_run_away(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.run_away:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com compound_eyes=true equipada (ver
+# AbilityData.compound_eyes) — usado em Unit.get_accuracy_multiplier().
+func has_compound_eyes(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.compound_eyes:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com tinted_lens=true equipada (ver
+# AbilityData.tinted_lens) — usado em calculate_damage().
+func has_tinted_lens(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.tinted_lens:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com shed_skin=true equipada (ver
+# AbilityData.shed_skin) — usado em apply_end_of_turn_status().
+func has_shed_skin(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.shed_skin:
+			return true
+	return false
+
+# Run Away (ver AbilityData.run_away, pedido do usuário, 2026-07-23, Caterpie
+# Hidden: "When damaged with an attack, the user moves 1 tile away from the
+# enemy that damaged it") — chamado logo depois de defender.take_damage() nos
+# dois caminhos de dano (execute_attack de alvo único, execute_attack_burst).
+# `dir` = sinal do delta de `attacker` pra `defender` (mesma conta de sign()
+# já usada noutros lugares pra reconstruir direção 8-way, ver run_enemy_turn) —
+# empurra na direção OPOSTA, ou seja, continuando a reta que já vai de quem
+# atacou até quem defendeu, 1 tile a mais. Só se move se a célula de destino
+# estiver livre (sem parede/borda/outra unidade) — senão simplesmente não
+# acontece nada, sem mensagem de falha (mesmo "silencioso" de Shield Dust
+# acima). defender.hp_current <= 0 (morreu com esse golpe) sai de cara: não
+# faz sentido mover um cadáver.
+func _try_run_away(defender: Node, attacker: Node) -> void:
+	if defender.hp_current <= 0 or not has_run_away(defender):
+		return
+	var dir = Vector2i(sign(defender.grid_pos.x - attacker.grid_pos.x), sign(defender.grid_pos.y - attacker.grid_pos.y))
+	if dir == Vector2i.ZERO:
+		return
+	var target_cell = defender.grid_pos + dir
+	if is_wall_or_border(target_cell) or get_unit_at(target_cell) != null:
+		return
+	defender.move_to(target_cell)
+	log_message("%s ran away from the attack!" % defender.data.unit_name)
+
+# 1.3 fixo (ver AbilityData.compound_eyes) é aplicado direto em
+# Unit.get_accuracy_multiplier() (não aqui) — essa função já mora em unit.gd e
+# não tem acesso fácil às constantes deste arquivo, mesmo tratamento que Blind
+# (0.5) já recebe lá, hardcoded local em vez de importar uma constante daqui.
+const TINTED_LENS_MULTIPLIER = 2.0
 
 # Chamado no INÍCIO de execute_attack/execute_status_attack/
 # execute_attack_burst (cobre ataque comum, TM e Burst/Line, jogador e
@@ -3437,6 +3530,10 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# diferença.
 	var hp_lost = min(damage, defender.hp_current)
 	defender.take_damage(damage)
+	# Run Away (ver AbilityData.run_away/has_run_away/_try_run_away) — só se
+	# `defender` sobreviveu, sem depender de Sheer Force nem de mais nada
+	# (mecanismo independente dos efeitos secundários abaixo).
+	_try_run_away(defender, attacker)
 
 	# Consome a Status Condition "Charged" (ver Unit.status_conditions) SÓ
 	# AQUI — depois que o dano REAL desse golpe já saiu de calculate_damage()
@@ -3497,6 +3594,12 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 			_try_apply_secondary_status(defender, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture)
 			_try_apply_secondary_status(defender, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2)
 			_try_apply_secondary_stat_change(defender, attack)
+	# Bug Bite (ver AttackData.steals_target_berry/_try_bug_bite_steal_berry)
+	# — fora do bloco "if not has_sheer_force" de propósito: roubo de Berry não
+	# é um "efeito secundário" no sentido de attack_has_secondary_effect() (só
+	# olha secondary_status/_2), então Sheer Force não interfere nele.
+	if defender.hp_current > 0:
+		_try_bug_bite_steal_berry(attacker, defender, attack)
 
 	if defender.hp_current <= 0:
 		log_message("%s was defeated!" % defender.data.unit_name)
@@ -3767,6 +3870,9 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 		# 1000+ num alvo de 10 HP não devia gerar recoil de 1000).
 		total_damage_dealt += min(damage, target.hp_current)
 		target.take_damage(damage)
+		# Run Away — mesmo mecanismo do ramo de alvo único em execute_attack
+		# (ver comentário grande lá), aplicado por ALVO dentro da rajada.
+		_try_run_away(target, attacker)
 		if attack.element_type == "Fire" and attacker.has_status("Charged") and has_flash_fire(attacker):
 			attacker.cure_status_condition("Charged")
 		if is_critical:
@@ -3784,6 +3890,9 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 			_try_apply_secondary_status(target, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture)
 			_try_apply_secondary_status(target, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2)
 			_try_apply_secondary_stat_change(target, attack)
+		# Bug Bite — ver comentário grande no ramo de alvo único (execute_attack).
+		if target.hp_current > 0:
+			_try_bug_bite_steal_berry(attacker, target, attack)
 
 		if target.hp_current <= 0:
 			log_message("%s was defeated!" % target.data.unit_name)
@@ -3843,6 +3952,14 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 func _try_apply_secondary_status(defender: Node, status: String, chance: float, texture: Texture2D) -> void:
 	if status == "" or randf() >= chance:
 		return
+	# Shield Dust (ver AbilityData.shield_dust, pedido do usuário, 2026-07-23,
+	# Caterpie: "Immune to secondary effects of opponent's attacks") — cancela
+	# o efeito secundário por completo pra quem DEFENDE, sem cancelar o dano
+	# principal (já aplicado antes de chegar aqui, ver execute_attack/
+	# execute_attack_burst). Silencioso, sem mensagem própria — mesmo
+	# tratamento de "não pegou" que Powder->Grass/Sunny->Frozen já usam acima.
+	if has_shield_dust(defender):
+		return
 	# Sunny/Harsh Sunlight: ninguém pega Frozen (regra oficial desde a Gen 6
 	# — pedido do usuário: "Units can't be frozen"). Silencioso, sem
 	# mensagem própria — mesmo tratamento de qualquer outra tentativa de
@@ -3866,6 +3983,10 @@ func _try_apply_secondary_status(defender: Node, status: String, chance: float, 
 func _try_apply_secondary_stat_change(defender: Node, attack: AttackData) -> void:
 	if attack.secondary_stat_change_stat == "" or randf() >= attack.secondary_stat_change_chance:
 		return
+	# Shield Dust — ver comentário grande em _try_apply_secondary_status acima,
+	# mesma regra, mesmo mecanismo de defesa.
+	if has_shield_dust(defender):
+		return
 	apply_stat_change(defender, attack.secondary_stat_change_stat, attack.secondary_stat_change_amount)
 
 # Efeito secundário de AttackData.self_stat_boost_chance/_amount (ex: Ancient
@@ -3881,6 +4002,38 @@ func _try_apply_self_stat_boost(attacker: Node, attack: AttackData) -> void:
 	for stat in UnitScript.STAGE_STATS:
 		apply_stat_change(attacker, stat, attack.self_stat_boost_amount)
 
+# Bug Bite (ver AttackData.steals_target_berry, pedido do usuário, 2026-07-23,
+# Caterpie: "If the target has a Berry, consume the berry and gain its
+# effects. If there are more than one berry, consume a random one") — só
+# chamado se `defender` sobreviveu ao golpe (mesmo critério de secondary
+# effects). Procura TODOS os slots category=="Berry" no loadout do defensor,
+# sorteia um se houver mais de um, e aplica o efeito em quem ATACA (não no
+# defensor, que é quem perde a Berry) — hoje só existe efeito de cura (ver
+# ItemData.heal_amount, Oran Berry), mas o mecanismo já lê genericamente
+# "o que essa Berry faz", então uma Berry futura com outro efeito funcionaria
+# sem precisar mexer aqui de novo. Remove a Berry do slot do defensor (mesmo
+# padrão de Unit._check_berry_auto_use — slots[i]=null, slot_uses[i]=0).
+func _try_bug_bite_steal_berry(attacker: Node, defender: Node, attack: AttackData) -> void:
+	if not attack.steals_target_berry or defender.data == null:
+		return
+	var berry_indices: Array[int] = []
+	for i in defender.data.slots.size():
+		var item = defender.data.slots[i]
+		if item is ItemData and item.category == "Berry":
+			berry_indices.append(i)
+	if berry_indices.is_empty():
+		return
+	var chosen_index: int = berry_indices[randi() % berry_indices.size()]
+	var berry: ItemData = defender.data.slots[chosen_index]
+	defender.data.slots[chosen_index] = null
+	if chosen_index < defender.slot_uses.size():
+		defender.slot_uses[chosen_index] = 0
+	if berry.heal_amount > 0:
+		attacker.hp_current = min(attacker.hp_current + berry.heal_amount, attacker.hp_max)
+		attacker.update_health_bar()
+		attacker.sync_to_data()
+	log_message("%s stole and ate %s's %s!" % [attacker.data.unit_name, defender.data.unit_name, berry.action_name])
+
 # Ataque de STATUS (ver AttackData.is_status): NÃO causa dano nenhum — só
 # aplica stat_change_stat/_amount em cada INIMIGO encontrado dentro da área
 # (Single = só a célula mirada; Cone = o leque inteiro, ver get_cone_cells).
@@ -3894,6 +4047,29 @@ func _try_apply_self_stat_boost(attacker: Node, attack: AttackData) -> void:
 # `dir` já vem pronto de quem chama (handle_targeting_input calcula do clique
 # do jogador; run_enemy_turn, da posição do aliado escolhido pela IA) — mesma
 # convenção 8-way de sign(delta) usada no resto do jogo.
+# Frase de efeito por status auto-aplicado (ver AttackData.inflicts_status_on_
+# self) — pedido do usuário (2026-07-23) especificamente pra Aqua Ring, que
+# antes reusava a frase do Protect ("protected itself") sem fazer sentido
+# nenhum pra um golpe de cura, não de imunidade. Chave ausente (qualquer
+# self-status futuro sem entrada própria aqui) cai no fallback genérico do
+# Protect em vez de quebrar.
+const SELF_STATUS_EFFECT_MESSAGES := {
+	"Protected": "%s protected itself!",
+	"Aqua Ring": "%s is enveloped by a veil of water!",
+}
+
+# Mesma ideia de SELF_STATUS_EFFECT_MESSAGES acima, só que pro caso de um
+# status aplicado em MÚLTIPLOS alvos de uma vez via inflicts_status (ver o
+# ramo final de execute_status_attack) — "%s was %s!" (o padrão de sempre, ex:
+# "Caterpie was Poisoned!") lê mal pra status com nome que não é adjetivo.
+# Entradas com só 1 "%s" usam só o nome da unidade; com 2, nome + status (ver
+# ponto de uso). Safeguarded/Tailwind/Taunted são os primeiros casos.
+const GROUP_STATUS_EFFECT_MESSAGES := {
+	"Safeguarded": "%s is protected by the Safeguard!",
+	"Tailwind": "%s got a burst of speed from the Tailwind!",
+	"Taunted": "%s fell for the taunt!",
+}
+
 func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, slot_index: int) -> void:
 	attacker.face_towards(attacker.grid_pos + dir)
 	# SEMPRE a animação "especial" (shoot_<dir>, ou charge_<dir> se a espécie
@@ -3941,8 +4117,31 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 	# caminhos consistentes caso um dia algum use.
 	var final_accuracy = attack.accuracy * attacker.get_accuracy_multiplier()
 	if not attack.never_misses and final_accuracy < 1.0 and randf() >= final_accuracy:
-		log_message("%s's attack missed!" % attacker.data.unit_name)
+		# Pedido do usuário (2026-07-23): "On self cast status move fail,
+		# message should be 'But it failed!'" — golpe auto-mirado (Protect,
+		# Aqua Ring, ver is_self_target_status) não "erra" um alvo, ele só não
+		# consegue se aplicar, então a frase de falha certa é a mesma usada em
+		# qualquer outro "não fez nada" (HP cheio, já Protected, etc.), não
+		# "attack missed" (que soa como um golpe indo pro alvo errado — só faz
+		# sentido pra golpe de Status mirado em INIMIGO, ex: Growl, Poison
+		# Powder).
+		if is_self_target_status(attack):
+			log_message("But it failed!")
+		else:
+			log_message("%s's attack missed!" % attacker.data.unit_name)
 		attacker.consecutive_attack_uses = 0
+		refresh_unit_summary_hud()
+		check_auto_end_turn()
+		return
+
+	# Whirlwind (ver AttackData.push_mechanic/execute_whirlwind_push) — geometria
+	# e efeito TOTALMENTE diferentes do resto desta função (empurra em vez de
+	# aplicar stat/status/clima), então sai cedo daqui, ANTES de montar
+	# `targets` (que nem faz sentido pra este golpe — a área de quem é
+	# empurrado é resolvida dentro da própria execute_whirlwind_push, incluindo
+	# aliados, que os ramos abaixo excluem de propósito).
+	if attack.push_mechanic:
+		await execute_whirlwind_push(attacker, dir)
 		refresh_unit_summary_hud()
 		check_auto_end_turn()
 		return
@@ -3977,12 +4176,33 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		# igual Cone/is_projectile/Single logo abaixo. area_min_range (ver
 		# AttackData) continua funcionando igual, viraria anel se algum
 		# golpe de Status precisar no futuro, embora nenhum hoje use isso.
+		#
+		# targets_allies (ver AttackData — Safeguard é o primeiro caso: "All
+		# allies in burst range 3 gain Safeguard status") INVERTE o filtro:
+		# em vez de pular quem é do MESMO lado, pula quem é do lado OPOSTO —
+		# e, diferente do ramo de inimigo, quem USA o golpe também entra (é
+		# um efeito de proteção do próprio time, faz sentido incluir quem
+		# lançou também).
 		for u in player_units + enemy_units:
-			if u == attacker or u.is_enemy == attacker.is_enemy:
-				continue
+			if attack.targets_allies:
+				if u.is_enemy != attacker.is_enemy:
+					continue
+			else:
+				if u == attacker or u.is_enemy == attacker.is_enemy:
+					continue
 			var delta = u.grid_pos - attacker.grid_pos
 			var dist = max(abs(delta.x), abs(delta.y))
 			if dist <= attack.range and dist >= attack.area_min_range:
+				targets.append(u)
+	elif attack.area_shape == "Team":
+		# Tailwind é o primeiro caso: "All allies gain Tailwind Status" — SEM
+		# número de alcance nenhum dado (diferente de Safeguard, que ganhou
+		# "burst range 3" explícito), lido como "o time inteiro, não importa a
+		# posição" (ver comentário grande de area_shape=="Team" em
+		# attack_data.gd). Inclui quem usa, mesmo espírito de targets_allies
+		# acima.
+		for u in player_units + enemy_units:
+			if u.is_enemy == attacker.is_enemy:
 				targets.append(u)
 	elif attack.is_projectile:
 		# Status "de projétil" (ex: Smokescreen: "single target, 2 range,
@@ -4053,6 +4273,12 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		# golpe hoje que precise de alvos diferentes pros dois.
 		if attack.stat_change_stat_2 != "":
 			apply_stat_change(attacker, attack.stat_change_stat_2, amount_2)
+		# stat_change_stat_3 (ver AttackData — Quiver Dance é o primeiro caso:
+		# Special Attack/Special Defense/Speed, os três de uma vez) — sem
+		# stat_change_doubles_in_sun aplicado a ele (nenhum golpe hoje precisa),
+		# mas nada impede um futuro golpe de setar os três campos se precisar.
+		if attack.stat_change_stat_3 != "":
+			apply_stat_change(attacker, attack.stat_change_stat_3, attack.stat_change_amount_3)
 	# inflicts_status_on_self (ver AttackData — Protect é o primeiro caso):
 	# aplica AttackData.inflicts_status (reaproveitado — mesmo campo/textura
 	# que os golpes de status "pra inimigo" já usam, só que aqui o alvo é
@@ -4065,7 +4291,15 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 	# guarda "já com HP cheio").
 	elif attack.inflicts_status_on_self and attack.inflicts_status != "":
 		if attacker.apply_status_condition(attack.inflicts_status):
-			log_message("%s protected itself!" % attacker.data.unit_name)
+			# Mensagem de EFEITO varia por condição (pedido do usuário, 2026-07-23:
+			# "Aqua ring message is wrong. It should say 'UNITNAME used Aqua Ring.
+			# UNITNAME is enveloped by a veil of water'") — o "X used Y." já sai
+			# sozinho lá em cima (início da função), então só falta a frase de
+			# efeito por baixo, uma por status (SELF_STATUS_EFFECT_MESSAGES),
+			# com "%s protegeu a si mesmo" como fallback genérico pra qualquer
+			# futuro self-status que não tenha entrada própria aqui.
+			var effect_msg: String = SELF_STATUS_EFFECT_MESSAGES.get(attack.inflicts_status, "%s protected itself!")
+			log_message(effect_msg % attacker.data.unit_name)
 		else:
 			log_message("But it failed!")
 	elif attack.sets_weather != "":
@@ -4112,12 +4346,98 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		# precisa saber quem curar no tick de fim de turno (ver
 		# get_seeded_tick_damage/_apply_leech_seed_heal mais abaixo).
 		if attack.inflicts_status != "" and target.apply_status_condition(attack.inflicts_status, attacker):
-			log_message("%s was %s!" % [target.data.unit_name, attack.inflicts_status])
+			# GROUP_STATUS_EFFECT_MESSAGES (ver constante logo abaixo desta
+			# função): "%s was %s!" lê estranho pra status que não são
+			# adjetivos (ex: "Caterpie was Safeguard!"/"Caterpie was
+			# Tailwind!") — mesmo espírito de SELF_STATUS_EFFECT_MESSAGES lá em
+			# cima (Aqua Ring), só que pro caso de MÚLTIPLOS alvos (Safeguard/
+			# Tailwind/Taunt), não auto-aplicado.
+			var effect_msg: String = GROUP_STATUS_EFFECT_MESSAGES.get(attack.inflicts_status, "%s was %s!")
+			if effect_msg.count("%s") == 2:
+				log_message(effect_msg % [target.data.unit_name, attack.inflicts_status])
+			else:
+				log_message(effect_msg % target.data.unit_name)
 			if attack.inflicts_status_texture != null:
 				play_impact_effect(attack.inflicts_status_texture, target.position)
 
 	refresh_unit_summary_hud()
 	check_auto_end_turn()
+
+# Whirlwind (ver AttackData.push_mechanic, pedido do usuário, 2026-07-23,
+# Butterfree: "Pushes all units in rock slide range (3 tiles range 1) a
+# number of tiles equal to 5-target's weight. If they would go through a
+# wall, they stop and take 5*their weight as damage. If unit A would go
+# through unit B, unit A stops before unit B and takes B's weight * 5, while B
+# takes A's weight * 5"). Reaproveita get_wide_cells (mesma geometria de Rock
+# Slide) pra achar quem é empurrado, SEM o filtro "só inimigo" — atinge TODO
+# MUNDO (aliado e inimigo) na área, mesma regra de "sem isenção de fogo amigo"
+# de qualquer área de dano (Cone/Burst/Line/Wide).
+#
+# Cada unidade atingida empurra na MESMA direção `dir` (continuação da mira,
+# afastando de quem usou) por `5 - peso` tiles, andando célula por célula:
+# - Esbarrou em parede/borda: para ali, toma 5*PRÓPRIO peso de dano.
+# - Esbarrou em outra unidade: para ANTES dela (não entra na mesma célula),
+#   as DUAS tomam dano (quem foi empurrada toma 5*peso de quem já estava lá,
+#   quem já estava lá toma 5*peso de quem foi empurrada) — nenhuma das duas
+#   se move além disso, mesmo que sobrasse "distância" de empurrão.
+# - Terminou o empurrão inteiro sem esbarrar em nada: só reposiciona, sem
+#   dano nenhum.
+# As 3 células de get_wide_cells ficam lado a lado (perpendiculares à direção
+# mirada), nunca na mesma "linha" de empurrão umas das outras — por isso não
+# precisa se preocupar com a ordem de processamento entre elas (uma não
+# atravessa o caminho da outra).
+func execute_whirlwind_push(attacker: Node, dir: Vector2i) -> void:
+	var hit_units: Array[Node] = []
+	for cell in get_wide_cells(attacker.grid_pos, dir, 1):
+		if cell.x < 0 or cell.x >= MAP_WIDTH or cell.y < 0 or cell.y >= MAP_HEIGHT:
+			continue
+		var u = get_unit_at(cell)
+		if u != null and not hit_units.has(u):
+			hit_units.append(u)
+
+	for u in hit_units:
+		var push_distance = 5 - u.weight
+		var path: Array[Vector2i] = []
+		var current_cell = u.grid_pos
+		var stopped_by_wall = false
+		var collided_unit: Node = null
+		for step in push_distance:
+			var next_cell = current_cell + dir
+			if is_wall_or_border(next_cell):
+				stopped_by_wall = true
+				break
+			var occupant = get_unit_at(next_cell)
+			if occupant != null and occupant != u:
+				collided_unit = occupant
+				break
+			current_cell = next_cell
+			path.append(current_cell)
+
+		if not path.is_empty():
+			u.move_along_path(path)
+
+		if stopped_by_wall:
+			var wall_damage = max(1, u.weight * 5)
+			u.take_damage(wall_damage)
+			log_message("%s slammed into a wall!" % u.data.unit_name)
+			if u.hp_current <= 0:
+				remove_defeated_unit(u)
+				_apply_challenge_permadeath(u)
+		elif collided_unit != null:
+			var damage_to_u = max(1, collided_unit.weight * 5)
+			var damage_to_collided = max(1, u.weight * 5)
+			u.take_damage(damage_to_u)
+			collided_unit.take_damage(damage_to_collided)
+			log_message("%s collided with %s!" % [u.data.unit_name, collided_unit.data.unit_name])
+			if u.hp_current <= 0:
+				remove_defeated_unit(u)
+				_apply_challenge_permadeath(u)
+			if collided_unit.hp_current <= 0:
+				remove_defeated_unit(collided_unit)
+				_apply_challenge_permadeath(collided_unit)
+
+	if enemy_units.is_empty() or player_units.is_empty():
+		await end_battle(attacker, enemy_units.is_empty())
 
 # Aplica UMA mudança de stat_stage em `target` (ver Unit.modify_stat_stage) e
 # toca o efeito visual correspondente (ver play_stat_change_effect), exceto
@@ -4927,6 +5247,20 @@ func _apply_leech_seed_heal(seeded_unit: Node, amount: int) -> void:
 # Devolve true se `u` morreu aqui (ver o "if died" em _on_end_turn_pressed,
 # que depende disso pra não avançar o índice duas vezes).
 func apply_end_of_turn_status(u: Node) -> bool:
+	# Shed Skin (ver AbilityData.shed_skin, pedido do usuário, 2026-07-23,
+	# Metapod: "at the end of each turn, recovers from Poison, Paralysis,
+	# Freeze and Sleep. Heals from poison before being damaged") — roda ANTES
+	# de calcular tick_damage de propósito: se `u` estava Poisoned, ela já não
+	# está mais quando get_status_tick_damage() (linha logo abaixo) rodar,
+	# então o dano de veneno deste turno nem chega a existir. SEMPRE (sem
+	# chance nenhuma, diferente da série principal que usa 33% — pedido do
+	# usuário não citou chance). Confused/Blind/Flinched/Rooted/etc. ficam de
+	# fora — só as 4 condições nomeadas.
+	if has_shed_skin(u):
+		for status_name in ["Poisoned", "Paralyzed", "Frozen", "Asleep"]:
+			if u.has_status(status_name):
+				u.cure_status_condition(status_name)
+				log_message("%s's Shed Skin cured its %s!" % [u.data.unit_name, status_name])
 	var tick_damage = u.get_status_tick_damage()
 	var weather_tick_damage = get_weather_tick_damage(u)
 	var seed_damage = get_seeded_tick_damage(u)
@@ -5346,7 +5680,10 @@ func _plan_easy_action(u: Node) -> Dictionary:
 		var usable_slots: Array[int] = []
 		for slot_index in u.data.slots.size():
 			var action = u.data.slots[slot_index]
-			if action is AttackData and (action.max_uses <= 0 or slot_index >= u.slot_uses.size() or u.slot_uses[slot_index] > 0):
+			# Taunted (ver comentário grande em refresh_action_slots_hud) — a
+			# IA "Easy" também não pode sortear um golpe de Status enquanto
+			# travada.
+			if action is AttackData and not (action.is_status and u.has_status("Taunted")) and (action.max_uses <= 0 or slot_index >= u.slot_uses.size() or u.slot_uses[slot_index] > 0):
 				usable_slots.append(slot_index)
 
 		if not usable_slots.is_empty():
@@ -5437,6 +5774,10 @@ func _plan_medium_action(u: Node) -> Dictionary:
 # nenhum usável agora — quem chama (_plan_medium_action/_plan_hard_action)
 # cai de volta pra busca de maior dano normal nesse caso.
 func _pick_medium_status_action(u: Node, allies: Array, candidate_cells: Array[Vector2i]) -> Dictionary:
+	# Taunted — nem tenta escolher um golpe de Status enquanto travada (mesma
+	# regra do jogador, ver refresh_action_slots_hud).
+	if u.has_status("Taunted"):
+		return {}
 	var options: Array[Dictionary] = []
 	for slot_index in u.data.slots.size():
 		var action = u.data.slots[slot_index]

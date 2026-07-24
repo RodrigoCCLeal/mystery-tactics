@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://data/abilities/shed_skin.tres" id="5"]
 [ext_resource type="Resource" uid="uid://thcxikwrtjup" path="res://data/units/0012.tres" id="6"]
 [ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="evo_opt_script"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="7_harden"]
 
 [sub_resource type="Resource" id="EvolutionOption_1"]
 script = ExtResource("evo_opt_script")
@@ -18,6 +19,10 @@ min_level = 10
 script = ExtResource("4")
 action = ExtResource("5")
 
+[sub_resource type="Resource" id="LearnsetEntry_0011_harden"]
+script = ExtResource("4")
+action = ExtResource("7_harden")
+
 [resource]
 script = ExtResource("1")
 unit_name = "Metapod"
@@ -26,8 +31,8 @@ portrait = ExtResource("3")
 attack_hit_delay = 0.35
 special_hit_delay = 0.5
 types = Array[String](["Bug"])
-slots = Array[ExtResource("4_metapod")]([ExtResource("5")])
-learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0011_shed_skin")])
+slots = Array[ExtResource("4_metapod")]([ExtResource("7_harden"), ExtResource("5")])
+learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0011_shed_skin"), SubResource("LearnsetEntry_0011_harden")])
 hp_base = 50
 attack_base = 20
 defense_base = 55

@@ -8,6 +8,24 @@
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="4_butterfree"]
 [ext_resource type="Resource" path="res://data/abilities/compound_eyes.tres" id="5"]
 [ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="6"]
+[ext_resource type="Resource" path="res://data/attacks/bug_bite.tres" id="7_bug_bite"]
+[ext_resource type="Resource" path="res://data/attacks/gust.tres" id="8_gust"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="9_harden"]
+[ext_resource type="Resource" path="res://data/attacks/string_shot.tres" id="10_string_shot"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="11_tackle"]
+[ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="12_supersonic"]
+[ext_resource type="Resource" uid="uid://bax2qsu5q12rb" path="res://data/attacks/confusion.tres" id="13_confusion"]
+[ext_resource type="Resource" uid="uid://cpxtdp5ofau0o" path="res://data/attacks/poison_powder.tres" id="14_poison_powder"]
+[ext_resource type="Resource" uid="uid://bn5dp47yjv3v8" path="res://data/attacks/sleep_powder.tres" id="15_sleep_powder"]
+[ext_resource type="Resource" path="res://data/attacks/stun_spore.tres" id="16_stun_spore"]
+[ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="17_psybeam"]
+[ext_resource type="Resource" path="res://data/attacks/whirlwind.tres" id="18_whirlwind"]
+[ext_resource type="Resource" path="res://data/attacks/air_slash.tres" id="19_air_slash"]
+[ext_resource type="Resource" path="res://data/attacks/safeguard.tres" id="20_safeguard"]
+[ext_resource type="Resource" path="res://data/attacks/bug_buzz.tres" id="21_bug_buzz"]
+[ext_resource type="Resource" path="res://data/attacks/tailwind.tres" id="22_tailwind"]
+[ext_resource type="Resource" path="res://data/attacks/rage_powder.tres" id="23_rage_powder"]
+[ext_resource type="Resource" path="res://data/attacks/quiver_dance.tres" id="24_quiver_dance"]
 
 [sub_resource type="Resource" id="LearnsetEntry_0012_compound_eyes"]
 script = ExtResource("4")
@@ -18,6 +36,91 @@ script = ExtResource("4")
 action = ExtResource("6")
 is_hidden_ability = true
 
+[sub_resource type="Resource" id="LearnsetEntry_0012_bug_bite"]
+script = ExtResource("4")
+action = ExtResource("7_bug_bite")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_gust"]
+script = ExtResource("4")
+action = ExtResource("8_gust")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_harden"]
+script = ExtResource("4")
+action = ExtResource("9_harden")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_string_shot"]
+script = ExtResource("4")
+action = ExtResource("10_string_shot")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_tackle"]
+script = ExtResource("4")
+action = ExtResource("11_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_supersonic"]
+script = ExtResource("4")
+level = 4
+action = ExtResource("12_supersonic")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_confusion"]
+script = ExtResource("4")
+level = 8
+action = ExtResource("13_confusion")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_poison_powder"]
+script = ExtResource("4")
+level = 12
+action = ExtResource("14_poison_powder")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_sleep_powder"]
+script = ExtResource("4")
+level = 12
+action = ExtResource("15_sleep_powder")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_stun_spore"]
+script = ExtResource("4")
+level = 12
+action = ExtResource("16_stun_spore")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_psybeam"]
+script = ExtResource("4")
+level = 16
+action = ExtResource("17_psybeam")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_whirlwind"]
+script = ExtResource("4")
+level = 20
+action = ExtResource("18_whirlwind")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_air_slash"]
+script = ExtResource("4")
+level = 24
+action = ExtResource("19_air_slash")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_safeguard"]
+script = ExtResource("4")
+level = 28
+action = ExtResource("20_safeguard")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_bug_buzz"]
+script = ExtResource("4")
+level = 32
+action = ExtResource("21_bug_buzz")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_tailwind"]
+script = ExtResource("4")
+level = 36
+action = ExtResource("22_tailwind")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_rage_powder"]
+script = ExtResource("4")
+level = 40
+action = ExtResource("23_rage_powder")
+
+[sub_resource type="Resource" id="LearnsetEntry_0012_quiver_dance"]
+script = ExtResource("4")
+level = 44
+action = ExtResource("24_quiver_dance")
+
 [resource]
 script = ExtResource("1")
 unit_name = "Butterfree"
@@ -26,8 +129,8 @@ portrait = ExtResource("3")
 attack_hit_delay = 0.55
 special_hit_delay = 0.8
 types = Array[String](["Bug", "Flying"])
-slots = Array[ExtResource("4_butterfree")]([ExtResource("5")])
-learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0012_compound_eyes"), SubResource("LearnsetEntry_0012_tinted_lens")])
+slots = Array[ExtResource("4_butterfree")]([ExtResource("7_bug_bite"), ExtResource("8_gust"), ExtResource("5")])
+learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0012_compound_eyes"), SubResource("LearnsetEntry_0012_tinted_lens"), SubResource("LearnsetEntry_0012_bug_bite"), SubResource("LearnsetEntry_0012_gust"), SubResource("LearnsetEntry_0012_harden"), SubResource("LearnsetEntry_0012_string_shot"), SubResource("LearnsetEntry_0012_tackle"), SubResource("LearnsetEntry_0012_supersonic"), SubResource("LearnsetEntry_0012_confusion"), SubResource("LearnsetEntry_0012_poison_powder"), SubResource("LearnsetEntry_0012_sleep_powder"), SubResource("LearnsetEntry_0012_stun_spore"), SubResource("LearnsetEntry_0012_psybeam"), SubResource("LearnsetEntry_0012_whirlwind"), SubResource("LearnsetEntry_0012_air_slash"), SubResource("LearnsetEntry_0012_safeguard"), SubResource("LearnsetEntry_0012_bug_buzz"), SubResource("LearnsetEntry_0012_tailwind"), SubResource("LearnsetEntry_0012_rage_powder"), SubResource("LearnsetEntry_0012_quiver_dance")])
 hp_base = 60
 defense_base = 50
 special_attack_base = 90

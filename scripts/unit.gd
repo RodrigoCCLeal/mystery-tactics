@@ -182,7 +182,33 @@ const STATUS_DURATIONS := {
 	# cuida das condições acima, sem tratamento especial nenhum — só o dano
 	# por turno que precisou de uma função própria.
 	"Rooted": 2,
+	# Safeguarded (Safeguard, Butterfree) — pedido do usuário não deu número
+	# nenhum de turnos (diferente de Tailwind, que ganhou "2 turns" explícito
+	# na mesma leva de golpes); perguntado depois, resposta: 3 turnos.
+	"Safeguarded": 3,
+	# Tailwind (Butterfree) — pedido do usuário: "For 2 turns, gain 2x speed
+	# and extra action point". O 2x Speed mora em get_effective_stat() (ver
+	# abaixo) e o Action Point extra em battle.gd::begin_current_turn (mesmo
+	# padrão de Chlorophyll, ver has_chlorophyll lá).
+	"Tailwind": 2,
+	# Taunted (Rage Powder, Butterfree) — pedido do usuário: "For 3 turns
+	# can't use any Status moves". O bloqueio em si mora em battle.gd (ver
+	# refresh_action_slots_hud/_plan_easy_action/_pick_medium_status_action),
+	# não aqui — esta condição não entra em MOVEMENT_BLOCKING_STATUS/
+	# ATTACK_BLOCKING_STATUS de propósito, ela só trava a ESCOLHA de golpes de
+	# Status, nunca movimento nem ataque comum.
+	"Taunted": 3,
 }
+
+# Quais Status Conditions ficam BLOQUEADAS enquanto "Safeguarded" está ativo —
+# pedido do usuário, Safeguard: "While safeguarded, can't be Paralyzed,
+# Poisoned, Frozen, Burned or put to Sleep." Note que Confused/Blind/Flinched/
+# Rooted/etc. NÃO entram aqui — só estas 5, exatamente como pedido. Checado
+# dentro de apply_status_condition() logo abaixo, mesmo ponto único que já
+# recusa por "já tem essa condição"/imunidade de tipo — assim qualquer golpe
+# futuro que tente aplicar uma dessas 5 numa unidade Safeguarded já recusa
+# sozinho, sem precisar checar isso em cada golpe individualmente.
+const SAFEGUARD_BLOCKED_STATUSES = ["Paralyzed", "Poisoned", "Frozen", "Burned", "Asleep"]
 
 # Quais condições bloqueiam o quê — reescrito pro pedido do usuário
 # (2026-07-22): Frozen agora trava os DOIS (movimento e ataque — antes só
@@ -715,6 +741,12 @@ func get_accuracy_multiplier() -> float:
 	for action in data.slots:
 		if action is ItemData:
 			multiplier *= action.accuracy_multiplier
+		# Compound Eyes (ver AbilityData.compound_eyes, pedido do usuário,
+		# 2026-07-23, Butterfree: "Increases accuracy of moves by x1.3") — 1.3
+		# fixo, mesmo espírito do x0.5 de Blind logo abaixo (hardcoded aqui, não
+		# importado de battle.gd — ver comentário lá em has_compound_eyes).
+		elif action is AbilityData and action.compound_eyes:
+			multiplier *= 1.3
 	if status_conditions.has("Blind"):
 		multiplier *= 0.5
 	return multiplier
@@ -756,6 +788,14 @@ func get_effective_stat(stat: String) -> int:
 	var value: int = _effective_stat_with_stage(stat, stat_stages.get(stat, 0))
 	if stat == "speed" and status_conditions.has("Paralyzed"):
 		value = maxi(1, int(value / 2.0))
+	# Tailwind (ver STATUS_DURATIONS/battle.gd::begin_current_turn, pedido do
+	# usuário: "For 2 turns, gain 2x speed and extra action point") — dobra
+	# DEPOIS do corte de Paralyzed, mesma ordem "estágio, depois Paralyzed"
+	# já estabelecida acima (as duas condições coexistindo ao mesmo tempo é
+	# um caso raro, mas fica bem definido: paralisado corta a metade, Tailwind
+	# depois dobra o resultado já cortado).
+	if stat == "speed" and status_conditions.has("Tailwind"):
+		value *= 2
 	return value
 
 # ---------- Stat Stages: versões pra Acerto Crítico ----------
@@ -812,6 +852,10 @@ func apply_status_condition(new_status: String, source: Node = null) -> bool:
 	if status_conditions.has(new_status):
 		return false
 	if is_immune_to_status(new_status):
+		return false
+	# Safeguarded (ver SAFEGUARD_BLOCKED_STATUSES/STATUS_DURATIONS acima) —
+	# recusa silenciosamente, mesmo tratamento das duas checagens acima.
+	if status_conditions.has("Safeguarded") and SAFEGUARD_BLOCKED_STATUSES.has(new_status):
 		return false
 	status_conditions[new_status] = STATUS_DURATIONS.get(new_status, -1)
 	if source != null:
