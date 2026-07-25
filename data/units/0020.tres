@@ -1,33 +1,121 @@
-[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://5igdisqid0na"]
+[gd_resource type="Resource" script_class="UnitData" format=3]
 
-[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_6o0ol"]
-[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="1_mduba"]
-[ext_resource type="Resource" path="res://data/abilities/compound_eyes.tres" id="2_6o0ol"]
-[ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="3_c8662"]
-[ext_resource type="Texture2D" uid="uid://brjo0bv75ncwq" path="res://assets/sprites/Pokemon/Sprites/0020/Normal.png" id="4_mduba"]
-[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="5_7g0ua"]
-[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_frbxq"]
-[ext_resource type="SpriteFrames" uid="uid://caf8fk7evlruf" path="res://assets/sprites/Pokemon/Sprites/0020/frames.tres" id="7_m70h5"]
+[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0020/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0020/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Resource" path="res://data/abilities/run_away.tres" id="6_run_away"]
+[ext_resource type="Resource" path="res://data/abilities/guts.tres" id="7_guts"]
+[ext_resource type="Resource" path="res://data/abilities/hustle.tres" id="8_hustle"]
+[ext_resource type="Resource" path="res://data/attacks/focus_energy.tres" id="9_focus_energy"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="10_quick_attack"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="11_scary_face"]
+[ext_resource type="Resource" path="res://data/attacks/swords_dance.tres" id="12_swords_dance"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="13_tackle"]
+[ext_resource type="Resource" path="res://data/attacks/tail_whip.tres" id="14_tail_whip"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="15_bite"]
+[ext_resource type="Resource" path="res://data/attacks/pursuit.tres" id="16_pursuit"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="17_take_down"]
+[ext_resource type="Resource" path="res://data/attacks/assurance.tres" id="18_assurance"]
+[ext_resource type="Resource" path="res://data/attacks/crunch.tres" id="19_crunch"]
+[ext_resource type="Resource" path="res://data/attacks/sucker_punch.tres" id="20_sucker_punch"]
+[ext_resource type="Resource" path="res://data/attacks/super_fang.tres" id="21_super_fang"]
+[ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="22_double_edge"]
+[ext_resource type="Resource" path="res://data/attacks/endeavor.tres" id="23_endeavor"]
 
-[sub_resource type="Resource" id="LearnsetEntry_0012_compound_eyes"]
-script = ExtResource("1_mduba")
-action = ExtResource("2_6o0ol")
+[sub_resource type="Resource" id="LearnsetEntry_0020_run_away"]
+script = ExtResource("4_learn")
+action = ExtResource("6_run_away")
 
-[sub_resource type="Resource" id="LearnsetEntry_0012_tinted_lens"]
-script = ExtResource("1_mduba")
-action = ExtResource("3_c8662")
+[sub_resource type="Resource" id="LearnsetEntry_0020_guts"]
+script = ExtResource("4_learn")
+action = ExtResource("7_guts")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_hustle"]
+script = ExtResource("4_learn")
+action = ExtResource("8_hustle")
 is_hidden_ability = true
 
+[sub_resource type="Resource" id="LearnsetEntry_0020_focus_energy"]
+script = ExtResource("4_learn")
+action = ExtResource("9_focus_energy")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_quick_attack"]
+script = ExtResource("4_learn")
+action = ExtResource("10_quick_attack")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_scary_face"]
+script = ExtResource("4_learn")
+action = ExtResource("11_scary_face")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_swords_dance"]
+script = ExtResource("4_learn")
+action = ExtResource("12_swords_dance")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("13_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_tail_whip"]
+script = ExtResource("4_learn")
+action = ExtResource("14_tail_whip")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_bite"]
+script = ExtResource("4_learn")
+level = 10
+action = ExtResource("15_bite")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_pursuit"]
+script = ExtResource("4_learn")
+level = 13
+action = ExtResource("16_pursuit")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_take_down"]
+script = ExtResource("4_learn")
+level = 16
+action = ExtResource("17_take_down")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_assurance"]
+script = ExtResource("4_learn")
+level = 19
+action = ExtResource("18_assurance")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_crunch"]
+script = ExtResource("4_learn")
+level = 24
+action = ExtResource("19_crunch")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_sucker_punch"]
+script = ExtResource("4_learn")
+level = 29
+action = ExtResource("20_sucker_punch")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_super_fang"]
+script = ExtResource("4_learn")
+level = 34
+action = ExtResource("21_super_fang")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_double_edge"]
+script = ExtResource("4_learn")
+level = 39
+action = ExtResource("22_double_edge")
+
+[sub_resource type="Resource" id="LearnsetEntry_0020_endeavor"]
+script = ExtResource("4_learn")
+level = 44
+action = ExtResource("23_endeavor")
+
 [resource]
-script = ExtResource("5_7g0ua")
+script = ExtResource("1_script")
 unit_name = "Raticate"
-sprite_frames = ExtResource("7_m70h5")
-portrait = ExtResource("4_mduba")
+sprite_frames = ExtResource("3_frames")
+portrait = ExtResource("2_portrait")
 attack_hit_delay = 0.1833
 special_hit_delay = 0.0667
 types = Array[String](["Normal"])
-slots = Array[ExtResource("6_frbxq")]([ExtResource("2_6o0ol")])
-learnset = Array[ExtResource("1_mduba")]([SubResource("LearnsetEntry_0012_compound_eyes"), SubResource("LearnsetEntry_0012_tinted_lens")])
+slots = Array[ExtResource("5_action")]([ExtResource("13_tackle"), ExtResource("14_tail_whip"), ExtResource("6_run_away")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0020_run_away"), SubResource("LearnsetEntry_0020_guts"), SubResource("LearnsetEntry_0020_hustle"), SubResource("LearnsetEntry_0020_focus_energy"), SubResource("LearnsetEntry_0020_quick_attack"), SubResource("LearnsetEntry_0020_scary_face"), SubResource("LearnsetEntry_0020_swords_dance"), SubResource("LearnsetEntry_0020_tackle"), SubResource("LearnsetEntry_0020_tail_whip"), SubResource("LearnsetEntry_0020_bite"), SubResource("LearnsetEntry_0020_pursuit"), SubResource("LearnsetEntry_0020_take_down"), SubResource("LearnsetEntry_0020_assurance"), SubResource("LearnsetEntry_0020_crunch"), SubResource("LearnsetEntry_0020_sucker_punch"), SubResource("LearnsetEntry_0020_super_fang"), SubResource("LearnsetEntry_0020_double_edge"), SubResource("LearnsetEntry_0020_endeavor")])
 hp_base = 55
 attack_base = 81
 defense_base = 60

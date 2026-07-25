@@ -229,9 +229,8 @@ extends ActionData
 
 # Poison Heal: pedido do usuário (2026-07-24, Shroomish) — "When poisoned,
 # user will Heal 1/8 of its HP instead of taking Poison damage each turn".
-# Vale tanto pra "Poisoned" quanto "Badly Poisoned" (Toxic) — as duas contam
-# como "envenenado" pra esta Habilidade. Ver battle.gd::has_poison_heal/
-# apply_end_of_turn_status (onde troca o bloco de dano por um de cura).
+# Ver battle.gd::has_poison_heal/apply_end_of_turn_status (onde troca o
+# bloco de dano por um de cura).
 @export var poison_heal: bool = false
 
 # Quick Feet: pedido do usuário (2026-07-24, Shroomish, Hidden) — "x1.5 speed
@@ -260,3 +259,165 @@ extends ActionData
 # insomnia.tres) seta immune_status="Asleep", pedido do usuário: "replace with
 # Insomnia (Can't sleep)".
 @export var immune_status: String = ""
+
+# Guts: pedido do usuário (2026-07-24, Rattata) — "Multiply Attack stat by 1.5
+# if the user is affected by Poison, Sleep, Paralysis or Burn. Additionally,
+# Burn does not reduce the user's attack". A primeira parte mora em
+# Unit.get_effective_stat() (mesmo padrão de Quick Feet, ver _has_guts lá) —
+# x1.5 no Attack quando QUALQUER uma dessas 4 condições estiver ativa. A
+# segunda parte ("Burn does not reduce attack") é o x0.5 de Burned em
+# battle.gd::calculate_damage_modifiers deixando de se aplicar quando o
+# atacante tem Guts (ver has_guts lá) — nos jogos de verdade Burn corta o
+# Attack STAT; aqui Burn corta o MODIFICADOR de dano físico direto (ver
+# comentário lá), então Guts cancela esse modificador em vez de "devolver" o
+# stat, mesmo efeito final.
+@export var guts: bool = false
+
+# Hustle: pedido do usuário (2026-07-24, Rattata, Hidden) — "Multiply attack
+# by 1.5 but multiply the accuracy of physical moves by 0.8". A parte do
+# Attack mora em Unit.get_effective_stat() (incondicional, diferente de Guts
+# acima que exige uma Status Condition) — a parte da Accuracy mora em
+# battle.gd::execute_attack/execute_attack_burst (ver has_hustle), só quando
+# attack.is_special == false (golpe FÍSICO — golpe de Status nunca passa por
+# essas duas funções, então nem precisa checar is_status aqui).
+@export var hustle: bool = false
+
+# Keen Eye: pedido do usuário (2026-07-24, Spearow) — "Accuracy x1.1 and
+# Immune to Blind". O x1.1 é hardcoded em Unit.get_accuracy_multiplier() (ver
+# comentário lá), mesmo padrão de Compound Eyes (x1.3) — a imunidade a Blind
+# reaproveita o campo genérico immune_status acima (ver AbilityData.
+# immune_status/Insomnia): Keen Eye só precisa setar immune_status="Blind" no
+# .tres, sem precisar de nenhum campo novo pra essa parte.
+@export var keen_eye: bool = false
+
+# Static: pedido do usuário (2026-07-24, Pichu) — "When hit by a contact
+# move, 30% chance to Paralyzing the opponent". Nome "static" sozinho colide
+# com a palavra reservada `static` do GDScript (usada em métodos estáticos),
+# por isso o campo chama static_paralysis em vez disso. Mesmo mecanismo de
+# Effect Spore (ver AbilityData.effect_spore/battle.gd::_try_static): dispara
+# em QUEM ATACA quando um golpe de CONTATO (AttackData.makes_contact) acerta
+# quem carrega esta Habilidade, sem exigir tipo nenhum de imunidade especial
+# (diferente de Effect Spore, que poupa Grass por "contar como pó" — Static
+# não tem essa ressalva no pedido do usuário).
+@export var static_paralysis: bool = false
+
+# Lightning Rod: pedido do usuário (2026-07-24, Pichu, Hidden) — "Immune to
+# Electric attacks. When hit by one, ups self Sp.Atk by 1. Redirect single
+# target Electric moves used on allies at range 2 distance to self". A
+# imunidade reaproveita o campo genérico immune_type="Electric" (mesmo
+# mecanismo de Levitate/Ground, ver AbilityData.immune_type/
+# has_type_immunity_ability) — SEM precisar de campo novo pra essa parte. Este
+# campo aqui (lightning_rod) só existe pra sinalizar as OUTRAS duas partes,
+# que immune_type sozinho não cobre: o +1 Sp.Atk ao ser atingido por Electric
+# (ver battle.gd::execute_attack/execute_attack_burst, mesmo ponto onde Flash
+# Fire arma "Charged") e o redirecionamento de golpe elétrico de ALVO ÚNICO
+# mirado num ALIADO pra quem carrega Lightning Rod (ver battle.gd::
+# _redirect_lightning_rod), quando o PORTADOR estiver a até 2 tiles do ALIADO
+# mirado (distância confirmada com o usuário: "Portador até o ALIADO
+# mirado", não até quem ataca). Groundwork parcial documentado no ponto de
+# chamada: o redirecionamento só cobre golpes QUE CAUSAM DANO (battle.gd::
+# execute_attack), não golpes de Status de alvo único (ex: um futuro Thunder
+# Wave usado num aliado) — mesmo espírito de outras features "cobrem o caso
+# principal, resto é groundwork" já usado neste projeto (ver Damp/Brick
+# Break).
+@export var lightning_rod: bool = false
+
+# Serene Grace: pedido do usuário (2026-07-25, Togepi) — "Secondary effects
+# on moves have 2x chance of happening". Dobra (capado em 1.0) a chance de
+# QUALQUER efeito secundário do golpe usado por quem carrega isso: secondary_
+# status/_2 (ver _try_apply_secondary_status), secondary_stat_change (ver
+# _try_apply_secondary_stat_change) e self_stat_boost (ver _try_apply_self_
+# stat_boost) — os três mecanismos de "efeito extra com % de chance" que já
+# existiam, cada um dobrado no mesmo ponto onde já lia attack.*_chance. Ver
+# battle.gd::has_serene_grace/EFFECTIVE_CHANCE (função utilitária pra não
+# repetir min(1.0, chance*2) em 3 lugares diferentes).
+@export var serene_grace: bool = false
+
+# Super Luck: pedido do usuário (2026-07-25, Togepi, Hidden) — "Doubles
+# critical hit chance for moves used". Mesmo efeito multiplicativo que a
+# Status Condition "Focus Energy" já dá (ver battle.gd::
+# get_effective_crit_chance), só que como Habilidade PASSIVA (sempre ativa,
+# sem precisar usar Focus Energy antes) — os dois compõem livremente se a
+# mesma unidade tiver as duas coisas ao mesmo tempo (crit chance x4 nesse
+# caso raro).
+@export var super_luck: bool = false
+
+# Swift Swim: pedido do usuário (2026-07-25, Horsea) — "If weather is Rain,
+# has 1 extra action point (chlorophyl for rain)". Mesmíssimo mecanismo de
+# AbilityData.chlorophyll (ver comentário grande lá) — só troca a condição de
+# clima de Sunny/Harsh Sunlight pra Rain/Heavy Rain. Ver battle.gd::
+# has_swift_swim/begin_current_turn (mesmo bloco que já confere Chlorophyll).
+@export var swift_swim: bool = false
+
+# Poison Point: pedido do usuário (2026-07-25, Seadra) — "When taking contact
+# move, 30% to poison attacker". Mesmo formato de Static (ver AbilityData.
+# static_paralysis) — dispara em QUEM ATACA quando um golpe de CONTATO acerta
+# quem carrega esta Habilidade, status fixo "Poisoned" em vez de "Paralyzed".
+# Ver battle.gd::has_poison_point/_try_poison_point.
+@export var poison_point: bool = false
+
+# Hyper Cutter: pedido do usuário (2026-07-25, Corphish) — "Attack can't be
+# reduced. If a Sharp move is used, raises Atk +1 after the move is used".
+# Duas partes independentes: a imunidade a QUEDA de Attack é checada em
+# Unit.modify_stat_stage (bloqueia só deltas NEGATIVOS no stat "attack" de
+# quem carrega isso, deltas positivos continuam normais); o auto-buff de
+# golpe "Sharp" é checado em battle.gd::execute_attack/execute_attack_burst
+# (ver has_hyper_cutter), depois que o golpe termina de causar dano.
+@export var hyper_cutter: bool = false
+
+# Shell Armor: pedido do usuário (2026-07-25, Corphish) — "Can't be hit by
+# critical hits". Força is_critical=false no roll de battle.gd (ver
+# has_shell_armor), checado em TODOS os pontos que rolam crítico contra um
+# defensor (execute_attack, execute_attack_burst, _resolve_multi_hit_damage).
+@export var shell_armor: bool = false
+
+# Adaptability: pedido do usuário (2026-07-25, Corphish, Hidden) — "STAB
+# attacks do x4/3 damage (replaces normal x1.5 multiplier to a x2
+# multiplier)". Em vez de multiplicar por cima do x1.5 de STAB normal (que
+# daria um número estranho), SUBSTITUI o x1.5 por x2.0 direto em
+# calculate_damage_modifiers, mesmo espírito de crit_chance_override
+# (substitui, não empilha).
+@export var adaptability: bool = false
+
+# Vital Spirit: pedido do usuário (2026-07-25, Mankey) — "Immune to Sleep".
+# Reaproveita o campo genérico immune_status acima (mesmo mecanismo de
+# Insomnia/Keen Eye) — Vital Spirit só precisa setar immune_status="Asleep"
+# no .tres, sem campo novo pra essa parte. Ver AbilityData.immune_status.
+
+# Anger Point: pedido do usuário (2026-07-25, Mankey) — "If hit with a
+# critical hit, raises attack to +6 (not increasing by 6, it becomes
+# maximized)". Diferente de qualquer stat_change normal (que soma um delta
+# fixo), este PREENCHE o estágio de Attack direto no STAT_STAGE_MAX,
+# não importa onde estava antes — ver battle.gd::_try_anger_point, chamado
+# nos 3 pontos que já logam "A critical hit!" (execute_attack,
+# execute_attack_burst, _resolve_multi_hit_damage), sempre que QUEM DEFENDE
+# carrega esta Habilidade.
+@export var anger_point: bool = false
+
+# Defiant: pedido do usuário (2026-07-25, Mankey, Hidden) — "Whenever this
+# unit has its stats dropped by an opponent's move, raises attack +2".
+# Precisa distinguir queda de stat causada por INIMIGO (Growl, Toxic,
+# secondary_stat_change, etc.) de queda AUTO-INFLIGIDA (Close Combat, Overheat
+# etc. baixando o próprio stat do atacante) — por isso battle.gd::
+# apply_stat_change ganhou um parâmetro `source` opcional (mesmo padrão de
+# Unit.apply_status_condition), passado só nos golpes que miram um INIMIGO de
+# verdade. Ver battle.gd::has_defiant/apply_stat_change.
+@export var defiant: bool = false
+
+# Sand Veil: pedido do usuário (2026-07-25, Larvitar, Hidden) — "Increases
+# Speed x2 during Sand weather. Immune to Sand weather damage". A parte de
+# Speed é lida direto em Unit.get_effective_stat() (mesmo padrão de Quick
+# Feet, ver _has_sand_veil lá) porque esse cálculo não tem acesso a
+# battle.gd; a imunidade ao tick de dano do Sandstorm é checada em
+# battle.gd::get_weather_tick_damage (mesma lista de exceção que Ground/
+# Steel/Rock já usam por TIPO, só que aqui é por Habilidade).
+@export var sand_veil: bool = false
+
+# Unnerve: pedido do usuário (2026-07-25, Tyranitar) — "Opponents in range 3
+# burst can't consume berries". Diferente de Damp (groundwork puro, nenhum
+# golpe de Explosão existe ainda), Unnerve JÁ tem efeito de verdade: checado
+# em battle.gd::_check_berry_auto_use (via has_unnerve_nearby), que agora
+# procura, entre os INIMIGOS de quem tentaria comer a Berry, algum portador
+# de Unnerve a até 3 tiles de distância (Chebyshev, mesmo critério de
+# distância de Lightning Rod) antes de deixar a auto-consumação acontecer.
+@export var unnerve: bool = false

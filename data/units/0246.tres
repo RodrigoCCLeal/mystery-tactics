@@ -3,6 +3,96 @@
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0246/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0246/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" path="res://data/units/0247.tres" id="7_target"]
+[ext_resource type="Resource" path="res://data/abilities/guts.tres" id="8_guts"]
+[ext_resource type="Resource" path="res://data/abilities/sand_veil.tres" id="9_sand_veil"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="10_leer"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="11_tackle"]
+[ext_resource type="Resource" path="res://data/attacks/rock_throw.tres" id="12_rock_throw"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="13_bite"]
+[ext_resource type="Resource" path="res://data/attacks/sand_tomb.tres" id="14_sand_tomb"]
+[ext_resource type="Resource" path="res://data/attacks/rock_slide.tres" id="15_rock_slide"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="16_screech"]
+[ext_resource type="Resource" path="res://data/attacks/crunch.tres" id="17_crunch"]
+[ext_resource type="Resource" path="res://data/attacks/earthquake.tres" id="18_earthquake"]
+[ext_resource type="Resource" path="res://data/attacks/stone_edge.tres" id="19_stone_edge"]
+[ext_resource type="Resource" path="res://data/attacks/rock_blast.tres" id="20_rock_blast"]
+[ext_resource type="Resource" path="res://data/attacks/hyper_beam.tres" id="21_hyper_beam"]
+
+[sub_resource type="Resource" id="Resource_evo"]
+script = ExtResource("4_evo")
+target = ExtResource("7_target")
+min_level = 30
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_guts"]
+script = ExtResource("5_learn")
+action = ExtResource("8_guts")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_sand_veil"]
+script = ExtResource("5_learn")
+action = ExtResource("9_sand_veil")
+is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_leer"]
+script = ExtResource("5_learn")
+action = ExtResource("10_leer")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_tackle"]
+script = ExtResource("5_learn")
+action = ExtResource("11_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_rock_throw"]
+script = ExtResource("5_learn")
+level = 3
+action = ExtResource("12_rock_throw")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_bite"]
+script = ExtResource("5_learn")
+level = 9
+action = ExtResource("13_bite")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_sand_tomb"]
+script = ExtResource("5_learn")
+level = 12
+action = ExtResource("14_sand_tomb")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_rock_slide"]
+script = ExtResource("5_learn")
+level = 15
+action = ExtResource("15_rock_slide")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_screech"]
+script = ExtResource("5_learn")
+level = 21
+action = ExtResource("16_screech")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_crunch"]
+script = ExtResource("5_learn")
+level = 27
+action = ExtResource("17_crunch")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_earthquake"]
+script = ExtResource("5_learn")
+level = 33
+action = ExtResource("18_earthquake")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_stone_edge"]
+script = ExtResource("5_learn")
+level = 37
+action = ExtResource("19_stone_edge")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_rock_blast"]
+script = ExtResource("5_learn")
+level = 40
+action = ExtResource("20_rock_blast")
+
+[sub_resource type="Resource" id="LearnsetEntry_0246_hyper_beam"]
+script = ExtResource("5_learn")
+level = 48
+action = ExtResource("21_hyper_beam")
 
 [resource]
 script = ExtResource("1_script")
@@ -12,6 +102,8 @@ portrait = ExtResource("2_portrait")
 types = Array[String](["Rock", "Ground"])
 grounded = true
 weight = 1
+slots = Array[ExtResource("6_action")]([ExtResource("10_leer"), ExtResource("11_tackle"), ExtResource("8_guts")])
+learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0246_guts"), SubResource("LearnsetEntry_0246_sand_veil"), SubResource("LearnsetEntry_0246_leer"), SubResource("LearnsetEntry_0246_tackle"), SubResource("LearnsetEntry_0246_rock_throw"), SubResource("LearnsetEntry_0246_bite"), SubResource("LearnsetEntry_0246_sand_tomb"), SubResource("LearnsetEntry_0246_rock_slide"), SubResource("LearnsetEntry_0246_screech"), SubResource("LearnsetEntry_0246_crunch"), SubResource("LearnsetEntry_0246_earthquake"), SubResource("LearnsetEntry_0246_stone_edge"), SubResource("LearnsetEntry_0246_rock_blast"), SubResource("LearnsetEntry_0246_hyper_beam")])
 hp_base = 50
 attack_base = 64
 defense_base = 50
@@ -21,3 +113,4 @@ speed_base = 41
 catch_rate = 0.1765
 growth_group = "Slow"
 base_exp_yield = 60
+evolution_options = Array[ExtResource("4_evo")]([SubResource("Resource_evo")])

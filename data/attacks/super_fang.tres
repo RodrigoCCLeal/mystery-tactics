@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Normal"
+accuracy = 0.9
+makes_contact = true
+tags = Array[String](["Biting"])
+deals_damage_equal_to_half_target_current_hp = true
+action_name = "Super Fang"
+max_uses = 10
+range = 1

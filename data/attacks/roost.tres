@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Flying"
+is_status = true
+self_heal_fraction = 0.5
+inflicts_status = "Roosted"
+inflicts_status_on_self = true
+action_name = "Roost"
+max_uses = 10
+range = 1

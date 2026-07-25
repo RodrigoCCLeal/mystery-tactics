@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Fairy"
+is_special = true
+power = 40
+is_projectile = true
+tags = Array[String](["Wind"])
+action_name = "Fairy Wind"
+max_uses = 30
+range = 2

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Ghost"
+makes_contact = true
+scales_linearly_with_consecutive_use = true
+consecutive_use_base_power = 50
+consecutive_use_max_power = 200
+action_name = "Rage Fist"
+max_uses = 10
+range = 1

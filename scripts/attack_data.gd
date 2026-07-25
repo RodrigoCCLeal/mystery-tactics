@@ -689,3 +689,165 @@ extends ActionData
 # implementado. false (padrão) = golpe comum, não mexe em Status Condition
 # nenhuma do alvo antes do dano.
 @export var removes_screens: bool = false
+
+# ---------- Dobra dano se o alvo já apanhou nesta rodada (Assurance) ----------
+# true = dano dobra (ver battle.gd::calculate_damage_modifiers) se
+# `defender` já tiver sido atingido por um ataque QUE CAUSA DANO alguma vez
+# desde o início da rodada ATUAL (ver Unit.damaged_this_round, resetado pra
+# todo mundo em battle.gd::_on_end_turn_pressed, exatamente no instante em
+# que uma rodada nova de verdade começa) — pedido do usuário, Rattata,
+# Assurance: "Does double damage if target was damaged by an attack this
+# round". Definição exata de "rodada" confirmada com o usuário: "cada round
+# começa no turno da unidade de maior speed e termina no turno da unidade de
+# menor speed" — ou seja, um ciclo completo de turn_queue, não por unidade
+# individual. false (padrão) = golpe comum, sem esse bônus.
+@export var power_doubles_if_target_damaged_this_round: bool = false
+
+# ---------- Dano fixo = metade do HP atual do alvo (Super Fang) ----------
+# true = ignora a fórmula de dano normal por completo (ver battle.gd::
+# calculate_damage) — dano = metade EXATA do hp_current atual do alvo,
+# arredondado pra baixo, mínimo 1. Ainda respeita imunidade de tipo/Habilidade
+# (Ghost é imune a golpe Normal via TypeChart, ver type_chart.gd — "doesn't
+# affect ghost types" cai de graça, sem precisar de checagem extra aqui) e
+# ainda pode errar normalmente (accuracy do .tres, ver comentário de
+# AttackData.accuracy) — pedido do usuário, Rattata, Super Fang: "Does damage
+# exactly equal to half of the target's current health. Still has a chance
+# to miss and doesn't affect ghost types". false (padrão) = fórmula normal.
+@export var deals_damage_equal_to_half_target_current_hp: bool = false
+
+# ---------- Iguala o HP do alvo ao HP de quem ataca (Endeavor) ----------
+# true = ignora a fórmula de dano normal — dano = hp_current do ALVO menos
+# hp_current de QUEM ATACA (0 se os dois já estiverem empatados, nunca
+# negativo). "Fails if user HP > target HP" (pedido do usuário) é checado
+# ANTES de qualquer coisa, direto em battle.gd::execute_attack (mesmo "But it
+# failed!" de qualquer outro golpe que não faz efeito nenhum) — se quem ataca
+# já tem MAIS HP que o alvo, o golpe nem chega a rolar dano. false (padrão) =
+# fórmula normal.
+@export var sets_target_hp_to_attacker_hp: bool = false
+
+# ---------- Sempre acerta durante chuva (Thunder) ----------
+# true = pula o roll de acerto (mesmo "skips_accuracy_roll" que never_misses/
+# never_misses_if_user_type já usam) SE E SÓ SE o clima da batalha for Rain OU
+# Heavy Rain no momento — fora de chuva, usa a accuracy normal do .tres
+# (Thunder erra normalmente sem chuva, diferente de never_misses, que ignora
+# clima por completo). Pedido do usuário, Pichu, Thunder: "Always hits in the
+# rain, ignoring accuracy". false (padrão) = accuracy sempre normal,
+# independente de clima.
+@export var never_misses_in_rain: bool = false
+
+# ---------- Sempre acerta 2 vezes (Double Hit) ----------
+# true = mesmo golpe multi-hit de AttackData.is_multi_hit (precisa dos DOIS
+# campos juntos), mas SEM sortear a contagem por MULTI_HIT_WEIGHTS — sempre
+# exatamente 2 acertos, nunca 2-5. Pedido do usuário, Corphish, Double Hit:
+# "Multi Hit move (always hits 2 times)". Ver battle.gd::
+# _resolve_multi_hit_damage, que checa este campo ANTES de rolar
+# _roll_multi_hit_count(). false (padrão) = multi-hit normal, sorteia 2-5
+# como sempre (Pin Missile).
+@export var always_hits_twice: bool = false
+
+# ---------- Dano fixo = HP atual do alvo (Guillotine) ----------
+# true = ignora a fórmula de dano normal por completo — dano = hp_current
+# CHEIO do alvo (nocaute garantido se o golpe conectar e não houver imunidade
+# de tipo/Habilidade), diferente de Super Fang (metade) e Endeavor (iguala ao
+# HP de quem ataca). Pedido do usuário, Corphish, Guillotine: "Does damage
+# equal to the current HP of the unit hit". Ver battle.gd::calculate_damage.
+@export var deals_damage_equal_to_target_current_hp: bool = false
+
+# ---------- Rouba/descarta item do alvo (Knock Off) ----------
+# true = ao acertar um alvo que carregue QUALQUER ItemData equipado no
+# loadout, este golpe causa x1.5 de dano (fixo, checado em
+# calculate_damage_modifiers) e REMOVE esse item do loadout do alvo (ver
+# battle.gd::_try_knock_off_item) — pedido do usuário, Corphish, Knock Off:
+# "If there is an Item on opponent's Loadout, attack does x1.5 damage and
+# discards 1 random held item. Return it to the player's bag if used against
+# an allied unit". Se o alvo tiver MAIS de um item equipado, sorteia UM
+# aleatório entre eles (mesmo critério de Bug Bite/steals_target_berry, ver
+# comentário lá). "Return to the player's bag" só quando o alvo é ALIADO de
+# quem usou o golpe (mesmo lado) — contra um inimigo, o item simplesmente
+# some (nunca vai pro inventário de ninguém). false (padrão) = golpe comum.
+@export var discards_target_item: bool = false
+
+# ---------- Escala LINEAR com uso consecutivo (Rage Fist) ----------
+# true = reaproveita o MESMO contador de scales_with_consecutive_use
+# (Unit.consecutive_attack_uses/attacker.last_attack_used, incluindo o
+# reset ao errar ou trocar de golpe — ver battle.gd::_track_attack_use), mas
+# com uma fórmula LINEAR em vez de dobrar a cada uso: power = min(
+# consecutive_use_max_power, consecutive_use_base_power * uses). Rage Fist é
+# o primeiro caso, pedido do usuário, Primeape: "Increases Base power by 50
+# every time this move is used. Resets when using other moves. Maximum 200
+# base power" — com consecutive_use_base_power=50 e
+# consecutive_use_max_power=200, a MESMA constante serve de base E de
+# incremento (50 e 50 são o mesmo número aqui), então min(200, 50*uses) já
+# dá exatamente 50/100/150/200 pros 4 primeiros usos. Mutuamente exclusivo
+# com scales_with_consecutive_use na prática (nenhum golpe usa os dois).
+@export var scales_linearly_with_consecutive_use: bool = false
+
+# ---------- Dobra de poder se o usuário tem uma Status Condition "ruim" (Facade) ----------
+# true = power dobra (ver battle.gd::get_effective_power) se QUEM ATACA
+# estiver com "Burned", "Poisoned", "Paralyzed" OU "Asleep" no momento —
+# pedido do usuário, Mankey, Facade: "Doubles in power if Burned, Poisoned,
+# Paralyzed or Asleep". Ver também ignores_burn_damage_reduction abaixo
+# (efeito relacionado, mas em campo separado).
+@export var power_doubles_if_user_has_status_ailment: bool = false
+
+# true = este golpe NUNCA sofre o x0.5 de dano físico que "Burned" normalmente
+# aplica em battle.gd::calculate_damage_modifiers — mesmo cancelamento que
+# AbilityData.guts já dá, só que pelo GOLPE em vez de pela Habilidade. Facade:
+# "Ignores Burn damage reduction" (pedido do usuário) — sem isso, Facade
+# dobraria o power mas ainda apanharia o corte de Burned, dando um resultado
+# efetivamente igual (2x * 0.5x = 1x), o que anularia o próprio efeito do
+# golpe.
+@export var ignores_burn_damage_reduction: bool = false
+
+# ---------- Acerta N vezes em direção aleatória, com fogo amigo (Outrage) ----------
+# 0 (padrão) = golpe comum. > 0 = em vez de mirar o `defender`/direção
+# resolvida no clique, este golpe rola a Accuracy normalmente UMA vez (igual
+# sempre) e depois repete N vezes: CADA acerto sorteia sua PRÓPRIA direção
+# (ver battle.gd::_roll_confused_direction, MESMO sorteio de 8 direções que a
+# Status Condition "Confused" usa via resolve_confused_target) e toca sua
+# PRÓPRIA animação de ataque virada pra essa direção, acertando quem estiver
+# lá (aliado ou inimigo) — "sem ninguém" nessa direção simplesmente bate no
+# vazio (miss) naquele hit específico, sem impedir os outros hits de tentar
+# de novo com um sorteio novo. Outrage é o primeiro caso, pedido do usuário,
+# Mankey: "Hits 3 times as if confused (random directions with friendly fire)
+# Range 1 single target" — ver battle.gd::_execute_confused_style_attack,
+# despachada de dentro de execute_attack OU execute_attack_burst (qual dos
+# dois despacha depende só de area_shape, ver comentário logo acima — pedido
+# do usuário 2026-07-24: "highlight indicator should be burst range 1",
+# Outrage usa area_shape="Burst" só pelo highlight/confirmação de clique
+# "clica em qualquer canto do raio 1", o DANO de verdade nunca usa a
+# geometria Burst normal de "atinge todo mundo no raio" — é sempre a mira
+# aleatória por acerto explicada acima).
+@export var confused_style_hit_count: int = 0
+
+# ---------- Recarga (Hyper Beam/Giga Impact) ----------
+# true = OPOSTO de is_charge_move — este golpe dispara IMEDIATAMENTE (sem
+# fase de carga nenhuma), mas quem usa "gasta" o PRÓXIMO Action Point que
+# receberia (turno de recarga, sem poder atacar) — pedido do usuário (sessão
+# anterior, já documentado aqui antes de existir qualquer golpe que usasse
+# isso): "Giga Impact/Hyper Beam/Blast Burn... come out when used, but
+# consume the next action point the unit would have". Ver Unit.must_recharge/
+# battle.gd::begin_current_turn, que zera attacks_remaining no turno seguinte
+# quando essa flag estiver marcada, e limpa a flag depois de consumida.
+@export var requires_recharge: bool = false
+
+# ---------- Imune a tudo enquanto carrega (Phantom Force) ----------
+# true = combinado com is_charge_move — enquanto este golpe está na fase de
+# CARGA (ver Unit.charging_attack), quem carrega fica imune a QUALQUER golpe
+# que o mire (dano OU efeito de Status, de qualquer lado) — pedido do
+# usuário, Annihilape, Phantom Force: "Charge move, while charging become
+# immune to all attacks". Ver battle.gd::is_invulnerable_while_charging,
+# checado no topo de execute_attack/execute_attack_burst/
+# execute_status_attack antes de qualquer efeito ser resolvido no defensor.
+@export var grants_invulnerability_while_charging: bool = false
+
+# ---------- Poder escala com a DIFERENÇA de peso (Heavy Slam) ----------
+# true = power NÃO é o campo `power` fixo lá em cima — em vez disso, power =
+# 50 * (peso de quem ataca - peso do alvo), usando UnitData.weight (escala
+# 0-4) — pedido do usuário, Tyranitar, Heavy Slam: "Has 50 base power times
+# the difference in weight from user and target. Fails if lighter". "Fails"
+# (mesmo "But it failed!" de sempre) só quando a diferença é NEGATIVA (quem
+# ataca é mais LEVE que o alvo) — diferença 0 (mesmo peso) não falha, só
+# resulta em power 0 (golpe fraco, não um erro). Ver battle.gd::
+# get_effective_power/execute_attack.
+@export var power_scales_with_weight_difference: bool = false

@@ -211,6 +211,30 @@ const STATUS_DURATIONS := {
 	# Counter (Counter, Breloom, pedido do usuário: "Gives Counter status for
 	# 2 turns") — ver battle.gd::_try_counter pro efeito em si.
 	"Counter": 2,
+	# Roosted (Roost, Spearow, pedido do usuário: "Roosted status until next
+	# turn") — 1 turno só, número dado explicitamente (diferente de Safeguard,
+	# que precisou ser perguntado). Ver apply_status_condition/
+	# cure_status_condition abaixo pro efeito em si (perde tipo Flying/vira
+	# grounded temporariamente).
+	"Roosted": 1,
+	# "Light Screen"/"Reflect"/"Aurora Veil" (as 3 "telas" que Brick Break já
+	# removia como groundwork, ver AttackData.removes_screens) — pedido do
+	# usuário (2026-07-25): "Light Screen, Reflect e Aurora Veil tem duração
+	# de 3 turnos". Light Screen (Pichu) é a primeira das 3 a ter um golpe de
+	# verdade que a cria (ver battle.gd::calculate_damage_modifiers pro -33%
+	# de dano Especial) — Reflect/Aurora Veil continuam sem golpe nenhum
+	# criando elas ainda, mas já herdam a duração certa assim que existirem.
+	"Light Screen": 3,
+	"Reflect": 3,
+	"Aurora Veil": 3,
+	# "Pursuited"/"Supercharged" NÃO entram aqui de propósito — as duas são
+	# condições "sem prazo de turno", curadas só por EVENTO (Pursuited: alvo
+	# se move ou passa o turno, ver battle.gd::_try_trigger_pursuit/
+	# _on_end_turn_pressed; Supercharged: consumida no instante em que
+	# realmente evita a fase de carga de um golpe, ver battle.gd::
+	# execute_attack_burst), mesmo padrão que "Charged" (Flash Fire) já usa —
+	# ficam de fora do decremento automático por turno, valendo -1 (padrão de
+	# STATUS_DURATIONS.get) até serem curadas explicitamente.
 }
 
 # Qual AttackData está bloqueado enquanto a Status Condition "Disabled"
@@ -227,14 +251,32 @@ const STATUS_DURATIONS := {
 # TODO golpe de Status de uma vez.
 var disabled_attack: AttackData = null
 
-# Quantos turnos seguidos "Badly Poisoned" (Toxic, ver STATUS_TYPE_IMMUNITIES/
-# get_status_tick_damage abaixo) já ficou ativa NESTA aplicação — dano sobe
-# 1/16 do hp_max a cada turno (1/16, depois 2/16, 3/16...), mesma progressão
-# da série principal. Incrementado dentro de get_status_tick_damage() (a
-# cada vez que o dano é calculado, ver comentário lá) e zerado de volta em
-# cure_status_condition() quando "Badly Poisoned" sai (cura ou uma nova
-# aplicação futura começa do zero de novo).
-var badly_poison_turns: int = 0
+# Assurance (Rattata, ver AttackData.power_doubles_if_target_damaged_this_
+# round) — true se esta unidade já levou dano de algum ataque QUE CAUSA DANO
+# desde o início da rodada ATUAL (ver battle.gd::execute_attack/
+# execute_attack_burst, setado logo depois de hp_lost ser calculado, só se
+# hp_lost > 0 — tick de status/clima NUNCA seta isso, mesma distinção que Run
+# Away já faz entre "atingido por ataque de dano de verdade" e qualquer outro
+# jeito de perder HP). Resetado pra false em TODO MUNDO de uma vez só no
+# início de cada rodada nova (ver battle.gd::_on_end_turn_pressed, mesmo
+# ponto onde o clima desconta 1 turno).
+var damaged_this_round: bool = false
+
+# Pursuit (Rattata, ver AttackData.secondary_status="Pursuited") — quanto de
+# HP retido pra reaplicar quando esta unidade "Pursuited" se mover de tile
+# (ver battle.gd::_try_trigger_pursuit). Guardado à parte de status_
+# conditions (que só tem String->int) pelo mesmo motivo de disabled_attack
+# acima: Pursuit precisa lembrar um NÚMERO específico daquele acerto, não só
+# o nome da condição. Só tem valor enquanto "Pursuited" estiver ativo — sem
+# uso nenhum fora disso.
+var pursuit_damage: int = 0
+
+# Roost (Spearow, ver STATUS_DURATIONS["Roosted"]/apply_status_condition/
+# cure_status_condition abaixo) — guarda o valor de data.grounded de ANTES do
+# Roost forçar grounded=true temporariamente, pra restaurar certinho quando
+# "Roosted" sai (cura normal ou fim de batalha) em vez de sempre assumir
+# false. Só faz sentido enquanto "Roosted" estiver ativo.
+var roosted_previous_grounded: bool = false
 
 # Quais Status Conditions ficam BLOQUEADAS enquanto "Safeguarded" está ativo —
 # pedido do usuário, Safeguard: "While safeguarded, can't be Paralyzed,
@@ -279,11 +321,6 @@ const STATUS_TYPE_IMMUNITIES := {
 	"Paralyzed": ["Electric"],
 	"Frozen": ["Ice"],
 	"Seeded": ["Grass"],
-	# Badly Poisoned (Toxic, Shroomish/Breloom, pedido do usuário) — mesma
-	# imunidade de tipo que Poisoned normal, já que é a MESMA condição de
-	# veneno na prática, só que com dano crescente (ver battle.gd::
-	# get_status_tick_damage/badly_poison_turns).
-	"Badly Poisoned": ["Steel", "Poison"],
 }
 
 # ---------- Indicadores visuais de Status Condition ----------
@@ -428,6 +465,27 @@ var attacks_remaining: int = 1
 var charging_attack: AttackData = null
 var charging_dir: Vector2i = Vector2i.ZERO
 var charging_slot_index: int = -1
+
+# Alvo travado por um golpe de carga de ALVO ÚNICO (ver AttackData.
+# is_charge_move/area_shape=="Single" — Focus Punch, pedido do usuário,
+# 2026-07-25: "Focus Punch really is happening in the same turn, fix that").
+# charging_dir acima serve pra golpes de ÁREA (Solar Beam, mira uma direção,
+# quem estiver na linha na hora do disparo é atingido); um golpe de alvo
+# único já resolveu um Node específico no clique da carga, então guarda ELE
+# (não uma direção) pra disparar exatamente nele no release, mesmo que a
+# unidade tenha se movido nesse meio tempo. null se não estiver carregando
+# um golpe de alvo único (ou se já disparou/foi limpo).
+var charging_target: Node = null
+
+# true = esta unidade acabou de usar um golpe com AttackData.requires_recharge
+# (Hyper Beam/Giga Impact) e precisa "descansar" no PRÓXIMO turno que
+# receber — pedido do usuário (sessão anterior, já documentado em
+# AttackData.requires_recharge antes de existir golpe nenhum que usasse isso):
+# "come out when used, but consume the next action point the unit would
+# have". Ver battle.gd::begin_current_turn, que zera attacks_remaining
+# (sem tocar em move_range — recarga só custa a AÇÃO de atacar, não o
+# movimento) e limpa esta flag assim que o turno de recarga é consumido.
+var must_recharge: bool = false
 
 # Estágio atual de cada stat alterável (ver STAGE_STATS/STAT_STAGE_MULTIPLIERS
 # acima) — 0 = normal, igual attacks_remaining/slot_uses isso é só de batalha,
@@ -736,6 +794,15 @@ func take_damage(amount: int) -> void:
 	# — abaixo de 50% de HP, não desmaiada. Ver _check_berry_auto_use().
 	if hp_current > 0:
 		_check_berry_auto_use()
+		# Annihilape (ver UnitData.has_dropped_below_critical_hp/EvolutionOption.
+		# requires_survived_critical_hp, pedido do usuário, Primeape: "having <5%
+		# HP left") — carimba a UnitData assim que o HP atual (já reduzido acima,
+		# ainda > 0) cai abaixo de 5% do máximo. Cobre TANTO dano de ataque quanto
+		# tick de status/clima, já que os dois caminhos passam por esta função
+		# (ver battle.gd::apply_end_of_turn_status, que chama take_damage() pro
+		# tick também).
+		if data != null and hp_max > 0 and float(hp_current) / float(hp_max) < 0.05:
+			data.has_dropped_below_critical_hp = true
 	if hp_current <= 0 and not is_dying:
 		die()
 
@@ -759,6 +826,15 @@ func _check_berry_auto_use() -> void:
 	if is_enemy or data == null or hp_max <= 0:
 		return
 	if float(hp_current) / float(hp_max) >= 0.5:
+		return
+	# Unnerve (ver AbilityData.unnerve, pedido do usuário, 2026-07-25,
+	# Tyranitar: "Opponents in range 3 burst can't consume berries") — pede
+	# pro nó Battle (get_parent(), já que toda Unit é filha direta dele)
+	# checar se algum INIMIGO com essa Habilidade está perto o bastante.
+	# has_method() evita erro se por acaso esta função rodar sem estar
+	# parentada num Battle de verdade.
+	var parent_battle = get_parent()
+	if parent_battle != null and parent_battle.has_method("has_unnerve_nearby") and parent_battle.has_unnerve_nearby(self):
 		return
 	for i in data.slots.size():
 		var item = data.slots[i]
@@ -788,6 +864,12 @@ func get_accuracy_multiplier() -> float:
 		# importado de battle.gd — ver comentário lá em has_compound_eyes).
 		elif action is AbilityData and action.compound_eyes:
 			multiplier *= 1.3
+		# Keen Eye (ver AbilityData.keen_eye, pedido do usuário, 2026-07-24,
+		# Spearow: "Accuracy x1.1") — 1.1 fixo, mesmo espírito hardcoded de
+		# Compound Eyes acima (a imunidade a Blind da mesma Habilidade
+		# reaproveita immune_status, checada em is_immune_to_status, não aqui).
+		elif action is AbilityData and action.keen_eye:
+			multiplier *= 1.1
 	if status_conditions.has("Blind"):
 		multiplier *= 0.5
 	return multiplier
@@ -805,6 +887,13 @@ signal speed_changed
 # futuros efeitos secundários (ex: "Growl reduz Attack em 1") vão usar.
 func modify_stat_stage(stat: String, delta: int) -> void:
 	if not STAGE_STATS.has(stat):
+		return
+	# Hyper Cutter (ver AbilityData.hyper_cutter, pedido do usuário, 2026-07-25,
+	# Corphish: "Attack can't be reduced") — bloqueia só deltas NEGATIVOS no
+	# stat "attack" de quem carrega esta Habilidade; deltas positivos (ex: o
+	# próprio auto-buff da Habilidade depois de um golpe Sharp, ver battle.gd::
+	# execute_attack) continuam normais.
+	if stat == "attack" and delta < 0 and _has_hyper_cutter():
 		return
 	stat_stages[stat] = clamp(stat_stages.get(stat, 0) + delta, STAT_STAGE_MIN, STAT_STAGE_MAX)
 	if stat == "speed":
@@ -844,8 +933,35 @@ func get_effective_stat(stat: String) -> int:
 	# depois dobra o resultado já cortado).
 	if stat == "speed" and status_conditions.has("Tailwind"):
 		value *= 2
-	if has_quick_feet_now and (status_conditions.has("Poisoned") or status_conditions.has("Badly Poisoned") or status_conditions.has("Paralyzed") or status_conditions.has("Burned")):
+	if has_quick_feet_now and (status_conditions.has("Poisoned") or status_conditions.has("Paralyzed") or status_conditions.has("Burned")):
 		value = int(value * 1.5)
+	# Guts (ver AbilityData.guts, pedido do usuário, 2026-07-24, Rattata:
+	# "Multiply Attack stat by 1.5 if the user is affected by Poison, Sleep,
+	# Paralysis or Burn") — mesmo padrão local de Quick Feet acima (_has_guts),
+	# só no stat "attack", condicionado às 4 Status Conditions citadas.
+	if stat == "attack" and _has_guts() and (status_conditions.has("Poisoned") or status_conditions.has("Asleep") or status_conditions.has("Paralyzed") or status_conditions.has("Burned")):
+		value = int(value * 1.5)
+	# Hustle (ver AbilityData.hustle, pedido do usuário, 2026-07-24, Rattata
+	# Hidden: "Multiply attack by 1.5 but multiply the accuracy of physical
+	# moves by 0.8") — a parte do Attack aqui é INCONDICIONAL (sem checar
+	# Status Condition nenhuma, diferente de Guts acima); a parte da Accuracy
+	# mora em battle.gd::execute_attack/execute_attack_burst (ver has_hustle),
+	# não aqui, porque depende de AttackData.is_special, que este método não
+	# recebe.
+	if stat == "attack" and _has_hustle():
+		value = int(value * 1.5)
+	# Sand Veil (ver AbilityData.sand_veil, pedido do usuário, 2026-07-25,
+	# Larvitar Hidden: "Increases Speed x2 during Sand weather"). Diferente
+	# de Chlorophyll/Swift Swim (que ficam em battle.gd por mexerem em
+	# attacks_remaining, algo que só faz sentido no início do turno), esta
+	# parte precisa do clima ATUAL bem aqui dentro do cálculo de Speed — como
+	# Unit não guarda o clima (mora em battle.gd::current_weather), lê via
+	# get_parent() (o próprio nó Battle, já que toda Unit é filha direta dele
+	# — ver battle.gd::spawn_player_units_staged/spawn_enemies) usando get()
+	# em vez de acesso direto, pra não quebrar se por algum motivo esta
+	# unidade ainda não tiver pai (get() devolve null nesse caso, não erro).
+	if stat == "speed" and _has_sand_veil() and get_parent() != null and get_parent().get("current_weather") == "Sandstorm":
+		value *= 2
 	return value
 
 # true se esta unidade carrega uma Habilidade com quick_feet=true equipada
@@ -856,6 +972,38 @@ func get_effective_stat(stat: String) -> int:
 func _has_quick_feet() -> bool:
 	for action in data.slots:
 		if action is AbilityData and action.quick_feet:
+			return true
+	return false
+
+# Mesmo padrão de _has_quick_feet() acima, pra Guts (ver AbilityData.guts).
+func _has_guts() -> bool:
+	for action in data.slots:
+		if action is AbilityData and action.guts:
+			return true
+	return false
+
+# Mesmo padrão de _has_quick_feet() acima, pra Hustle (ver AbilityData.hustle).
+func _has_hustle() -> bool:
+	for action in data.slots:
+		if action is AbilityData and action.hustle:
+			return true
+	return false
+
+# Mesmo padrão de _has_quick_feet() acima, pra Hyper Cutter (ver AbilityData.
+# hyper_cutter) — precisa morar aqui (não em battle.gd) porque
+# modify_stat_stage() acima lê ele diretamente, sem referência a battle.gd.
+func _has_hyper_cutter() -> bool:
+	for action in data.slots:
+		if action is AbilityData and action.hyper_cutter:
+			return true
+	return false
+
+# Mesmo padrão de _has_quick_feet() acima, pra Sand Veil (ver AbilityData.
+# sand_veil) — precisa morar aqui porque get_effective_stat() acima lê ele
+# diretamente.
+func _has_sand_veil() -> bool:
+	for action in data.slots:
+		if action is AbilityData and action.sand_veil:
 			return true
 	return false
 
@@ -921,6 +1069,18 @@ func apply_status_condition(new_status: String, source: Node = null) -> bool:
 	status_conditions[new_status] = STATUS_DURATIONS.get(new_status, -1)
 	if source != null:
 		status_source[new_status] = source
+	# Roosted (Roost, Spearow, pedido do usuário: "Roosted status until next
+	# turn. Roosted means it loses Flying type, becomes grounded and uses
+	# idle_anim instead of hover_anim if it had hover") — a parte de tipo (ver
+	# battle.gd::get_weather_adjusted_effectiveness) é lida na hora, direto do
+	# status ativo; a parte de "grounded"/anim só precisa deste toggle aqui:
+	# _idle_anim_name() já lê data.grounded dinamicamente (ver comentário lá),
+	# então virar grounded=true na hora já troca a animação sozinho, sem
+	# código extra nenhum de anim. Guarda o valor de ANTES pra restaurar certo
+	# em cure_status_condition() abaixo, em vez de assumir false sempre.
+	if new_status == "Roosted":
+		roosted_previous_grounded = data.grounded
+		data.grounded = true
 	_on_status_condition_changed()
 	return true
 
@@ -941,6 +1101,10 @@ func get_status_source(status: String) -> Node:
 # status_source segue status_conditions em ambos os casos, pra nunca deixar
 # uma chave "órfã" (fonte lembrada de uma condição que já foi curada).
 func cure_status_condition(status: String = "") -> void:
+	# Roosted (ver apply_status_condition acima) — precisa saber SE estava
+	# ativa ANTES de limpar status_conditions (o caso status=="" limpa tudo de
+	# uma vez, então checar depois sempre daria false).
+	var had_roosted = status_conditions.has("Roosted")
 	if status == "":
 		status_conditions.clear()
 		status_source.clear()
@@ -953,11 +1117,8 @@ func cure_status_condition(status: String = "") -> void:
 	# nenhum outro lugar que já chame cure_status_condition.
 	if status == "" or status == "Disabled":
 		disabled_attack = null
-	# Badly Poisoned (ver badly_poison_turns acima) — zera o contador de
-	# turnos ao curar, pra uma aplicação FUTURA de Toxic começar do 1/16 de
-	# novo, em vez de continuar de onde a anterior parou.
-	if status == "" or status == "Badly Poisoned":
-		badly_poison_turns = 0
+	if had_roosted and (status == "" or status == "Roosted"):
+		data.grounded = roosted_previous_grounded
 	_on_status_condition_changed()
 
 # Ex: Charmander (Fire) tentando ser Burned — devolve true, apply_status_
@@ -1184,18 +1345,6 @@ func get_status_tick_damage() -> int:
 	if status_conditions.has("Poisoned"):
 		@warning_ignore("integer_division")
 		return hp_max * POISON_DAMAGE_PERCENT / 100
-	# Badly Poisoned (Toxic, ver STATUS_TYPE_IMMUNITIES/badly_poison_turns
-	# acima) — dano cresce 1/16 do hp_max a cada turno que passa (1/16, 2/16,
-	# 3/16...), mesma progressão da série principal. O incremento acontece
-	# AQUI (não em battle.gd::apply_end_of_turn_status), porque esta função já
-	# é chamada exatamente 1x por turno de quem está com a condição — se
-	# Poison Heal (ver AbilityData.poison_heal) estiver ativo, battle.gd NEM
-	# chama esta função (cura em vez de calcular dano, ver comentário lá), o
-	# que também tem o efeito colateral correto de "não crescer" o contador
-	# enquanto a Habilidade estiver curando em vez de causar dano.
-	if status_conditions.has("Badly Poisoned"):
-		badly_poison_turns += 1
-		return int(hp_max * badly_poison_turns / 16.0)
 	return 0
 
 # statusBonus da fórmula de captura (ver battle.gd::resolve_capture): 1.0

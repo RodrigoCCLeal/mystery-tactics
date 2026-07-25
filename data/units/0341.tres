@@ -3,6 +3,119 @@
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0341/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0341/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" path="res://data/units/0342.tres" id="7_target"]
+[ext_resource type="Resource" path="res://data/abilities/hyper_cutter.tres" id="8_hyper_cutter"]
+[ext_resource type="Resource" path="res://data/abilities/shell_armor.tres" id="9_shell_armor"]
+[ext_resource type="Resource" path="res://data/abilities/adaptability.tres" id="10_adaptability"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="11_harden"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="12_water_gun"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="13_leer"]
+[ext_resource type="Resource" path="res://data/attacks/taunt.tres" id="14_taunt"]
+[ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="15_bubble_beam"]
+[ext_resource type="Resource" path="res://data/attacks/knock_off.tres" id="16_knock_off"]
+[ext_resource type="Resource" path="res://data/attacks/double_hit.tres" id="17_double_hit"]
+[ext_resource type="Resource" path="res://data/attacks/protect.tres" id="18_protect"]
+[ext_resource type="Resource" path="res://data/attacks/night_slash.tres" id="19_night_slash"]
+[ext_resource type="Resource" path="res://data/attacks/razor_shell.tres" id="20_razor_shell"]
+[ext_resource type="Resource" path="res://data/attacks/swords_dance.tres" id="21_swords_dance"]
+[ext_resource type="Resource" path="res://data/attacks/crunch.tres" id="22_crunch"]
+[ext_resource type="Resource" path="res://data/attacks/crabhammer.tres" id="23_crabhammer"]
+[ext_resource type="Resource" path="res://data/attacks/endeavor.tres" id="24_endeavor"]
+[ext_resource type="Resource" path="res://data/attacks/guillotine.tres" id="25_guillotine"]
+
+[sub_resource type="Resource" id="Resource_evo"]
+script = ExtResource("4_evo")
+target = ExtResource("7_target")
+min_level = 30
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_hyper_cutter"]
+script = ExtResource("5_learn")
+action = ExtResource("8_hyper_cutter")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_shell_armor"]
+script = ExtResource("5_learn")
+action = ExtResource("9_shell_armor")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_adaptability"]
+script = ExtResource("5_learn")
+action = ExtResource("10_adaptability")
+is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_harden"]
+script = ExtResource("5_learn")
+action = ExtResource("11_harden")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_water_gun"]
+script = ExtResource("5_learn")
+action = ExtResource("12_water_gun")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_leer"]
+script = ExtResource("5_learn")
+level = 4
+action = ExtResource("13_leer")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_taunt"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("14_taunt")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_bubble_beam"]
+script = ExtResource("5_learn")
+level = 12
+action = ExtResource("15_bubble_beam")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_knock_off"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("16_knock_off")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_double_hit"]
+script = ExtResource("5_learn")
+level = 20
+action = ExtResource("17_double_hit")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_protect"]
+script = ExtResource("5_learn")
+level = 24
+action = ExtResource("18_protect")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_night_slash"]
+script = ExtResource("5_learn")
+level = 28
+action = ExtResource("19_night_slash")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_razor_shell"]
+script = ExtResource("5_learn")
+level = 32
+action = ExtResource("20_razor_shell")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_swords_dance"]
+script = ExtResource("5_learn")
+level = 36
+action = ExtResource("21_swords_dance")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_crunch"]
+script = ExtResource("5_learn")
+level = 40
+action = ExtResource("22_crunch")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_crabhammer"]
+script = ExtResource("5_learn")
+level = 44
+action = ExtResource("23_crabhammer")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_endeavor"]
+script = ExtResource("5_learn")
+level = 48
+action = ExtResource("24_endeavor")
+
+[sub_resource type="Resource" id="LearnsetEntry_0341_guillotine"]
+script = ExtResource("5_learn")
+level = 52
+action = ExtResource("25_guillotine")
 
 [resource]
 script = ExtResource("1_script")
@@ -12,6 +125,8 @@ portrait = ExtResource("2_portrait")
 types = Array[String](["Water"])
 grounded = true
 weight = 1
+slots = Array[ExtResource("6_action")]([ExtResource("11_harden"), ExtResource("12_water_gun"), ExtResource("8_hyper_cutter")])
+learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0341_hyper_cutter"), SubResource("LearnsetEntry_0341_shell_armor"), SubResource("LearnsetEntry_0341_adaptability"), SubResource("LearnsetEntry_0341_harden"), SubResource("LearnsetEntry_0341_water_gun"), SubResource("LearnsetEntry_0341_leer"), SubResource("LearnsetEntry_0341_taunt"), SubResource("LearnsetEntry_0341_bubble_beam"), SubResource("LearnsetEntry_0341_knock_off"), SubResource("LearnsetEntry_0341_double_hit"), SubResource("LearnsetEntry_0341_protect"), SubResource("LearnsetEntry_0341_night_slash"), SubResource("LearnsetEntry_0341_razor_shell"), SubResource("LearnsetEntry_0341_swords_dance"), SubResource("LearnsetEntry_0341_crunch"), SubResource("LearnsetEntry_0341_crabhammer"), SubResource("LearnsetEntry_0341_endeavor"), SubResource("LearnsetEntry_0341_guillotine")])
 hp_base = 43
 attack_base = 80
 defense_base = 65
@@ -21,3 +136,4 @@ speed_base = 35
 catch_rate = 0.8039
 growth_group = "Erratic"
 base_exp_yield = 62
+evolution_options = Array[ExtResource("4_evo")]([SubResource("Resource_evo")])

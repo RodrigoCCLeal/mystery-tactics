@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Normal"
+accuracy = 0.3
+makes_contact = true
+deals_damage_equal_to_target_current_hp = true
+action_name = "Guillotine"
+max_uses = 5
+range = 1

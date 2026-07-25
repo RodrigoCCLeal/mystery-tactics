@@ -3,6 +3,75 @@
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0468/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0468/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Resource" path="res://data/abilities/hustle.tres" id="6_hustle"]
+[ext_resource type="Resource" path="res://data/abilities/serene_grace.tres" id="7_serene_grace"]
+[ext_resource type="Resource" path="res://data/abilities/super_luck.tres" id="8_super_luck"]
+[ext_resource type="Resource" path="res://data/attacks/air_cutter.tres" id="9_air_cutter"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="10_tackle"]
+[ext_resource type="Resource" path="res://data/attacks/fairy_wind.tres" id="11_fairy_wind"]
+[ext_resource type="Resource" path="res://data/attacks/draining_kiss.tres" id="12_draining_kiss"]
+[ext_resource type="Resource" path="res://data/attacks/calm_mind.tres" id="13_calm_mind"]
+[ext_resource type="Resource" path="res://data/attacks/air_slash.tres" id="14_air_slash"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="15_charm"]
+[ext_resource type="Resource" path="res://data/attacks/extrasensory.tres" id="16_extrasensory"]
+[ext_resource type="Resource" path="res://data/attacks/moonblast.tres" id="17_moonblast"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_hustle"]
+script = ExtResource("4_learn")
+action = ExtResource("6_hustle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_serene_grace"]
+script = ExtResource("4_learn")
+action = ExtResource("7_serene_grace")
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_super_luck"]
+script = ExtResource("4_learn")
+action = ExtResource("8_super_luck")
+is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_air_cutter"]
+script = ExtResource("4_learn")
+action = ExtResource("9_air_cutter")
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("10_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_fairy_wind"]
+script = ExtResource("4_learn")
+action = ExtResource("11_fairy_wind")
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_draining_kiss"]
+script = ExtResource("4_learn")
+level = 11
+action = ExtResource("12_draining_kiss")
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_calm_mind"]
+script = ExtResource("4_learn")
+level = 18
+action = ExtResource("13_calm_mind")
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_air_slash"]
+script = ExtResource("4_learn")
+level = 25
+action = ExtResource("14_air_slash")
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_charm"]
+script = ExtResource("4_learn")
+level = 25
+action = ExtResource("15_charm")
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_extrasensory"]
+script = ExtResource("4_learn")
+level = 34
+action = ExtResource("16_extrasensory")
+
+[sub_resource type="Resource" id="LearnsetEntry_0468_moonblast"]
+script = ExtResource("4_learn")
+level = 43
+action = ExtResource("17_moonblast")
 
 [resource]
 script = ExtResource("1_script")
@@ -12,6 +81,8 @@ portrait = ExtResource("2_portrait")
 types = Array[String](["Fairy", "Flying"])
 grounded = false
 weight = 1
+slots = Array[ExtResource("5_action")]([ExtResource("9_air_cutter"), ExtResource("10_tackle"), ExtResource("11_fairy_wind"), ExtResource("6_hustle")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0468_hustle"), SubResource("LearnsetEntry_0468_serene_grace"), SubResource("LearnsetEntry_0468_super_luck"), SubResource("LearnsetEntry_0468_air_cutter"), SubResource("LearnsetEntry_0468_tackle"), SubResource("LearnsetEntry_0468_fairy_wind"), SubResource("LearnsetEntry_0468_draining_kiss"), SubResource("LearnsetEntry_0468_calm_mind"), SubResource("LearnsetEntry_0468_air_slash"), SubResource("LearnsetEntry_0468_charm"), SubResource("LearnsetEntry_0468_extrasensory"), SubResource("LearnsetEntry_0468_moonblast")])
 hp_base = 85
 attack_base = 50
 defense_base = 95

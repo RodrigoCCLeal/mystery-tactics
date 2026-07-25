@@ -3,6 +3,127 @@
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0979/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0979/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Resource" path="res://data/abilities/vital_spirit.tres" id="6_vital_spirit"]
+[ext_resource type="Resource" path="res://data/abilities/anger_point.tres" id="7_anger_point"]
+[ext_resource type="Resource" path="res://data/abilities/defiant.tres" id="8_defiant"]
+[ext_resource type="Resource" path="res://data/attacks/shadow_punch.tres" id="9_shadow_punch"]
+[ext_resource type="Resource" path="res://data/attacks/phantom_force.tres" id="10_phantom_force"]
+[ext_resource type="Resource" path="res://data/attacks/focus_energy.tres" id="11_focus_energy"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="12_leer"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="13_tackle"]
+[ext_resource type="Resource" path="res://data/attacks/rock_throw.tres" id="14_rock_throw"]
+[ext_resource type="Resource" path="res://data/attacks/rock_smash.tres" id="15_rock_smash"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="16_take_down"]
+[ext_resource type="Resource" path="res://data/attacks/low_sweep.tres" id="17_low_sweep"]
+[ext_resource type="Resource" path="res://data/attacks/knock_off.tres" id="18_knock_off"]
+[ext_resource type="Resource" path="res://data/attacks/bulldoze.tres" id="19_bulldoze"]
+[ext_resource type="Resource" path="res://data/attacks/brick_break.tres" id="20_brick_break"]
+[ext_resource type="Resource" path="res://data/attacks/facade.tres" id="21_facade"]
+[ext_resource type="Resource" path="res://data/attacks/rage_fist.tres" id="22_rage_fist"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="23_screech"]
+[ext_resource type="Resource" path="res://data/attacks/close_combat.tres" id="24_close_combat"]
+[ext_resource type="Resource" path="res://data/attacks/outrage.tres" id="25_outrage"]
+[ext_resource type="Resource" path="res://data/attacks/dynamic_punch.tres" id="26_dynamic_punch"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_vital_spirit"]
+script = ExtResource("4_learn")
+action = ExtResource("6_vital_spirit")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_anger_point"]
+script = ExtResource("4_learn")
+action = ExtResource("7_anger_point")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_defiant"]
+script = ExtResource("4_learn")
+action = ExtResource("8_defiant")
+is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_shadow_punch"]
+script = ExtResource("4_learn")
+action = ExtResource("9_shadow_punch")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_phantom_force"]
+script = ExtResource("4_learn")
+action = ExtResource("10_phantom_force")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_focus_energy"]
+script = ExtResource("4_learn")
+action = ExtResource("11_focus_energy")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_leer"]
+script = ExtResource("4_learn")
+action = ExtResource("12_leer")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("13_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_rock_throw"]
+script = ExtResource("4_learn")
+level = 8
+action = ExtResource("14_rock_throw")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_rock_smash"]
+script = ExtResource("4_learn")
+level = 10
+action = ExtResource("15_rock_smash")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_take_down"]
+script = ExtResource("4_learn")
+level = 13
+action = ExtResource("16_take_down")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_low_sweep"]
+script = ExtResource("4_learn")
+level = 16
+action = ExtResource("17_low_sweep")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_knock_off"]
+script = ExtResource("4_learn")
+level = 18
+action = ExtResource("18_knock_off")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_bulldoze"]
+script = ExtResource("4_learn")
+level = 22
+action = ExtResource("19_bulldoze")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_brick_break"]
+script = ExtResource("4_learn")
+level = 25
+action = ExtResource("20_brick_break")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_facade"]
+script = ExtResource("4_learn")
+level = 28
+action = ExtResource("21_facade")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_rage_fist"]
+script = ExtResource("4_learn")
+level = 35
+action = ExtResource("22_rage_fist")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_screech"]
+script = ExtResource("4_learn")
+level = 40
+action = ExtResource("23_screech")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_close_combat"]
+script = ExtResource("4_learn")
+level = 44
+action = ExtResource("24_close_combat")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_outrage"]
+script = ExtResource("4_learn")
+level = 50
+action = ExtResource("25_outrage")
+
+[sub_resource type="Resource" id="LearnsetEntry_0979_dynamic_punch"]
+script = ExtResource("4_learn")
+level = 54
+action = ExtResource("26_dynamic_punch")
 
 [resource]
 script = ExtResource("1_script")
@@ -12,6 +133,8 @@ portrait = ExtResource("2_portrait")
 types = Array[String](["Fighting", "Ghost"])
 grounded = true
 weight = 1
+slots = Array[ExtResource("5_action")]([ExtResource("9_shadow_punch"), ExtResource("10_phantom_force"), ExtResource("11_focus_energy"), ExtResource("12_leer"), ExtResource("13_tackle"), ExtResource("6_vital_spirit")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0979_vital_spirit"), SubResource("LearnsetEntry_0979_anger_point"), SubResource("LearnsetEntry_0979_defiant"), SubResource("LearnsetEntry_0979_shadow_punch"), SubResource("LearnsetEntry_0979_phantom_force"), SubResource("LearnsetEntry_0979_focus_energy"), SubResource("LearnsetEntry_0979_leer"), SubResource("LearnsetEntry_0979_tackle"), SubResource("LearnsetEntry_0979_rock_throw"), SubResource("LearnsetEntry_0979_rock_smash"), SubResource("LearnsetEntry_0979_take_down"), SubResource("LearnsetEntry_0979_low_sweep"), SubResource("LearnsetEntry_0979_knock_off"), SubResource("LearnsetEntry_0979_bulldoze"), SubResource("LearnsetEntry_0979_brick_break"), SubResource("LearnsetEntry_0979_facade"), SubResource("LearnsetEntry_0979_rage_fist"), SubResource("LearnsetEntry_0979_screech"), SubResource("LearnsetEntry_0979_close_combat"), SubResource("LearnsetEntry_0979_outrage"), SubResource("LearnsetEntry_0979_dynamic_punch")])
 hp_base = 110
 attack_base = 115
 defense_base = 80

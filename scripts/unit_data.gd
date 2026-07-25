@@ -310,6 +310,16 @@ var growth_group: String = "Medium Slow"
 # podem ter revelado (ou não) independentemente uma da outra.
 @export var hidden_ability_revealed: bool = false
 
+# true = esta unidade já sobreviveu a algum combate com HP atual abaixo de
+# 5% do HP máximo (setado em Unit.take_damage(), assim que hp_current fica
+# nesse patamar sem chegar a 0) — pedido do usuário, Primeape -> Annihilape:
+# "having <5% HP left" como pré-requisito de evolução (ver EvolutionOption.
+# requires_survived_critical_hp/party_screen.gd::_get_available_evolutions).
+# Progresso da UNIDADE (não da espécie), igual hidden_ability_revealed acima
+# — nunca é resetado sozinho depois de virar true, mesmo que a unidade
+# recupere HP cheio depois; só interessa "alguma vez chegou lá".
+@export var has_dropped_below_critical_hp: bool = false
+
 # Preenche level/xp/current_hp na primeira vez que esta instância é usada.
 # Sobe pro nível default já com a xp EXATA que esse nível exigiria de
 # verdade (em vez de 0), pra não destoar da conta cumulativa de

@@ -210,6 +210,15 @@ func _get_available_evolutions(data: UnitData) -> Array[EvolutionOption]:
 			continue
 		if option.requires_action != null and not data.slots.has(option.requires_action):
 			continue
+		# Annihilape (ver EvolutionOption.requires_survived_critical_hp,
+		# pedido do usuário, Primeape: "having <5% HP left") — diferente de
+		# nível/ação equipada, essa exigência é setada em COMBATE (ver
+		# Unit.take_damage()/UnitData.has_dropped_below_critical_hp) assim
+		# que o HP atual cai abaixo de 5% sem desmaiar, e nunca é resetada
+		# sozinha — uma vez satisfeita, fica disponível pra sempre, igual
+		# atingir o nível mínimo de outra evolução qualquer.
+		if option.requires_survived_critical_hp and not data.has_dropped_below_critical_hp:
+			continue
 		available.append(option)
 	return available
 
@@ -228,9 +237,18 @@ func _try_evolve(index: int) -> void:
 	if options.is_empty():
 		return
 	if options.size() == 1:
-		_attempt_evolution(index, options[0].target)
+		_attempt_evolution(index, options[0].target, _consumed_action_for(options[0]))
 		return
 	_open_evolution_choice(index, data, options)
+
+# Item CONSUMIDO ao evoluir (ver EvolutionOption.consumes_required_action,
+# pedido do usuário, Pikachu -> Raichu: "Thunder Stone in loadout, consumed
+# when evolving") — null se a opção não exige ação nenhuma OU se exige mas
+# não consome (ex: Ancient Power/Soothe Bell, que continuam equipados depois).
+func _consumed_action_for(option: EvolutionOption) -> ActionData:
+	if option.consumes_required_action:
+		return option.requires_action
+	return null
 
 func _open_evolution_choice(index: int, data: UnitData, options: Array[EvolutionOption]) -> void:
 	var names: Array[String] = []
@@ -246,7 +264,7 @@ func _on_evolution_choice_closed(chosen_index: int, index: int, options: Array[E
 	active_submenu = null
 	if chosen_index < 0 or chosen_index >= options.size():
 		return   # Z/cancelado — nenhuma opção escolhida, nada acontece.
-	_attempt_evolution(index, options[chosen_index].target)
+	_attempt_evolution(index, options[chosen_index].target, _consumed_action_for(options[chosen_index]))
 
 # Última checagem antes de evoluir de verdade (ver _perform_evolution) —
 # pedido do usuário: "show an error message and stop the player from
@@ -255,7 +273,7 @@ func _on_evolution_choice_closed(chosen_index: int, index: int, options: Array[E
 # isso a conta é "peso total - peso antigo + peso novo" (a DIFERENÇA), não
 # "peso total + peso novo" — senão toda evolução pareceria estar somando um
 # peso extra inteiro em vez de só a diferença entre as duas espécies.
-func _attempt_evolution(index: int, target: UnitData) -> void:
+func _attempt_evolution(index: int, target: UnitData, consumed_action: ActionData = null) -> void:
 	var data: UnitData = GameState.get_roster_slot(index)
 	if data == null or target == null:
 		return
@@ -263,7 +281,7 @@ func _attempt_evolution(index: int, target: UnitData) -> void:
 	if projected_weight > GameState.MAX_TEAM_WEIGHT:
 		_show_evolution_error("%s is too heavy to evolve into %s right now!" % [data.unit_name, target.unit_name])
 		return
-	_perform_evolution(index, target)
+	_perform_evolution(index, target, consumed_action)
 
 # Reaproveita trainer_message_box.tscn (ver MESSAGE_BOX_SCENE) — o sinal
 # "closed" dele não tem argumento nenhum, mesma assinatura de
@@ -315,7 +333,7 @@ func _show_evolution_error(text: String) -> void:
 #    de simplesmente capturá-la já evoluída: ela pode chegar com movimentos
 #    que a espécie evoluída não aprenderia sozinha). Só Habilidade troca de
 #    espécie pra espécie.
-func _perform_evolution(index: int, target: UnitData) -> void:
+func _perform_evolution(index: int, target: UnitData, consumed_action: ActionData = null) -> void:
 	var data: UnitData = GameState.get_roster_slot(index)
 	if data == null or target == null:
 		return
@@ -326,6 +344,17 @@ func _perform_evolution(index: int, target: UnitData) -> void:
 	evolved.slots = data.slots.duplicate()
 	evolved.slot_quantities = data.slot_quantities.duplicate()
 	evolved.hidden_ability_revealed = data.hidden_ability_revealed
+	# Item consumido ao evoluir (ver EvolutionOption.consumes_required_action,
+	# pedido do usuário, Pikachu -> Raichu: "Thunder Stone in loadout,
+	# consumed when evolving") — remove do loadout (vira null naquele slot,
+	# mesmo padrão de uma Berry se auto-consumindo em Unit._check_berry_auto_
+	# use) ANTES do loop de limpeza de Habilidade abaixo, embora a ordem não
+	# importe de verdade aqui (um ItemData nunca é AbilityData, os dois loops
+	# nunca mexem no mesmo slot).
+	if consumed_action != null:
+		var consumed_idx = evolved.slots.find(consumed_action)
+		if consumed_idx != -1:
+			evolved.slots[consumed_idx] = null
 	for i in evolved.slots.size():
 		var action: ActionData = evolved.slots[i]
 		if action == null or not (action is AbilityData):

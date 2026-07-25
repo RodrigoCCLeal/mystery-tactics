@@ -3,6 +3,99 @@
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0022/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0022/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Resource" path="res://data/abilities/keen_eye.tres" id="6_keen_eye"]
+[ext_resource type="Resource" path="res://data/abilities/sniper.tres" id="7_sniper"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="8_growl"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="9_leer"]
+[ext_resource type="Resource" path="res://data/attacks/peck.tres" id="10_peck"]
+[ext_resource type="Resource" path="res://data/attacks/pluck.tres" id="11_pluck"]
+[ext_resource type="Resource" path="res://data/attacks/assurance.tres" id="12_assurance"]
+[ext_resource type="Resource" path="res://data/attacks/fury_attack.tres" id="13_fury_attack"]
+[ext_resource type="Resource" path="res://data/attacks/aerial_ace.tres" id="14_aerial_ace"]
+[ext_resource type="Resource" path="res://data/attacks/wing_attack.tres" id="15_wing_attack"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="16_take_down"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="17_agility"]
+[ext_resource type="Resource" path="res://data/attacks/focus_energy.tres" id="18_focus_energy"]
+[ext_resource type="Resource" path="res://data/attacks/roost.tres" id="19_roost"]
+[ext_resource type="Resource" path="res://data/attacks/drill_peck.tres" id="20_drill_peck"]
+[ext_resource type="Resource" path="res://data/attacks/drill_run.tres" id="21_drill_run"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_keen_eye"]
+script = ExtResource("4_learn")
+action = ExtResource("6_keen_eye")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_sniper"]
+script = ExtResource("4_learn")
+action = ExtResource("7_sniper")
+is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_growl"]
+script = ExtResource("4_learn")
+action = ExtResource("8_growl")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_leer"]
+script = ExtResource("4_learn")
+action = ExtResource("9_leer")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_peck"]
+script = ExtResource("4_learn")
+action = ExtResource("10_peck")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_pluck"]
+script = ExtResource("4_learn")
+action = ExtResource("11_pluck")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_assurance"]
+script = ExtResource("4_learn")
+level = 8
+action = ExtResource("12_assurance")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_fury_attack"]
+script = ExtResource("4_learn")
+level = 11
+action = ExtResource("13_fury_attack")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_aerial_ace"]
+script = ExtResource("4_learn")
+level = 15
+action = ExtResource("14_aerial_ace")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_wing_attack"]
+script = ExtResource("4_learn")
+level = 18
+action = ExtResource("15_wing_attack")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_take_down"]
+script = ExtResource("4_learn")
+level = 23
+action = ExtResource("16_take_down")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_agility"]
+script = ExtResource("4_learn")
+level = 27
+action = ExtResource("17_agility")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_focus_energy"]
+script = ExtResource("4_learn")
+level = 32
+action = ExtResource("18_focus_energy")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_roost"]
+script = ExtResource("4_learn")
+level = 36
+action = ExtResource("19_roost")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_drill_peck"]
+script = ExtResource("4_learn")
+level = 41
+action = ExtResource("20_drill_peck")
+
+[sub_resource type="Resource" id="LearnsetEntry_0022_drill_run"]
+script = ExtResource("4_learn")
+level = 45
+action = ExtResource("21_drill_run")
 
 [resource]
 script = ExtResource("1_script")
@@ -12,6 +105,8 @@ portrait = ExtResource("2_portrait")
 types = Array[String](["Normal", "Flying"])
 grounded = false
 weight = 1
+slots = Array[ExtResource("5_action")]([ExtResource("8_growl"), ExtResource("9_leer"), ExtResource("10_peck"), ExtResource("11_pluck")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0022_keen_eye"), SubResource("LearnsetEntry_0022_sniper"), SubResource("LearnsetEntry_0022_growl"), SubResource("LearnsetEntry_0022_leer"), SubResource("LearnsetEntry_0022_peck"), SubResource("LearnsetEntry_0022_pluck"), SubResource("LearnsetEntry_0022_assurance"), SubResource("LearnsetEntry_0022_fury_attack"), SubResource("LearnsetEntry_0022_aerial_ace"), SubResource("LearnsetEntry_0022_wing_attack"), SubResource("LearnsetEntry_0022_take_down"), SubResource("LearnsetEntry_0022_agility"), SubResource("LearnsetEntry_0022_focus_energy"), SubResource("LearnsetEntry_0022_roost"), SubResource("LearnsetEntry_0022_drill_peck"), SubResource("LearnsetEntry_0022_drill_run")])
 hp_base = 65
 attack_base = 90
 defense_base = 65

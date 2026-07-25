@@ -3,6 +3,107 @@
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0116/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0116/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" path="res://data/units/0117.tres" id="7_target"]
+[ext_resource type="Resource" path="res://data/abilities/swift_swim.tres" id="8_swift_swim"]
+[ext_resource type="Resource" path="res://data/abilities/sniper.tres" id="9_sniper"]
+[ext_resource type="Resource" path="res://data/abilities/damp.tres" id="10_damp"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="11_leer"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="12_water_gun"]
+[ext_resource type="Resource" path="res://data/attacks/smokescreen.tres" id="13_smokescreen"]
+[ext_resource type="Resource" path="res://data/attacks/twister.tres" id="14_twister"]
+[ext_resource type="Resource" path="res://data/attacks/focus_energy.tres" id="15_focus_energy"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_breath.tres" id="16_dragon_breath"]
+[ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="17_bubble_beam"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="18_agility"]
+[ext_resource type="Resource" path="res://data/attacks/water_pulse.tres" id="19_water_pulse"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_pulse.tres" id="20_dragon_pulse"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="21_hydro_pump"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_dance.tres" id="22_dragon_dance"]
+[ext_resource type="Resource" path="res://data/attacks/rain_dance.tres" id="23_rain_dance"]
+
+[sub_resource type="Resource" id="Resource_evo"]
+script = ExtResource("4_evo")
+target = ExtResource("7_target")
+min_level = 32
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_swift_swim"]
+script = ExtResource("5_learn")
+action = ExtResource("8_swift_swim")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_sniper"]
+script = ExtResource("5_learn")
+action = ExtResource("9_sniper")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_damp"]
+script = ExtResource("5_learn")
+action = ExtResource("10_damp")
+is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_leer"]
+script = ExtResource("5_learn")
+action = ExtResource("11_leer")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_water_gun"]
+script = ExtResource("5_learn")
+action = ExtResource("12_water_gun")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_smokescreen"]
+script = ExtResource("5_learn")
+level = 5
+action = ExtResource("13_smokescreen")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_twister"]
+script = ExtResource("5_learn")
+level = 10
+action = ExtResource("14_twister")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_focus_energy"]
+script = ExtResource("5_learn")
+level = 15
+action = ExtResource("15_focus_energy")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_dragon_breath"]
+script = ExtResource("5_learn")
+level = 20
+action = ExtResource("16_dragon_breath")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_bubble_beam"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("17_bubble_beam")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_agility"]
+script = ExtResource("5_learn")
+level = 30
+action = ExtResource("18_agility")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_water_pulse"]
+script = ExtResource("5_learn")
+level = 35
+action = ExtResource("19_water_pulse")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_dragon_pulse"]
+script = ExtResource("5_learn")
+level = 40
+action = ExtResource("20_dragon_pulse")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_hydro_pump"]
+script = ExtResource("5_learn")
+level = 45
+action = ExtResource("21_hydro_pump")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_dragon_dance"]
+script = ExtResource("5_learn")
+level = 50
+action = ExtResource("22_dragon_dance")
+
+[sub_resource type="Resource" id="LearnsetEntry_0116_rain_dance"]
+script = ExtResource("5_learn")
+level = 55
+action = ExtResource("23_rain_dance")
 
 [resource]
 script = ExtResource("1_script")
@@ -12,6 +113,8 @@ portrait = ExtResource("2_portrait")
 types = Array[String](["Water"])
 grounded = true
 weight = 1
+slots = Array[ExtResource("6_action")]([ExtResource("11_leer"), ExtResource("12_water_gun"), ExtResource("8_swift_swim")])
+learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0116_swift_swim"), SubResource("LearnsetEntry_0116_sniper"), SubResource("LearnsetEntry_0116_damp"), SubResource("LearnsetEntry_0116_leer"), SubResource("LearnsetEntry_0116_water_gun"), SubResource("LearnsetEntry_0116_smokescreen"), SubResource("LearnsetEntry_0116_twister"), SubResource("LearnsetEntry_0116_focus_energy"), SubResource("LearnsetEntry_0116_dragon_breath"), SubResource("LearnsetEntry_0116_bubble_beam"), SubResource("LearnsetEntry_0116_agility"), SubResource("LearnsetEntry_0116_water_pulse"), SubResource("LearnsetEntry_0116_dragon_pulse"), SubResource("LearnsetEntry_0116_hydro_pump"), SubResource("LearnsetEntry_0116_dragon_dance"), SubResource("LearnsetEntry_0116_rain_dance")])
 hp_base = 30
 attack_base = 40
 defense_base = 70
@@ -21,3 +124,4 @@ speed_base = 60
 catch_rate = 0.8824
 growth_group = "Medium Fast"
 base_exp_yield = 59
+evolution_options = Array[ExtResource("4_evo")]([SubResource("Resource_evo")])

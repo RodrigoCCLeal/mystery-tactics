@@ -1829,6 +1829,12 @@ func begin_current_turn() -> void:
 		# ganhar NENHUM ataque extra — 0 + 1 seria um bug, não um bônus.
 		if u.can_attack() and has_chlorophyll(u) and is_sun_weather():
 			u.attacks_remaining += 1
+		# Swift Swim (ver AbilityData.swift_swim/has_swift_swim, pedido do
+		# usuário, Horsea: "If weather is Rain, has 1 extra action point
+		# (chlorophyl for rain)") — mesmíssimo mecanismo de Chlorophyll acima,
+		# só trocando a condição de clima pra Rain/Heavy Rain.
+		if u.can_attack() and has_swift_swim(u) and (current_weather == WEATHER_RAIN or current_weather == WEATHER_HEAVY_RAIN):
+			u.attacks_remaining += 1
 		# Tailwind (ver Unit.STATUS_DURATIONS, pedido do usuário, Butterfree:
 		# "For 2 turns, gain 2x speed and extra action point") — mesmo padrão
 		# de Chlorophyll acima, só que checando a Status Condition da própria
@@ -1836,6 +1842,17 @@ func begin_current_turn() -> void:
 		# Unit.get_effective_stat(), sem precisar de nada aqui.
 		if u.can_attack() and u.has_status("Tailwind"):
 			u.attacks_remaining += 1
+		# Recarga (ver Unit.must_recharge/AttackData.requires_recharge, Hyper
+		# Beam/Giga Impact) — SEMPRE zera attacks_remaining este turno, por
+		# cima de QUALQUER bônus acima (Chlorophyll/Swift Swim/Tailwind) —
+		# "consume the next action point the unit would have" (pedido do
+		# usuário) não faz exceção pra bônus extra: a unidade simplesmente não
+		# ataca este turno, ponto final. Limpa a flag na hora (só custa 1
+		# turno, não fica "travado" pra sempre).
+		if u.must_recharge:
+			u.attacks_remaining = 0
+			u.must_recharge = false
+			log_message("%s must recharge!" % u.data.unit_name)
 
 	# Golpe de carga pendente (ver Unit.charging_attack/AttackData.
 	# is_charge_move — Solar Beam) — "as soon as the unit has another action
@@ -1852,10 +1869,21 @@ func begin_current_turn() -> void:
 		var charged_attack: AttackData = u.charging_attack
 		var charged_dir: Vector2i = u.charging_dir
 		var charged_slot: int = u.charging_slot_index
+		var charged_target: Node = u.charging_target
 		u.charging_attack = null
 		u.charging_dir = Vector2i.ZERO
 		u.charging_slot_index = -1
-		await execute_attack_burst(u, charged_attack, charged_dir, charged_slot, true)
+		u.charging_target = null
+		# Focus Punch (ver Unit.charging_target/execute_attack, pedido do
+		# usuário: "Focus Punch really is happening in the same turn, fix
+		# that") — golpe de carga de ALVO ÚNICO ("Single") dispara via
+		# execute_attack de novo, no alvo TRAVADO desde a carga; qualquer
+		# outro formato (Line/Cone/Burst/Wide — Solar Beam) continua indo por
+		# execute_attack_burst, mesmo comportamento de sempre.
+		if charged_attack.area_shape == "Single":
+			await execute_attack(u, charged_target, charged_attack, charged_slot, true, true)
+		else:
+			await execute_attack_burst(u, charged_attack, charged_dir, charged_slot, true)
 		# execute_attack_burst() pode ter encadeado check_auto_end_turn() ->
 		# _on_end_turn_pressed() -> begin_current_turn() da PRÓXIMA unidade
 		# (ou até encerrado a batalha) enquanto este await estava suspenso —
@@ -2896,6 +2924,19 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 		_run_player_ball_throw(current, clicked_cell, action, index)
 	cancel_targeting()
 
+# Sorteia UMA das 8 direções (helper puro, sem checar nada além do sorteio
+# em si) — extraído pra fora de resolve_confused_target pra também poder ser
+# usado por _execute_confused_style_attack (Outrage), que precisa saber a
+# DIREÇÃO sorteada mesmo quando o alvo dá "errou" (pra virar/animar pro lado
+# certo mesmo batendo no vazio) — resolve_confused_target só devolve o alvo
+# (ou null), nunca a direção em si.
+func _roll_confused_direction() -> Vector2i:
+	var directions: Array[Vector2i] = [
+		Vector2i(0, -1), Vector2i(1, -1), Vector2i(1, 0), Vector2i(1, 1),
+		Vector2i(0, 1), Vector2i(-1, 1), Vector2i(-1, 0), Vector2i(-1, -1),
+	]
+	return directions[randi() % directions.size()]
+
 # Sorteia uma das 8 direções (a "direção errada" da confusão) e devolve quem
 # estiver nela dentro do alcance da ação — SEM o filtro de "só inimigo" que
 # find_projectile_target tem, de propósito: uma unidade confusa "deve ser
@@ -2907,27 +2948,27 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 # find_projectile_target); ataque comum (melee) só olha a distância EXATA de
 # action.range naquela direção — mesma convenção de is_valid_target_cell.
 func resolve_confused_target(attacker: Node, action: ActionData) -> Node:
-	var directions: Array[Vector2i] = [
-		Vector2i(0, -1), Vector2i(1, -1), Vector2i(1, 0), Vector2i(1, 1),
-		Vector2i(0, 1), Vector2i(-1, 1), Vector2i(-1, 0), Vector2i(-1, -1),
-	]
-	directions.shuffle()
-	for dir in directions:
-		if action is AttackData and action.is_projectile:
-			var cell = attacker.grid_pos
-			for step in action.range:
-				var next_cell = cell + dir
-				if is_wall_or_border(next_cell):
-					break
-				cell = next_cell
-				var u = get_unit_at(cell)
-				if u != null:
-					return u
-		else:
-			var u = get_unit_at(attacker.grid_pos + dir * action.range)
+	# BUG corrigido aqui (2026-07-24): a versão anterior EMBARALHAVA as 8
+	# direções mas depois percorria TODAS elas até achar qualquer alvo,
+	# o que na prática dava ~100% de chance de acertar quem estivesse
+	# adjacente (bastava existir alguém em QUALQUER uma das 8 direções) —
+	# o comentário grande logo abaixo já dizia que o design de verdade é
+	# "sorteia 1 das 8 direções" (~1/8 de chance de calhar na direção
+	# certa), então o sorteio precisa PARAR na primeira (e única) direção
+	# escolhida, não continuar procurando as outras 7 se ela vier vazia.
+	var dir = _roll_confused_direction()
+	if action is AttackData and action.is_projectile:
+		var cell = attacker.grid_pos
+		for step in action.range:
+			var next_cell = cell + dir
+			if is_wall_or_border(next_cell):
+				break
+			cell = next_cell
+			var u = get_unit_at(cell)
 			if u != null:
 				return u
-	return null
+		return null
+	return get_unit_at(attacker.grid_pos + dir * action.range)
 
 # Fórmula de dano (estilo Pokémon):
 #   (((2*Nível/5 + 2) * Poder * Ataque/Defesa) / 50 + 2) * Modificadores
@@ -2966,8 +3007,21 @@ func resolve_confused_target(attacker: Node, action: ActionData) -> Node:
 # TODO lugar que precisar da efetividade combinada de um ataque (dano E a
 # mensagem "super effective"/"not very effective" — ver os dois usos abaixo).
 func get_weather_adjusted_effectiveness(attack_element: String, defender: Node) -> float:
-	var effectiveness = TypeChart.get_effectiveness(attack_element, defender.data.types)
-	if current_weather == WEATHER_STRONG_WINDS and defender.data.types.has("Flying"):
+	# Roosted (ver Unit.apply_status_condition/STATUS_DURATIONS["Roosted"],
+	# pedido do usuário, Spearow, Roost: "Roosted means it loses Flying
+	# type") — pra fins de efetividade de tipo, "perde Flying" vira remover
+	# esse tipo da lista antes de consultar a TypeChart (ex: um golpe Ground
+	# deixa de ser 0.0 contra quem está Roosted). Groundwork parcial: só este
+	# ponto de cálculo lê essa exceção (Strong Winds/imunidade por Habilidade/
+	# STATUS_TYPE_IMMUNITIES continuam olhando defender.data.types cru) —
+	# suficiente pro caso principal que motivou o pedido (dano recebido),
+	# mesmo espírito de outras features documentadas como parciais neste
+	# projeto (ver Damp/Brick Break).
+	var defending_types = defender.data.types
+	if defender.has_status("Roosted"):
+		defending_types = defending_types.filter(func(t): return t != "Flying")
+	var effectiveness = TypeChart.get_effectiveness(attack_element, defending_types)
+	if current_weather == WEATHER_STRONG_WINDS and defending_types.has("Flying"):
 		if TypeChart.get_multiplier(attack_element, "Flying") > 1.0:
 			return 0.5
 	return effectiveness
@@ -3002,6 +3056,34 @@ func calculate_damage(attacker: Node, defender: Node, attack: AttackData, is_cri
 
 	if has_type_immunity_ability(defender, attack.element_type):
 		return 0
+
+	# Super Fang (ver AttackData.deals_damage_equal_to_half_target_current_hp,
+	# pedido do usuário, Rattata: "Does damage exactly equal to half of the
+	# target's current health") — ignora a fórmula normal (Attack/Defense/
+	# nível/crítico não importam nada), mas ainda respeita as duas imunidades
+	# checadas acima (efetividade de tipo e Habilidade). Mínimo 1 (nunca 0,
+	# diferente de Endeavor logo abaixo, que PODE ser 0 de propósito).
+	if attack.deals_damage_equal_to_half_target_current_hp:
+		return max(1, int(defender.hp_current / 2.0))
+
+	# Endeavor (ver AttackData.sets_target_hp_to_attacker_hp, pedido do
+	# usuário, Rattata: "Does damage to the opponent so that the target has
+	# the same HP as the user") — "Fails if user HP > target HP" já foi
+	# checado ANTES desta função rodar (ver battle.gd::execute_attack, mesmo
+	# "But it failed!" de sempre), então aqui só falta calcular a diferença.
+	# max(0, ...) de propósito: se os dois HPs já estiverem iguais, o dano é
+	# 0 de verdade (sem o piso de 1 que o resto da função aplica no final).
+	if attack.sets_target_hp_to_attacker_hp:
+		return max(0, defender.hp_current - attacker.hp_current)
+
+	# Guillotine (ver AttackData.deals_damage_equal_to_target_current_hp,
+	# pedido do usuário, Corphish: "Does damage equal to the current HP of the
+	# unit hit") — ignora a fórmula normal por completo, igual Super Fang/
+	# Endeavor acima, mas devolve o HP CHEIO do alvo (nocaute garantido se o
+	# golpe conectar e passar pelas duas imunidades checadas no topo desta
+	# função).
+	if attack.deals_damage_equal_to_target_current_hp:
+		return defender.hp_current
 
 	# get_effective_stat() em vez do stat cru: já aplica o estágio alterado
 	# (Altered Stats, ver Unit.STAGE_STATS) — com todo mundo em estágio 0
@@ -3113,7 +3195,11 @@ func _roll_multi_hit_count() -> int:
 # vez só, em execute_attack, depois que esta função retorna (mesmo formato de
 # sempre, só o "meio" da função — dano em si — que se repete).
 func _resolve_multi_hit_damage(attacker: Node, defender: Node, attack: AttackData) -> int:
-	var hit_count = _roll_multi_hit_count()
+	# Double Hit (ver AttackData.always_hits_twice, pedido do usuário,
+	# Corphish: "Multi Hit move (always hits 2 times)") — checado ANTES de
+	# sortear por MULTI_HIT_WEIGHTS: sempre exatamente 2 acertos, nunca o
+	# 2-5 ponderado que Pin Missile/Fury Attack usam.
+	var hit_count = 2 if attack.always_hits_twice else _roll_multi_hit_count()
 	var total_hp_lost = 0
 	for i in range(hit_count):
 		if i > 0:
@@ -3127,15 +3213,89 @@ func _resolve_multi_hit_damage(attacker: Node, defender: Node, attack: AttackDat
 			defender.play_hurt_animation()
 			if attack.impact_texture != null or attack.impact_texture_2 != null or not attack.impact_frames.is_empty():
 				play_impact_effect(attack.impact_texture, defender.position, attack.impact_texture_2, attack.impact_frames)
-		var is_critical = randf() < get_effective_crit_chance(attack, attacker)
+		# Shell Armor (ver AbilityData.shell_armor) — força "sem crítico"
+		# incondicionalmente quando quem DEFENDE carrega essa Habilidade.
+		var is_critical = randf() < get_effective_crit_chance(attack, attacker) and not has_shell_armor(defender)
 		var damage = calculate_damage(attacker, defender, attack, is_critical)
 		var hp_lost = min(damage, max(defender.hp_current, 0))
 		defender.take_damage(damage)
 		total_hp_lost += hp_lost
 		if is_critical:
 			log_message("A critical hit!")
+			_try_anger_point(defender)
 	log_message("Hit %d time(s)!" % hit_count)
 	return total_hp_lost
+
+# Outrage (ver AttackData.confused_style_hit_count, pedido do usuário,
+# Mankey: "Hits 3 times as if confused (random directions with friendly
+# fire) Range 1 single target") — chamado por execute_attack logo depois do
+# roll de Accuracy geral do golpe passar, DESVIANDO por completo do resto
+# daquela função (que assume um `defender` único resolvido no clique — não
+# faz sentido nenhum aqui, já que cada acerto sorteia o PRÓPRIO alvo via
+# resolve_confused_target, podendo ser aliado, inimigo ou ninguém, mesmo
+# sorteio que a Status Condition "Confused" já usa). Repete essa mira N
+# vezes (attack.confused_style_hit_count), cada uma com seu próprio roll de
+# crítico/dano e checagem de desmaio — bem mais simples que execute_attack
+# normal de propósito (sem Protected/Flash Fire/Lightning Rod/secondary_
+# status/drain — nenhum golpe usando este campo hoje combina com nenhum
+# desses efeitos, mesmo espírito simplificado que _resolve_multi_hit_damage
+# já usa pra Pin Missile).
+func _execute_confused_style_attack(attacker: Node, attack: AttackData) -> void:
+	var hit_delay = attacker.data.special_hit_delay if attack.is_special else attacker.data.attack_hit_delay
+	for i in range(attack.confused_style_hit_count):
+		# Cada um dos N acertos sorteia sua PRÓPRIA direção (não reusa
+		# resolve_confused_target — aqui a gente PRECISA saber a direção em
+		# si, não só o alvo, pra virar/animar o golpe pro lado sorteado
+		# mesmo quando não tem ninguém lá, ver _roll_confused_direction) e
+		# toca a animação de ataque NAQUELA hora — pedido do usuário
+		# (2026-07-24): "play the attack animation on 3 RANDOM directions",
+		# em vez da única animação genérica que execute_attack_burst/
+		# execute_attack tocavam ANTES de despachar pra cá (sempre virada
+		# pro alvo clicado original, nunca pras direções de verdade
+		# sorteadas aqui dentro).
+		var dir = _roll_confused_direction()
+		attacker.face_towards(attacker.grid_pos + dir)
+		attacker.play_attack_animation(attack.is_special)
+		await get_tree().create_timer(hit_delay).timeout
+		var target = get_unit_at(attacker.grid_pos + dir * attack.range)
+		if target == null:
+			# Direção sorteada não achou ninguém — golpe bate no vazio,
+			# mesmo "erra" de um ataque Confuso comum (ver resolve_confused_
+			# target), só que agora com a animação já tendo tocado pro lado
+			# certo mesmo assim.
+			log_message("%s's attack missed!" % attacker.data.unit_name)
+			continue
+		target.face_towards(attacker.grid_pos)
+		target.play_hurt_animation()
+		if attack.impact_texture != null or attack.impact_texture_2 != null or not attack.impact_frames.is_empty():
+			play_impact_effect(attack.impact_texture, target.position, attack.impact_texture_2, attack.impact_frames)
+		if target.has_status("Asleep"):
+			target.cure_status_condition("Asleep")
+		# Shell Armor (ver AbilityData.shell_armor) — força "sem crítico"
+		# incondicionalmente quando quem DEFENDE carrega essa Habilidade.
+		var is_critical = randf() < get_effective_crit_chance(attack, attacker) and not has_shell_armor(target)
+		var damage = calculate_damage(attacker, target, attack, is_critical)
+		target.take_damage(damage)
+		if is_critical:
+			log_message("A critical hit!")
+			_try_anger_point(target)
+		var effectiveness = get_weather_adjusted_effectiveness(attack.element_type, target)
+		if effectiveness == 0.0 or has_type_immunity_ability(target, attack.element_type):
+			log_message("It had no effect on %s!" % target.data.unit_name)
+		elif effectiveness > 1.0:
+			log_message("It's super effective on %s!" % target.data.unit_name)
+		elif effectiveness < 1.0:
+			log_message("It's not very effective on %s..." % target.data.unit_name)
+		if target.hp_current <= 0:
+			log_message("%s was defeated!" % target.data.unit_name)
+			award_experience(attacker, target)
+			remove_defeated_unit(target)
+			_apply_challenge_permadeath(target)
+			if enemy_units.is_empty() or player_units.is_empty():
+				await end_battle(target, enemy_units.is_empty())
+				return
+	refresh_unit_summary_hud()
+	check_auto_end_turn()
 
 # Chance de Acerto Crítico de VERDADE a usar no roll (ver AttackData.
 # crit_chance_override) — CRITICAL_HIT_CHANCE global, A NÃO SER que o golpe
@@ -3153,6 +3313,13 @@ func get_effective_crit_chance(attack: AttackData, attacker: Node = null) -> flo
 	if attack.crit_chance_override >= 0.0:
 		chance = attack.crit_chance_override
 	if attacker != null and attacker.has_status("Focus Energy"):
+		chance *= 2.0
+	# Super Luck (ver AbilityData.super_luck, pedido do usuário, 2026-07-25,
+	# Togepi Hidden: "Doubles critical hit chance for moves used") — mesmo
+	# multiplicador x2 de Focus Energy acima, só que passivo (não depende de
+	# nenhuma Status Condition), compõe livremente com ela se a mesma unidade
+	# tiver as duas coisas (x4 no total, caso raro).
+	if attacker != null and has_super_luck(attacker):
 		chance *= 2.0
 	return chance
 
@@ -3202,12 +3369,57 @@ func calculate_damage_modifiers(attacker: Node, defender: Node, attack: AttackDa
 				modifiers *= 0.5
 
 	if attacker.data.types.has(attack.element_type):
-		modifiers *= 1.5
+		# Adaptability (ver AbilityData.adaptability, pedido do usuário,
+		# 2026-07-25, Corphish Hidden: "STAB attacks do x4/3 damage (replaces
+		# normal x1.5 multiplier to a x2 multiplier)") — SUBSTITUI o x1.5
+		# padrão por x2.0 direto, em vez de multiplicar por cima (mesmo
+		# espírito de crit_chance_override: substitui, não empilha).
+		if has_adaptability(attacker):
+			modifiers *= 2.0
+		else:
+			modifiers *= 1.5
+
+	# Knock Off (ver AttackData.discards_target_item, pedido do usuário,
+	# Corphish: "attack does x1.5 damage" quando o alvo carrega qualquer Item
+	# equipado) — checado aqui (não em _try_knock_off_item, que só cuida do
+	# roubo/descarte em si) porque este é o ponto único de "modificadores de
+	# dano" da fórmula.
+	if attack.discards_target_item and defender.data != null:
+		for action in defender.data.slots:
+			if action is ItemData:
+				modifiers *= 1.5
+				break
 
 	# Burned: só ataques FÍSICOS de quem está queimado recebem o x0.5 (não
-	# afeta ataques especiais nem o dano que essa unidade RECEBE).
-	if attacker.has_status("Burned") and not attack.is_special:
+	# afeta ataques especiais nem o dano que essa unidade RECEBE). Guts (ver
+	# AbilityData.guts, pedido do usuário, Rattata: "Burn does not reduce the
+	# user's attack") cancela esse x0.5 por completo — nos jogos de verdade
+	# Guts "devolve" o Attack STAT cortado por Burn; aqui Burn corta o
+	# MODIFICADOR de dano em vez do stat, então Guts cancela o modificador
+	# pra chegar no mesmo resultado final.
+	# Facade (ver AttackData.ignores_burn_damage_reduction, pedido do usuário,
+	# Mankey: "Ignores Burn damage reduction") — mesmo cancelamento que Guts já
+	# dá, só que pelo GOLPE em vez da Habilidade (os dois cancelam
+	# independentemente, um OU outro já basta).
+	if attacker.has_status("Burned") and not attack.is_special and not has_guts(attacker) and not attack.ignores_burn_damage_reduction:
 		modifiers *= 0.5
+
+	# Assurance (ver AttackData.power_doubles_if_target_damaged_this_round,
+	# pedido do usuário, Rattata: "Does double damage if target was damaged by
+	# an attack this round") — ver Unit.damaged_this_round pra definição exata
+	# de "rodada" (resetado em battle.gd::_on_end_turn_pressed).
+	if attack.power_doubles_if_target_damaged_this_round and defender.damaged_this_round:
+		modifiers *= 2.0
+
+	# Light Screen (Pichu, pedido do usuário: "Light Screen status reduces
+	# damage taken by special moves by 33%") — só golpes ESPECIAIS de quem
+	# ataca são reduzidos por quem DEFENDE estar com essa Status Condition
+	# ativa (mesma assimetria física/especial que Burned/physical_damage_
+	# multiplier acima já seguem, só que do lado do defensor em vez do
+	# atacante). 2/3 em vez de "0.67" pra não perder precisão de ponto
+	# flutuante à toa.
+	if defender.has_status("Light Screen") and attack.is_special:
+		modifiers *= (2.0 / 3.0)
 
 	# Held Items com ItemData.physical_damage_multiplier (ex: Muscleband,
 	# 1.1) — mesma restrição "só Físico" do Burned acima, mesmo padrão de
@@ -3337,6 +3549,44 @@ func has_run_away(u: Node) -> bool:
 			return true
 	return false
 
+# true se `u` carrega uma Habilidade com guts=true equipada (ver AbilityData.
+# guts) — usado em calculate_damage_modifiers pra cancelar o x0.5 de Burned.
+# A parte do Attack x1.5 de Guts mora em Unit.get_effective_stat() (_has_guts
+# LOCAL, não este), já que aquele método não tem acesso a battle.gd.
+func has_guts(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.guts:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com hustle=true equipada (ver
+# AbilityData.hustle) — usado em execute_attack/execute_attack_burst pra
+# multiplicar a Accuracy de golpes FÍSICOS por 0.8. A parte do Attack x1.5
+# mora em Unit.get_effective_stat() (_has_hustle LOCAL, não este).
+func has_hustle(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.hustle:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com static_paralysis=true equipada (ver
+# AbilityData.static_paralysis) — usado em _try_static, chamado quando `u`
+# (quem DEFENDE) leva um golpe de CONTATO.
+func has_static_ability(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.static_paralysis:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com lightning_rod=true equipada (ver
+# AbilityData.lightning_rod) — usado no gatilho de +1 Sp.Atk (execute_attack/
+# execute_attack_burst) e em _redirect_lightning_rod.
+func has_lightning_rod(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.lightning_rod:
+			return true
+	return false
+
 # true se `u` carrega uma Habilidade com compound_eyes=true equipada (ver
 # AbilityData.compound_eyes) — usado em Unit.get_accuracy_multiplier().
 func has_compound_eyes(u: Node) -> bool:
@@ -3408,6 +3658,196 @@ func has_technician(u: Node) -> bool:
 const TECHNICIAN_MULTIPLIER = 1.5
 const TECHNICIAN_POWER_THRESHOLD = 60
 
+# true se `u` carrega uma Habilidade com serene_grace=true equipada (ver
+# AbilityData.serene_grace) — usado em _effective_secondary_chance() abaixo,
+# a função utilitária única que os 3 mecanismos de "efeito extra com % de
+# chance" (secondary_status/_2, secondary_stat_change, self_stat_boost) leem
+# em vez de repetir min(1.0, chance*2) em cada um deles.
+func has_serene_grace(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.serene_grace:
+			return true
+	return false
+
+# Dobra `base_chance` (capado em 1.0) quando `attacker` carrega Serene Grace —
+# usada nos 3 pontos que rolam efeito secundário (ver has_serene_grace acima).
+# attacker == null (compatível com qualquer chamada antiga) simplesmente nunca
+# dobra nada.
+func _effective_secondary_chance(base_chance: float, attacker: Node = null) -> float:
+	if attacker != null and has_serene_grace(attacker):
+		return min(1.0, base_chance * 2.0)
+	return base_chance
+
+# true se `u` carrega uma Habilidade com super_luck=true equipada (ver
+# AbilityData.super_luck) — usado em get_effective_crit_chance(), compõe
+# livremente com a Status Condition "Focus Energy" (multiplicativo, igual ela).
+func has_super_luck(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.super_luck:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com swift_swim=true equipada (ver
+# AbilityData.swift_swim) — usado em begin_current_turn(), mesmo bloco que já
+# confere Chlorophyll, só que pra Rain/Heavy Rain em vez de Sunny/Harsh
+# Sunlight.
+func has_swift_swim(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.swift_swim:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com poison_point=true equipada (ver
+# AbilityData.poison_point) — usado em _try_poison_point, chamado quando `u`
+# (quem DEFENDE) leva um golpe de CONTATO.
+func has_poison_point(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.poison_point:
+			return true
+	return false
+
+# Poison Point (ver AbilityData.poison_point, pedido do usuário, 2026-07-25,
+# Seadra: "When taking contact move, 30% to poison attacker") — mesmo formato
+# de _try_static (ver comentário grande lá), status fixo "Poisoned" em vez de
+# "Paralyzed", reaproveitando a mesma constante de chance (30%, mesmo valor).
+func _try_poison_point(attacker: Node, defender: Node, attack: AttackData) -> void:
+	if not attack.makes_contact or not has_poison_point(defender):
+		return
+	if randf() >= STATIC_CHANCE:
+		return
+	if attacker.apply_status_condition("Poisoned", defender):
+		log_message("%s's Poison Point poisoned %s!" % [defender.data.unit_name, attacker.data.unit_name])
+
+# true se `u` carrega uma Habilidade com hyper_cutter=true equipada (ver
+# AbilityData.hyper_cutter) — usado em Unit.modify_stat_stage (bloqueia queda
+# de Attack) e em execute_attack/execute_attack_burst (auto-buff pós-golpe
+# "Sharp").
+func has_hyper_cutter(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.hyper_cutter:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com shell_armor=true equipada (ver
+# AbilityData.shell_armor) — usado em TODOS os pontos que rolam crítico contra
+# um defensor (execute_attack, execute_attack_burst, _resolve_multi_hit_damage).
+func has_shell_armor(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.shell_armor:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com adaptability=true equipada (ver
+# AbilityData.adaptability) — usado em calculate_damage_modifiers, no bloco de
+# STAB (substitui x1.5 por x2.0 em vez de empilhar).
+func has_adaptability(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.adaptability:
+			return true
+	return false
+
+# Knock Off (ver AttackData.discards_target_item, pedido do usuário, Corphish:
+# "If there is an Item on opponent's Loadout, attack does x1.5 damage and
+# discards 1 random held item. Return it to the player's bag if used against
+# an allied unit") — a parte do dano x1.5 mora em calculate_damage_modifiers
+# (ver ali); esta função só cuida do roubo/descarte em si, chamada depois que
+# o dano já foi aplicado (mesmo ponto de chamada de _try_bug_bite_steal_berry),
+# desde que o alvo tenha sobrevivido. Sorteia UM item aleatório entre todos os
+# slots ocupados por QUALQUER ItemData (não só Berry, diferente de Bug Bite) —
+# se o alvo for ALIADO de quem usou o golpe (mesmo `is_enemy`), o item volta
+# pro inventário via GameState (mesma lista usada pelo Debugger, ver
+# GameState.ALL_ITEMS/party_screen "bag"); contra um inimigo, o item só some.
+func _try_knock_off_item(attacker: Node, defender: Node, attack: AttackData) -> void:
+	if not attack.discards_target_item or defender.data == null:
+		return
+	var item_indices: Array[int] = []
+	for i in defender.data.slots.size():
+		if defender.data.slots[i] is ItemData:
+			item_indices.append(i)
+	if item_indices.is_empty():
+		return
+	var chosen_index: int = item_indices[randi() % item_indices.size()]
+	var item: ItemData = defender.data.slots[chosen_index]
+	defender.data.slots[chosen_index] = null
+	if chosen_index < defender.slot_uses.size():
+		defender.slot_uses[chosen_index] = 0
+	if attacker.is_enemy == defender.is_enemy:
+		GameState.add_item(item)
+		log_message("%s knocked off %s's %s! It was returned to the bag." % [attacker.data.unit_name, defender.data.unit_name, item.action_name])
+	else:
+		log_message("%s knocked off %s's %s!" % [attacker.data.unit_name, defender.data.unit_name, item.action_name])
+
+# true se `u` carrega uma Habilidade com anger_point=true equipada (ver
+# AbilityData.anger_point) — usado em _try_anger_point, chamado nos 3 pontos
+# que rolam crítico contra um defensor.
+func has_anger_point(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.anger_point:
+			return true
+	return false
+
+# Anger Point (ver AbilityData.anger_point, pedido do usuário, 2026-07-25,
+# Mankey: "If hit with a critical hit, raises attack to +6 (not increasing
+# by 6, it becomes maximized)") — chamado só quando um acerto crítico REAL
+# aconteceu (mesmo ponto que já loga "A critical hit!" nos 3 caminhos de
+# dano). Preenche o estágio de Attack direto no máximo, não soma um delta —
+# por isso não reaproveita apply_stat_change (que só soma), mexe direto em
+# Unit.modify_stat_stage com a DIFERENÇA até o teto.
+func _try_anger_point(defender: Node) -> void:
+	if not has_anger_point(defender):
+		return
+	var current: int = defender.stat_stages.get("attack", 0)
+	if current >= UnitScript.STAT_STAGE_MAX:
+		return
+	defender.modify_stat_stage("attack", UnitScript.STAT_STAGE_MAX - current)
+	log_message("%s's Anger Point maximized its Attack!" % defender.data.unit_name)
+
+# true se `u` carrega uma Habilidade com defiant=true equipada (ver
+# AbilityData.defiant) — usado em apply_stat_change, quando um `source`
+# diferente do próprio alvo causa uma queda de stat nele.
+func has_defiant(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.defiant:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com sand_veil=true equipada (ver
+# AbilityData.sand_veil) — usado em Unit.get_effective_stat() (x2 Speed
+# durante Sandstorm, ver _has_sand_veil lá) e em get_weather_tick_damage
+# abaixo (imunidade ao dano do próprio Sandstorm).
+func has_sand_veil(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.sand_veil:
+			return true
+	return false
+
+# true se `u` carrega uma Habilidade com unnerve=true equipada (ver
+# AbilityData.unnerve) — usado em has_unnerve_nearby, chamado por
+# Unit._check_berry_auto_use (via get_parent()) antes de deixar uma Berry se
+# auto-consumir.
+func has_unnerve(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.unnerve:
+			return true
+	return false
+
+# Unnerve (ver AbilityData.unnerve, pedido do usuário, 2026-07-25, Tyranitar:
+# "Opponents in range 3 burst can't consume berries") — true se algum
+# INIMIGO de `u` (lado oposto) carregando Unnerve estiver a até 3 tiles de
+# distância (Chebyshev, mesmo critério de Lightning Rod) de `u`. Chamado por
+# Unit._check_berry_auto_use logo antes de consumir a Berry — `u` aqui é
+# sempre quem COMERIA a Berry, nunca quem carrega Unnerve.
+func has_unnerve_nearby(u: Node) -> bool:
+	var opposing_side = enemy_units if not u.is_enemy else player_units
+	for foe in opposing_side:
+		if not has_unnerve(foe):
+			continue
+		var delta = foe.grid_pos - u.grid_pos
+		var dist = max(abs(delta.x), abs(delta.y))
+		if dist <= 3:
+			return true
+	return false
+
 # Effect Spore (ver AbilityData.effect_spore, pedido do usuário, Shroomish:
 # "Counts as a Powder move, when taking contact attack, 30% chance to make
 # target Paralyzed, Sleep or Poisoned. Status condition is chosen randomly")
@@ -3433,6 +3873,83 @@ func _try_effect_spore(attacker: Node, defender: Node, attack: AttackData) -> vo
 	var status_name: String = EFFECT_SPORE_STATUSES[randi() % EFFECT_SPORE_STATUSES.size()]
 	if attacker.apply_status_condition(status_name, defender):
 		log_message("%s's Effect Spore inflicted %s on %s!" % [defender.data.unit_name, status_name, attacker.data.unit_name])
+
+# Static (ver AbilityData.static_paralysis, pedido do usuário, 2026-07-24,
+# Pichu: "When hit by a contact move, 30% chance to Paralyzing the
+# opponent") — mesmo formato de _try_effect_spore acima (dispara em QUEM
+# ATACA quando um golpe de CONTATO acerta quem carrega a Habilidade), só que
+# com status FIXO ("Paralyzed", sem sorteio entre vários) e sem a ressalva de
+# "conta como pó" que Effect Spore tem (o pedido do usuário não mencionou
+# nenhuma exceção de tipo pra Static).
+const STATIC_CHANCE = 0.3
+
+func _try_static(attacker: Node, defender: Node, attack: AttackData) -> void:
+	if not attack.makes_contact or not has_static_ability(defender):
+		return
+	if randf() >= STATIC_CHANCE:
+		return
+	if attacker.apply_status_condition("Paralyzed", defender):
+		log_message("%s's Static paralyzed %s!" % [defender.data.unit_name, attacker.data.unit_name])
+
+# Lightning Rod (ver AbilityData.lightning_rod, pedido do usuário, 2026-07-24,
+# Pichu Hidden: "Redirect single target Electric moves used on allies at
+# range 2 distance to self") — chamado bem no TOPO de execute_attack, antes
+# de qualquer outra coisa, com `original_target` ainda sendo quem o jogador/
+# IA mirou de verdade. Só redireciona golpes ELÉTRICOS de ALVO ÚNICO (área
+# "Single", nunca Burst/Cone/Line/Wide/Team — não faria sentido "redirecionar"
+# um golpe que já atinge todo mundo) mirados numa unidade cujo ALIADO (mesmo
+# lado, unidade diferente) carrega Lightning Rod a até 2 tiles de distância
+# do ALVO ORIGINAL (distância confirmada com o usuário: "Portador até o
+# ALIADO mirado", não até quem ataca). Se `original_target` já for quem
+# carrega a Habilidade, ou se nenhum aliado dentro do alcance a carregar,
+# devolve o alvo original sem mudar nada.
+#
+# Groundwork parcial documentado: só cobre golpes QUE CAUSAM DANO (chamado
+# só em execute_attack, não em execute_status_attack) — um futuro golpe de
+# Status elétrico de alvo único (ex: Thunder Wave usado num aliado) ainda não
+# é redirecionado por este mecanismo, mesmo espírito de outras features
+# "cobrem o caso principal, resto fica documentado" já usado neste projeto
+# (ver Damp/Brick Break).
+func _redirect_lightning_rod(original_target: Node, attack: AttackData) -> Node:
+	if attack.element_type != "Electric" or attack.area_shape != "Single" or original_target == null:
+		return original_target
+	var allies_side = enemy_units if original_target.is_enemy else player_units
+	for ally in allies_side:
+		if ally == original_target or not has_lightning_rod(ally):
+			continue
+		var delta = ally.grid_pos - original_target.grid_pos
+		var dist = max(abs(delta.x), abs(delta.y))
+		if dist <= 2:
+			log_message("%s's Lightning Rod drew in the attack!" % ally.data.unit_name)
+			return ally
+	return original_target
+
+# Pursuit (ver AttackData.secondary_status="Pursuited"/Unit.pursuit_damage,
+# pedido do usuário, 2026-07-24, Rattata, depois de confirmado com o
+# usuário): "Sempre da o Pursuited status. Pursuited status causa o mesmo
+# dano do ataque se e somente se a unidade afetada mover de tile. Se tomar o
+# dano repetido ou passa o turno, o Pursuited status some". Este bloco cobre
+# a parte de "mover de tile" — chamado logo depois de um movimento de
+# verdade terminar (ver move_selected_unit/move_unit_along_path abaixo), só
+# se `u` estiver Pursuited. A parte de "passa o turno" (sem ter se movido)
+# mora em _on_end_turn_pressed (cura sem dano nenhum). Mesmo formato de
+# death-handling de _try_counter (remove_defeated_unit/permadeath/
+# end_battle) — o dano retido pode ser o suficiente pra desmaiar quem está
+# Pursuited.
+func _try_trigger_pursuit(u: Node) -> void:
+	if not u.has_status("Pursuited"):
+		return
+	var damage = u.pursuit_damage
+	u.take_damage(damage)
+	log_message("%s was hit again by the lingering Pursuit!" % u.data.unit_name)
+	u.cure_status_condition("Pursuited")
+	refresh_unit_summary_hud()
+	if u.hp_current <= 0:
+		log_message("%s fainted from the Pursuit!" % u.data.unit_name)
+		remove_defeated_unit(u)
+		_apply_challenge_permadeath(u)
+		if enemy_units.is_empty() or player_units.is_empty():
+			await end_battle(u, enemy_units.is_empty())
 
 # Run Away (ver AbilityData.run_away, pedido do usuário, 2026-07-23, Caterpie
 # Hidden: "When damaged with an attack, the user moves 1 tile away from the
@@ -3505,6 +4022,33 @@ func get_effective_power(attacker: Node, attack: AttackData, defender: Node = nu
 		var base = attack.consecutive_use_boosted_base_power if boosted else attack.consecutive_use_base_power
 		var cap = attack.consecutive_use_boosted_max_power if boosted else attack.consecutive_use_max_power
 		return min(cap, base * int(pow(2, uses - 1)))
+	# Rage Fist (ver AttackData.scales_linearly_with_consecutive_use, pedido
+	# do usuário, Primeape: "Increases Base power by 50 every time this move
+	# is used. Resets when using other moves. Maximum 200 base power") —
+	# MESMO contador de uses acima, só que a fórmula é LINEAR em vez de
+	# dobrar: min(cap, base * uses). Com base=cap/4=50 e cap=200, isso já dá
+	# exatamente 50/100/150/200 nos 4 primeiros usos seguidos.
+	if attack.scales_linearly_with_consecutive_use:
+		var uses = attacker.consecutive_attack_uses if attacker.last_attack_used == attack else 1
+		uses = max(1, uses)
+		return min(attack.consecutive_use_max_power, attack.consecutive_use_base_power * uses)
+	# Heavy Slam (ver AttackData.power_scales_with_weight_difference, pedido
+	# do usuário, Tyranitar: "50 base power times the difference in weight
+	# from user and target. Fails if lighter") — "Fails" já foi checado ANTES
+	# desta função rodar (ver execute_attack, mesmo "But it failed!" de
+	# sempre), então aqui só falta calcular a diferença (nunca negativa, já
+	# que o caso negativo teria falhado antes). attack.power guarda o 50 (o
+	# multiplicador-base).
+	if attack.power_scales_with_weight_difference and defender != null:
+		var weight_diff = attacker.data.weight - defender.data.weight
+		return max(0, attack.power * weight_diff)
+	# Facade (ver AttackData.power_doubles_if_user_has_status_ailment, pedido
+	# do usuário, Mankey: "Doubles in power if Burned, Poisoned, Paralyzed or
+	# Asleep") — checa QUALQUER uma das 4, não precisa ser exatamente uma só.
+	if attack.power_doubles_if_user_has_status_ailment:
+		for status_name in ["Burned", "Poisoned", "Paralyzed", "Asleep"]:
+			if attacker.has_status(status_name):
+				return attack.power * 2
 	if attack.power_scales_with_own_hp:
 		# Eruption: "Base power = 150 x CurrentHP/Max HP" — attack.power
 		# guarda o 150 (ver comentário grande em AttackData.
@@ -3622,24 +4166,83 @@ func _try_melee_lunge(attacker: Node, defender: Node, attack: AttackData) -> voi
 # TM executa o attack.max_uses/PP do ATAQUE REFERENCIADO (ex: Ice Fang), que
 # não tem relação nenhuma com o estoque do próprio item TM — quem desconta a
 # carga do TM é execute_tm_attack, via UnitData.slot_quantities, não aqui.
-func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_index: int, consume_slot_use: bool = true) -> void:
+func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_index: int, consume_slot_use: bool = true, charge_release: bool = false) -> void:
+	# Lightning Rod (ver _redirect_lightning_rod/AbilityData.lightning_rod) —
+	# ANTES de qualquer outra coisa, pra toda a animação/lunge/dano já
+	# acontecer em cima de quem REALMENTE vai ser atingido, não do alvo
+	# clicado originalmente. Só faz sentido no momento em que o golpe REALMENTE
+	# dispara (não faz sentido redirecionar de novo no release de um golpe já
+	# carregado, mesmo alvo travado desde a fase de carga).
+	if not charge_release:
+		defender = _redirect_lightning_rod(defender, attack)
+
+	# Golpes de carga (ver AttackData.is_charge_move, pedido do usuário: "Focus
+	# Punch really is happening in the same turn, fix that") — BUG corrigido
+	# aqui: execute_attack_burst já tratava isso (Solar Beam, area_shape
+	# "Line"), mas execute_attack (alvo único — Focus Punch é "Single") nunca
+	# tinha checagem nenhuma, disparando na hora sempre. Mesma lógica de
+	# execute_attack_burst, só que guarda um ALVO resolvido (Unit.
+	# charging_target) em vez de uma direção — um golpe de alvo único já
+	# resolveu um Node específico no clique, diferente de Solar Beam (mira
+	# uma direção, atinge quem estiver na linha). O release (ver
+	# begin_current_turn) chama esta mesma função de novo com charge_release=
+	# true e o alvo travado, sem re-redirecionar Lightning Rod nem gastar PP
+	# de novo.
+	if attack.is_charge_move and not charge_release and not (attack.instant_in_sun and is_sun_weather()) and not attacker.has_status("Supercharged"):
+		attacker.face_towards(defender.grid_pos if defender != null else attacker.grid_pos)
+		attacker.play_attack_animation(attack.is_special)
+		log_message("%s used %s." % [attacker.data.unit_name, attack.action_name])
+		log_message("%s began charging power!" % attacker.data.unit_name)
+		if consume_slot_use and attack.max_uses > 0:
+			attacker.slot_uses[slot_index] -= 1
+		attacker.attacks_remaining -= 1
+		refresh_action_slots_hud()
+		_track_attack_use(attacker, attack)
+		attacker.charging_attack = attack
+		attacker.charging_target = defender
+		attacker.charging_slot_index = slot_index
+		refresh_unit_summary_hud()
+		return
+	# Charge (Pichu) — consome "Supercharged" assim que ele REALMENTE evita a
+	# fase de carga (mesmo espírito do bloco equivalente em execute_attack_
+	# burst — ver comentário grande lá).
+	if attack.is_charge_move and not charge_release and attacker.has_status("Supercharged"):
+		attacker.cure_status_condition("Supercharged")
+		log_message("%s's stored charge let the move fire instantly!" % attacker.data.unit_name)
+
 	await _try_melee_lunge(attacker, defender, attack)
-	attacker.face_towards(defender.grid_pos if defender != null else attacker.grid_pos)
-	attacker.play_attack_animation(attack.is_special)
+	# Outrage (ver AttackData.confused_style_hit_count) pula a animação
+	# genérica única daqui — ela sempre viraria pro `defender` clicado
+	# originalmente, nunca pras direções de verdade sorteadas pra cada um
+	# dos N acertos. _execute_confused_style_attack (despachada mais abaixo,
+	# depois do roll de Accuracy) já toca sua PRÓPRIA animação por acerto,
+	# virada pra direção certa de cada sorteio.
+	if attack.confused_style_hit_count == 0:
+		attacker.face_towards(defender.grid_pos if defender != null else attacker.grid_pos)
+		attacker.play_attack_animation(attack.is_special)
 	# Cast effect (ver AttackData.cast_frames_by_direction): sai de 1 tile à
 	# frente de quem ataca e viaja — sem await, é só reação visual do
 	# "windup" do golpe, não deve atrasar o resto (mesma ideia de
 	# play_impact_effect). execute_attack não tem um `dir` pronto (mira 1
 	# alvo, não uma direção) — reconstrói a partir de attacker.facing, já
 	# ajustado pelo face_towards() logo acima.
-	if attack.cast_frames_by_direction != null:
+	if attack.cast_frames_by_direction != null and attack.confused_style_hit_count == 0:
 		play_cast_effect(attack.cast_frames_by_direction, attacker, FACING_TO_DIR.get(attacker.facing, Vector2i.ZERO), attack.range)
-	log_message("%s used %s." % [attacker.data.unit_name, attack.action_name])
-	if consume_slot_use and attack.max_uses > 0:
+	if charge_release:
+		log_message("%s unleashed %s!" % [attacker.data.unit_name, attack.action_name])
+	else:
+		log_message("%s used %s." % [attacker.data.unit_name, attack.action_name])
+	if consume_slot_use and attack.max_uses > 0 and not charge_release:
 		attacker.slot_uses[slot_index] -= 1
 	attacker.attacks_remaining -= 1
 	refresh_action_slots_hud()
 	_track_attack_use(attacker, attack)
+	# Recarga (ver Unit.must_recharge/AttackData.requires_recharge) — marca
+	# assim que o golpe É USADO de verdade (mesmo se depois errar o alvo),
+	# igual Hyper Beam/Giga Impact na série principal. Consumida no PRÓXIMO
+	# begin_current_turn desta unidade (ver comentário grande lá).
+	if attack.requires_recharge:
+		attacker.must_recharge = true
 
 	# Espera até o golpe "conectar" (ver comentário de attack_hit_delay em
 	# UnitData) antes de reagir — sem isso o defensor tomava dano e se
@@ -3692,7 +4295,17 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# ver AttackData.inflicts_status/Smokescreen), que de outra forma ainda
 	# poderia derrubar final_accuracy abaixo de 1.0 e causar um erro.
 	var final_accuracy = attack.accuracy * attacker.get_accuracy_multiplier()
-	if not attack.never_misses and final_accuracy < 1.0 and randf() >= final_accuracy:
+	# Hustle (ver AbilityData.hustle, pedido do usuário, Rattata Hidden:
+	# "multiply the accuracy of physical moves by 0.8") — só golpes FÍSICOS
+	# (is_special == false) de quem carrega a Habilidade são afetados.
+	if not attack.is_special and has_hustle(attacker):
+		final_accuracy *= 0.8
+	# Thunder (ver AttackData.never_misses_in_rain, pedido do usuário, Pichu:
+	# "Always hits in the rain, ignoring accuracy") — condicional ao CLIMA,
+	# diferente de never_misses (incondicional) — fora de chuva, Thunder erra
+	# normalmente igual qualquer outro golpe.
+	var skips_accuracy_roll = attack.never_misses or (attack.never_misses_in_rain and (current_weather == WEATHER_RAIN or current_weather == WEATHER_HEAVY_RAIN))
+	if not skips_accuracy_roll and final_accuracy < 1.0 and randf() >= final_accuracy:
 		log_message("%s's attack missed!" % attacker.data.unit_name)
 		# Errou de verdade — quebra a sequência de uso consecutivo (ver
 		# Unit.consecutive_attack_uses/AttackData.scales_with_consecutive_use
@@ -3700,6 +4313,42 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 		# isso, _track_attack_use já tinha incrementado o contador lá em
 		# cima achando que "usou de novo", mesmo o golpe nunca conectando.
 		attacker.consecutive_attack_uses = 0
+		refresh_unit_summary_hud()
+		check_auto_end_turn()
+		return
+
+	# Outrage (ver AttackData.confused_style_hit_count, pedido do usuário,
+	# Mankey: "Hits 3 times as if confused (random directions with friendly
+	# fire) Range 1 single target") — acertou a Accuracy geral do golpe (roll
+	# acima), mas o `defender` clicado não importa NADA a partir daqui: cada
+	# um dos N acertos sorteia seu PRÓPRIO alvo (ver resolve_confused_target),
+	# podendo ser aliado, inimigo ou ninguém. Desvia completamente do resto
+	# desta função (que assume um `defender` único e conhecido — Protected/
+	# Flash Fire/Lightning Rod/hurt animation/Asleep-cure do clique original
+	# não fazem sentido nenhum aqui, já que ele pode nem ser atingido de
+	# verdade) — ver _execute_confused_style_attack.
+	if attack.confused_style_hit_count > 0:
+		await _execute_confused_style_attack(attacker, attack)
+		return
+
+	# Endeavor (ver AttackData.sets_target_hp_to_attacker_hp, pedido do
+	# usuário, Rattata: "Fails if user HP > target HP") — checado logo depois
+	# do roll de acerto (o golpe ainda pode simplesmente ERRAR antes disso,
+	# ver bloco acima), mas ANTES de Protected/Flash Fire/dano — mesmo "But it
+	# failed!" de qualquer outro golpe que não faz efeito nenhum.
+	if attack.sets_target_hp_to_attacker_hp and attacker.hp_current > defender.hp_current:
+		log_message("But it failed!")
+		refresh_unit_summary_hud()
+		check_auto_end_turn()
+		return
+
+	# Heavy Slam (ver AttackData.power_scales_with_weight_difference, pedido
+	# do usuário, Tyranitar: "Fails if lighter") — mesmo "But it failed!" de
+	# Endeavor acima, só falha quando quem ataca é ESTRITAMENTE mais leve que
+	# o alvo (peso igual não falha, só resulta em power baixo — ver
+	# get_effective_power).
+	if attack.power_scales_with_weight_difference and defender != null and attacker.data.weight < defender.data.weight:
+		log_message("But it failed!")
 		refresh_unit_summary_hud()
 		check_auto_end_turn()
 		return
@@ -3714,6 +4363,18 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# "Charged" já estiver ativa (defensor já tinha levado outro Fire antes
 	# de gastar o próprio) — por isso só loga a mensagem se REALMENTE
 	# aplicou agora.
+	# Phantom Force (ver AttackData.grants_invulnerability_while_charging,
+	# pedido do usuário, Annihilape: "Charge move, while charging become
+	# immune to all attacks") — mesmo tratamento de Protected logo abaixo
+	# (bloqueia TUDO, não conta como miss de verdade), só que a condição é
+	# "o alvo está na FASE DE CARGA de um golpe com esse campo marcado" em
+	# vez de uma Status Condition.
+	if defender.charging_attack != null and defender.charging_attack.grants_invulnerability_while_charging:
+		log_message("%s avoided the attack!" % defender.data.unit_name)
+		refresh_unit_summary_hud()
+		check_auto_end_turn()
+		return
+
 	# Protected (ver AttackData.inflicts_status_on_self/Protect): golpe
 	# ACERTOU (já passou o roll de acerto acima), mas o alvo está com o
 	# escudo de Protect ativo — bloqueia TUDO (dano, Flash Fire, descongelar,
@@ -3748,6 +4409,15 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 
 	if attack.element_type == "Fire" and has_flash_fire(defender) and defender.apply_status_condition("Charged"):
 		log_message("%s's Flash Fire was triggered!" % defender.data.unit_name)
+
+	# Lightning Rod (ver AbilityData.lightning_rod, pedido do usuário, Pichu
+	# Hidden: "When hit by one, ups self Sp.Atk by 1") — mesmo ponto/espírito
+	# do gatilho de Flash Fire acima: dispara por SER ALVO de um golpe
+	# Electric, mesmo que o dano real vá sair 0 (imune, ver immune_type), não
+	# por levar dano dele de verdade.
+	if attack.element_type == "Electric" and has_lightning_rod(defender):
+		apply_stat_change(defender, "special_attack", 1)
+		log_message("%s's Lightning Rod was triggered!" % defender.data.unit_name)
 
 	# Frozen descongela na hora ao ser atingida por qualquer ataque tipo Fire
 	# — automático, não precisa rolar chance nenhuma. ANTES de
@@ -3807,12 +4477,15 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 		# chance própria do golpe se ele tiver uma (ver AttackData.
 		# crit_chance_override — Razor Leaf é o primeiro caso) e dobra se
 		# `attacker` estiver com Focus Energy (ver status novo, Beedrill).
-		var is_critical = randf() < get_effective_crit_chance(attack, attacker)
+		# Shell Armor (ver AbilityData.shell_armor) — força "sem crítico"
+		# incondicionalmente quando quem DEFENDE carrega essa Habilidade.
+		var is_critical = randf() < get_effective_crit_chance(attack, attacker) and not has_shell_armor(defender)
 		var damage = calculate_damage(attacker, defender, attack, is_critical)
 		hp_lost = min(damage, defender.hp_current)
 		defender.take_damage(damage)
 		if is_critical:
 			log_message("A critical hit!")
+			_try_anger_point(defender)
 
 	# Run Away (ver AbilityData.run_away/has_run_away/_try_run_away) — só se
 	# `defender` sobreviveu, sem depender de Sheer Force nem de mais nada
@@ -3822,12 +4495,28 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	# nele.
 	_try_run_away(defender, attacker)
 
+	# Assurance (ver AttackData.power_doubles_if_target_damaged_this_round/
+	# Unit.damaged_this_round) — marca "apanhou nesta rodada" só quando o
+	# golpe REALMENTE tirou HP de alguém (hp_lost > 0, mesma distinção de Run
+	# Away entre "atacado de dano de verdade" e tick de status/clima, que
+	# nunca passa por aqui).
+	if hp_lost > 0:
+		defender.damaged_this_round = true
+
 	# Effect Spore (ver AbilityData.effect_spore/_try_effect_spore) — reação
 	# de QUEM DEFENDE contra QUEM ATACA, independente de Sheer Force (não é um
 	# "efeito secundário do golpe" contado por attack_has_secondary_effect,
 	# é uma Habilidade do defensor) e independente do defensor ter sobrevivido
 	# (o contato já aconteceu, ver comentário grande da função).
 	_try_effect_spore(attacker, defender, attack)
+
+	# Static (ver AbilityData.static_paralysis/_try_static) — mesmo espírito
+	# de Effect Spore acima, reação de QUEM DEFENDE contra QUEM ATACA.
+	_try_static(attacker, defender, attack)
+
+	# Poison Point (ver AbilityData.poison_point/_try_poison_point) — mesmo
+	# espírito de Static acima, reação de QUEM DEFENDE contra QUEM ATACA.
+	_try_poison_point(attacker, defender, attack)
 
 	# Roubo de vida (ver AttackData.drain_fraction, pedido do usuário,
 	# Venonat/Shroomish: "Heals user for 50% of damage dealt (HP reduced)") —
@@ -3895,16 +4584,41 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 		# reaproveitar self_stat_boost_amount pra tudo.
 		if attack.stat_change_target == "Self" and attack.stat_change_stat != "":
 			apply_stat_change(attacker, attack.stat_change_stat, attack.stat_change_amount)
+			# stat_change_stat_2 (ver AttackData — até aqui só lido pro PRIMEIRO
+			# stat neste ramo de golpe QUE CAUSA DANO) — Close Combat é o
+			# primeiro caso a precisar de DOIS stats próprios baixando ao mesmo
+			# tempo: "Reduces users Def and Sp.Def by 1".
+			if attack.stat_change_stat_2 != "":
+				apply_stat_change(attacker, attack.stat_change_stat_2, attack.stat_change_amount_2)
 		if defender.hp_current > 0:
-			_try_apply_secondary_status(defender, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture)
-			_try_apply_secondary_status(defender, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2)
-			_try_apply_secondary_stat_change(defender, attack)
+			# Pursuit (ver AttackData.secondary_status="Pursuited"/Unit.
+			# pursuit_damage, pedido do usuário, Rattata): guarda o hp_lost
+			# DESTE acerto assim que a condição realmente aplica de novo (não
+			# grava por cima se já estava Pursuited de um hit anterior que
+			# apply_status_condition recusou por já existir — ver retorno
+			# bool de _try_apply_secondary_status).
+			if _try_apply_secondary_status(defender, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture, attacker) and attack.secondary_status == "Pursuited":
+				defender.pursuit_damage = hp_lost
+			_try_apply_secondary_status(defender, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2, attacker)
+			_try_apply_secondary_stat_change(defender, attack, attacker)
 	# Bug Bite (ver AttackData.steals_target_berry/_try_bug_bite_steal_berry)
 	# — fora do bloco "if not has_sheer_force" de propósito: roubo de Berry não
 	# é um "efeito secundário" no sentido de attack_has_secondary_effect() (só
 	# olha secondary_status/_2), então Sheer Force não interfere nele.
 	if defender.hp_current > 0:
 		_try_bug_bite_steal_berry(attacker, defender, attack)
+
+	# Knock Off (ver AttackData.discards_target_item/_try_knock_off_item) —
+	# igual Bug Bite acima, não conta como "efeito secundário" de Sheer Force.
+	_try_knock_off_item(attacker, defender, attack)
+
+	# Hyper Cutter (ver AbilityData.hyper_cutter, pedido do usuário, Corphish:
+	# "If a Sharp move is used, raises Atk +1 after the move is used") — sobe o
+	# Attack de QUEM ATACA (não de quem defende) depois que o golpe termina de
+	# causar dano, sempre que o golpe usado tiver a tag "Sharp" e quem atacou
+	# carregar esta Habilidade — independente do alvo ter sobrevivido ou não.
+	if attack.tags.has("Sharp") and has_hyper_cutter(attacker):
+		apply_stat_change(attacker, "attack", 1)
 
 	if defender.hp_current <= 0:
 		log_message("%s was defeated!" % defender.data.unit_name)
@@ -4069,7 +4783,7 @@ func execute_charge_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 # consome o Action Point novo que a unidade acabou de ganhar, mesmo se o uso
 # em si já foi "pago" antes.
 func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slot_index: int, charge_release: bool = false) -> void:
-	if attack.is_charge_move and not charge_release and not (attack.instant_in_sun and is_sun_weather()):
+	if attack.is_charge_move and not charge_release and not (attack.instant_in_sun and is_sun_weather()) and not attacker.has_status("Supercharged"):
 		# Fase de CARGA (ver AttackData.is_charge_move) — pedido do usuário:
 		# "Solar Beam charges and consumes 1 action point. Then, as soon as
 		# the unit has another action point, it fires". Sem Sol ativo (ou com
@@ -4080,11 +4794,29 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 		# a um golpe normal de 1 turno.
 		await execute_charge_attack(attacker, attack, dir, slot_index)
 		return
-	if dir != Vector2i.ZERO:
-		attacker.face_towards(attacker.grid_pos + dir)
-	attacker.play_attack_animation(attack.is_special)
-	if attack.cast_frames_by_direction != null:
-		play_cast_effect(attack.cast_frames_by_direction, attacker, dir, attack.range)
+	# Charge (ver AttackData.inflicts_status_on_self/"Supercharged" em
+	# execute_status_attack, pedido do usuário, Pichu: "the next Charge or
+	# Recharge move used only costs 1 action point") — consome o status assim
+	# que ele REALMENTE evita a fase de carga (nunca no release normal de um
+	# golpe já guardado, charge_release==true, mesmo se o Sol também estivesse
+	# ativo ao mesmo tempo).
+	if attack.is_charge_move and not charge_release and attacker.has_status("Supercharged"):
+		attacker.cure_status_condition("Supercharged")
+		log_message("%s's stored charge let the move fire instantly!" % attacker.data.unit_name)
+	# Outrage (ver AttackData.confused_style_hit_count, pedido do usuário:
+	# área="Burst" range 1 só pro HIGHLIGHT/confirmação de clique — ver
+	# AttackData.area_shape/is_valid_target_cell — não pra "atingir todo
+	# mundo no raio" que Burst normalmente faz) pula a animação genérica
+	# única daqui, mesma razão do ramo de alvo único em execute_attack:
+	# ela sempre viraria pra `dir` do clique original, nunca pras N
+	# direções de verdade sorteadas por _execute_confused_style_attack
+	# (despachada mais abaixo, depois do roll de Accuracy).
+	if attack.confused_style_hit_count == 0:
+		if dir != Vector2i.ZERO:
+			attacker.face_towards(attacker.grid_pos + dir)
+		attacker.play_attack_animation(attack.is_special)
+		if attack.cast_frames_by_direction != null:
+			play_cast_effect(attack.cast_frames_by_direction, attacker, dir, attack.range)
 	if charge_release:
 		log_message("%s unleashed %s!" % [attacker.data.unit_name, attack.action_name])
 	else:
@@ -4094,6 +4826,10 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 	attacker.attacks_remaining -= 1
 	refresh_action_slots_hud()
 	_track_attack_use(attacker, attack)
+	# Recarga (ver Unit.must_recharge/AttackData.requires_recharge) — mesmo
+	# gatilho do ramo de alvo único em execute_attack (ver comentário lá).
+	if attack.requires_recharge:
+		attacker.must_recharge = true
 
 	var hit_delay = attacker.data.special_hit_delay if attack.is_special else attacker.data.attack_hit_delay
 	await get_tree().create_timer(hit_delay).timeout
@@ -4106,6 +4842,10 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 		return
 
 	var final_accuracy = attack.accuracy * attacker.get_accuracy_multiplier()
+	# Hustle (ver AbilityData.hustle) — mesma regra de execute_attack (só
+	# golpes FÍSICOS de quem carrega a Habilidade).
+	if not attack.is_special and has_hustle(attacker):
+		final_accuracy *= 0.8
 	if not attack.never_misses and final_accuracy < 1.0 and randf() >= final_accuracy:
 		log_message("%s's attack missed!" % attacker.data.unit_name)
 		# Errou de verdade — quebra a sequência de uso consecutivo, mesma
@@ -4113,6 +4853,19 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 		attacker.consecutive_attack_uses = 0
 		refresh_unit_summary_hud()
 		check_auto_end_turn()
+		return
+
+	# Outrage (ver AttackData.confused_style_hit_count, pedido do usuário,
+	# Mankey: "Hits 3 times as if confused (random directions with friendly
+	# fire) Range 1 single target") — acertou a Accuracy geral do golpe (roll
+	# acima), mas `dir` (a direção do clique original) não importa NADA a
+	# partir daqui: cada um dos N acertos sorteia sua PRÓPRIA direção (ver
+	# _execute_confused_style_attack/_roll_confused_direction). Desvia
+	# completamente do resto desta função (que resolve TODO MUNDO no raio —
+	# o que Burst normalmente faz — e não faz sentido pra um golpe cuja área
+	# só existe pro highlight/clique, não pro dano de verdade).
+	if attack.confused_style_hit_count > 0:
+		await _execute_confused_style_attack(attacker, attack)
 		return
 
 	# Geometria de quem é achado: "Burst" (raio ao redor de quem atacou,
@@ -4180,6 +4933,11 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 	var total_damage_dealt = 0
 
 	for target in targets:
+		# Phantom Force (ver comentário grande no ramo de alvo único em
+		# execute_attack) — mesmo bloqueio TOTAL por alvo dentro da rajada.
+		if target.charging_attack != null and target.charging_attack.grants_invulnerability_while_charging:
+			log_message("%s avoided the attack!" % target.data.unit_name)
+			continue
 		# Protected (ver AttackData.inflicts_status_on_self/Protect — golpe
 		# QUE CAUSA DANO em área, então checa por alvo: quem está Protected
 		# fica de fora por COMPLETO (nem dano, nem Flash Fire, nem
@@ -4208,7 +4966,9 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 		# Mesma troca de get_effective_crit_chance() do ramo de alvo único
 		# em execute_attack (ver comentário lá) — `attacker` passado também
 		# aqui pra Focus Energy (Beedrill) valer em golpes Burst/Line.
-		var is_critical = randf() < get_effective_crit_chance(attack, attacker)
+		# Shell Armor (ver AbilityData.shell_armor) — força "sem crítico"
+		# incondicionalmente quando quem DEFENDE carrega essa Habilidade.
+		var is_critical = randf() < get_effective_crit_chance(attack, attacker) and not has_shell_armor(target)
 		var damage = calculate_damage(attacker, target, attack, is_critical)
 		# hp_lost em vez de `damage` cru — mesmo bug de overkill do
 		# comentário grande em execute_attack (Typhlosion nível 100 batendo
@@ -4218,10 +4978,22 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 		# Run Away — mesmo mecanismo do ramo de alvo único em execute_attack
 		# (ver comentário grande lá), aplicado por ALVO dentro da rajada.
 		_try_run_away(target, attacker)
+		# Assurance/Static (ver comentário grande do ramo de alvo único em
+		# execute_attack) — mesmo mecanismo, por ALVO dentro da rajada.
+		if min(damage, target.hp_current) > 0:
+			target.damaged_this_round = true
+		_try_static(attacker, target, attack)
+		_try_poison_point(attacker, target, attack)
 		if attack.element_type == "Fire" and attacker.has_status("Charged") and has_flash_fire(attacker):
 			attacker.cure_status_condition("Charged")
+		# Lightning Rod (ver comentário grande do ramo de alvo único em
+		# execute_attack) — mesmo gatilho, por ALVO dentro da rajada.
+		if attack.element_type == "Electric" and has_lightning_rod(target):
+			apply_stat_change(target, "special_attack", 1)
+			log_message("%s's Lightning Rod was triggered!" % target.data.unit_name)
 		if is_critical:
 			log_message("A critical hit!")
+			_try_anger_point(target)
 
 		var effectiveness = get_weather_adjusted_effectiveness(attack.element_type, target)
 		if effectiveness == 0.0 or has_type_immunity_ability(target, attack.element_type):
@@ -4232,12 +5004,22 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 			log_message("It's not very effective on %s..." % target.data.unit_name)
 
 		if not has_sheer_force(attacker) and target.hp_current > 0:
-			_try_apply_secondary_status(target, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture)
-			_try_apply_secondary_status(target, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2)
-			_try_apply_secondary_stat_change(target, attack)
+			_try_apply_secondary_status(target, attack.secondary_status, attack.secondary_status_chance, attack.secondary_status_texture, attacker)
+			_try_apply_secondary_status(target, attack.secondary_status_2, attack.secondary_status_chance_2, attack.secondary_status_texture_2, attacker)
+			_try_apply_secondary_stat_change(target, attack, attacker)
 		# Bug Bite — ver comentário grande no ramo de alvo único (execute_attack).
 		if target.hp_current > 0:
 			_try_bug_bite_steal_berry(attacker, target, attack)
+
+		# Knock Off — ver comentário grande no ramo de alvo único (execute_attack).
+		_try_knock_off_item(attacker, target, attack)
+
+		# Hyper Cutter — ver comentário grande no ramo de alvo único
+		# (execute_attack). Numa rajada com vários alvos, só sobe o Attack UMA
+		# vez por alvo atingido (não uma vez pro golpe inteiro), já que cada
+		# alvo é "um golpe Sharp conectando" na prática.
+		if attack.tags.has("Sharp") and has_hyper_cutter(attacker):
+			apply_stat_change(attacker, "attack", 1)
 
 		if target.hp_current <= 0:
 			log_message("%s was defeated!" % target.data.unit_name)
@@ -4259,6 +5041,8 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 		_try_apply_self_stat_boost(attacker, attack)
 		if attack.stat_change_target == "Self" and attack.stat_change_stat != "":
 			apply_stat_change(attacker, attack.stat_change_stat, attack.stat_change_amount)
+			if attack.stat_change_stat_2 != "":
+				apply_stat_change(attacker, attack.stat_change_stat_2, attack.stat_change_amount_2)
 
 	# Recoil (ver comentário grande em execute_attack) — mesma regra, UMA VEZ
 	# só pro golpe inteiro, não por alvo atingido. self_recoil_fraction_of_
@@ -4294,9 +5078,9 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 # MESMA condição ativa (ver comentário lá — condições diferentes agora
 # empilham normalmente), então a mensagem/animação só toca quando a
 # condição realmente "pegou".
-func _try_apply_secondary_status(defender: Node, status: String, chance: float, texture: Texture2D) -> void:
-	if status == "" or randf() >= chance:
-		return
+func _try_apply_secondary_status(defender: Node, status: String, chance: float, texture: Texture2D, attacker: Node = null) -> bool:
+	if status == "" or randf() >= _effective_secondary_chance(chance, attacker):
+		return false
 	# Shield Dust (ver AbilityData.shield_dust, pedido do usuário, 2026-07-23,
 	# Caterpie: "Immune to secondary effects of opponent's attacks") — cancela
 	# o efeito secundário por completo pra quem DEFENDE, sem cancelar o dano
@@ -4304,7 +5088,7 @@ func _try_apply_secondary_status(defender: Node, status: String, chance: float, 
 	# execute_attack_burst). Silencioso, sem mensagem própria — mesmo
 	# tratamento de "não pegou" que Powder->Grass/Sunny->Frozen já usam acima.
 	if has_shield_dust(defender):
-		return
+		return false
 	# Sunny/Harsh Sunlight: ninguém pega Frozen (regra oficial desde a Gen 6
 	# — pedido do usuário: "Units can't be frozen"). Silencioso, sem
 	# mensagem própria — mesmo tratamento de qualquer outra tentativa de
@@ -4312,11 +5096,16 @@ func _try_apply_secondary_status(defender: Node, status: String, chance: float, 
 	# mesma ideia, só que a condição aqui depende do CLIMA, não do tipo da
 	# unidade, por isso mora em battle.gd em vez de unit.gd).
 	if status == "Frozen" and (current_weather == WEATHER_SUNNY or current_weather == WEATHER_HARSH_SUNLIGHT):
-		return
+		return false
 	if defender.apply_status_condition(status):
 		log_message("%s was %s!" % [defender.data.unit_name, status])
 		if texture != null:
 			play_impact_effect(texture, defender.position)
+		# Devolve true só quando a condição realmente aplicou AGORA (não se já
+		# estava ativa de antes) — Pursuit/Unit.pursuit_damage, no ponto de
+		# chamada em execute_attack, é o primeiro caso a precisar saber disso.
+		return true
+	return false
 
 # Efeito secundário de AttackData.secondary_stat_change_stat/_amount/_chance
 # (ver comentário grande lá — Rock Smash é o primeiro caso: "50% chance to
@@ -4325,14 +5114,17 @@ func _try_apply_secondary_status(defender: Node, status: String, chance: float, 
 # de novo (mesma função/efeito visual de Growl/Ancient Power/Flame Charge) —
 # ela já cuida sozinha da mensagem "won't go any lower/higher" se o estágio
 # já estiver no limite, então não precisa de tratamento especial aqui.
-func _try_apply_secondary_stat_change(defender: Node, attack: AttackData) -> void:
-	if attack.secondary_stat_change_stat == "" or randf() >= attack.secondary_stat_change_chance:
+func _try_apply_secondary_stat_change(defender: Node, attack: AttackData, attacker: Node = null) -> void:
+	if attack.secondary_stat_change_stat == "" or randf() >= _effective_secondary_chance(attack.secondary_stat_change_chance, attacker):
 		return
 	# Shield Dust — ver comentário grande em _try_apply_secondary_status acima,
 	# mesma regra, mesmo mecanismo de defesa.
 	if has_shield_dust(defender):
 		return
-	apply_stat_change(defender, attack.secondary_stat_change_stat, attack.secondary_stat_change_amount)
+	# `attacker` como source (ver AbilityData.defiant/apply_stat_change) — este
+	# efeito é sempre uma queda causada por um golpe de OUTRA unidade em
+	# `defender` (ex: Rock Smash), nunca um auto-debuff.
+	apply_stat_change(defender, attack.secondary_stat_change_stat, attack.secondary_stat_change_amount, attacker)
 
 # Efeito secundário de AttackData.self_stat_boost_chance/_amount (ex: Ancient
 # Power) — diferente de _try_apply_secondary_status acima (1 status, no
@@ -4342,7 +5134,7 @@ func _try_apply_secondary_stat_change(defender: Node, attack: AttackData) -> voi
 # cada stat loga/anima separado, mesmo estilo de "Attack rose! Defense
 # rose!..." dos jogos originais.
 func _try_apply_self_stat_boost(attacker: Node, attack: AttackData) -> void:
-	if attack.self_stat_boost_amount == 0 or randf() >= attack.self_stat_boost_chance:
+	if attack.self_stat_boost_amount == 0 or randf() >= _effective_secondary_chance(attack.self_stat_boost_chance, attacker):
 		return
 	for stat in UnitScript.STAGE_STATS:
 		apply_stat_change(attacker, stat, attack.self_stat_boost_amount)
@@ -4402,6 +5194,8 @@ const SELF_STATUS_EFFECT_MESSAGES := {
 	"Protected": "%s protected itself!",
 	"Aqua Ring": "%s is enveloped by a veil of water!",
 	"Focus Energy": "%s is getting pumped!",
+	"Roosted": "%s came down to rest its wings!",
+	"Supercharged": "%s is charging up!",
 }
 
 # Mesma ideia de SELF_STATUS_EFFECT_MESSAGES acima, só que pro caso de um
@@ -4698,17 +5492,34 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		# mas nada impede um futuro golpe de setar os três campos se precisar.
 		if attack.stat_change_stat_3 != "":
 			apply_stat_change(attacker, attack.stat_change_stat_3, attack.stat_change_amount_3)
+	elif attack.sets_weather != "":
+		await try_set_weather(attack.sets_weather, attacker)
+	# targets.is_empty() falso-positivo pra golpes que também usam
+	# inflicts_status_on_self (ver bloco logo abaixo, FORA do elif) — Charge
+	# (Pichu) é o primeiro caso a combinar stat_change_target=="Self" (ramo
+	# acima) COM inflicts_status_on_self ("Supercharged") ao mesmo tempo;
+	# sem esse `and not`, um golpe assim cairia aqui também (nenhum dos
+	# ramos acima "consome" o elif quando stat_change_target=="Self" já rodou
+	# por outro motivo) e logaria "But it failed!" por engano, mesmo o golpe
+	# tendo funcionado direitinho.
+	elif targets.is_empty() and not attack.inflicts_status_on_self:
+		log_message("But it failed!")
 	# inflicts_status_on_self (ver AttackData — Protect é o primeiro caso):
 	# aplica AttackData.inflicts_status (reaproveitado — mesmo campo/textura
 	# que os golpes de status "pra inimigo" já usam, só que aqui o alvo é
 	# QUEM ATACA) direto no attacker, sem passar pela busca de inimigo em
-	# targets — mesmo espírito de self_heal_fraction/stat_change_target==
-	# "Self" logo acima. "But it failed!" se apply_status_condition()
-	# devolver false (ex: já estar Protected de um uso anterior que ainda
-	# não expirou — não deveria rolar hoje já que Protected sempre cura no
-	# início do próximo turno, mas o guard existe do mesmo jeito que Synthesis
-	# guarda "já com HP cheio").
-	elif attack.inflicts_status_on_self and attack.inflicts_status != "":
+	# targets. FORA do elif (bloco `if` independente, não mais encadeado) —
+	# pedido do usuário, Charge (Pichu): "+1 to Sp.Def and the next Charge or
+	# Recharge move used only costs 1 action point" precisa tanto do stat
+	# change Self (ramo do elif acima) QUANTO de aplicar a Status Condition
+	# "Supercharged" ao MESMO tempo, coisa que o elif original não permitia
+	# (os dois eram mutuamente exclusivos). Nenhum golpe ANTERIOR a Charge
+	# combinava os dois, então tirar isso do elif não muda nada pro
+	# comportamento de Protect/Aqua Ring/Focus Energy (nenhum deles seta
+	# self_heal_fraction/stat_change_target/sets_weather ao mesmo tempo).
+	# "But it failed!" se apply_status_condition() devolver false (ex: já
+	# estar Protected de um uso anterior que ainda não expirou).
+	if attack.inflicts_status_on_self and attack.inflicts_status != "":
 		if attacker.apply_status_condition(attack.inflicts_status):
 			# Mensagem de EFEITO varia por condição (pedido do usuário, 2026-07-23:
 			# "Aqua ring message is wrong. It should say 'UNITNAME used Aqua Ring.
@@ -4721,10 +5532,6 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 			log_message(effect_msg % attacker.data.unit_name)
 		else:
 			log_message("But it failed!")
-	elif attack.sets_weather != "":
-		await try_set_weather(attack.sets_weather, attacker)
-	elif targets.is_empty():
-		log_message("But it failed!")
 	for target in targets:
 		# "Powder" (ver AttackData.tags — Poison Powder/Sleep Powder são o
 		# primeiro caso): pedido do usuário, "Doesnt affect grass types".
@@ -4742,6 +5549,11 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		# silencioso de "não pegou" que Frozen+Sol já usa, ver
 		# _try_apply_secondary_status).
 		if attack.tags.has("Powder") and target.data.types.has("Grass"):
+			continue
+		# Phantom Force (ver comentário grande no ramo de alvo único em
+		# execute_attack) — bloqueia golpe de Status igual bloqueia dano.
+		if target.charging_attack != null and target.charging_attack.grants_invulnerability_while_charging:
+			log_message("%s avoided the attack!" % target.data.unit_name)
 			continue
 		# Protected (ver AttackData.inflicts_status_on_self/Protect): bloqueia
 		# golpe de Status igual bloqueia dano — mesma mensagem/`continue` do
@@ -4780,13 +5592,17 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 				log_message("%s's Ability was replaced with Insomnia!" % target.data.unit_name)
 			continue
 		if attack.stat_change_target != "Self":
-			apply_stat_change(target, attack.stat_change_stat, attack.stat_change_amount)
+			# `attacker` como source (ver AbilityData.defiant/apply_stat_change) —
+			# `target` aqui é sempre um INIMIGO de quem usou o golpe (ver o filtro
+			# de targets acima), então esta é a queda "causada por oponente" que
+			# Defiant precisa reconhecer.
+			apply_stat_change(target, attack.stat_change_stat, attack.stat_change_amount, attacker)
 			# stat_change_stat_2 (ver AttackData — até aqui só lido no ramo
 			# "Self", ver Growth/Quiver Dance acima) — Toxic é o primeiro golpe
 			# a precisar de DOIS stats mudados no ALVO (não em quem ataca):
 			# "Poisons target and reduces Defense and Sp.Def by 1".
 			if attack.stat_change_stat_2 != "":
-				apply_stat_change(target, attack.stat_change_stat_2, attack.stat_change_amount_2)
+				apply_stat_change(target, attack.stat_change_stat_2, attack.stat_change_amount_2, attacker)
 		# Igual stat_change_stat acima: SEM chance nenhuma, sempre aplica se
 		# achou o alvo (ver comentário grande em AttackData.inflicts_status
 		# sobre por que isso é diferente de secondary_status). apply_status_
@@ -4956,7 +5772,7 @@ func _find_nearest_standable_cell(origin: Vector2i, u: Node) -> Vector2i:
 # quando o estágio JÁ está no limite ANTES da chamada — nesse caso só loga
 # "não sobe/desce mais" e nem chama modify_stat_stage (evita uma mensagem
 # enganosa de "caiu!" quando na prática o clamp não deixou nada mudar).
-func apply_stat_change(target: Node, stat: String, amount: int) -> void:
+func apply_stat_change(target: Node, stat: String, amount: int, source: Node = null) -> void:
 	if stat == "" or amount == 0:
 		return
 	var stat_label: String = STAT_DISPLAY_NAMES.get(stat, stat)
@@ -4967,9 +5783,27 @@ func apply_stat_change(target: Node, stat: String, amount: int) -> void:
 	if amount < 0 and before <= UnitScript.STAT_STAGE_MIN:
 		log_message("%s's %s won't go any lower!" % [target.data.unit_name, stat_label])
 		return
+	# Hyper Cutter (ver AbilityData.hyper_cutter/Unit.modify_stat_stage, que já
+	# bloqueia o estágio de verdade) — checado também AQUI só pra logar a
+	# mensagem certa ("won't go any lower", não "fell") quando a queda de
+	# Attack é recusada, em vez de mentir que caiu.
+	if stat == "attack" and amount < 0 and has_hyper_cutter(target):
+		log_message("%s's %s won't go any lower!" % [target.data.unit_name, stat_label])
+		return
 	target.modify_stat_stage(stat, amount)
 	log_message("%s's %s %s!" % [target.data.unit_name, stat_label, "rose" if amount > 0 else "fell"])
 	play_stat_change_effect(target.position, stat, amount > 0)
+	# Defiant (ver AbilityData.defiant, pedido do usuário, 2026-07-25, Mankey
+	# Hidden: "Whenever this unit has its stats dropped by an opponent's move,
+	# raises attack +2") — só dispara quando `source` (quem CAUSOU a queda) é
+	# uma unidade DIFERENTE de `target` (nunca por auto-baixar o próprio stat,
+	# ex: Close Combat) e a mudança foi de fato negativa. `source` só chega
+	# preenchido nos call sites que aplicam stat_change EM CIMA DE UM INIMIGO
+	# (ver execute_status_attack/_try_apply_secondary_stat_change) — nunca nos
+	# de auto-buff/auto-debuff (Growth, Close Combat, etc.), que continuam
+	# passando source=null (padrão) de propósito.
+	if amount < 0 and source != null and source != target and has_defiant(target):
+		apply_stat_change(target, "attack", 2)
 
 # Toca o StatChangeEffect parado em cima de `at_position` (ver AttackData.
 # stat_change_stat, scripts/stat_change_effect.gd) — não é esperado por quem
@@ -5549,6 +6383,30 @@ func _on_end_turn_pressed() -> void:
 	# de avançar current_turn_index.
 	var finishing_unit = get_current_unit()
 	if finishing_unit != null:
+		# Pursuit (ver AttackData.secondary_status="Pursuited"/_try_trigger_
+		# pursuit, pedido do usuário confirmado: "Se tomar o dano repetido ou
+		# passa o turno, o Pursuited status some") — se chegou até aqui (fim
+		# do turno desta unidade) ainda "Pursuited", é porque ela NÃO se
+		# moveu neste turno (mover já teria curado e causado o dano de novo
+		# em move_selected_unit/move_unit_along_path) — cura sem dano nenhum,
+		# só por "passar o turno".
+		if finishing_unit.has_status("Pursuited"):
+			finishing_unit.cure_status_condition("Pursuited")
+			log_message("%s shook off the Pursuit!" % finishing_unit.data.unit_name)
+		# Drowsy (Yawn, Kingdra, pedido do usuário: "Gives Drowsy status. At the
+		# end of Drowsy'd unit turn, it becomes Asleep") — mesmo ponto de
+		# checagem que Pursuited acima (fim do PRÓPRIO turno de quem está
+		# afetada), sem STATUS_DURATIONS própria (fica ativa até este bloco
+		# rodar, nunca decrementa sozinha). Troca Drowsy por Asleep de verdade
+		# (respeitando imunidade de tipo/já-tem-outra-condição via
+		# apply_status_condition normal — ex: um Fire-type nunca dorme, mesma
+		# regra de sempre) só quando esta unidade CHEGA a terminar o próprio
+		# turno ainda Drowsy (se algo já tivesse curado Drowsy antes disso, este
+		# bloco nem dispara).
+		if finishing_unit.has_status("Drowsy"):
+			finishing_unit.cure_status_condition("Drowsy")
+			if finishing_unit.apply_status_condition("Asleep"):
+				log_message("%s fell asleep!" % finishing_unit.data.unit_name)
 		# Speed Boost (ver AbilityData.speed_boost/has_speed_boost) — sobe ANTES
 		# do tick de Status Condition abaixo, incondicional (não depende de
 		# sobreviver ao próprio turno): "ao final do turno", não "se nada mais
@@ -5590,6 +6448,14 @@ func _on_end_turn_pressed() -> void:
 		# vez de por rodada faria um time de 6 gastar o clima inteiro numa
 		# rodada só — ver comentário grande em weather_turns_left.
 		_advance_weather_turn()
+		# Assurance (ver Unit.damaged_this_round/AttackData.power_doubles_if_
+		# target_damaged_this_round, pedido do usuário confirmado: "cada round
+		# começa no turno da unidade de maior speed e termina no turno da
+		# unidade de menor speed") — reseta pra TODO MUNDO bem aqui, no único
+		# instante em que uma rodada nova de verdade começa (mesmo ponto onde
+		# o clima desconta 1 turno logo acima).
+		for u in turn_queue:
+			u.damaged_this_round = false
 		turn_queue.sort_custom(func(a, b): return a.get_effective_stat("speed") > b.get_effective_stat("speed"))
 		current_turn_index = 0
 		build_unit_summary_hud()
@@ -5646,6 +6512,12 @@ func get_weather_tick_damage(u: Node) -> int:
 	for t in SANDSTORM_IMMUNE_TYPES:
 		if u.data.types.has(t):
 			return 0
+	# Sand Veil (ver AbilityData.sand_veil, pedido do usuário, Larvitar
+	# Hidden: "Immune to Sand weather damage") — mesma imunidade TOTAL que os
+	# 3 tipos de SANDSTORM_IMMUNE_TYPES já têm, só que por Habilidade em vez
+	# de tipo.
+	if has_sand_veil(u):
+		return 0
 	@warning_ignore("integer_division")
 	return max(1, u.hp_max / SANDSTORM_DAMAGE_FRACTION_DENOMINATOR)
 
@@ -5788,23 +6660,17 @@ func apply_end_of_turn_status(u: Node) -> bool:
 	# usuário não citou chance). Confused/Blind/Flinched/Rooted/etc. ficam de
 	# fora — só as 4 condições nomeadas.
 	if has_shed_skin(u):
-		# "Badly Poisoned" (Toxic, ver Unit.badly_poison_turns) entra na MESMA
-		# lista que "Poisoned" — pro efeito de Shed Skin, as duas são só
-		# "está envenenado", igual Poison Heal logo abaixo trata as duas iguais.
-		for status_name in ["Poisoned", "Badly Poisoned", "Paralyzed", "Frozen", "Asleep"]:
+		for status_name in ["Poisoned", "Paralyzed", "Frozen", "Asleep"]:
 			if u.has_status(status_name):
 				u.cure_status_condition(status_name)
 				log_message("%s's Shed Skin cured its %s!" % [u.data.unit_name, status_name])
 	# Poison Heal (ver AbilityData.poison_heal, pedido do usuário, Shroomish:
 	# "When poisoned, user will Heal 1/8 of its HP instead of taking Poison
-	# damage each turn") — TROCA o tick de dano de Poisoned/Badly Poisoned por
-	# uma cura, em vez de somar no tick_damage normal como Sandstorm/Seeded/
-	# Rooted fazem logo abaixo. get_status_tick_damage() nem chega a ser
-	# chamado neste caso — o que também tem o efeito colateral correto de
-	# NÃO incrementar Unit.badly_poison_turns enquanto Poison Heal estiver
-	# ativo (ver comentário lá).
+	# damage each turn") — TROCA o tick de dano de Poisoned por uma cura, em
+	# vez de somar no tick_damage normal como Sandstorm/Seeded/Rooted fazem
+	# logo abaixo. get_status_tick_damage() nem chega a ser chamado neste caso.
 	var tick_damage = 0
-	if has_poison_heal(u) and (u.has_status("Poisoned") or u.has_status("Badly Poisoned")):
+	if has_poison_heal(u) and u.has_status("Poisoned"):
 		var poison_heal_amount = max(1, int(u.hp_max * POISON_HEAL_FRACTION))
 		u.hp_current = min(u.hp_current + poison_heal_amount, u.hp_max)
 		u.update_health_bar()
@@ -5954,9 +6820,22 @@ func move_selected_unit(target: Vector2i) -> void:
 	# caminho de verdade até lá (o desvio em volta da água custa mais passos).
 	var distance = move_distances.get(target, 0)
 	move_budget_left = max(0, move_budget_left - distance)
-	selected_unit.move_along_path(get_move_path_to(selected_unit.grid_pos, target))
+	var mover = selected_unit
+	var old_pos = mover.grid_pos
+	mover.move_along_path(get_move_path_to(mover.grid_pos, target))
 	deselect()
 	check_auto_end_turn()
+	# Pursuit (ver AttackData.secondary_status="Pursuited"/_try_trigger_
+	# pursuit, pedido do usuário, Rattata) — só conta como "moveu" de verdade
+	# se o destino for diferente da origem (clicar na própria célula não
+	# dispara nada). Espera a caminhada terminar na tela antes de aplicar o
+	# dano retido, mesmo espírito de move_unit_along_path (IA) logo abaixo —
+	# deselect()/check_auto_end_turn() acima continuam rodando na hora, sem
+	# esperar nada (preserva o comportamento de sempre pros dois).
+	if target != old_pos:
+		while mover.is_moving:
+			await get_tree().process_frame
+		await _try_trigger_pursuit(mover)
 
 # Reconstrói o caminho passo a passo (sem a origem, terminando em target),
 # de trás pra frente, usando move_distances (preenchido pela última chamada
@@ -6651,9 +7530,16 @@ func _plan_rocket_action(u: Node) -> Dictionary:
 func move_unit_along_path(u: Node, target: Vector2i) -> void:
 	var distance = move_distances.get(target, 0)
 	move_budget_left = max(0, move_budget_left - distance)
+	var old_pos = u.grid_pos
 	u.move_along_path(get_move_path_to(u.grid_pos, target))
 	while u.is_moving:
 		await get_tree().process_frame
+	# Pursuit — mesmo mecanismo de move_selected_unit (jogador) acima, aqui
+	# pro lado da IA. run_enemy_turn (quem chama esta função) já garante
+	# `target != u.grid_pos` antes de chamar, mas o check aqui de novo não
+	# custa nada e deixa a função segura pra qualquer outro chamador futuro.
+	if target != old_pos:
+		await _try_trigger_pursuit(u)
 
 # ---------- Comum às duas fases ----------
 

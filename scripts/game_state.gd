@@ -1544,6 +1544,16 @@ const ALL_ITEMS: Array[ItemData] = [
 	preload("res://data/items/smooth_rock.tres"),
 	preload("res://data/items/icy_rock.tres"),
 	preload("res://data/items/leftovers.tres"),
+	# Itens de evolução por loadout (ver EvolutionOption.requires_action/
+	# consumes_required_action) — Pichu -> Pikachu (Soothe Bell, não
+	# consumido) e Pikachu -> Raichu (Thunder Stone, consumido ao evoluir).
+	preload("res://data/items/soothe_bell.tres"),
+	preload("res://data/items/thunder_stone.tres"),
+	# Togetic -> Togekiss (Shiny Stone, não consumido, mesmo padrão de Soothe
+	# Bell) e Seadra -> Kingdra (Dragon Scale, consumido ao evoluir, mesmo
+	# padrão de Thunder Stone).
+	preload("res://data/items/shiny_stone.tres"),
+	preload("res://data/items/dragon_scale.tres"),
 ]
 
 # Inventário inicial de acordo com o modo escolhido em mode_select_screen.gd

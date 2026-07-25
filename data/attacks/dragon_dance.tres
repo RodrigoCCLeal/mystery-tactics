@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Dragon"
+is_status = true
+stat_change_stat = "attack"
+stat_change_amount = 1
+stat_change_target = "Self"
+stat_change_stat_2 = "speed"
+stat_change_amount_2 = 1
+tags = Array[String](["Dance"])
+action_name = "Dragon Dance"
+max_uses = 20
+range = 1

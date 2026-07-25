@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Normal"
+power = 35
+accuracy = 0.9
+makes_contact = true
+is_multi_hit = true
+always_hits_twice = true
+action_name = "Double Hit"
+max_uses = 10
+range = 1

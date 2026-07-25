@@ -3,6 +3,103 @@
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0026/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0026/frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Resource" path="res://data/abilities/static.tres" id="6_static"]
+[ext_resource type="Resource" path="res://data/abilities/lightning_rod.tres" id="7_lightning_rod"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_punch.tres" id="8_thunder_punch"]
+[ext_resource type="Resource" path="res://data/attacks/draining_kiss.tres" id="9_draining_kiss"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="10_growl"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="11_quick_attack"]
+[ext_resource type="Resource" path="res://data/attacks/tail_whip.tres" id="12_tail_whip"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_shock.tres" id="13_thunder_shock"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_wave.tres" id="14_thunder_wave"]
+[ext_resource type="Resource" path="res://data/attacks/nuzzle.tres" id="15_nuzzle"]
+[ext_resource type="Resource" path="res://data/attacks/spark.tres" id="16_spark"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="17_charm"]
+[ext_resource type="Resource" path="res://data/attacks/thunderbolt.tres" id="18_thunderbolt"]
+[ext_resource type="Resource" path="res://data/attacks/charge.tres" id="19_charge"]
+[ext_resource type="Resource" path="res://data/attacks/light_screen.tres" id="20_light_screen"]
+[ext_resource type="Resource" path="res://data/attacks/thunder.tres" id="21_thunder"]
+[ext_resource type="Resource" path="res://data/attacks/volt_tackle.tres" id="22_volt_tackle"]
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_static"]
+script = ExtResource("4_learn")
+action = ExtResource("6_static")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_lightning_rod"]
+script = ExtResource("4_learn")
+action = ExtResource("7_lightning_rod")
+is_hidden_ability = true
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_thunder_punch"]
+script = ExtResource("4_learn")
+action = ExtResource("8_thunder_punch")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_draining_kiss"]
+script = ExtResource("4_learn")
+action = ExtResource("9_draining_kiss")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_growl"]
+script = ExtResource("4_learn")
+action = ExtResource("10_growl")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_quick_attack"]
+script = ExtResource("4_learn")
+action = ExtResource("11_quick_attack")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_tail_whip"]
+script = ExtResource("4_learn")
+action = ExtResource("12_tail_whip")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_thunder_shock"]
+script = ExtResource("4_learn")
+action = ExtResource("13_thunder_shock")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_thunder_wave"]
+script = ExtResource("4_learn")
+level = 4
+action = ExtResource("14_thunder_wave")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_nuzzle"]
+script = ExtResource("4_learn")
+level = 12
+action = ExtResource("15_nuzzle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_spark"]
+script = ExtResource("4_learn")
+level = 16
+action = ExtResource("16_spark")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_charm"]
+script = ExtResource("4_learn")
+level = 20
+action = ExtResource("17_charm")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_thunderbolt"]
+script = ExtResource("4_learn")
+level = 25
+action = ExtResource("18_thunderbolt")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_charge"]
+script = ExtResource("4_learn")
+level = 30
+action = ExtResource("19_charge")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_light_screen"]
+script = ExtResource("4_learn")
+level = 35
+action = ExtResource("20_light_screen")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_thunder"]
+script = ExtResource("4_learn")
+level = 40
+action = ExtResource("21_thunder")
+
+[sub_resource type="Resource" id="LearnsetEntry_0026_volt_tackle"]
+script = ExtResource("4_learn")
+level = 99
+action = ExtResource("22_volt_tackle")
 
 [resource]
 script = ExtResource("1_script")
@@ -12,6 +109,8 @@ portrait = ExtResource("2_portrait")
 types = Array[String](["Electric"])
 grounded = true
 weight = 1
+slots = Array[ExtResource("5_action")]([ExtResource("10_growl"), ExtResource("8_thunder_punch"), ExtResource("9_draining_kiss"), ExtResource("6_static")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0026_static"), SubResource("LearnsetEntry_0026_lightning_rod"), SubResource("LearnsetEntry_0026_thunder_punch"), SubResource("LearnsetEntry_0026_draining_kiss"), SubResource("LearnsetEntry_0026_growl"), SubResource("LearnsetEntry_0026_quick_attack"), SubResource("LearnsetEntry_0026_tail_whip"), SubResource("LearnsetEntry_0026_thunder_shock"), SubResource("LearnsetEntry_0026_thunder_wave"), SubResource("LearnsetEntry_0026_nuzzle"), SubResource("LearnsetEntry_0026_spark"), SubResource("LearnsetEntry_0026_charm"), SubResource("LearnsetEntry_0026_thunderbolt"), SubResource("LearnsetEntry_0026_charge"), SubResource("LearnsetEntry_0026_light_screen"), SubResource("LearnsetEntry_0026_thunder"), SubResource("LearnsetEntry_0026_volt_tackle")])
 hp_base = 60
 attack_base = 90
 defense_base = 55

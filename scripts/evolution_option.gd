@@ -32,3 +32,22 @@ extends Resource
 # esta opção ficar disponível (null = sem exigência de ação). Ex: Piloswine
 # só evolui pra Mamoswine se estiver carregando Ancient Power no loadout.
 @export var requires_action: ActionData = null
+
+# true = `requires_action` acima é CONSUMIDO (removido do loadout, vira null
+# naquele slot) no instante em que a evolução acontece de verdade — false
+# (padrão, comportamento de sempre) = a ação continua equipada depois de
+# evoluir, igual Piloswine/Ancient Power. Pedido do usuário, Pikachu ->
+# Raichu: "Thunder Stone in loadout, consumed when evolving" — diferente de
+# Pichu -> Pikachu (Soothe Bell), que NÃO é consumido, mesmo os dois sendo
+# "precisa carregar um item" (ver party_screen.gd::_perform_evolution).
+@export var consumes_required_action: bool = false
+
+# true = esta opção também exige que UnitData.has_dropped_below_critical_hp
+# esteja true (ver comentário grande do campo lá) — Primeape -> Annihilape é
+# o primeiro caso, pedido do usuário: "having <5% HP left". Diferente de
+# min_level/requires_action (checados só por número/loadout ATUAL), essa
+# exigência é setada em COMBATE de verdade (Unit.take_damage()) e nunca é
+# resetada sozinha depois — uma vez satisfeita, fica disponível pra sempre
+# (confirmado com o usuário: checagem pós-batalha, não instantânea em
+# batalha). false (padrão) = sem essa exigência, comportamento de sempre.
+@export var requires_survived_critical_hp: bool = false

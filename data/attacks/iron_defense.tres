@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Steel"
+is_status = true
+stat_change_stat = "defense"
+stat_change_amount = 2
+stat_change_target = "Self"
+action_name = "Iron Defense"
+max_uses = 15
+range = 1
