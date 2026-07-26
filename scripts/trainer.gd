@@ -74,6 +74,24 @@ var trainer_class: String = "Youngster"
 @export var starting_weather: String = ""
 @export var starting_weather_overridable: bool = true
 
+@export_group("Mapa (ver GameState.generated_map/forced_battle_tileset)")
+# Pedido do usuário: "we also have make the tileset used in battle
+# selectable... for boss battles and important npc battles, I will draw the
+# map manually. So we need a checkbox for 'Generated map', if it's false,
+# it receives the address for the drawn map" — apesar do pedido ter sido
+# sobre chefes (ver boss.gd, primeiro a usar isto de fato), o usuário pediu
+# explicitamente pra também existir aqui em Trainer desde já ("important
+# npc battles" cobre Trainers importantes, não só chefes), mesmo que nenhum
+# Trainer real use manual_map ainda. Ver nota de limitação conhecida em
+# GameState.manual_map: o CARREGAMENTO de verdade de um mapa manual ainda
+# não existe, só o campo/checkbox — perguntar o formato exato quando o
+# usuário tiver um mapa desenhado à mão pra testar.
+@export var generated_map: bool = true
+@export var manual_map: PackedScene = null
+# null (padrão, todo Trainer de hoje) = sorteia entre os BATTLE_TILESETS
+# normalmente. Ver comentário grande em GameState.forced_battle_tileset.
+@export var forced_battle_tileset: BattleTileset = null
+
 @export_group("Time (9 tiers = 0..8 badges)")
 # Índice = GameState.badges.size() no momento da batalha (regra 3 do
 # usuário). Não precisa preencher os 9 — get_active_team() cai pro tier

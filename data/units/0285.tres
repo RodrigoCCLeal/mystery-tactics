@@ -1,22 +1,22 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://cyhtnahad0apr"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0285/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0285/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
-[ext_resource type="Resource" path="res://data/units/0286.tres" id="7_target"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bowh2hgbucwmb" path="res://assets/sprites/Pokemon/Sprites/0285/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://cmbmqu215k2nw" path="res://assets/sprites/Pokemon/Sprites/0285/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" uid="uid://cppueni4m6pra" path="res://data/units/0286.tres" id="7_target"]
 [ext_resource type="Resource" path="res://data/abilities/effect_spore.tres" id="8_effect_spore"]
 [ext_resource type="Resource" path="res://data/abilities/poison_heal.tres" id="9_poison_heal"]
 [ext_resource type="Resource" path="res://data/abilities/quick_feet.tres" id="10_quick_feet"]
 [ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="11_absorb"]
-[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="12_tackle"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="12_tackle"]
 [ext_resource type="Resource" path="res://data/attacks/stun_spore.tres" id="13_stun_spore"]
-[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="14_leech_seed"]
+[ext_resource type="Resource" uid="uid://cglxkxh5ebx4g" path="res://data/attacks/leech_seed.tres" id="14_leech_seed"]
 [ext_resource type="Resource" path="res://data/attacks/mega_drain.tres" id="15_mega_drain"]
 [ext_resource type="Resource" path="res://data/attacks/headbutt.tres" id="16_headbutt"]
-[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="17_poison_powder"]
+[ext_resource type="Resource" uid="uid://cpxtdp5ofau0o" path="res://data/attacks/poison_powder.tres" id="17_poison_powder"]
 [ext_resource type="Resource" path="res://data/attacks/giga_drain.tres" id="18_giga_drain"]
 [ext_resource type="Resource" path="res://data/attacks/growth.tres" id="19_growth"]
 [ext_resource type="Resource" path="res://data/attacks/toxic.tres" id="20_toxic"]
@@ -105,8 +105,6 @@ unit_name = "Shroomish"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Grass"])
-grounded = true
-weight = 1
 slots = Array[ExtResource("6_action")]([ExtResource("12_tackle"), ExtResource("11_absorb"), ExtResource("8_effect_spore")])
 learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0285_effect_spore"), SubResource("LearnsetEntry_0285_poison_heal"), SubResource("LearnsetEntry_0285_quick_feet"), SubResource("LearnsetEntry_0285_absorb"), SubResource("LearnsetEntry_0285_tackle"), SubResource("LearnsetEntry_0285_stun_spore"), SubResource("LearnsetEntry_0285_leech_seed"), SubResource("LearnsetEntry_0285_mega_drain"), SubResource("LearnsetEntry_0285_headbutt"), SubResource("LearnsetEntry_0285_poison_powder"), SubResource("LearnsetEntry_0285_giga_drain"), SubResource("LearnsetEntry_0285_growth"), SubResource("LearnsetEntry_0285_toxic"), SubResource("LearnsetEntry_0285_seed_bomb"), SubResource("LearnsetEntry_0285_spore")])
 hp_base = 60

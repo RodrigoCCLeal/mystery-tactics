@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Ice"
+is_special = true
+power = 110
+accuracy = 0.7
+area_shape = "Thick Line"
+never_misses_in_snow = true
+action_name = "Blizzard"
+max_uses = 5
+range = 5

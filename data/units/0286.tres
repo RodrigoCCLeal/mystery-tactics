@@ -1,19 +1,20 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://cppueni4m6pra"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0286/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0286/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_lbixy"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bkjw8ryyx8mrj" path="res://assets/sprites/Pokemon/Sprites/0286/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://ctjr0wvgtnxuj" path="res://assets/sprites/Pokemon/Sprites/0286/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_action"]
 [ext_resource type="Resource" path="res://data/abilities/effect_spore.tres" id="6_effect_spore"]
 [ext_resource type="Resource" path="res://data/abilities/poison_heal.tres" id="7_poison_heal"]
 [ext_resource type="Resource" path="res://data/abilities/technician.tres" id="8_technician"]
 [ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="9_absorb"]
 [ext_resource type="Resource" path="res://data/attacks/growth.tres" id="10_growth"]
-[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="11_leech_seed"]
-[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="12_poison_powder"]
+[ext_resource type="Resource" uid="uid://cglxkxh5ebx4g" path="res://data/attacks/leech_seed.tres" id="11_leech_seed"]
+[ext_resource type="Resource" uid="uid://cpxtdp5ofau0o" path="res://data/attacks/poison_powder.tres" id="12_poison_powder"]
 [ext_resource type="Resource" path="res://data/attacks/stun_spore.tres" id="13_stun_spore"]
-[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="14_tackle"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="14_tackle"]
 [ext_resource type="Resource" path="res://data/attacks/toxic.tres" id="15_toxic"]
 [ext_resource type="Resource" path="res://data/attacks/mega_drain.tres" id="16_mega_drain"]
 [ext_resource type="Resource" path="res://data/attacks/headbutt.tres" id="17_headbutt"]
@@ -129,8 +130,6 @@ unit_name = "Breloom"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Grass", "Fighting"])
-grounded = true
-weight = 1
 slots = Array[ExtResource("5_action")]([ExtResource("14_tackle"), ExtResource("9_absorb"), ExtResource("6_effect_spore")])
 learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0286_effect_spore"), SubResource("LearnsetEntry_0286_poison_heal"), SubResource("LearnsetEntry_0286_technician"), SubResource("LearnsetEntry_0286_absorb"), SubResource("LearnsetEntry_0286_growth"), SubResource("LearnsetEntry_0286_leech_seed"), SubResource("LearnsetEntry_0286_poison_powder"), SubResource("LearnsetEntry_0286_stun_spore"), SubResource("LearnsetEntry_0286_tackle"), SubResource("LearnsetEntry_0286_toxic"), SubResource("LearnsetEntry_0286_mega_drain"), SubResource("LearnsetEntry_0286_headbutt"), SubResource("LearnsetEntry_0286_feint"), SubResource("LearnsetEntry_0286_counter"), SubResource("LearnsetEntry_0286_mach_punch"), SubResource("LearnsetEntry_0286_force_palm"), SubResource("LearnsetEntry_0286_worry_seed"), SubResource("LearnsetEntry_0286_brick_break"), SubResource("LearnsetEntry_0286_seed_bomb"), SubResource("LearnsetEntry_0286_dynamic_punch"), SubResource("LearnsetEntry_0286_focus_punch")])
 hp_base = 60

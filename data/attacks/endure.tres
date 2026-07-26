@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Normal"
+is_status = true
+accuracy = 0.75
+inflicts_status = "Endure"
+inflicts_status_on_self = true
+action_name = "Endure"
+max_uses = 10
+range = 1

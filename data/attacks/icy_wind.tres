@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://2n2a70nvc36i"]
+
+[ext_resource type="Script" uid="uid://ds0uxvdng0s2r" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Ice"
+accuracy = 0.95
+power = 55
+area_shape = "Cone"
+secondary_stat_change_stat = "speed"
+secondary_stat_change_amount = -1
+secondary_stat_change_chance = 1.0
+tags = Array[String](["Wind"])
+action_name = "Icy Wind"
+max_uses = 15
+range = 2

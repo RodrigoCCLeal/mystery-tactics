@@ -1,53 +1,123 @@
-[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://d3d1yt4acgtl4"]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://cflro8kw4svpo"]
 
-[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
-[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_hcgvv"]
-[ext_resource type="SpriteFrames" uid="uid://ch8xcqfj0gfv4" path="res://assets/sprites/Pokemon/Sprites/0473/frames.tres" id="2"]
-[ext_resource type="Texture2D" uid="uid://boaxq5etp6byi" path="res://assets/sprites/Pokemon/Sprites/0473/Normal.png" id="3"]
-[ext_resource type="Resource" uid="uid://cy01uvyq3ukya" path="res://data/attacks/ice_fang.tres" id="4"]
-[ext_resource type="Resource" uid="uid://dbvsyo17xyusc" path="res://data/attacks/mud_slap.tres" id="5"]
-[ext_resource type="Resource" uid="uid://biixxc7agutuh" path="res://data/attacks/powder_snow.tres" id="6"]
-[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="7"]
-[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="8"]
-[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="8_kf18n"]
-[ext_resource type="Resource" uid="uid://d0yjuw7hmmcys" path="res://data/attacks/ancient_power.tres" id="9"]
-[ext_resource type="Resource" path="res://data/abilities/thick_fat.tres" id="10"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_e1qs7"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="SpriteFrames" uid="uid://ch8xcqfj0gfv4" path="res://assets/sprites/Pokemon/Sprites/0473/frames.tres" id="2_frames"]
+[ext_resource type="Texture2D" uid="uid://boaxq5etp6byi" path="res://assets/sprites/Pokemon/Sprites/0473/Normal.png" id="3_portrait"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Resource" uid="uid://bjsyddqoi8efn" path="res://data/abilities/oblivious.tres" id="6_oblivious"]
+[ext_resource type="Resource" path="res://data/abilities/snow_cloak.tres" id="7_snow_cloak"]
+[ext_resource type="Resource" path="res://data/attacks/double_hit.tres" id="8_double_hit"]
+[ext_resource type="Resource" uid="uid://d0yjuw7hmmcys" path="res://data/attacks/ancient_power.tres" id="9_ancient_power"]
+[ext_resource type="Resource" path="res://data/attacks/flail.tres" id="10_flail"]
+[ext_resource type="Resource" uid="uid://dbvsyo17xyusc" path="res://data/attacks/mud_slap.tres" id="11_mud_slap"]
+[ext_resource type="Resource" uid="uid://biixxc7agutuh" path="res://data/attacks/powder_snow.tres" id="12_powder_snow"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="13_tackle"]
+[ext_resource type="Resource" path="res://data/attacks/ice_shard.tres" id="14_ice_shard"]
+[ext_resource type="Resource" path="res://data/attacks/mist.tres" id="15_mist"]
+[ext_resource type="Resource" path="res://data/attacks/endure.tres" id="16_endure"]
+[ext_resource type="Resource" uid="uid://2n2a70nvc36i" path="res://data/attacks/icy_wind.tres" id="17_icy_wind"]
+[ext_resource type="Resource" uid="uid://cy01uvyq3ukya" path="res://data/attacks/ice_fang.tres" id="18_ice_fang"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="19_amnesia"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="20_take_down"]
+[ext_resource type="Resource" path="res://data/attacks/earthquake.tres" id="21_earthquake"]
+[ext_resource type="Resource" path="res://data/attacks/blizzard.tres" id="22_blizzard"]
+[ext_resource type="Resource" path="res://data/attacks/thrash.tres" id="23_thrash"]
 
-[sub_resource type="Resource" id="LearnsetEntry_0473_ice_fang"]
-script = ExtResource("8")
-action = ExtResource("4")
+[sub_resource type="Resource" id="LearnsetEntry_0473_oblivious"]
+script = ExtResource("4_learn")
+action = ExtResource("6_oblivious")
 
-[sub_resource type="Resource" id="LearnsetEntry_0473_mud_slap"]
-script = ExtResource("8")
-action = ExtResource("5")
-
-[sub_resource type="Resource" id="LearnsetEntry_0473_powder_snow"]
-script = ExtResource("8")
-action = ExtResource("6")
-
-[sub_resource type="Resource" id="LearnsetEntry_0473_tackle"]
-script = ExtResource("8")
-action = ExtResource("7")
-
-[sub_resource type="Resource" id="LearnsetEntry_0473_ancient_power"]
-script = ExtResource("8")
-action = ExtResource("9")
-
-[sub_resource type="Resource" id="LearnsetEntry_0473_thick_fat"]
-script = ExtResource("8")
-action = ExtResource("10")
+[sub_resource type="Resource" id="LearnsetEntry_0473_snow_cloak"]
+script = ExtResource("4_learn")
+action = ExtResource("7_snow_cloak")
 is_hidden_ability = true
 
+[sub_resource type="Resource" id="LearnsetEntry_0473_double_hit"]
+script = ExtResource("4_learn")
+action = ExtResource("8_double_hit")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_ancient_power"]
+script = ExtResource("4_learn")
+action = ExtResource("9_ancient_power")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_flail"]
+script = ExtResource("4_learn")
+action = ExtResource("10_flail")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_mud_slap"]
+script = ExtResource("4_learn")
+action = ExtResource("11_mud_slap")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_powder_snow"]
+script = ExtResource("4_learn")
+action = ExtResource("12_powder_snow")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("13_tackle")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_ice_shard"]
+script = ExtResource("4_learn")
+level = 15
+action = ExtResource("14_ice_shard")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_mist"]
+script = ExtResource("4_learn")
+level = 20
+action = ExtResource("15_mist")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_endure"]
+script = ExtResource("4_learn")
+level = 25
+action = ExtResource("16_endure")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_icy_wind"]
+script = ExtResource("4_learn")
+level = 30
+action = ExtResource("17_icy_wind")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_ice_fang"]
+script = ExtResource("4_learn")
+level = 33
+action = ExtResource("18_ice_fang")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_amnesia"]
+script = ExtResource("4_learn")
+level = 37
+action = ExtResource("19_amnesia")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_take_down"]
+script = ExtResource("4_learn")
+level = 44
+action = ExtResource("20_take_down")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_earthquake"]
+script = ExtResource("4_learn")
+level = 51
+action = ExtResource("21_earthquake")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_blizzard"]
+script = ExtResource("4_learn")
+level = 58
+action = ExtResource("22_blizzard")
+
+[sub_resource type="Resource" id="LearnsetEntry_0473_thrash"]
+script = ExtResource("4_learn")
+level = 65
+action = ExtResource("23_thrash")
+
 [resource]
-script = ExtResource("1")
+script = ExtResource("1_script")
 unit_name = "Mamoswine"
-sprite_frames = ExtResource("2")
-portrait = ExtResource("3")
+sprite_frames = ExtResource("2_frames")
+portrait = ExtResource("3_portrait")
 attack_hit_delay = 0.2
 special_hit_delay = 0.2
 types = Array[String](["Ice", "Ground"])
-slots = Array[ExtResource("8_kf18n")]([ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7")])
-learnset = Array[ExtResource("8")]([SubResource("LearnsetEntry_0473_ice_fang"), SubResource("LearnsetEntry_0473_mud_slap"), SubResource("LearnsetEntry_0473_powder_snow"), SubResource("LearnsetEntry_0473_tackle"), SubResource("LearnsetEntry_0473_ancient_power"), SubResource("LearnsetEntry_0473_thick_fat")])
+slots = Array[ExtResource("5_action")]([ExtResource("8_double_hit"), ExtResource("9_ancient_power"), ExtResource("10_flail"), ExtResource("11_mud_slap"), ExtResource("12_powder_snow"), ExtResource("13_tackle"), ExtResource("6_oblivious")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0473_oblivious"), SubResource("LearnsetEntry_0473_snow_cloak"), SubResource("LearnsetEntry_0473_double_hit"), SubResource("LearnsetEntry_0473_ancient_power"), SubResource("LearnsetEntry_0473_flail"), SubResource("LearnsetEntry_0473_mud_slap"), SubResource("LearnsetEntry_0473_powder_snow"), SubResource("LearnsetEntry_0473_tackle"), SubResource("LearnsetEntry_0473_ice_shard"), SubResource("LearnsetEntry_0473_mist"), SubResource("LearnsetEntry_0473_endure"), SubResource("LearnsetEntry_0473_icy_wind"), SubResource("LearnsetEntry_0473_ice_fang"), SubResource("LearnsetEntry_0473_amnesia"), SubResource("LearnsetEntry_0473_take_down"), SubResource("LearnsetEntry_0473_earthquake"), SubResource("LearnsetEntry_0473_blizzard"), SubResource("LearnsetEntry_0473_thrash")])
 weight = 2
 hp_base = 110
 attack_base = 130

@@ -23,7 +23,7 @@
 [ext_resource type="Resource" path="res://data/items/muscle_band.tres" id="20_t818m"]
 [ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="21_clyph"]
 [ext_resource type="Resource" path="res://data/items/rocketball.tres" id="22_50wbd"]
-[ext_resource type="Resource" uid="uid://5igdisqid0na" path="res://data/units/0020.tres" id="23_imwcl"]
+[ext_resource type="Resource" uid="uid://ctst6kxtshdka" path="res://data/units/0020.tres" id="23_imwcl"]
 [ext_resource type="Texture2D" uid="uid://da3e6ytfa0dpx" path="res://assets/sprites/Human/Trainer/trainer_TEAMROCKET_M.png" id="24_oer5g"]
 [ext_resource type="PackedScene" path="res://scenes/npc/merchant.tscn" id="25_qvfjw"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud/time_hud.tscn" id="25_timehud"]
@@ -31,6 +31,15 @@
 [ext_resource type="Resource" uid="uid://cgta0is70o5ya" path="res://data/items/potion.tres" id="27_iibxu"]
 [ext_resource type="Resource" uid="uid://cusa6m2ijtesg" path="res://data/items/pokeball.tres" id="28_1k6fl"]
 [ext_resource type="Resource" uid="uid://timvhcf5r6n0" path="res://data/items/super_potion.tres" id="28_dvwc1"]
+[ext_resource type="Script" uid="uid://cj30256n61qye" path="res://scripts/boss.gd" id="32_fu66s"]
+[ext_resource type="Resource" path="res://data/attacks/extreme_speed.tres" id="33_ktn2a"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="34_7s02n"]
+[ext_resource type="Resource" path="res://data/attacks/blizzard.tres" id="35_m2rm5"]
+[ext_resource type="Resource" path="res://data/attacks/calm_mind.tres" id="36_c0yo2"]
+[ext_resource type="Resource" path="res://data/abilities/pressure.tres" id="37_p1j7d"]
+[ext_resource type="Resource" path="res://data/abilities/updraft.tres" id="38_65p7y"]
+[ext_resource type="Resource" uid="uid://p4kfkkidip1n" path="res://data/units/0245.tres" id="39_geafy"]
+[ext_resource type="Texture2D" uid="uid://dwo3mnl774euf" path="res://assets/sprites/Boss/SUICUNE.png" id="40_84aux"]
 
 [sub_resource type="Resource" id="TrainerTeamEntry_caterpie_2_a"]
 script = ExtResource("11_t8bo0")
@@ -90,6 +99,13 @@ item = ExtResource("27_iibxu")
 script = ExtResource("26_fu66s")
 item = ExtResource("28_1k6fl")
 metadata/_custom_type_script = "uid://34sf5hideha7"
+
+[sub_resource type="Resource" id="Resource_j7kaf"]
+script = ExtResource("11_t8bo0")
+species = ExtResource("39_geafy")
+level = 50
+loadout = Array[ExtResource("12_j2huw")]([ExtResource("33_ktn2a"), ExtResource("34_7s02n"), ExtResource("35_m2rm5"), ExtResource("36_c0yo2"), ExtResource("37_p1j7d"), ExtResource("38_65p7y")])
+metadata/_custom_type_script = "uid://cicfhbijirymv"
 
 [node name="World" type="Node2D" unique_id=431092218]
 script = ExtResource("3_world_script")
@@ -224,6 +240,16 @@ facing = "left"
 position = Vector2(531, -1615)
 shop_name = "Fisherman Shop"
 stock = Array[ExtResource("26_fu66s")]([SubResource("MerchantStockEntry_potion"), SubResource("Resource_fu66s")])
+
+[node name="Suicune" type="Node2D" parent="Actors" unique_id=196936919]
+position = Vector2(446, -1676)
+script = ExtResource("32_fu66s")
+boss_id = "001"
+spotted_message = "Suicune: Suuu!"
+boss_entry = SubResource("Resource_j7kaf")
+sheet = ExtResource("40_84aux")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Actors/Suicune" unique_id=1032197918]
 
 [node name="AreaNotification" type="CanvasLayer" parent="." unique_id=1501097989]
 script = ExtResource("5_notif")

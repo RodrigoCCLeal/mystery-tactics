@@ -346,6 +346,15 @@ enum Phase { DEPLOY, BATTLE, ENDED }
 const BATTLE_TILESETS: Array[BattleTileset] = [
 	preload("res://data/battle_tilesets/tiny_woods.tres"),
 	preload("res://data/battle_tilesets/mt_blaze.tres"),
+	# Northwind Field (ver data/battle_tilesets/northwind_field.tres) —
+	# terceiro tileset, fluid_pass_type="" ("buraco": só quem é non-grounded
+	# ou tem Levitate atravessa, nenhum TIPO específico ganha passagem livre
+	# — ver comentário grande em BattleTileset.fluid_pass_type). Suicune (ver
+	# GameState.forced_battle_tileset/boss.gd) sempre força este aqui
+	# especificamente em vez de entrar no sorteio igual os outros dois — mas
+	# ele TAMBÉM entra no pool geral, pra qualquer batalha selvagem/Trainer
+	# comum poder sortear ele igual os outros dois a partir de agora.
+	preload("res://data/battle_tilesets/northwind_field.tres"),
 ]
 
 # Sorteado em _ready() (ver _pick_battle_tileset()) — guardado aqui pra
@@ -871,6 +880,14 @@ func _ready() -> void:
 	if GameState.roster.size() > GameState.MAX_TEAM_SIZE:
 		push_warning("roster tem %d entradas, mais que o time máximo (%d) — as excedentes serão ignoradas." % [GameState.roster.size(), GameState.MAX_TEAM_SIZE])
 	randomize()
+	# Mapa desenhado à mão (ver GameState.generated_map/manual_map,
+	# Trainer.gd/boss.gd) — o CARREGAMENTO de verdade ainda não existe (ver
+	# comentário grande em GameState.manual_map: ninguém desenhou um mapa
+	# manual de verdade ainda pra saber o formato certo), então por enquanto
+	# isso só avisa no log e cai pro procedural mesmo assim, em vez de
+	# silenciosamente ignorar a configuração ou quebrar a batalha.
+	if not GameState.generated_map:
+		push_warning("generated_map=false, mas o carregamento de mapa manual ainda não está implementado — usando mapa procedural mesmo assim.")
 	_pick_battle_tileset()   # ANTES de qualquer paint_*/set_cell — as 4 layers precisam do tile_set certo já atribuído
 	build_ground_variants()
 	build_wall_detail()
@@ -910,7 +927,17 @@ func _ready() -> void:
 # por isso recebem o mesmo tile_set que o chão de verdade). Roda ANTES de
 # qualquer paint_*/set_cell em _ready() de propósito.
 func _pick_battle_tileset() -> void:
-	current_battle_tileset = BATTLE_TILESETS[randi() % BATTLE_TILESETS.size()]
+	# Boss (ver GameState.forced_battle_tileset/boss.gd) — pedido do usuário,
+	# Suicune: "Northwind Field has the third Fluid option we talked about
+	# before" logo depois de confirmar que o mapa continua PROCEDURAL por
+	# enquanto — ou seja, este campo só troca QUAL tileset entra no sorteio
+	# (pula o sorteio de vez, sempre este), o resto de _ready() (paredes/
+	# chão/fluido) continua rodando exatamente igual. null (toda batalha
+	# selvagem/Trainer de hoje) = sorteio normal, sem mudança nenhuma.
+	if GameState.forced_battle_tileset != null:
+		current_battle_tileset = GameState.forced_battle_tileset
+	else:
+		current_battle_tileset = BATTLE_TILESETS[randi() % BATTLE_TILESETS.size()]
 	tilemap.tile_set = current_battle_tileset.tile_set
 	highlight_layer.tile_set = current_battle_tileset.tile_set
 	attack_highlight_layer.tile_set = current_battle_tileset.tile_set
@@ -1607,6 +1634,14 @@ func _trigger_start_of_battle_abilities() -> void:
 		for action in u.data.slots:
 			if action is AbilityData and action.sets_weather_on_battle_start != "":
 				try_set_weather(action.sets_weather_on_battle_start, u)
+			# Updraft (ver AbilityData.sets_status_on_battle_start, pedido do
+			# usuário, Suicune: "Uses Tailwind on Battle start") — mesmo
+			# ponto/ordem por Speed que o clima acima já usa, só que
+			# aplicando uma Status Condition na PRÓPRIA unidade em vez de um
+			# clima pra batalha inteira. apply_status_condition() já se
+			# recusa sozinha se `u` já estiver com Tailwind por outro motivo.
+			if action is AbilityData and action.sets_status_on_battle_start != "":
+				u.apply_status_condition(action.sets_status_on_battle_start)
 
 # Sorteia UM grupo da EncounterArea ativa (GameState.current_area,
 # setada por world.gd antes da troca de cena — ver encounter_area.gd/
@@ -1654,6 +1689,18 @@ func spawn_enemies() -> void:
 	if GameState.is_trainer_battle:
 		for entry in GameState.current_trainer_team:
 			_spawn_enemy_unit(entry.species, entry.level, entry.loadout, hidden_cells, extra_loadout)
+	elif GameState.is_boss_battle:
+		# Chefe (ver GameState.is_boss_battle/current_boss_entry, boss.gd) —
+		# UMA unidade só, de um TrainerTeamEntry fixo em vez de sortear
+		# EncounterArea. is_trainer_battle continua FALSE nesse ramo (nunca é
+		# ligado por boss.gd) de propósito — pedido do usuário: "Boss battles
+		# are against wild pokémon... the player CAN catch them" — se
+		# is_trainer_battle fosse true aqui, resolve_capture() recusaria
+		# qualquer Ball incondicionalmente (ver comentário grande lá), o que
+		# tornaria um chefe impossível de capturar, o oposto do pedido.
+		if GameState.current_boss_entry != null:
+			var entry = GameState.current_boss_entry
+			_spawn_enemy_unit(entry.species, entry.level, entry.loadout, hidden_cells, [])
 	else:
 		# current_encounter_source ("Grass"/"Water"/"Fishing", ver
 		# EncounterGroup.source) — quem chamou world.gd::_start_encounter()
@@ -1682,8 +1729,14 @@ func _spawn_enemy_unit(species: UnitData, level: int, forced_loadout: Array[Acti
 	# ESPÉCIE pra TODA unidade deste Trainer — "" (batalha selvagem, ou
 	# Trainer sem iq preenchido, nunca acontece hoje já que o padrão é
 	# "Medium") deixa cada UnitData.iq valer sozinho, sem sobrescrever nada.
+	# current_boss_iq (ver Boss.iq) faz o mesmíssimo papel numa batalha de
+	# chefe — par separado em vez de reaproveitar current_trainer_iq de
+	# propósito, pra não arrastar a regra de time "Rocket" (Rocket Ball
+	# automática, ver spawn_enemies) pra dentro de uma batalha de chefe.
 	if GameState.current_trainer_iq != "":
 		e.iq = GameState.current_trainer_iq
+	elif GameState.current_boss_iq != "":
+		e.iq = GameState.current_boss_iq
 	e.mark_as_enemy()
 	e.init(pos)
 	enemy_units.append(e)
@@ -1787,6 +1840,14 @@ func begin_current_turn() -> void:
 	# importa neste turno, mas fica certo pro próximo já que só é lido por
 	# can_move/can_attack quando o turno de verdade começa a valer, no ramo
 	# `else` logo abaixo).
+	# Pressure (ver AbilityData.pressure/Unit.move_range, pedido do usuário,
+	# Suicune: "Enemy units in burst range 2 gain Pressure status (Removed
+	# when out of range)") — recalculado ANTES de move_budget_left ler
+	# move_range logo abaixo, pra já valer neste mesmo turno. Aproximação
+	# deliberada de "tempo real" neste motor por turnos: reavaliado só no
+	# INÍCIO do turno de cada unidade (ver comentário grande em
+	# AbilityData.pressure), não a cada passo/frame.
+	_update_pressure_status(u)
 	u.fully_paralyzed_this_turn = u.has_status("Paralyzed") and randf() < 1.0 / 8.0
 	if u.fully_paralyzed_this_turn:
 		log_message("%s is fully paralyzed!" % u.data.unit_name)
@@ -1805,6 +1866,13 @@ func begin_current_turn() -> void:
 	# dos dois, diferente de Flinched).
 	if u.has_status("Protected"):
 		u.cure_status_condition("Protected")
+	# Endure (ver AttackData.inflicts_status/Unit.take_damage, pedido do
+	# usuário, Swinub: "Can be damaged by attacks, but HP can't drop bellow
+	# 1") — mesmíssimo "cura no início do PRÓXIMO turno desta unidade" de
+	# Protected acima, mesmo golpe-molde (Endure copia accuracy=0.75/
+	# inflicts_status_on_self de Protect quase igual).
+	if u.has_status("Endure"):
+		u.cure_status_condition("Endure")
 
 	# Flinched é diferente das outras Status Conditions com duração: ela só
 	# deveria custar UM turno inteiro (movimento e ataque zerados) e sumir
@@ -2598,6 +2666,15 @@ func is_valid_target_cell(origin: Vector2i, target: Vector2i, action: ActionData
 		var dir = Vector2i(sign(delta.x), sign(delta.y))
 		return target in get_wide_cells(origin, dir, effective_range)
 
+	# Thick Line (ver AttackData.area_shape/get_thick_line_cells — Blizzard):
+	# mesma checagem de "linha reta" que Line já usa acima — clicar em
+	# QUALQUER célula ao longo da direção mirada confirma, a largura extra
+	# (corredor de 3 tiles) é só geometria de quem é ATINGIDO de verdade
+	# (ver execute_attack_burst), não muda o critério de confirmação do clique.
+	if effective_action is AttackData and effective_action.area_shape == "Thick Line":
+		var is_straight_line = delta.x == 0 or delta.y == 0 or abs(delta.x) == abs(delta.y)
+		return is_straight_line and dist <= effective_range
+
 	return dist == effective_range
 
 # Todas as células dentro de um "leque" (cone) que se abre a partir de
@@ -2666,6 +2743,34 @@ func get_wide_cells(origin: Vector2i, dir: Vector2i, range_value: int) -> Array[
 	var center = origin + dir * range_value
 	var perp = Vector2i(-dir.y, dir.x)
 	return [center - perp, center, center + perp]
+
+# "Thick Line" (ver AttackData.area_shape — Blizzard é o primeiro caso,
+# pedido do usuário: "Straight line burst range 5, but has thickness of 3
+# tiles, instead of the usual 1"): igual a andar em linha reta (mesmo
+# critério de parede/borda de find_projectile_target/execute_attack_burst's
+# ramo "Line"), só que em CADA passo válido, além da célula central, também
+# inclui as duas células perpendiculares (mesmo vetor perpendicular de
+# get_wide_cells acima, Vector2i(-dir.y, dir.x)) — um corredor sólido de 3
+# tiles de largura pela extensão inteira do feixe, em vez de uma fila só no
+# fim (Wide) ou uma linha fina o caminho todo (Line). A checagem de parede só
+# vale pra célula CENTRAL de cada passo (o feixe todo para se ela esbarrar em
+# algo) — as duas laterais não têm checagem de parede própria, mesma
+# simplificação que Wide já assume pras 2 células dela.
+func get_thick_line_cells(origin: Vector2i, dir: Vector2i, range_value: int) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	if dir == Vector2i.ZERO:
+		return cells
+	var perp = Vector2i(-dir.y, dir.x)
+	var cell = origin
+	for step in range_value:
+		var next_cell = cell + dir
+		if is_wall_or_border(next_cell):
+			break
+		cell = next_cell
+		for c in [cell - perp, cell, cell + perp]:
+			if c.x >= 0 and c.x < MAP_WIDTH and c.y >= 0 and c.y < MAP_HEIGHT:
+				cells.append(c)
+	return cells
 
 # Anda em linha reta de origin em direção a target (mesma direção 8-way do
 # resto do jogo), célula por célula, até no máximo max_range passos, e
@@ -2797,6 +2902,13 @@ func update_attack_highlight() -> void:
 				break
 			line_cell = next_cell
 			attack_highlight_layer.set_cell(line_cell, 0, Vector2i(13, 1))
+	elif attack != null and attack.area_shape == "Thick Line":
+		# Thick Line: mesmo destaque de Line acima, só que usando
+		# get_thick_line_cells (corredor de 3 tiles de largura) em vez do
+		# feixe fino de 1 tile — comunica visualmente a área extra de Blizzard.
+		var dir = Vector2i(sign(cell.x - current.grid_pos.x), sign(cell.y - current.grid_pos.y))
+		for thick_cell in get_thick_line_cells(current.grid_pos, dir, attack.range):
+			attack_highlight_layer.set_cell(thick_cell, 0, Vector2i(13, 1))
 	elif attack != null and attack.area_shape == "Wide":
 		# Wide: destaca as 3 células da fila inteira (não só a célula sob o
 		# mouse) na direção mirada — mesma geometria de get_wide_cells.
@@ -2830,7 +2942,7 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 		# sentido "embaralhar direção" pra quem já é uma área inteira).
 		var dir = Vector2i(sign(clicked_cell.x - current.grid_pos.x), sign(clicked_cell.y - current.grid_pos.y))
 		_run_player_status_attack(current, action, dir, index)
-	elif current != null and action is AttackData and (action.area_shape == "Burst" or action.area_shape == "Line" or action.area_shape == "Cone" or action.area_shape == "Wide") and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
+	elif current != null and action is AttackData and (action.area_shape == "Burst" or action.area_shape == "Line" or action.area_shape == "Cone" or action.area_shape == "Wide" or action.area_shape == "Thick Line") and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
 		# Ataque de área "Burst", "Line" ou "Cone" QUE CAUSA DANO (ver
 		# AttackData.area_shape/execute_attack_burst — Lava Plume,
 		# Flamethrower e Overheat): mesmo raciocínio do ramo is_status logo
@@ -3455,6 +3567,15 @@ func calculate_damage_modifiers(attacker: Node, defender: Node, attack: AttackDa
 	if attack_has_secondary_effect(attack) and has_sheer_force(attacker):
 		modifiers *= SHEER_FORCE_MULTIPLIER
 
+	# Updraft (ver AbilityData.updraft, pedido do usuário, Suicune boss
+	# ability: "Wind attacks used by allied units (including this one) do
+	# 1.3x damage") — checa o LADO INTEIRO de `attacker` (ela mesma
+	# incluída, "including this one" do pedido), não só quem carrega
+	# Updraft — por isso o golpe usado por QUALQUER aliado de um Suicune com
+	# Updraft equipado ganha o bônus, não só os golpes do próprio Suicune.
+	if attack.tags.has("Wind") and _side_has_updraft(attacker):
+		modifiers *= UPDRAFT_WIND_MULTIPLIER
+
 	# Thick Fat e afins (ver AbilityData.resist_types/resist_multiplier): do
 	# lado de QUEM DEFENDE, não de quem ataca — reduz (não zera, diferente de
 	# immune_type/has_type_immunity_ability) o dano recebido de certos tipos,
@@ -3502,6 +3623,29 @@ func has_speed_boost(u: Node) -> bool:
 # de SHEER_FORCE_MULTIPLIER acima pro mesmo raciocínio), não fica no dado
 # porque Flash Fire só tem esse valor fixo.
 const FLASH_FIRE_MULTIPLIER = 1.5
+
+# 1.3x, valor exato do pedido do usuário (Updraft, Suicune) — constante de
+# REGRA, mesmo raciocínio de FLASH_FIRE_MULTIPLIER acima.
+const UPDRAFT_WIND_MULTIPLIER = 1.3
+
+# true se `u` carrega uma Habilidade com updraft=true equipada (ver
+# AbilityData.updraft) — mesmo padrão de has_flash_fire acima.
+func has_updraft(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.updraft:
+			return true
+	return false
+
+# true se ALGUÉM do MESMO LADO de `attacker` (ela mesma inclusa) carrega
+# Updraft — ver comentário grande do bônus em calculate_damage_modifiers.
+# Mesmo padrão de has_unnerve_nearby/has_pressure, só que pro lado PRÓPRIO
+# em vez do lado OPOSTO.
+func _side_has_updraft(attacker: Node) -> bool:
+	var own_side = enemy_units if attacker.is_enemy else player_units
+	for ally in own_side:
+		if has_updraft(ally):
+			return true
+	return false
 
 # true se `u` carrega uma Habilidade com flash_fire=true equipada (ver
 # AbilityData.flash_fire) — mesmo padrão de has_sheer_force/has_speed_boost
@@ -3568,6 +3712,26 @@ func has_hustle(u: Node) -> bool:
 		if action is AbilityData and action.hustle:
 			return true
 	return false
+
+# Water Absorb e afins (ver AbilityData.heals_on_type_hit/heal_on_type_hit_
+# fraction, pedido do usuário, Suicune Hidden) — cura `defender` em
+# heal_on_type_hit_fraction do HP máximo se ela carregar uma Habilidade
+# cujo heals_on_type_hit bata com `element_type` do golpe que acabou de
+# conectar. "" (padrão, toda Habilidade sem esse campo preenchido) nunca
+# bate com elemento nenhum, então isso não afeta quem não tem a Habilidade.
+# Chamado nos dois pontos que já disparam o "Charged" de Flash Fire (ver
+# comentário grande lá) — mesmo espírito: dispara por SER ALVO de verdade,
+# mesmo que o dano real saia 0 pela imunidade de tipo (ver immune_type).
+func _try_type_absorb_heal(defender: Node, element_type: String) -> void:
+	if element_type == "":
+		return
+	for action in defender.data.slots:
+		if action is AbilityData and action.heals_on_type_hit == element_type:
+			var heal_amount = max(1, int(defender.hp_max * action.heal_on_type_hit_fraction))
+			defender.hp_current = min(defender.hp_current + heal_amount, defender.hp_max)
+			defender.update_health_bar()
+			log_message("%s's %s restored its HP!" % [defender.data.unit_name, action.action_name])
+			return
 
 # true se `u` carrega uma Habilidade com static_paralysis=true equipada (ver
 # AbilityData.static_paralysis) — usado em _try_static, chamado quando `u`
@@ -3821,6 +3985,15 @@ func has_sand_veil(u: Node) -> bool:
 			return true
 	return false
 
+# Mesmo padrão de has_sand_veil() acima, pra Snow Cloak (ver AbilityData.
+# snow_cloak) — usado só por get_weather_tick_damage abaixo (a parte de
+# Speed x2 mora em Unit._has_snow_cloak, checada diretamente lá).
+func has_snow_cloak(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.snow_cloak:
+			return true
+	return false
+
 # true se `u` carrega uma Habilidade com unnerve=true equipada (ver
 # AbilityData.unnerve) — usado em has_unnerve_nearby, chamado por
 # Unit._check_berry_auto_use (via get_parent()) antes de deixar uma Berry se
@@ -3847,6 +4020,38 @@ func has_unnerve_nearby(u: Node) -> bool:
 		if dist <= 3:
 			return true
 	return false
+
+# true se `u` carrega uma Habilidade com pressure=true equipada (ver
+# AbilityData.pressure) — mesmo padrão de has_unnerve acima.
+func has_pressure(u: Node) -> bool:
+	for action in u.data.slots:
+		if action is AbilityData and action.pressure:
+			return true
+	return false
+
+# Reavalia se `u` deveria estar com "Pressured" AGORA (ver AbilityData.
+# pressure/Unit.move_range, pedido do usuário, Suicune) — chamado no início
+# do turno de `u` (ver begin_current_turn), sempre a partir da perspectiva
+# de `u` (não de quem carrega Pressure): procura, entre os INIMIGOS de `u`,
+# algum portador de Pressure a até 2 tiles de distância (Chebyshev, mesmo
+# critério de Unnerve/Lightning Rod acima). Aplica ou cura "Pressured"
+# conforme o resultado mudar — apply_status_condition() já se recusa
+# sozinha se `u` for imune (Inner Focus/Oblivious, ver AbilityData.
+# immune_to_pressure) ou já estiver com a condição, então esta função nunca
+# precisa checar imunidade na mão.
+func _update_pressure_status(u: Node) -> void:
+	var opposing_side = enemy_units if not u.is_enemy else player_units
+	var should_be_pressured = false
+	for foe in opposing_side:
+		if not has_pressure(foe):
+			continue
+		if chebyshev_distance(u.grid_pos, foe.grid_pos) <= 2:
+			should_be_pressured = true
+			break
+	if should_be_pressured and not u.has_status("Pressured"):
+		u.apply_status_condition("Pressured")
+	elif not should_be_pressured and u.has_status("Pressured"):
+		u.cure_status_condition("Pressured")
 
 # Effect Spore (ver AbilityData.effect_spore, pedido do usuário, Shroomish:
 # "Counts as a Powder move, when taking contact attack, 30% chance to make
@@ -4015,6 +4220,29 @@ func _track_attack_use(attacker: Node, attack: AttackData) -> void:
 # como chute conservador (a IA vê o power do 1º uso, não o real se já
 # estiver numa sequência — imprecisão aceitável só de preview).
 func get_effective_power(attacker: Node, attack: AttackData, defender: Node = null) -> int:
+	# Flail (ver AttackData.power_scales_inversely_with_own_hp, pedido do
+	# usuário: "base power follows the table in https://pokemondb.net/move/
+	# flail") — tabela fixa de degraus baseada em N = floor(48 * hp_current/
+	# hp_max), quanto MENOR o HP, MAIOR o power (o oposto de Eruption/
+	# power_scales_with_own_hp, que é uma escala contínua, não uma tabela).
+	# hp_max <= 0 nunca deveria acontecer, mas devolve o menor degrau (20) em
+	# vez de dividir por zero, por segurança.
+	if attack.power_scales_inversely_with_own_hp:
+		if attacker.hp_max <= 0:
+			return 20
+		var n = int(48.0 * attacker.hp_current / float(attacker.hp_max))
+		if n <= 1:
+			return 200
+		elif n <= 4:
+			return 150
+		elif n <= 9:
+			return 100
+		elif n <= 16:
+			return 80
+		elif n <= 32:
+			return 40
+		else:
+			return 20
 	if attack.scales_with_consecutive_use:
 		var uses = attacker.consecutive_attack_uses if attacker.last_attack_used == attack else 1
 		uses = max(1, uses)
@@ -4410,6 +4638,13 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 	if attack.element_type == "Fire" and has_flash_fire(defender) and defender.apply_status_condition("Charged"):
 		log_message("%s's Flash Fire was triggered!" % defender.data.unit_name)
 
+	# Water Absorb (ver AbilityData.heals_on_type_hit, pedido do usuário,
+	# Suicune Hidden: "Heals 25% of its HP if hit by a Water move") — mesmo
+	# ponto/espírito do gatilho de Flash Fire acima: dispara por SER ALVO de
+	# um golpe do tipo certo, mesmo que o dano real vá sair 0 (imune, ver
+	# immune_type/has_type_immunity_ability).
+	_try_type_absorb_heal(defender, attack.element_type)
+
 	# Lightning Rod (ver AbilityData.lightning_rod, pedido do usuário, Pichu
 	# Hidden: "When hit by one, ups self Sp.Atk by 1") — mesmo ponto/espírito
 	# do gatilho de Flash Fire acima: dispara por SER ALVO de um golpe
@@ -4700,6 +4935,18 @@ func execute_attack(attacker: Node, defender: Node, attack: AttackData, slot_ind
 		if battle_ended_by_counter:
 			return
 
+	# Mirror Coat (ver Unit.status_conditions/STATUS_DURATIONS["Mirror
+	# Coat"], pedido do usuário, Suicune: "Same as Counter, except for
+	# Special attacks") — mesmíssimos critérios de Counter acima (alcance
+	# EXATAMENTE 1, sem projétil, hp_lost > 0), só invertendo pra
+	# attack.is_special == true — reaproveita _try_counter() sem mudar nada
+	# nela (o x2 devolvido não distingue físico/especial, só "quanto HP
+	# realmente saiu").
+	elif defender.has_status("Mirror Coat") and attack.is_special and attack.range == 1 and not attack.is_projectile and hp_lost > 0:
+		var battle_ended_by_mirror_coat = await _try_counter(defender, attacker, hp_lost)
+		if battle_ended_by_mirror_coat:
+			return
+
 	refresh_unit_summary_hud()
 	check_auto_end_turn()
 
@@ -4846,7 +5093,13 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 	# golpes FÍSICOS de quem carrega a Habilidade).
 	if not attack.is_special and has_hustle(attacker):
 		final_accuracy *= 0.8
-	if not attack.never_misses and final_accuracy < 1.0 and randf() >= final_accuracy:
+	# Blizzard (ver AttackData.never_misses_in_snow, pedido do usuário:
+	# "Bypasses accuracy checks if weather is Snow") — mesmo formato de
+	# never_misses_in_rain (Thunder), só que este golpe entra por
+	# execute_attack_burst (area_shape="Thick Line"), não execute_attack, daí
+	# a checagem morar aqui em vez de lá.
+	var skips_accuracy_roll = attack.never_misses or (attack.never_misses_in_snow and current_weather == WEATHER_SNOW)
+	if not skips_accuracy_roll and final_accuracy < 1.0 and randf() >= final_accuracy:
 		log_message("%s's attack missed!" % attacker.data.unit_name)
 		# Errou de verdade — quebra a sequência de uso consecutivo, mesma
 		# regra/motivo de execute_attack (ver comentário grande lá).
@@ -4886,6 +5139,15 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 			cell = next_cell
 			var u = get_unit_at(cell)
 			if u != null and u != attacker:
+				targets.append(u)
+	elif attack.area_shape == "Thick Line":
+		# Thick Line (ver get_thick_line_cells — Blizzard): mesmo espírito de
+		# Line acima, mas usando o corredor de 3 tiles de largura em vez do
+		# feixe fino — TODO MUNDO (aliado incluso) em qualquer célula do
+		# corredor, mesma regra de fogo amigo de Line/Cone/Wide.
+		for cell in get_thick_line_cells(attacker.grid_pos, dir, attack.range):
+			var u = get_unit_at(cell)
+			if u != null and u != attacker and not targets.has(u):
 				targets.append(u)
 	elif attack.area_shape == "Cone":
 		# Mesma geometria de get_cone_cells que execute_status_attack já usa
@@ -4950,6 +5212,11 @@ func execute_attack_burst(attacker: Node, attack: AttackData, dir: Vector2i, slo
 
 		if attack.element_type == "Fire" and has_flash_fire(target) and target.apply_status_condition("Charged"):
 			log_message("%s's Flash Fire was triggered!" % target.data.unit_name)
+
+		# Water Absorb — mesmo gatilho do ramo de alvo único em
+		# execute_attack (ver comentário grande lá), aplicado por ALVO
+		# dentro da rajada.
+		_try_type_absorb_heal(target, attack.element_type)
 
 		if target.has_status("Frozen") and attack.element_type == "Fire":
 			target.cure_status_condition("Frozen")
@@ -5196,6 +5463,7 @@ const SELF_STATUS_EFFECT_MESSAGES := {
 	"Focus Energy": "%s is getting pumped!",
 	"Roosted": "%s came down to rest its wings!",
 	"Supercharged": "%s is charging up!",
+	"Endure": "%s braced itself!",
 }
 
 # Mesma ideia de SELF_STATUS_EFFECT_MESSAGES acima, só que pro caso de um
@@ -5397,7 +5665,14 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		# um efeito de proteção do próprio time, faz sentido incluir quem
 		# lançou também).
 		for u in player_units + enemy_units:
-			if attack.targets_allies:
+			# targets_all_sides (ver AttackData — Mist é o primeiro caso:
+			# "Removes all stat changes for units affected (includes self)",
+			# respondido "Everyone, both teams" quando perguntado) — SEM
+			# filtro de lado nenhum, nem pula quem usa nem aliado nem inimigo,
+			# diferente dos dois ramos abaixo que sempre pulam ALGUÉM.
+			if attack.targets_all_sides:
+				pass
+			elif attack.targets_allies:
 				if u.is_enemy != attacker.is_enemy:
 					continue
 			else:
@@ -5561,6 +5836,16 @@ func execute_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, sl
 		# Status mirado num inimigo (Growl, Poison Powder, Leech Seed, etc.).
 		if target.has_status("Protected"):
 			log_message("%s protected itself!" % target.data.unit_name)
+			continue
+		# Mist (ver AttackData.resets_all_stat_stages/Unit.
+		# reset_all_stat_stages, pedido do usuário, Swinub: "Removes all
+		# stat changes for units affected (includes self) (removes positive
+		# and negative changes)") — `continue` no final, mesmo espírito de
+		# Disable/Worry Seed logo abaixo: este golpe NÃO combina com
+		# stat_change/inflicts_status genérico nenhum.
+		if attack.resets_all_stat_stages:
+			target.reset_all_stat_stages()
+			log_message("%s's stat changes were removed!" % target.data.unit_name)
 			continue
 		# Disable (ver AttackData.disables_target_last_move, pedido do
 		# usuário, Venonat: "Opponent gets Disabled status. It saves the
@@ -5926,6 +6211,17 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 	GameState.current_trainer_iq = ""
 	GameState.current_trainer_starting_weather = ""
 	GameState.current_trainer_starting_weather_overridable = true
+	# Mesmo espírito dos current_trainer_* acima, pro par current_boss_* (ver
+	# GameState) — sem isso, uma batalha selvagem/Trainer seguinte correria
+	# o risco de herdar por engano is_boss_battle=true de uma batalha de
+	# chefe anterior (ex: se alguma tela nova esquecer de checar
+	# is_trainer_battle antes de is_boss_battle no futuro).
+	GameState.is_boss_battle = false
+	GameState.current_boss_entry = null
+	GameState.current_boss_iq = ""
+	GameState.forced_battle_tileset = null
+	GameState.generated_map = true
+	GameState.manual_map = null
 	# Mesmo espírito dos quatro campos acima — volta pro default ("Grass")
 	# assim que a batalha termina, pra uma batalha de TREINADOR seguinte
 	# (que nem olha pra este campo) não herdar por engano um "Water" de uma
@@ -6230,6 +6526,13 @@ func resolve_capture(defender: Node, item: ItemData) -> void:
 			# fallback), depois vai pra reserva normal do jogador.
 			defender.data.apply_capture_progress(defender.level, defender.hp_current)
 			defender.data.caught_location = GameState.current_area.area_name if GameState.current_area != null else ""
+			# Habilidade de Chefe (ver LearnsetEntry.is_boss_ability/UnitData.
+			# strip_boss_ability, boss.gd) — pedido do usuário: "All Boss
+			# units have a special ability that is deleted when caught".
+			# Chamado ANTES de ir pra reserva, mas depois que já não importa
+			# mais pro resultado da captura em si (só afeta o que a unidade
+			# leva pro time do jogador dali pra frente).
+			defender.data.strip_boss_ability()
 			GameState.add_to_first_empty_storage_slot(defender.data)
 			# Regra 1 do Challenge (ver comentário grande logo acima, no
 			# `elif` que checa este mesmo Dictionary) — carimba a área AGORA,
@@ -6506,20 +6809,37 @@ func _advance_weather_turn() -> void:
 const SANDSTORM_DAMAGE_FRACTION_DENOMINATOR = 16
 const SANDSTORM_IMMUNE_TYPES = ["Ground", "Steel", "Rock"]
 
+# Snow: mesma fração de dano por turno que Sandstorm (1/16 do PRÓPRIO
+# hp_max), só que Ice é o único tipo imune (mesmo espírito de Hail na série
+# principal) — pedido do usuário (2026-07-25, ao decidir Snow Cloak,
+# Swinub): "Add Snow chip damage + immunity", já que até então Snow não
+# causava dano nenhum (diferente de Sandstorm, que já tinha isso desde
+# Larvitar). Ver AbilityData.snow_cloak/has_snow_cloak pra imunidade por
+# Habilidade, mesmo padrão de Sand Veil.
+const SNOW_IMMUNE_TYPES = ["Ice"]
+
 func get_weather_tick_damage(u: Node) -> int:
-	if current_weather != WEATHER_SANDSTORM:
-		return 0
-	for t in SANDSTORM_IMMUNE_TYPES:
-		if u.data.types.has(t):
+	if current_weather == WEATHER_SANDSTORM:
+		for t in SANDSTORM_IMMUNE_TYPES:
+			if u.data.types.has(t):
+				return 0
+		# Sand Veil (ver AbilityData.sand_veil, pedido do usuário, Larvitar
+		# Hidden: "Immune to Sand weather damage") — mesma imunidade TOTAL que os
+		# 3 tipos de SANDSTORM_IMMUNE_TYPES já têm, só que por Habilidade em vez
+		# de tipo.
+		if has_sand_veil(u):
 			return 0
-	# Sand Veil (ver AbilityData.sand_veil, pedido do usuário, Larvitar
-	# Hidden: "Immune to Sand weather damage") — mesma imunidade TOTAL que os
-	# 3 tipos de SANDSTORM_IMMUNE_TYPES já têm, só que por Habilidade em vez
-	# de tipo.
-	if has_sand_veil(u):
-		return 0
-	@warning_ignore("integer_division")
-	return max(1, u.hp_max / SANDSTORM_DAMAGE_FRACTION_DENOMINATOR)
+		@warning_ignore("integer_division")
+		return max(1, u.hp_max / SANDSTORM_DAMAGE_FRACTION_DENOMINATOR)
+	if current_weather == WEATHER_SNOW:
+		for t in SNOW_IMMUNE_TYPES:
+			if u.data.types.has(t):
+				return 0
+		if has_snow_cloak(u):
+			return 0
+		@warning_ignore("integer_division")
+		return max(1, u.hp_max / SANDSTORM_DAMAGE_FRACTION_DENOMINATOR)
+	return 0
 
 # Seeded (Leech Seed): pedido do usuário (2026-07-22, correção depois do
 # valor inicial de 10%): "Increase leech seed damage to 12,5%" — mesmo "cano"

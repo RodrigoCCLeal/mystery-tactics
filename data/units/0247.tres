@@ -1,16 +1,16 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://b1awfpcjrujqp"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0247/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0247/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
-[ext_resource type="Resource" path="res://data/units/0248.tres" id="7_target"]
-[ext_resource type="Resource" path="res://data/abilities/shed_skin.tres" id="8_shed_skin"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://xtf6bs6w778a" path="res://assets/sprites/Pokemon/Sprites/0247/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://by1th7ilcy50f" path="res://assets/sprites/Pokemon/Sprites/0247/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" uid="uid://ey6pdacdaakf" path="res://data/units/0248.tres" id="7_target"]
+[ext_resource type="Resource" uid="uid://c76k2bffcqblj" path="res://data/abilities/shed_skin.tres" id="8_shed_skin"]
 [ext_resource type="Resource" path="res://data/attacks/iron_defense.tres" id="9_iron_defense"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="10_leer"]
-[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="11_tackle"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="11_tackle"]
 [ext_resource type="Resource" path="res://data/attacks/rock_throw.tres" id="12_rock_throw"]
 [ext_resource type="Resource" path="res://data/attacks/bite.tres" id="13_bite"]
 [ext_resource type="Resource" path="res://data/attacks/sand_tomb.tres" id="14_sand_tomb"]
@@ -99,8 +99,6 @@ unit_name = "Pupitar"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Rock", "Ground"])
-grounded = true
-weight = 1
 slots = Array[ExtResource("6_action")]([ExtResource("9_iron_defense"), ExtResource("10_leer"), ExtResource("11_tackle"), ExtResource("8_shed_skin")])
 learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0247_shed_skin"), SubResource("LearnsetEntry_0247_iron_defense"), SubResource("LearnsetEntry_0247_leer"), SubResource("LearnsetEntry_0247_tackle"), SubResource("LearnsetEntry_0247_rock_throw"), SubResource("LearnsetEntry_0247_bite"), SubResource("LearnsetEntry_0247_sand_tomb"), SubResource("LearnsetEntry_0247_rock_slide"), SubResource("LearnsetEntry_0247_screech"), SubResource("LearnsetEntry_0247_crunch"), SubResource("LearnsetEntry_0247_earthquake"), SubResource("LearnsetEntry_0247_stone_edge"), SubResource("LearnsetEntry_0247_rock_blast"), SubResource("LearnsetEntry_0247_hyper_beam")])
 hp_base = 70

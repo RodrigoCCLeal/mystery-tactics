@@ -413,6 +413,18 @@ extends ActionData
 # Steel/Rock já usam por TIPO, só que aqui é por Habilidade).
 @export var sand_veil: bool = false
 
+# Snow Cloak: pedido do usuário (2026-07-25, Swinub, Hidden) — "Same as Sand
+# Veil, but for Snow. Increases speed during that weather". Mesmo mecanismo
+# exato de Sand Veil acima, só que checando WEATHER_SNOW em vez de
+# WEATHER_SANDSTORM nos dois pontos (Unit.get_effective_stat pro Speed x2,
+# battle.gd::get_weather_tick_damage pra imunidade) — ver _has_snow_cloak/
+# has_snow_cloak. Perguntado explicitamente se isso deveria vir junto com um
+# novo dano de clima pra Snow (que até então não existia, diferente de
+# Sandstorm): resposta "Add Snow chip damage + immunity", então Snow ganhou
+# o mesmo tick de 1/16 que Sandstorm já tinha, com Ice-type imune (ver
+# SNOW_IMMUNE_TYPES) em vez de Ground/Steel/Rock.
+@export var snow_cloak: bool = false
+
 # Unnerve: pedido do usuário (2026-07-25, Tyranitar) — "Opponents in range 3
 # burst can't consume berries". Diferente de Damp (groundwork puro, nenhum
 # golpe de Explosão existe ainda), Unnerve JÁ tem efeito de verdade: checado
@@ -421,3 +433,81 @@ extends ActionData
 # de Unnerve a até 3 tiles de distância (Chebyshev, mesmo critério de
 # distância de Lightning Rod) antes de deixar a auto-consumação acontecer.
 @export var unnerve: bool = false
+
+# Pressure: pedido do usuário (2026-07-26, Suicune) — "Enemy units in burst
+# range 2 gain Pressure status (Removed when out of range). Pressured units
+# have their movement reduced by 2 (Minimum of 1)". Diferente de qualquer
+# Habilidade anterior (todas reagem a um EVENTO discreto: dano recebido,
+# clima, turno passar), Pressure é uma "aura" de posição, recalculada
+# continuamente — ver battle.gd::_update_pressure_status(), chamado bem no
+# início de begin_current_turn() de CADA unidade, ANTES de move_range ser
+# lido pela primeira vez naquele turno (aproximação deliberada de "removed
+# when out of range" nesse motor por turnos: reavaliado a cada início de
+# turno, não frame a frame). O efeito de -2 movimento mora em Unit.
+# move_range (checa has_status("Pressured") direto), a aplicação/remoção
+# em si passa pelo pipeline normal de apply_status_condition/
+# cure_status_condition (respeitando imunidade — ver immune_to_pressure
+# abaixo — automaticamente, sem checagem manual nenhuma).
+@export var pressure: bool = false
+
+# Inner Focus: pedido do usuário (2026-07-26, Suicune) — "Immune to flinch,
+# Intimidate and Pressure". A parte de Flinch reaproveita o campo genérico
+# immune_status acima (ver Insomnia/Oblivious) — o .tres desta Habilidade
+# simplesmente seta immune_status="Flinched", sem precisar deste bool aqui
+# pra essa parte. Intimidate segue sem efeito nenhum (ainda não existe no
+# motor — mesma nota de Oblivious sobre isso, "we still don't have the
+# intimidate functionality"). Este bool cobre só a parte que immune_status
+# sozinho não cobre: Pressure (ver immune_to_pressure abaixo, PARTILHADO
+# entre Inner Focus e Oblivious — por isso é um campo à parte em vez de só
+# reaproveitar immune_status, que já está ocupado por "Flinched" aqui).
+@export var inner_focus: bool = false
+
+# Imunidade a Pressure (ver AbilityData.pressure acima) — campo À PARTE de
+# immune_status porque DUAS Habilidades precisam dela ao mesmo tempo que
+# JÁ usam immune_status pra outra coisa: Inner Focus (immune_status=
+# "Flinched") e Oblivious (immune_status="Taunted", ver oblivious.tres,
+# atualizado 2026-07-26 — pedido do usuário: "Update to Oblivious: Add
+# Immune to Pressure"). Checado dentro do MESMO laço genérico de
+# is_immune_to_status() (ver unit.gd), então funciona automaticamente por
+# apply_status_condition("Pressured") — battle.gd::_update_pressure_status
+# não precisa checar isso na mão.
+@export var immune_to_pressure: bool = false
+
+# Water Absorb: pedido do usuário (2026-07-26, Suicune, Hidden) — "Immune
+# to Water moves. Heals 25% of its HP if hit by a Water move". A imunidade
+# reaproveita o campo genérico immune_type="Water" já existente (mesmo
+# mecanismo de Levitate/Lightning Rod, ver AbilityData.immune_type) — SEM
+# precisar de campo novo pra essa parte. Os dois campos abaixo cobrem só a
+# cura, que nenhuma Habilidade anterior fazia: heals_on_type_hit guarda O
+# TIPO que dispara a cura ("" = nenhum, padrão) e heal_on_type_hit_fraction
+# guarda A FRAÇÃO do HP máximo curada (0.25 = 25%, valor exato do pedido).
+# Ver battle.gd::_try_type_absorb_heal, chamado no MESMO ponto/espírito que
+# já dispara o "Charged" de Flash Fire (golpe CONECTOU de verdade, mesmo
+# que o dano real vá sair 0 pela imunidade de tipo).
+@export var heals_on_type_hit: String = ""
+@export var heal_on_type_hit_fraction: float = 0.25
+
+# Updraft: pedido do usuário (2026-07-26, Suicune, Habilidade de CHEFE — ver
+# LearnsetEntry.is_boss_ability) — "Uses Tailwind on Battle start. Wind
+# attacks used by allied units (including this one) do 1.3x damage". A
+# parte "Tailwind on Battle start" reaproveita sets_status_on_battle_start
+# abaixo (campo genérico novo, mesmo espírito de sets_weather_on_battle_
+# start, só que aplicando uma STATUS CONDITION na própria unidade em vez de
+# um clima de batalha inteiro — ver battle.gd::_trigger_start_of_battle_
+# abilities). Este bool aqui cobre só a OUTRA metade, que não é
+# generalizável do mesmo jeito (dano de golpes marcados tag "Wind" usados
+# por QUALQUER unidade do MESMO LADO de quem carrega isso, incluindo ela
+# mesma) — ver battle.gd::calculate_damage_modifiers/UPDRAFT_WIND_
+# MULTIPLIER. Mesmo padrão de outras Habilidades "pacote" (Hustle/Guts/
+# Hyper Cutter) que bundlam mais de um efeito atrás de um bool só.
+@export var updraft: bool = false
+
+# Habilidade "de entrada" que aplica uma STATUS CONDITION na PRÓPRIA unidade
+# assim que a batalha começa — irmã de sets_weather_on_battle_start (ver
+# comentário grande dele acima), só que pra status em vez de clima. ""
+# (padrão) = não aplica nada. Genérico de propósito (mesmo espírito de
+# immune_status), mesmo que Updraft seja o único caso hoje — uma Habilidade
+# futura de "X on Battle start" reaproveita isto sem precisar de campo
+# novo. Ver battle.gd::_trigger_start_of_battle_abilities (mesmo laço
+# ordenado por Speed que já dispara clima).
+@export var sets_status_on_battle_start: String = ""

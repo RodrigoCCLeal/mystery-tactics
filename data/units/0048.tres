@@ -1,24 +1,24 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://cbjmwanx2w7an"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0048/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0048/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
-[ext_resource type="Resource" path="res://data/units/0049.tres" id="7_target"]
-[ext_resource type="Resource" path="res://data/abilities/compound_eyes.tres" id="8_compound_eyes"]
-[ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="9_tinted_lens"]
-[ext_resource type="Resource" path="res://data/abilities/run_away.tres" id="10_run_away"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ct513amn74xr1" path="res://assets/sprites/Pokemon/Sprites/0048/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://dj7umatxk8nsl" path="res://assets/sprites/Pokemon/Sprites/0048/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" uid="uid://cnr07vnfcnhmm" path="res://data/units/0049.tres" id="7_target"]
+[ext_resource type="Resource" uid="uid://bijqrbycgkgkm" path="res://data/abilities/compound_eyes.tres" id="8_compound_eyes"]
+[ext_resource type="Resource" uid="uid://bxsmwr4y5dduq" path="res://data/abilities/tinted_lens.tres" id="9_tinted_lens"]
+[ext_resource type="Resource" uid="uid://ck002h4hu4mwo" path="res://data/abilities/run_away.tres" id="10_run_away"]
 [ext_resource type="Resource" path="res://data/attacks/disable.tres" id="11_disable"]
-[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="12_tackle"]
-[ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="13_supersonic"]
-[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="14_confusion"]
-[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="15_poison_powder"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="12_tackle"]
+[ext_resource type="Resource" uid="uid://bqxtp816nxj23" path="res://data/attacks/supersonic.tres" id="13_supersonic"]
+[ext_resource type="Resource" uid="uid://bax2qsu5q12rb" path="res://data/attacks/confusion.tres" id="14_confusion"]
+[ext_resource type="Resource" uid="uid://cpxtdp5ofau0o" path="res://data/attacks/poison_powder.tres" id="15_poison_powder"]
 [ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="16_psybeam"]
 [ext_resource type="Resource" path="res://data/attacks/stun_spore.tres" id="17_stun_spore"]
 [ext_resource type="Resource" path="res://data/attacks/bug_buzz.tres" id="18_bug_buzz"]
-[ext_resource type="Resource" path="res://data/attacks/sleep_powder.tres" id="19_sleep_powder"]
+[ext_resource type="Resource" uid="uid://bn5dp47yjv3v8" path="res://data/attacks/sleep_powder.tres" id="19_sleep_powder"]
 [ext_resource type="Resource" path="res://data/attacks/leech_life.tres" id="20_leech_life"]
 [ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="21_zen_headbutt"]
 [ext_resource type="Resource" path="res://data/attacks/poison_fang.tres" id="22_poison_fang"]
@@ -111,8 +111,6 @@ unit_name = "Venonat"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Poison"])
-grounded = true
-weight = 1
 slots = Array[ExtResource("6_action")]([ExtResource("12_tackle"), ExtResource("11_disable"), ExtResource("8_compound_eyes")])
 learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0048_compound_eyes"), SubResource("LearnsetEntry_0048_tinted_lens"), SubResource("LearnsetEntry_0048_run_away"), SubResource("LearnsetEntry_0048_disable"), SubResource("LearnsetEntry_0048_tackle"), SubResource("LearnsetEntry_0048_supersonic"), SubResource("LearnsetEntry_0048_confusion"), SubResource("LearnsetEntry_0048_poison_powder"), SubResource("LearnsetEntry_0048_psybeam"), SubResource("LearnsetEntry_0048_stun_spore"), SubResource("LearnsetEntry_0048_bug_buzz"), SubResource("LearnsetEntry_0048_sleep_powder"), SubResource("LearnsetEntry_0048_leech_life"), SubResource("LearnsetEntry_0048_zen_headbutt"), SubResource("LearnsetEntry_0048_poison_fang"), SubResource("LearnsetEntry_0048_psychic")])
 hp_base = 60
@@ -120,7 +118,6 @@ attack_base = 55
 defense_base = 50
 special_attack_base = 40
 special_defense_base = 55
-speed_base = 45
 catch_rate = 0.7451
 growth_group = "Medium Fast"
 base_exp_yield = 61

@@ -1,13 +1,14 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bvd4xxqbwwjwx"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0022/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0022/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_jndi6"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://do37rko1in3ib" path="res://assets/sprites/Pokemon/Sprites/0022/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://d24ejniy4gqk4" path="res://assets/sprites/Pokemon/Sprites/0022/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_action"]
 [ext_resource type="Resource" path="res://data/abilities/keen_eye.tres" id="6_keen_eye"]
 [ext_resource type="Resource" path="res://data/abilities/sniper.tres" id="7_sniper"]
-[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="8_growl"]
+[ext_resource type="Resource" uid="uid://bymxe4i5vv7ff" path="res://data/attacks/growl.tres" id="8_growl"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="9_leer"]
 [ext_resource type="Resource" path="res://data/attacks/peck.tres" id="10_peck"]
 [ext_resource type="Resource" path="res://data/attacks/pluck.tres" id="11_pluck"]
@@ -104,7 +105,6 @@ sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Normal", "Flying"])
 grounded = false
-weight = 1
 slots = Array[ExtResource("5_action")]([ExtResource("8_growl"), ExtResource("9_leer"), ExtResource("10_peck"), ExtResource("11_pluck")])
 learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0022_keen_eye"), SubResource("LearnsetEntry_0022_sniper"), SubResource("LearnsetEntry_0022_growl"), SubResource("LearnsetEntry_0022_leer"), SubResource("LearnsetEntry_0022_peck"), SubResource("LearnsetEntry_0022_pluck"), SubResource("LearnsetEntry_0022_assurance"), SubResource("LearnsetEntry_0022_fury_attack"), SubResource("LearnsetEntry_0022_aerial_ace"), SubResource("LearnsetEntry_0022_wing_attack"), SubResource("LearnsetEntry_0022_take_down"), SubResource("LearnsetEntry_0022_agility"), SubResource("LearnsetEntry_0022_focus_energy"), SubResource("LearnsetEntry_0022_roost"), SubResource("LearnsetEntry_0022_drill_peck"), SubResource("LearnsetEntry_0022_drill_run")])
 hp_base = 65

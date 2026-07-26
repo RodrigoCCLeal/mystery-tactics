@@ -103,7 +103,17 @@ extends ActionData
 # Safeguard, que ganhou "burst range 3" explícito, por isso os dois usam
 # mecanismos diferentes: Safeguard é Burst+targets_allies, Tailwind é Team).
 # Só faz sentido em ataque de Status (is_status=true), igual Burst/Cone/Line.
-@export_enum("Single", "Cone", "Burst", "Line", "Wide", "Team") var area_shape: String = "Single"
+# "Thick Line" = igual "Line" (feixe reto na direção mirada, célula por
+# célula, para em parede/borda), só que com 3 tiles de LARGURA em vez de 1 —
+# em CADA passo do feixe, além da célula central, também acerta as duas
+# células perpendiculares (mesmo vetor perpendicular de Wide, Vector2i(-dir.y,
+# dir.x)), formando um corredor sólido em vez de uma linha fina. Blizzard é o
+# primeiro caso (pedido do usuário, Swinub: "Straight line burst range 5, but
+# has thickness of 3 tiles, instead of the usual 1"). Ver battle.gd::
+# get_thick_line_cells — a checagem de parede/borda só vale pra célula
+# CENTRAL de cada passo (mesma simplificação que Wide já assume pras 2
+# células laterais dela, sem checagem de parede própria).
+@export_enum("Single", "Cone", "Burst", "Line", "Wide", "Team", "Thick Line") var area_shape: String = "Single"
 
 # true = a geometria Burst (ver area_shape acima) atinge ALIADOS (incluindo
 # quem usa) em vez de INIMIGOS — inverte o filtro padrão de execute_status_
@@ -113,6 +123,17 @@ extends ActionData
 # sentido o próprio usuário se beneficiar também, mesmo espírito de Tailwind/
 # area_shape=="Team"). false (padrão) = comportamento de sempre, mira inimigo.
 @export var targets_allies: bool = false
+
+# true = a geometria Burst (ver area_shape acima) atinge TODO MUNDO no raio,
+# dos DOIS times, sem filtro nenhum de lado (nem pula quem usa, nem pula
+# aliado, nem pula inimigo) — diferente de targets_allies (que só INVERTE
+# qual lado é pulado, ainda pula um dos dois). Mist é o primeiro caso, pedido
+# do usuário: "Removes all stat changes for units affected (includes self)",
+# respondido explicitamente que é "Everyone, both teams" quando perguntado.
+# Só faz sentido em ataque de Status (is_status=true) com area_shape=="Burst"
+# — outras formas nunca tiveram filtro de lado pra começo de conversa (Cone/
+# Line/Wide de golpe de DANO já atingem todo mundo por padrão).
+@export var targets_all_sides: bool = false
 
 # ---------- Mudança de Stat (ataques de Status) ----------
 # "" = sem mudança de stat. Vocabulário igual Unit.STAGE_STATS ("attack",
@@ -164,6 +185,15 @@ extends ActionData
 # mais que 3, essa lista vira Array em vez de crescer campo por campo.
 @export var stat_change_stat_3: String = ""
 @export var stat_change_amount_3: int = 0
+
+# true = em vez de somar um delta a UM stat (stat_change_stat/amount acima),
+# ZERA os 5 estágios (Unit.STAGE_STATS) de cada alvo atingido de uma vez só —
+# tanto positivos quanto negativos, sem exceção nenhuma (ver Unit.
+# reset_all_stat_stages). Mist é o primeiro caso, pedido do usuário: "Removes
+# all stat changes for units affected (includes self) (removes positive and
+# negative changes)" — combinado com targets_all_sides acima pra acertar os
+# DOIS times de uma vez, já que a resposta foi "Everyone, both teams".
+@export var resets_all_stat_stages: bool = false
 
 # true = stat_change_amount E stat_change_amount_2 DOBRAM de valor enquanto o
 # clima da batalha for Sunny/Harsh Sunlight (ver battle.gd::is_sun_weather) —
@@ -489,6 +519,19 @@ extends ActionData
 # escala de verdade acontece em runtime.
 @export var power_scales_with_own_hp: bool = false
 
+# ---------- Power por tabela de HP restante (Flail/Reversal) ----------
+# true = `power` acima é IGNORADO por completo — o power de verdade vem de
+# uma tabela fixa de degraus, baseada em N = floor(48 * hp_current/hp_max) do
+# ATACANTE (fórmula oficial da série principal), MUITO diferente de
+# power_scales_with_own_hp (que é uma escala CONTÍNUA sobre um `power` base,
+# ver acima): 0-1 -> 200, 2-4 -> 150, 5-9 -> 100, 10-16 -> 80, 17-32 -> 40,
+# 33-48 -> 20 (quanto MENOR o HP, MAIOR o power — o oposto de Eruption). Ver
+# battle.gd::get_effective_power. Flail é o primeiro caso, pedido do usuário:
+# "base power follows the table in https://pokemondb.net/move/flail" (tabela
+# conferida na fonte — o site tinha uma lacuna de transcrição em N=4/9/16/32,
+# preenchida com os valores certos, contíguos, da série principal).
+@export var power_scales_inversely_with_own_hp: bool = false
+
 # true = power escala com a RAZÃO de Speed entre alvo e quem ataca (ver
 # battle.gd::get_effective_power) — power = min(
 # power_scales_with_speed_ratio_cap, attack.power * defender.Speed /
@@ -734,6 +777,13 @@ extends ActionData
 # rain, ignoring accuracy". false (padrão) = accuracy sempre normal,
 # independente de clima.
 @export var never_misses_in_rain: bool = false
+
+# ---------- Sempre acerta durante neve (Blizzard) ----------
+# Mesmo mecanismo/formato de never_misses_in_rain acima, só que checando
+# current_weather == WEATHER_SNOW em vez de Rain/Heavy Rain. Blizzard é o
+# primeiro caso, pedido do usuário: "Bypasses accuracy checks if weather is
+# Snow". false (padrão) = accuracy sempre normal, independente de clima.
+@export var never_misses_in_snow: bool = false
 
 # ---------- Sempre acerta 2 vezes (Double Hit) ----------
 # true = mesmo golpe multi-hit de AttackData.is_multi_hit (precisa dos DOIS

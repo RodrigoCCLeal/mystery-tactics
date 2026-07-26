@@ -1,16 +1,16 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://cuapb8ra8vmqc"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0246/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0246/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
-[ext_resource type="Resource" path="res://data/units/0247.tres" id="7_target"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cu2w8272dn1c2" path="res://assets/sprites/Pokemon/Sprites/0246/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://dgdytc8eyihoo" path="res://assets/sprites/Pokemon/Sprites/0246/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" uid="uid://b1awfpcjrujqp" path="res://data/units/0247.tres" id="7_target"]
 [ext_resource type="Resource" path="res://data/abilities/guts.tres" id="8_guts"]
 [ext_resource type="Resource" path="res://data/abilities/sand_veil.tres" id="9_sand_veil"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="10_leer"]
-[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="11_tackle"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="11_tackle"]
 [ext_resource type="Resource" path="res://data/attacks/rock_throw.tres" id="12_rock_throw"]
 [ext_resource type="Resource" path="res://data/attacks/bite.tres" id="13_bite"]
 [ext_resource type="Resource" path="res://data/attacks/sand_tomb.tres" id="14_sand_tomb"]
@@ -100,14 +100,11 @@ unit_name = "Larvitar"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Rock", "Ground"])
-grounded = true
-weight = 1
 slots = Array[ExtResource("6_action")]([ExtResource("10_leer"), ExtResource("11_tackle"), ExtResource("8_guts")])
 learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0246_guts"), SubResource("LearnsetEntry_0246_sand_veil"), SubResource("LearnsetEntry_0246_leer"), SubResource("LearnsetEntry_0246_tackle"), SubResource("LearnsetEntry_0246_rock_throw"), SubResource("LearnsetEntry_0246_bite"), SubResource("LearnsetEntry_0246_sand_tomb"), SubResource("LearnsetEntry_0246_rock_slide"), SubResource("LearnsetEntry_0246_screech"), SubResource("LearnsetEntry_0246_crunch"), SubResource("LearnsetEntry_0246_earthquake"), SubResource("LearnsetEntry_0246_stone_edge"), SubResource("LearnsetEntry_0246_rock_blast"), SubResource("LearnsetEntry_0246_hyper_beam")])
 hp_base = 50
 attack_base = 64
 defense_base = 50
-special_attack_base = 45
 special_defense_base = 50
 speed_base = 41
 catch_rate = 0.1765

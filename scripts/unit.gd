@@ -211,6 +211,12 @@ const STATUS_DURATIONS := {
 	# Counter (Counter, Breloom, pedido do usuário: "Gives Counter status for
 	# 2 turns") — ver battle.gd::_try_counter pro efeito em si.
 	"Counter": 2,
+	# Mirror Coat (Suicune, pedido do usuário: "Same as Counter, except for
+	# Special attacks") — mesma duração de Counter acima (nenhum número novo
+	# foi dado, e "same as Counter" já implica reaproveitar o resto igual).
+	# Ver battle.gd::_try_counter, mesma função, só que disparada por um
+	# `elif` separado que checa attack.is_special em vez de not is_special.
+	"Mirror Coat": 2,
 	# Roosted (Roost, Spearow, pedido do usuário: "Roosted status until next
 	# turn") — 1 turno só, número dado explicitamente (diferente de Safeguard,
 	# que precisou ser perguntado). Ver apply_status_condition/
@@ -428,7 +434,14 @@ var move_range: int:
 		var base = max(1, 5 - weight)
 		@warning_ignore("integer_division")
 		var bonus = get_effective_stat("speed") / 100   # divisão inteira proposital: 1 ponto a cada 100 de speed
-		return base + bonus
+		var total = base + bonus
+		# Pressured (ver AbilityData.pressure/battle.gd::_update_pressure_
+		# status, pedido do usuário, Suicune: "Pressured units have their
+		# movement reduced by 2 (Minimum of 1)") — aplicado por CIMA do
+		# total já calculado (base + bônus de Speed), nunca abaixo do piso.
+		if status_conditions.has("Pressured"):
+			total = max(1, total - 2)
+		return total
 
 # Usos restantes de cada slot (paralelo a data.slots — slot_uses[i] é quanto
 # ainda sobra do ActionData em data.slots[i]). Fica AQUI, não no ActionData,
@@ -782,7 +795,19 @@ func cell_to_position(cell: Vector2i) -> Vector2:
 # amount já vem PRONTO (a fórmula de dano, calculada em battle.gd, já leva
 # ataque/defesa em conta) — aqui só desconta do HP, sem mitigar de novo.
 func take_damage(amount: int) -> void:
-	hp_current -= amount
+	# Endure (ver AttackData.inflicts_status/Endure, pedido do usuário,
+	# Swinub: "Can be damaged by attacks, but HP can't drop bellow 1") —
+	# checado ANTES de aplicar o dano de verdade: se este golpe (ou qualquer
+	# outro enquanto a condição estiver ativa) levaria hp_current abaixo de 1,
+	# trava em 1 em vez de deixar passar — vale pra QUALQUER dano recebido
+	# enquanto "Endure" estiver ativo (não só o primeiro), mesmo espírito de
+	# Protected bloquear TODO ataque recebido até curar (ver battle.gd::
+	# begin_current_turn, cura "Endure" no início do próximo turno igual
+	# Protected já faz).
+	if status_conditions.has("Endure") and hp_current - amount < 1:
+		hp_current = 1
+	else:
+		hp_current -= amount
 	update_health_bar()
 	sync_to_data()
 	# Só inimigos — a barra de vida deles está escondida (ver mark_as_enemy),
@@ -899,6 +924,19 @@ func modify_stat_stage(stat: String, delta: int) -> void:
 	if stat == "speed":
 		speed_changed.emit()
 
+# Mist (ver AttackData.resets_all_stat_stages, pedido do usuário, Swinub:
+# "Removes all stat changes for units affected (includes self) (removes
+# positive and negative changes)") — ZERA os 5 estágios de uma vez, direto no
+# Dictionary, SEM passar por modify_stat_stage (que só soma um delta e
+# respeitaria o bloqueio de Hyper Cutter contra deltas negativos — um reset
+# pra 0 não é uma "queda" no sentido que Hyper Cutter tenta evitar, é uma
+# limpeza total e incondicional, mesmo espírito de Mist na série principal
+# nunca ser bloqueado por Habilidade nenhuma).
+func reset_all_stat_stages() -> void:
+	for stat in STAGE_STATS:
+		stat_stages[stat] = 0
+	speed_changed.emit()
+
 # Stat "de verdade" (attack/defense/special_attack/special_defense/speed) já
 # multiplicado pelo estágio atual (ver STAT_STAGE_MULTIPLIERS) e travado entre
 # STAT_MIN e STAT_MAX. Pra stats fora de STAGE_STATS (ex: chamar com "hp" por
@@ -962,6 +1000,10 @@ func get_effective_stat(stat: String) -> int:
 	# unidade ainda não tiver pai (get() devolve null nesse caso, não erro).
 	if stat == "speed" and _has_sand_veil() and get_parent() != null and get_parent().get("current_weather") == "Sandstorm":
 		value *= 2
+	# Snow Cloak (ver AbilityData.snow_cloak) — mesmo mecanismo de Sand Veil
+	# acima, só que checando "Snow" em vez de "Sandstorm".
+	if stat == "speed" and _has_snow_cloak() and get_parent() != null and get_parent().get("current_weather") == "Snow":
+		value *= 2
 	return value
 
 # true se esta unidade carrega uma Habilidade com quick_feet=true equipada
@@ -1004,6 +1046,14 @@ func _has_hyper_cutter() -> bool:
 func _has_sand_veil() -> bool:
 	for action in data.slots:
 		if action is AbilityData and action.sand_veil:
+			return true
+	return false
+
+# Mesmo padrão de _has_sand_veil() acima, pra Snow Cloak (ver AbilityData.
+# snow_cloak) — precisa morar aqui pelo mesmo motivo.
+func _has_snow_cloak() -> bool:
+	for action in data.slots:
+		if action is AbilityData and action.snow_cloak:
 			return true
 	return false
 
@@ -1139,6 +1189,14 @@ func is_immune_to_status(status: String) -> bool:
 	# precisar de outro bool cada vez.
 	for action in data.slots:
 		if action is AbilityData and action.immune_status == status:
+			return true
+		# Pressure (ver AbilityData.immune_to_pressure, pedido do usuário,
+		# Suicune: Inner Focus e Oblivious são imunes) — campo À PARTE de
+		# immune_status (ver comentário grande dele em ability_data.gd, as
+		# duas Habilidades já usam immune_status pra outra coisa), checado
+		# aqui do mesmo jeito genérico: qualquer futura Habilidade com isto
+		# marcado também vira imune a "Pressured" automaticamente.
+		if action is AbilityData and action.immune_to_pressure and status == "Pressured":
 			return true
 	return false
 

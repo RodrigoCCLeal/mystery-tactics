@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackData" format=3]
+
+[ext_resource type="Script" path="res://scripts/attack_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+element_type = "Ice"
+is_status = true
+area_shape = "Burst"
+targets_all_sides = true
+resets_all_stat_stages = true
+action_name = "Mist"
+max_uses = 30
+range = 3

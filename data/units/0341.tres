@@ -1,17 +1,17 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://d8d284ai0g34"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0341/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0341/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
-[ext_resource type="Resource" path="res://data/units/0342.tres" id="7_target"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c8vmo3m2hull4" path="res://assets/sprites/Pokemon/Sprites/0341/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://b8exg6igmqpus" path="res://assets/sprites/Pokemon/Sprites/0341/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" uid="uid://dfuyn3uihyyx8" path="res://data/units/0342.tres" id="7_target"]
 [ext_resource type="Resource" path="res://data/abilities/hyper_cutter.tres" id="8_hyper_cutter"]
 [ext_resource type="Resource" path="res://data/abilities/shell_armor.tres" id="9_shell_armor"]
 [ext_resource type="Resource" path="res://data/abilities/adaptability.tres" id="10_adaptability"]
 [ext_resource type="Resource" path="res://data/attacks/harden.tres" id="11_harden"]
-[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="12_water_gun"]
+[ext_resource type="Resource" uid="uid://btlvk86vy3q41" path="res://data/attacks/water_gun.tres" id="12_water_gun"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="13_leer"]
 [ext_resource type="Resource" path="res://data/attacks/taunt.tres" id="14_taunt"]
 [ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="15_bubble_beam"]
@@ -123,8 +123,6 @@ unit_name = "Corphish"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Water"])
-grounded = true
-weight = 1
 slots = Array[ExtResource("6_action")]([ExtResource("11_harden"), ExtResource("12_water_gun"), ExtResource("8_hyper_cutter")])
 learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0341_hyper_cutter"), SubResource("LearnsetEntry_0341_shell_armor"), SubResource("LearnsetEntry_0341_adaptability"), SubResource("LearnsetEntry_0341_harden"), SubResource("LearnsetEntry_0341_water_gun"), SubResource("LearnsetEntry_0341_leer"), SubResource("LearnsetEntry_0341_taunt"), SubResource("LearnsetEntry_0341_bubble_beam"), SubResource("LearnsetEntry_0341_knock_off"), SubResource("LearnsetEntry_0341_double_hit"), SubResource("LearnsetEntry_0341_protect"), SubResource("LearnsetEntry_0341_night_slash"), SubResource("LearnsetEntry_0341_razor_shell"), SubResource("LearnsetEntry_0341_swords_dance"), SubResource("LearnsetEntry_0341_crunch"), SubResource("LearnsetEntry_0341_crabhammer"), SubResource("LearnsetEntry_0341_endeavor"), SubResource("LearnsetEntry_0341_guillotine")])
 hp_base = 43

@@ -1317,6 +1317,80 @@ var current_trainer_iq: String = ""
 var current_trainer_starting_weather: String = ""
 var current_trainer_starting_weather_overridable: bool = true
 
+# ---------- Batalha contra Chefe (ver boss.gd) ----------
+# Espelha current_trainer_* acima, mas pra um Boss — pedido do usuário:
+# "Boss battles are against wild pokémon, so the player CAN catch them, but
+# they don't happen as wild encounters, only as events". A diferença chave
+# pra current_trainer_team é exatamente essa frase: is_trainer_battle
+# CONTINUA false numa batalha de chefe (nunca vira true), porque
+# resolve_capture() só recusa Ball incondicionalmente quando
+# is_trainer_battle == true (ver comentário grande lá) — um chefe precisa
+# continuar capturável normalmente, só que spawnando de UM time fixo em vez
+# de sortear de EncounterArea. boss.gd::_begin_battle() preenche os dois
+# campos abaixo antes de trocar de cena; battle.gd::end_battle() zera de
+# volta, mesmo padrão de current_trainer_*.
+
+# false (padrão) = próxima batalha spawna normalmente (Trainer OU selvagem,
+# ver spawn_enemies). true = spawna de current_boss_entry em vez de sortear
+# EncounterArea.pick_group() — único jeito de ligar isto é via boss.gd.
+var is_boss_battle: bool = false
+
+# UMA entrada só (chefes deste projeto são sempre 1 unidade, "Weight 3, this
+# will be the standard for most bosses" — pedido do usuário) — reaproveita
+# TrainerTeamEntry (species+level+loadout) em vez de criar um Resource novo
+# só pra isso, mesmo formato que um Trainer já usa pra um golpe específico
+# por unidade (ver trainer_team_entry.gd). loadout aqui NUNCA fica vazio de
+# propósito pra um chefe de verdade (loadout automático não garantiria a
+# Habilidade de Chefe equipada, ver LearnsetEntry.is_boss_ability) — mas cai
+# pro mesmo fallback de get_recent_loadout() que Trainer já usa se algum
+# chefe futuro preferir isso.
+var current_boss_entry: TrainerTeamEntry = null
+
+# Boss.iq (ver comentário grande lá) — mesmo padrão de current_trainer_iq
+# (par dedicado, não reaproveitado, pra não confundir com a regra exclusiva
+# de time "Rocket" que current_trainer_iq carrega junto, ver spawn_enemies).
+# "" só antes de qualquer batalha de chefe ter rodado ainda; boss.gd sempre
+# preenche algo (padrão "Medium") antes de trocar de cena.
+var current_boss_iq: String = ""
+
+# BattleTileset específico que ESTA batalha de chefe deve usar em vez de
+# sortear aleatoriamente de battle.gd::BATTLE_TILESETS — pedido do usuário
+# (Suicune): "Northwind Field has the third Fluid option we talked about
+# before" logo depois de "For now, we will test it procedurally generated",
+# ou seja: mapa ainda procedural (paredes/chão/fluido gerados do jeito de
+# sempre), só que com a ARTE/fluido de Northwind Field garantidos em vez de
+# um sorteio entre os 3. null (padrão, toda batalha selvagem/Trainer) =
+# sorteia normalmente (ver battle.gd::_pick_battle_tileset).
+var forced_battle_tileset: BattleTileset = null
+
+# ---------- Mapa desenhado à mão (opcional, Trainer/Boss) ----------
+# Pedido do usuário: "we also have make the tileset used in battle
+# selectable. Wild battles and irrelevant trainers can use our procedurally
+# generated battle maps, but for boss battles and important npc battles, I
+# will draw the map manually. So we need a checkbox for 'Generated map', if
+# it's false, it receives the address for the drawn map". true (padrão,
+# igual todo Trainer/batalha selvagem de hoje) = battle.gd::_ready() gera o
+# mapa do jeito procedural de sempre (build_ground_variants/generate_fluid/
+# etc.), sem olhar pra nenhum dos dois campos abaixo. false = ver
+# manual_map logo abaixo.
+#
+# NOTA (limitação conhecida, documentada de propósito em vez de resolvida
+# no escuro): battle.gd::_ready() ainda não tem um caminho de código pra
+# CARREGAR de verdade um manual_map quando generated_map == false — hoje
+# isso é só o campo/checkbox (Trainer.gd/boss.gd já expõem os dois no
+# Inspector, e world.gd já copia os dois pra cá antes de trocar de cena),
+# preparado pra existir assim que o usuário tiver um mapa desenhado à mão
+# de verdade pra testar contra. Suicune usa generated_map=true (pedido
+# explícito: "For now, we will test it procedurally generated"), então
+# nenhuma batalha de verdade depende do caminho `false` ainda — construir
+# esse caminho às cegas (que formato exato o mapa desenhado tem? uma cena
+# de TileMapLayer só? um Resource com as células? de onde vêm os pontos de
+# spawn?) seria adivinhar em vez de perguntar, o que este projeto
+# explicitamente evita (ver [[feedback_ask_dont_approximate]]) — perguntar
+# de novo quando houver um mapa de verdade pra decidir o formato certo.
+var generated_map: bool = true
+var manual_map: PackedScene = null
+
 # trainer_id -> GameState.badges.size() de quando esse Trainer foi
 # derrotado (vitória do jogador) pela ÚLTIMA vez — regra 6 do usuário:
 # "Once defeated, they will NOT force a battle again, but the player may

@@ -23,3 +23,20 @@ extends Resource
 # espécie futura ter Sheer Force como Habilidade normal (is_hidden_ability
 # = false, o padrão). Ver UnitData.is_ability_hidden(), que consulta isso.
 @export var is_hidden_ability: bool = false
+
+# "Terceira camada" de Habilidade, exclusiva de chefes (ver AbilityData —
+# Updraft, do Suicune, é a primeira) — pedido do usuário: "All Boss units
+# have a special ability that is deleted when caught. Meaning it can't be
+# selected in the player's loadout. We can make the Boss abilities work like
+# Hidden abilities, except the player doesn't have access to it". Diferente
+# de is_hidden_ability acima (que só fica escondida ATÉ um Ability Patch
+# revelar, ver UnitData.hidden_ability_revealed), esta aqui NUNCA fica
+# disponível pro jogador — UnitData.get_available_actions() já pula
+# qualquer entrada com isto marcado incondicionalmente, sem chance nenhuma
+# de revelação futura. O selvagem/chefe ainda PRECISA dela equipada de
+# verdade em combate (ver battle.gd::spawn_enemies/forced_loadout, que
+# força esta ação num dos 6 slots manualmente) — e ela é apagada de vez do
+# learnset assim que o jogador captura essa unidade (ver UnitData.
+# strip_boss_ability(), chamado por battle.gd::resolve_capture() logo após
+# a captura ter sucesso), exatamente como pedido: "deleted when caught".
+@export var is_boss_ability: bool = false

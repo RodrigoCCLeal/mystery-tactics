@@ -1,12 +1,12 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://cv8318w2mhjmm"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0117/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0117/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
-[ext_resource type="Resource" path="res://data/units/0230.tres" id="7_target"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://co33taqu60daj" path="res://assets/sprites/Pokemon/Sprites/0117/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://6m627qfvt7r3" path="res://assets/sprites/Pokemon/Sprites/0117/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" uid="uid://b86qwvukj36xe" path="res://data/units/0230.tres" id="7_target"]
 [ext_resource type="Resource" path="res://data/items/dragon_scale.tres" id="8_dragon_scale"]
 [ext_resource type="Resource" path="res://data/abilities/poison_point.tres" id="9_poison_point"]
 [ext_resource type="Resource" path="res://data/abilities/sniper.tres" id="10_sniper"]
@@ -14,7 +14,7 @@
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="12_leer"]
 [ext_resource type="Resource" path="res://data/attacks/smokescreen.tres" id="13_smokescreen"]
 [ext_resource type="Resource" path="res://data/attacks/twister.tres" id="14_twister"]
-[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="15_water_gun"]
+[ext_resource type="Resource" uid="uid://btlvk86vy3q41" path="res://data/attacks/water_gun.tres" id="15_water_gun"]
 [ext_resource type="Resource" path="res://data/attacks/focus_energy.tres" id="16_focus_energy"]
 [ext_resource type="Resource" path="res://data/attacks/dragon_breath.tres" id="17_dragon_breath"]
 [ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="18_bubble_beam"]
@@ -111,15 +111,12 @@ unit_name = "Seadra"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Water"])
-grounded = true
-weight = 1
 slots = Array[ExtResource("6_action")]([ExtResource("12_leer"), ExtResource("13_smokescreen"), ExtResource("14_twister"), ExtResource("15_water_gun"), ExtResource("9_poison_point")])
 learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0117_poison_point"), SubResource("LearnsetEntry_0117_sniper"), SubResource("LearnsetEntry_0117_damp"), SubResource("LearnsetEntry_0117_leer"), SubResource("LearnsetEntry_0117_smokescreen"), SubResource("LearnsetEntry_0117_twister"), SubResource("LearnsetEntry_0117_water_gun"), SubResource("LearnsetEntry_0117_focus_energy"), SubResource("LearnsetEntry_0117_dragon_breath"), SubResource("LearnsetEntry_0117_bubble_beam"), SubResource("LearnsetEntry_0117_agility"), SubResource("LearnsetEntry_0117_water_pulse"), SubResource("LearnsetEntry_0117_dragon_pulse"), SubResource("LearnsetEntry_0117_hydro_pump"), SubResource("LearnsetEntry_0117_dragon_dance"), SubResource("LearnsetEntry_0117_rain_dance")])
 hp_base = 55
 attack_base = 65
 defense_base = 95
 special_attack_base = 95
-special_defense_base = 45
 speed_base = 85
 catch_rate = 0.2941
 growth_group = "Medium Fast"

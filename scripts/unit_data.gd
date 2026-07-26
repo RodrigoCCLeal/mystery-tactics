@@ -90,6 +90,12 @@ func get_available_actions(level: int) -> Array[ActionData]:
 			continue
 		if entry.is_hidden_ability and not hidden_ability_revealed:
 			continue
+		# Habilidade de Chefe (ver LearnsetEntry.is_boss_ability) — SEM o "and
+		# not hidden_ability_revealed" da checagem acima de propósito: essa
+		# nunca revela, não importa o que aconteça (nenhum Ability Patch nem
+		# nada futuro deveria libertar ela pro menu de Loadout do jogador).
+		if entry.is_boss_ability:
+			continue
 		available.append(entry.action)
 	return available
 
@@ -120,6 +126,31 @@ func has_unrevealed_hidden_ability() -> bool:
 		if entry.is_hidden_ability:
 			return true
 	return false
+
+# Apaga de vez qualquer Habilidade de Chefe (ver LearnsetEntry.is_boss_
+# ability) desta UnitData — chamado por battle.gd::resolve_capture() bem
+# depois de uma captura ter sucesso, pedido EXATO do usuário: "All Boss
+# units have a special ability that is deleted when caught". `self` aqui
+# SEMPRE é a cópia duplicada de defender.data (ver Unit.apply_fresh_data —
+# todo inimigo/selvagem duplica a UnitData da espécie antes de mexer em
+# qualquer coisa), nunca o Resource compartilhado do catálogo — por isso
+# remover do learnset AQUI é seguro e não contamina nenhuma outra unidade
+# desta mesma espécie que apareça numa batalha futura.
+# get_available_actions() já bloqueava isso do menu de Loadout sozinho (ver
+# comentário lá), então esta função é "cinto e suspensório": garante que a
+# Habilidade some de vez do learnset (não aparece em nenhum tooltip/resumo
+# que porventura liste "todas as Habilidades desta unidade" no futuro) e
+# também do loadout equipado, caso o forced_loadout da batalha de chefe
+# tivesse ela num dos slots.
+func strip_boss_ability() -> void:
+	var boss_actions: Array[ActionData] = []
+	for entry in learnset:
+		if entry.is_boss_ability:
+			boss_actions.append(entry.action)
+	if boss_actions.is_empty():
+		return
+	learnset = learnset.filter(func(entry): return not entry.is_boss_ability)
+	slots = slots.filter(func(action): return not boss_actions.has(action))
 
 # Loadout AUTOMÁTICO de inimigo: até `max_slots - 1` ATAQUES mais RECENTES
 # que essa espécie já teria aprendido até `level` (fila FIFO, mesma lógica de
@@ -188,6 +219,13 @@ func _pick_random_ability(level: int) -> ActionData:
 	var hidden: ActionData = null
 	for entry in learnset:
 		if entry.level > level or not (entry.action is AbilityData):
+			continue
+		# Habilidade de Chefe (ver LearnsetEntry.is_boss_ability) nunca entra
+		# no sorteio automático — mesmo espírito de get_available_actions()
+		# acima: ela só deveria aparecer via forced_loadout explícito (ver
+		# battle.gd::spawn_enemies), nunca escolhida ao acaso, nem pra um
+		# selvagem hipotético desta mesma espécie fora da batalha de chefe.
+		if entry.is_boss_ability:
 			continue
 		if entry.is_hidden_ability:
 			if hidden == null:

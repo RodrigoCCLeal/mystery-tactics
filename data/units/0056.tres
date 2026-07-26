@@ -1,18 +1,18 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://l3ioh7xpuaha"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0056/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0056/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
-[ext_resource type="Resource" path="res://data/units/0057.tres" id="7_target"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b7prrsg20qpdp" path="res://assets/sprites/Pokemon/Sprites/0056/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://cy7owaf1ockex" path="res://assets/sprites/Pokemon/Sprites/0056/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" uid="uid://6cew38axuttb" path="res://data/units/0057.tres" id="7_target"]
 [ext_resource type="Resource" path="res://data/abilities/vital_spirit.tres" id="8_vital_spirit"]
 [ext_resource type="Resource" path="res://data/abilities/anger_point.tres" id="9_anger_point"]
 [ext_resource type="Resource" path="res://data/abilities/defiant.tres" id="10_defiant"]
 [ext_resource type="Resource" path="res://data/attacks/focus_energy.tres" id="11_focus_energy"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="12_leer"]
-[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="13_tackle"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="13_tackle"]
 [ext_resource type="Resource" path="res://data/attacks/rock_throw.tres" id="14_rock_throw"]
 [ext_resource type="Resource" path="res://data/attacks/rock_smash.tres" id="15_rock_smash"]
 [ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="16_take_down"]
@@ -122,15 +122,12 @@ unit_name = "Mankey"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Fighting"])
-grounded = true
-weight = 1
 slots = Array[ExtResource("6_action")]([ExtResource("11_focus_energy"), ExtResource("12_leer"), ExtResource("13_tackle"), ExtResource("8_vital_spirit")])
 learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0056_vital_spirit"), SubResource("LearnsetEntry_0056_anger_point"), SubResource("LearnsetEntry_0056_defiant"), SubResource("LearnsetEntry_0056_focus_energy"), SubResource("LearnsetEntry_0056_leer"), SubResource("LearnsetEntry_0056_tackle"), SubResource("LearnsetEntry_0056_rock_throw"), SubResource("LearnsetEntry_0056_rock_smash"), SubResource("LearnsetEntry_0056_take_down"), SubResource("LearnsetEntry_0056_low_sweep"), SubResource("LearnsetEntry_0056_knock_off"), SubResource("LearnsetEntry_0056_bulldoze"), SubResource("LearnsetEntry_0056_brick_break"), SubResource("LearnsetEntry_0056_facade"), SubResource("LearnsetEntry_0056_screech"), SubResource("LearnsetEntry_0056_close_combat"), SubResource("LearnsetEntry_0056_outrage"), SubResource("LearnsetEntry_0056_dynamic_punch")])
 hp_base = 40
 attack_base = 80
 defense_base = 35
 special_attack_base = 35
-special_defense_base = 45
 speed_base = 70
 catch_rate = 0.7451
 growth_group = "Medium Fast"

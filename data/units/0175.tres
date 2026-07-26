@@ -1,17 +1,17 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://cqn26rcogs41k"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0175/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0175/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/evolution_option.gd" id="4_evo"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="5_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="6_action"]
-[ext_resource type="Resource" path="res://data/units/0176.tres" id="7_target"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://0sv2reyn7t4f" path="res://assets/sprites/Pokemon/Sprites/0175/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://cfda4bqcpakjl" path="res://assets/sprites/Pokemon/Sprites/0175/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="4_evo"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="5_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_action"]
+[ext_resource type="Resource" uid="uid://ck0tdevdb8yib" path="res://data/units/0176.tres" id="7_target"]
 [ext_resource type="Resource" path="res://data/items/soothe_bell.tres" id="8_soothe_bell"]
 [ext_resource type="Resource" path="res://data/abilities/hustle.tres" id="9_hustle"]
 [ext_resource type="Resource" path="res://data/abilities/serene_grace.tres" id="10_serene_grace"]
 [ext_resource type="Resource" path="res://data/abilities/super_luck.tres" id="11_super_luck"]
-[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="12_tackle"]
+[ext_resource type="Resource" uid="uid://i7pokc324clm" path="res://data/attacks/tackle.tres" id="12_tackle"]
 [ext_resource type="Resource" path="res://data/attacks/fairy_wind.tres" id="13_fairy_wind"]
 [ext_resource type="Resource" path="res://data/attacks/draining_kiss.tres" id="14_draining_kiss"]
 [ext_resource type="Resource" path="res://data/attacks/calm_mind.tres" id="15_calm_mind"]
@@ -77,8 +77,6 @@ unit_name = "Togepi"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Fairy"])
-grounded = true
-weight = 1
 slots = Array[ExtResource("6_action")]([ExtResource("12_tackle"), ExtResource("9_hustle")])
 learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0175_hustle"), SubResource("LearnsetEntry_0175_serene_grace"), SubResource("LearnsetEntry_0175_super_luck"), SubResource("LearnsetEntry_0175_tackle"), SubResource("LearnsetEntry_0175_fairy_wind"), SubResource("LearnsetEntry_0175_draining_kiss"), SubResource("LearnsetEntry_0175_calm_mind"), SubResource("LearnsetEntry_0175_charm"), SubResource("LearnsetEntry_0175_extrasensory"), SubResource("LearnsetEntry_0175_moonblast")])
 hp_base = 35

@@ -315,6 +315,30 @@ func start_trainer_battle(trainer: Node) -> void:
 	GameState.current_trainer_iq = trainer.iq
 	GameState.current_trainer_starting_weather = trainer.starting_weather
 	GameState.current_trainer_starting_weather_overridable = trainer.starting_weather_overridable
+	GameState.generated_map = trainer.generated_map
+	GameState.manual_map = trainer.manual_map
+	GameState.forced_battle_tileset = trainer.forced_battle_tileset
+	get_tree().change_scene_to_file("res://scenes/battle/battle.tscn")
+
+# Chamado por Boss._begin_battle() (ver boss.gd) — mesmo espírito de
+# start_trainer_battle() logo acima, só que preenchendo GameState.
+# is_boss_battle/current_boss_entry em vez de is_trainer_battle/
+# current_trainer_team (ver comentário grande dos dois em game_state.gd).
+# is_trainer_battle continua false aqui de propósito: "Boss battles are
+# against wild pokémon, so the player CAN catch them" — não pode passar
+# pelo mesmo caminho que trava captura de time de Trainer.
+func start_boss_battle(boss: Node) -> void:
+	if _battle_starting:
+		return
+	_battle_starting = true
+	get_tree().paused = false
+	GameState.save_player_state(player.grid_pos, player.facing, "res://scenes/overworld/world.tscn")
+	GameState.is_boss_battle = true
+	GameState.current_boss_entry = boss.boss_entry
+	GameState.current_boss_iq = boss.iq
+	GameState.generated_map = boss.generated_map
+	GameState.manual_map = boss.manual_map
+	GameState.forced_battle_tileset = boss.forced_battle_tileset
 	get_tree().change_scene_to_file("res://scenes/battle/battle.tscn")
 
 # Delegado por player.gd::can_move_to(). Objects manda quando tem tile na

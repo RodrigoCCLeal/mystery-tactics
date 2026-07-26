@@ -1,15 +1,16 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://n4j1qlbja5ka"]
 
-[ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0026/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0026/frames.tres" id="3_frames"]
-[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="4_learn"]
-[ext_resource type="Script" path="res://scripts/action_data.gd" id="5_action"]
+[ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_s6s2l"]
+[ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://vj7vmariqiwn" path="res://assets/sprites/Pokemon/Sprites/0026/Normal.png" id="2_portrait"]
+[ext_resource type="SpriteFrames" uid="uid://bcqs1wkj4re48" path="res://assets/sprites/Pokemon/Sprites/0026/frames.tres" id="3_frames"]
+[ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="4_learn"]
+[ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="5_action"]
 [ext_resource type="Resource" path="res://data/abilities/static.tres" id="6_static"]
 [ext_resource type="Resource" path="res://data/abilities/lightning_rod.tres" id="7_lightning_rod"]
 [ext_resource type="Resource" path="res://data/attacks/thunder_punch.tres" id="8_thunder_punch"]
 [ext_resource type="Resource" path="res://data/attacks/draining_kiss.tres" id="9_draining_kiss"]
-[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="10_growl"]
+[ext_resource type="Resource" uid="uid://bymxe4i5vv7ff" path="res://data/attacks/growl.tres" id="10_growl"]
 [ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="11_quick_attack"]
 [ext_resource type="Resource" path="res://data/attacks/tail_whip.tres" id="12_tail_whip"]
 [ext_resource type="Resource" path="res://data/attacks/thunder_shock.tres" id="13_thunder_shock"]
@@ -107,8 +108,6 @@ unit_name = "Raichu"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Electric"])
-grounded = true
-weight = 1
 slots = Array[ExtResource("5_action")]([ExtResource("10_growl"), ExtResource("8_thunder_punch"), ExtResource("9_draining_kiss"), ExtResource("6_static")])
 learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0026_static"), SubResource("LearnsetEntry_0026_lightning_rod"), SubResource("LearnsetEntry_0026_thunder_punch"), SubResource("LearnsetEntry_0026_draining_kiss"), SubResource("LearnsetEntry_0026_growl"), SubResource("LearnsetEntry_0026_quick_attack"), SubResource("LearnsetEntry_0026_tail_whip"), SubResource("LearnsetEntry_0026_thunder_shock"), SubResource("LearnsetEntry_0026_thunder_wave"), SubResource("LearnsetEntry_0026_nuzzle"), SubResource("LearnsetEntry_0026_spark"), SubResource("LearnsetEntry_0026_charm"), SubResource("LearnsetEntry_0026_thunderbolt"), SubResource("LearnsetEntry_0026_charge"), SubResource("LearnsetEntry_0026_light_screen"), SubResource("LearnsetEntry_0026_thunder"), SubResource("LearnsetEntry_0026_volt_tackle")])
 hp_base = 60
