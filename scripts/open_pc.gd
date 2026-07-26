@@ -24,21 +24,40 @@ class_name OpenPc
 # pra ler um tile do TileSet direto da textura crua, em vez de duplicar a
 # arte em outro arquivo.
 
-const TILESET_TEXTURE: Texture2D = preload("res://assets/tiles/tilesets/OW/sourceIMG/Interior general.png")
+# Rodrigo (2026-07-26): refatoração dos tilesets de interior — daqui pra
+# frente, mapas NOVOS usam um tileset único "interiorFULL" (com todos os
+# sprites de interior juntos numa imagem só), pra reduzir a dor de cabeça de
+# NPCs/interagíveis precisarem saber QUAL tileset de interior cada cômodo
+# usa. Mapas JÁ EXISTENTES continuam no tileset dedicado de antes (ex:
+# "Interior general.png") — nenhum dos dois é "o certo", coexistem.
+#
+# Por isso TILESET_TEXTURE virou @export (era `const`, fixo pro projeto
+# inteiro) — cada OpenPc agora escolhe, no Inspector, DE QUAL imagem-fonte
+# recortar screen_on_coord abaixo. Padrão continua "Interior general.png",
+# então todo OpenPc já colocado em cômodos antigos continua funcionando
+# sem precisar reconfigurar nada; só os NOVOS, em cômodos que usam
+# interiorFULL, precisam trocar isto no Inspector (e escolher a coordenada
+# certa dentro da imagem nova, ver comentário de screen_on_coord abaixo).
+@export var tileset_texture: Texture2D = preload("res://assets/tiles/tilesets/OW/sourceIMG/Interior general.png")
 const ATLAS_TILE_SIZE := Vector2i(32, 32)
 
 const COMPUTER_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/computer_screen.tscn")
 
-# Coordenada do tile "tela ligada" DENTRO do atlas de Interior general.png
+# Coordenada do tile "tela ligada" DENTRO do atlas de tileset_texture acima
 # (mesma ideia de LootBall.ATLAS_COORD/world.gd::grass_atlas_coords) —
 # escolhível por INSTÂNCIA no Inspector ao arrastar open_pc.tscn pra uma
 # cena, em vez de fixo no código: cada terminal pode usar um visual
 # diferente sem precisar de uma variante de script. Pra descobrir a
-# coordenada certa: abra a cena, selecione a TileMapLayer que usa
-# inside.tres, abra o painel de tiles embaixo e clique no quadro de tela
-# ligada que você quer — o Godot mostra "(coluna, linha)" no rodapé/tooltip.
-# Padrão (6, 164) só porque foi o primeiro exemplo dado pelo usuário; troque
-# livremente no Inspector de cada OpenPc.
+# coordenada certa: abra a cena, selecione a TileMapLayer que usa a MESMA
+# imagem apontada em tileset_texture (inside.tres nos cômodos antigos, o
+# tileset "interiorFULL" nos novos), abra o painel de tiles embaixo e
+# clique no quadro de tela ligada que você quer — o Godot mostra "(coluna,
+# linha)" no rodapé/tooltip. IMPORTANTE desde a refatoração de tilesets de
+# interior: esta coordenada só faz sentido pra imagem-fonte configurada
+# ACIMA em tileset_texture — trocar uma sem revisar a outra recorta o
+# pedaço errado da imagem. Padrão (6, 164) só porque foi o primeiro exemplo
+# dado pelo usuário (pra Interior general.png); troque os dois juntos no
+# Inspector de cada OpenPc novo.
 @export var screen_on_coord: Vector2i = Vector2i(6, 164)
 
 # Trava contra reabrir a tela duas vezes (ex: X segurado) — mesmo espírito
@@ -77,7 +96,7 @@ func _build_sprite_frames() -> SpriteFrames:
 
 func _make_atlas(coord: Vector2i) -> AtlasTexture:
 	var atlas = AtlasTexture.new()
-	atlas.atlas = TILESET_TEXTURE
+	atlas.atlas = tileset_texture
 	atlas.region = Rect2(coord.x * ATLAS_TILE_SIZE.x, coord.y * ATLAS_TILE_SIZE.y, ATLAS_TILE_SIZE.x, ATLAS_TILE_SIZE.y)
 	return atlas
 
