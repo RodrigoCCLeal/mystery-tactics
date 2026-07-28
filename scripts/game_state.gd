@@ -1633,16 +1633,23 @@ const ALL_ITEMS: Array[ItemData] = [
 # Inventário inicial de acordo com o modo escolhido em mode_select_screen.gd
 # (ver game_mode acima). Pedido do usuário, verbatim:
 #   Normal: 0 Money, No starting items
-#   Debugger: 1 of each implemented item
+#   Debugger: 99 of each implemented item (era 1, aumentado a pedido do
+#     usuário: "Increase debugger item count to 99 of each item" — valor
+#     exato pedido, não um teto de pilha imposto pelo motor: add_item()
+#     abaixo NUNCA limita quantidade nenhuma, então nada impede o número
+#     de subir além de 99 depois, seja pegando mais itens ou usando outro
+#     atalho de debug futuro.
 #   Challenge: (só as 3 regras especiais — nada dito sobre inventário
 #     inicial, então trata igual Normal: começa zerado, sem atalho nenhum)
 # money já é zerado incondicionalmente em _apply_fresh_state() logo depois
 # desta chamada, pros 3 modos igual — não precisa repetir aqui.
+const DEBUGGER_STARTING_ITEM_COUNT = 99
+
 func _seed_inventory_for_mode(mode: String) -> void:
 	if mode != "debugger":
 		return
 	for item in ALL_ITEMS:
-		add_item(item, 1)
+		add_item(item, DEBUGGER_STARTING_ITEM_COUNT)
 	# Mesmo atalho de teste de sempre (ver comentário original removido
 	# daqui) — só faz sentido no modo feito pra testar tudo de uma vez.
 	unlock_song("Strength")

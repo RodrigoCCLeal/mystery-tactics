@@ -59,7 +59,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		_finish(false)
 	else:
 		return
-	get_viewport().set_input_as_handled()
+	# Guard, não chamada direta — mesmo crash de quit_confirm.gd/
+	# mode_select_screen.gd/save_slot_screen.gd (bug reportado: "exiting the
+	# game also causes the same crash as creating a new file"). _finish()
+	# (linha de cima) emite `answered` NA HORA — pra quem escuta isso for
+	# system_menu.gd::_on_exit_answered(), a resposta "Yes" chama
+	# get_tree().change_scene_to_file() SINCRONAMENTE dentro desta mesma
+	# chamada, o que já tira este popup (e quem o abriu) da árvore antes
+	# desta linha rodar — get_viewport() vira null nesse caso. Esse risco
+	# existe pra QUALQUER chamador futuro de yes_no_prompt.gd cuja resposta
+	# troque de cena, não só o Exit — por isso o guard mora aqui (na base
+	# reutilizável), não em cada chamador.
+	var viewport = get_viewport()
+	if viewport != null:
+		viewport.set_input_as_handled()
 
 func _move_selection(step: int) -> void:
 	selected_index = wrapi(selected_index + step, 0, OPTIONS.size())

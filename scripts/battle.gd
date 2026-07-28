@@ -7491,7 +7491,21 @@ func _plan_medium_action(u: Node) -> Dictionary:
 	if allies.is_empty():
 		return {}
 
-	if u.attacks_remaining > 0 and randf() < 0.125:
+	# Rocket (ver Unit.iq/_plan_rocket_action) NUNCA rola esta chance —
+	# pedido do usuário: "We can eliminate the rng for the rocket AI to stop
+	# this from happening". Bug reportado: um amigo do usuário testou o jogo
+	# e a Rocket Ball não capturou mesmo com TODAS as condições batendo
+	# (última unidade de pé, time do jogador com 2+ membros) — causa raiz:
+	# esse randf() < 0.125 tinha 12.5% de chance de trocar por um golpe de
+	# Status ANTES sequer de _plan_rocket_action olhar pra chance de
+	# captura, e _plan_rocket_action desiste na hora se o golpe escolhido
+	# não causa dano (ver "best["attack"].is_status" logo abaixo em
+	# _plan_rocket_action) — não tinha nada a ver com versão de Godot nem
+	# de Windows, era só azar de RNG. Times Rocket agora vão direto pro
+	# bloco de "maior dano" abaixo, sempre — elimina essa fonte de
+	# aleatoriedade específica sem mudar nada pro resto das IAs (Easy/
+	# Medium/Hard/Champion continuam rolando essa chance normalmente).
+	if u.iq != "Rocket" and u.attacks_remaining > 0 and randf() < 0.125:
 		var status_plan = _pick_medium_status_action(u, allies, candidate_cells)
 		if not status_plan.is_empty():
 			return status_plan
