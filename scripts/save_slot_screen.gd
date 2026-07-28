@@ -130,7 +130,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		_close()
 	else:
 		return
-	get_viewport().set_input_as_handled()
+	# Guard, não chamada direta — mesmo crash de quit_confirm.gd/
+	# mode_select_screen.gd. _activate_selected_slot() (linha de cima) pode
+	# ter acabado de chamar get_tree().change_scene_to_file() no ramo
+	# mode=="load" (save carregado com sucesso), o que já tira este nó da
+	# árvore antes desta linha rodar — get_viewport() vira null nesse caso.
+	var viewport = get_viewport()
+	if viewport != null:
+		viewport.set_input_as_handled()
 
 func _move_selection(step: int) -> void:
 	selected_slot = wrapi(selected_slot + step, 0, GameState.SAVE_SLOT_COUNT)

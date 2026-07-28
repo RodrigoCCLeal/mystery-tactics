@@ -55,7 +55,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		_close()
 	else:
 		return
-	get_viewport().set_input_as_handled()
+	# Guard, não chamada direta — mesmo crash de quit_confirm.gd/
+	# title_screen.gd (bug reportado: "Cannot call method
+	# 'set_input_as_handled' on a null value" ao criar um save Normal).
+	# _confirm() (linha de cima) pode ter acabado de chamar
+	# get_tree().change_scene_to_file() (ver _confirm()), o que já tira
+	# este nó da árvore antes desta linha rodar — get_viewport() vira null
+	# nesse caso.
+	var viewport = get_viewport()
+	if viewport != null:
+		viewport.set_input_as_handled()
 
 func _move_selection(step: int) -> void:
 	selected_index = wrapi(selected_index + step, 0, option_labels.size())
