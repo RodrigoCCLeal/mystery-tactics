@@ -10,13 +10,22 @@ extends Node2D
 # interior é uma CENA separada (duplique house_interior.tscn), mas todas
 # apontam pra este mesmo script, do jeito que Nurse/Baldo reusam npc.gd.
 #
-# Uma TileMapLayerGround obrigatória + uma TileMapLayerObjects opcional
-# (get_node_or_null — nem todo cômodo precisa de uma camada de objetos
-# separada; se não existir, is_cell_walkable() simplesmente ignora essa
-# parte e usa só o Chão), do mesmo jeito que World combina as duas (Objetos
-# manda quando as duas têm tile na mesma célula).
+# Uma TileMapLayerGround obrigatória + TileMapLayerCarpet e TileMapLayerObjects
+# opcionais (get_node_or_null — nem todo cômodo precisa de tapete ou de uma
+# camada de objetos separada; se não existirem, is_cell_walkable() simplesmente
+# ignora essa parte). Prioridade de cima pra baixo quando mais de uma tem tile
+# na mesma célula: Objetos > Carpete > Chão — mesmo espírito de World combinar
+# Objetos e Chão, só que com o Carpete no meio como um "chão alternativo"
+# decorativo.
 
 @onready var tile_map_ground: TileMapLayer = $TileMapLayerGround
+# Opcional, mesmo espírito de tile_map_objects logo abaixo — nem todo interior
+# tem um tapete/carpete separado do Chão (barias_gym_interior.tscn/
+# baldo_house_interior.tscn/red_blue_green_house_interior.tscn têm; a maioria
+# não). Fica ENTRE Chão e Objetos na prioridade de is_cell_walkable() —
+# decorativo por cima do Chão, mas ainda "chão" no sentido de que um móvel
+# na camada de Objetos continua bloqueando por cima dele normalmente.
+@onready var tile_map_carpet: TileMapLayer = get_node_or_null("TileMapLayerCarpet")
 @onready var tile_map_objects: TileMapLayer = get_node_or_null("TileMapLayerObjects")
 # Opcional, mesmo espírito de tile_map_objects acima — nem todo interior
 # precisa de um "topo" (telhado de prateleira alta, viga...) desenhado por
@@ -133,9 +142,17 @@ func _sync_live_position() -> void:
 	GameState.live_facing = player.facing
 
 # Delegado por player.gd::can_move_to() — mesma lógica de world.gd
-# (Objetos manda quando tem tile na célula, senão cai pro Chão). move_dir
-# (opcional, sem uso aqui ainda) só existe pra bater com a mesma assinatura
-# de world.gd::is_cell_walkable — ver comentário gêmeo em world.gd.
+# (Objetos manda quando tem tile na célula, senão cai pro Chão), com o
+# Carpete (ver tile_map_carpet acima) entrando NO MEIO dos dois: se não tem
+# Objetos ali, mas tem um tapete pintado, é O TAPETE quem decide walkable,
+# não o Chão por baixo dele. Bug reportado pelo usuário: "Why isnt carpet
+# layer in barias gym walkable even if I painted the tile as walkable" —
+# antes desta correção, esta função nunca lia tile_map_carpet NENHUMA vez;
+# o valor "walkable" pintado no tile do Carpete simplesmente não era
+# consultado, só o do Chão por baixo (que pode ser um tile diferente, sem
+# "walkable" marcado). move_dir (opcional, sem uso aqui ainda) só existe pra
+# bater com a mesma assinatura de world.gd::is_cell_walkable — ver
+# comentário gêmeo em world.gd.
 func is_cell_walkable(cell: Vector2i, move_dir: Vector2i = Vector2i.ZERO) -> bool:
 	if tile_map_objects != null:
 		var obj_data = tile_map_objects.get_cell_tile_data(cell)
@@ -145,6 +162,10 @@ func is_cell_walkable(cell: Vector2i, move_dir: Vector2i = Vector2i.ZERO) -> boo
 				if one_way != "":
 					return move_dir == FACING_TO_DIR.get(one_way, Vector2i.ZERO)
 			return obj_data.get_custom_data("walkable")
+	if tile_map_carpet != null:
+		var carpet_data = tile_map_carpet.get_cell_tile_data(cell)
+		if carpet_data != null:
+			return carpet_data.get_custom_data("walkable")
 	var ground_data = tile_map_ground.get_cell_tile_data(cell)
 	if ground_data == null:
 		return false
@@ -198,6 +219,7 @@ func start_trainer_battle(trainer: Node) -> void:
 	GameState.current_trainer_id = trainer.trainer_id
 	GameState.current_trainer_team = trainer.get_active_team()
 	GameState.current_trainer_prize = trainer.get_prize_money()
+	GameState.current_trainer_badge_name = trainer.badge_name
 	GameState.current_trainer_iq = trainer.iq
 	get_tree().change_scene_to_file("res://scenes/battle/battle.tscn")
 

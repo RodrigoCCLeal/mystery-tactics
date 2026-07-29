@@ -41,11 +41,33 @@ var trainer_class: String = "Youngster"
 # JÁ ter um nome escrito no Inspector).
 @export var trainer_name: String = ""
 
+# "" (padrão, todo Trainer comum) = derrotar este Trainer não concede badge
+# nenhuma. Preenchido (ex: "Cascade Badge", pro Trainer da Misty,
+# trainer_class == "Leader") = vitória do jogador acrescenta ESTE nome em
+# GameState.badges (ver battle.gd::end_battle) — pedido do usuário: "After
+# winning misty fight my badge should increase by 1". Copiado pra
+# GameState.current_trainer_badge_name em world.gd/house_interior.gd::
+# start_trainer_battle, mesmo momento/motivo que trainer_id/get_prize_money()
+# já são copiados. Duplicata é ignorada (ver GameState.badges.has() em
+# end_battle) — reenfrentar o mesmo líder (regra 6, badge nova libera
+# rematch) nunca duplica a badge já conquistada.
+@export var badge_name: String = ""
+
 # Mostrado na caixa de texto que abre assim que este Trainer avista o
 # jogador (ver _spot_player) — pedido do usuário: "some generic text like
 # 'Found you!'". Exportado (não const) pra poder variar por instância/classe
 # depois, sem mexer em código.
 @export var spotted_message: String = "Found you!"
+
+# Mostrado quando o jogador INTERAGE com um Trainer já derrotado que ainda
+# não pode ser reenfrentado (regra 6: precisa de badge nova, ver interact()
+# mais abaixo) — pedido do usuário: "Trainer NPCs need a text box for when
+# they can't be challenged". ANTES disso interact() simplesmente não fazia
+# NADA nesse caso (return silencioso), o que parecia um bug de input pro
+# jogador (clicar/apertar Z no Trainer e nada acontecer, sem explicação
+# nenhuma). Exportado (não const), mesmo motivo de spotted_message — pra
+# variar por instância/classe futuramente sem mexer em código.
+@export var cannot_battle_message: String = "I've got nothing left to prove... not to you, anyway."
 
 # Nível de IA que TODAS as unidades deste Trainer usam em batalha —
 # sobrescreve o iq individual de cada UnitData (ver comentário grande em
@@ -442,15 +464,17 @@ func _spot_player() -> void:
 		_exclamation.queue_free()
 	_exclamation = null
 
-# Instancia a caixa de texto (ver trainer_message_box.gd) com
-# spotted_message e chama `on_closed` quando ela fechar (X ou Z) —
-# compartilhado entre _spot_player() (avistamento automático, ver acima) e
-# interact() (falar direto com o Trainer, ver embaixo) pra não duplicar a
-# instanciação em dois lugares.
-func _open_message_box(on_closed: Callable) -> void:
+# Instancia a caixa de texto (ver trainer_message_box.gd) com `message` e
+# chama `on_closed` quando ela fechar (X ou Z) — compartilhado entre
+# _spot_player() (avistamento automático), interact() (falar direto com o
+# Trainer, batalha nova) e a checagem de "não pode ser desafiado" logo abaixo,
+# pra não duplicar a instanciação em três lugares. message == "" (padrão,
+# compatível com os dois call sites de antes deste parâmetro existir) usa
+# spotted_message, igual o comportamento de sempre.
+func _open_message_box(on_closed: Callable, message: String = "") -> void:
 	var box = MESSAGE_BOX_SCENE.instantiate()
 	add_child(box)
-	box.setup(spotted_message)
+	box.setup(message if message != "" else spotted_message)
 	box.closed.connect(on_closed)
 
 # X ou Z na caixa de texto que abre quando o Trainer CHEGA perto do jogador
@@ -458,6 +482,11 @@ func _open_message_box(on_closed: Callable) -> void:
 func _on_reached_player_message_closed() -> void:
 	_showing_message = false
 	_begin_battle()
+
+# Fecha o diálogo de "não pode ser desafiado" (ver interact() acima) — só
+# devolve o controle ao jogador, nenhuma batalha começa neste caminho.
+func _on_cannot_battle_message_closed() -> void:
+	get_tree().paused = false
 
 # Chamado todo frame enquanto is_spotted e a caixa de texto final não está
 # aberta (ver _process/_showing_message) — persegue em linha reta na MESMA
@@ -575,6 +604,16 @@ func interact() -> void:
 	if GameState.defeated_trainer_badges.has(trainer_id):
 		var badges_at_defeat: int = GameState.defeated_trainer_badges[trainer_id]
 		if GameState.badges.size() <= badges_at_defeat:
+			# Pedido do usuário: "Trainer NPCs need a text box for when they
+			# can't be challenged" — era um `return` silencioso aqui (ver
+			# cannot_battle_message lá em cima pro motivo completo). Pausa a
+			# árvore igual todo outro diálogo deste script (_spot_player/o
+			# ramo de baixo) — _on_cannot_battle_message_closed() é quem
+			# devolve o controle, já que não existe start_trainer_battle()
+			# nenhum pra desligar o pause neste caminho (nenhuma batalha vai
+			# começar).
+			get_tree().paused = true
+			_open_message_box(_on_cannot_battle_message_closed, cannot_battle_message)
 			return
 	# Termina JÁ qualquer passo de patrulha/giro em andamento (is_moving) —
 	# diferente de _spot_player(), interact() NÃO liga _pausing_for_battle,

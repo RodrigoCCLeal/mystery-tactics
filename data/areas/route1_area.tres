@@ -3,12 +3,15 @@
 [ext_resource type="Script" uid="uid://dn3v2h1j31ip8" path="res://scripts/encounter_area.gd" id="1"]
 [ext_resource type="Script" uid="uid://dm7q7oe584rvd" path="res://scripts/encounter_group.gd" id="2"]
 [ext_resource type="Script" uid="uid://bugegqrkhre4u" path="res://scripts/encounter_entry.gd" id="2_b6401"]
-[ext_resource type="Resource" path="res://data/units/0016.tres" id="3_xlp32"]
+[ext_resource type="Resource" uid="uid://dkpsw5sjpw7r7" path="res://data/units/0021.tres" id="3_b6401"]
 [ext_resource type="Resource" uid="uid://c73241w5lc1oi" path="res://data/units/0019.tres" id="4_qhkjw"]
+[ext_resource type="Resource" uid="uid://cejrolkkfr8nj" path="res://data/units/0013.tres" id="5_f8nrp"]
+[ext_resource type="Resource" uid="uid://cqpfhup7pmyie" path="res://data/units/0010.tres" id="6_jnjnh"]
+[ext_resource type="Resource" uid="uid://cbjmwanx2w7an" path="res://data/units/0048.tres" id="7_ctf4f"]
 
 [sub_resource type="Resource" id="Resource_f8nrp"]
 script = ExtResource("2_b6401")
-species = ExtResource("3_xlp32")
+species = ExtResource("3_b6401")
 level = 4
 metadata/_custom_type_script = "uid://bugegqrkhre4u"
 
@@ -23,7 +26,39 @@ script = ExtResource("2")
 entries = Array[ExtResource("2_b6401")]([SubResource("Resource_f8nrp"), SubResource("Resource_jnjnh")])
 metadata/_custom_type_script = "uid://dm7q7oe584rvd"
 
+[sub_resource type="Resource" id="Resource_qhkjw"]
+script = ExtResource("2_b6401")
+species = ExtResource("5_f8nrp")
+level = 3
+metadata/_custom_type_script = "uid://bugegqrkhre4u"
+
+[sub_resource type="Resource" id="Resource_3l61x"]
+script = ExtResource("2_b6401")
+species = ExtResource("6_jnjnh")
+level = 3
+metadata/_custom_type_script = "uid://bugegqrkhre4u"
+
+[sub_resource type="Resource" id="Resource_xlp32"]
+script = ExtResource("2")
+entries = Array[ExtResource("2_b6401")]([SubResource("Resource_qhkjw"), SubResource("Resource_3l61x")])
+weight = 2.0
+times_of_day = 1
+metadata/_custom_type_script = "uid://dm7q7oe584rvd"
+
+[sub_resource type="Resource" id="Resource_bo4om"]
+script = ExtResource("2_b6401")
+species = ExtResource("7_ctf4f")
+level = 8
+metadata/_custom_type_script = "uid://bugegqrkhre4u"
+
+[sub_resource type="Resource" id="Resource_b3ayd"]
+script = ExtResource("2")
+entries = Array[ExtResource("2_b6401")]([SubResource("Resource_bo4om")])
+weight = 3.0
+times_of_day = 4
+metadata/_custom_type_script = "uid://dm7q7oe584rvd"
+
 [resource]
 script = ExtResource("1")
 area_name = "ROUTE 1"
-groups = Array[ExtResource("2")]([SubResource("Resource_ctf4f")])
+groups = Array[ExtResource("2")]([SubResource("Resource_ctf4f"), SubResource("Resource_xlp32"), SubResource("Resource_b3ayd")])

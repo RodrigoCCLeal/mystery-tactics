@@ -114,14 +114,14 @@ const MESSAGE_BOX_SCENE: PackedScene = preload("res://scenes/ui/popups/trainer_m
 func interact() -> void:
 	if _busy:
 		return
-	# computer_screen.gd esconde "PC"/"Giovanni"/"Baldo" individualmente
-	# conforme os flags (ver _ready() lá) — mas se NENHUM dos três estiver
-	# desbloqueado ainda, abrir aquela tela mostraria um menu completamente
-	# vazio (sem nada pra selecionar). Barra a interação inteira nesse caso
-	# específico, com uma mensagem em vez de um menu em branco — pedido do
-	# usuário original das 3 contas só existirem depois de falar com Baldo
-	# (ver baldo.gd).
-	if not GameState.get_flag("PC_ACCOUNT_REGISTERED") and not GameState.get_flag("GIOVANNI_PC_UNLOCKED") and not GameState.get_flag("BALDO_PC_UNLOCKED"):
+	# computer_screen.gd esconde "PC"/"Giovanni"/"Baldo"/"Heaven"
+	# individualmente conforme os flags (ver _ready() lá) — mas se NENHUM
+	# dos quatro estiver desbloqueado ainda, abrir aquela tela mostraria um
+	# menu completamente vazio (sem nada pra selecionar). Barra a interação
+	# inteira nesse caso específico, com uma mensagem em vez de um menu em
+	# branco — pedido do usuário original das contas só existirem depois de
+	# falar com Baldo (ver baldo.gd).
+	if not GameState.get_flag("PC_ACCOUNT_REGISTERED") and not GameState.get_flag("GIOVANNI_PC_UNLOCKED") and not GameState.get_flag("BALDO_PC_UNLOCKED") and not GameState.get_flag("HEAVEN_PC_UNLOCKED"):
 		_show_locked_message()
 		return
 	_busy = true

@@ -63,6 +63,11 @@ extends Resource
 # giovanni_storage, atrás da senha 142857080500 (ver baldo.gd/
 # BALDO_PC_UNLOCKED).
 @export var baldo_storage: Array[UnitData] = []
+# "Heaven Account" (ver GameState.heaven_storage) — unidades do jogador que
+# sofreram permadeath no modo Challenge (ver battle.gd::
+# _apply_challenge_permadeath). Mesmo formato/tamanho fixo das outras três
+# reservas, atrás da senha H34V3N0RH377 (ver baldo.gd/HEAVEN_PC_UNLOCKED).
+@export var heaven_storage: Array[UnitData] = []
 
 # Inventário como DOIS arrays em vez de Dictionary (GameState.inventory é
 # ItemData -> int) — Dictionary com Resource como chave é mais arriscado de

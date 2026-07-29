@@ -312,6 +312,7 @@ func start_trainer_battle(trainer: Node) -> void:
 	GameState.current_trainer_id = trainer.trainer_id
 	GameState.current_trainer_team = trainer.get_active_team()
 	GameState.current_trainer_prize = trainer.get_prize_money()
+	GameState.current_trainer_badge_name = trainer.badge_name
 	GameState.current_trainer_iq = trainer.iq
 	GameState.current_trainer_starting_weather = trainer.starting_weather
 	GameState.current_trainer_starting_weather_overridable = trainer.starting_weather_overridable

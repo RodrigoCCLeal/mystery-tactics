@@ -9,12 +9,26 @@ const TILE_SIZE = 24
 @warning_ignore("integer_division")
 const DEPLOY_ZONE_WIDTH = MAP_WIDTH / 4
 
+# Limite de PESO de quem pode estar EM CAMPO ao mesmo tempo durante
+# Phase.DEPLOY — pedido do usuário: "Remove the weight limitations from the
+# team... Now that restriction applies on the Deploy phase... the player
+# should be limited to deploying only up to 6 weight". O time ativo
+# (GameState.roster) não tem mais limite de peso nenhum (antigo
+# MAX_TEAM_WEIGHT, ver comentário grande em game_state.gd) — esse limite só
+# reaparece aqui, na hora de posicionar unidade EM CAMPO, e só conta quem já
+# está fora do Bench (ver get_deployed_weight()/select_unit_for_deploy()
+# abaixo).
+const DEPLOY_WEIGHT_LIMIT = 6
+
 const UNIT_SCENE: PackedScene = preload("res://scenes/actors/unit.tscn")
 const PROJECTILE_SCENE: PackedScene = preload("res://scenes/effects/projectile.tscn")
 const IMPACT_EFFECT_SCENE: PackedScene = preload("res://scenes/effects/impact_effect.tscn")
 const CAPTURE_BALL_SCENE: PackedScene = preload("res://scenes/effects/capture_ball.tscn")
 const STAT_CHANGE_EFFECT_SCENE: PackedScene = preload("res://scenes/effects/stat_change_effect.tscn")
 const CAST_EFFECT_SCENE: PackedScene = preload("res://scenes/effects/cast_effect.tscn")
+# Ver comentário grande em end_battle() — só instanciada no modo Challenge,
+# quando o roster INTEIRO fica vazio por permadeath.
+const GAME_OVER_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/popups/game_over_screen.tscn")
 
 # Item forçado no loadout de TODA unidade de um time "Rocket" (ver
 # spawn_enemies()/_spawn_enemy_unit) — pedido do usuário: "All units from
@@ -366,12 +380,18 @@ var current_battle_tileset: BattleTileset
 # Só existe/fica visível durante Phase.DEPLOY — ao contrário de
 # end_turn_button/undo_button/flee_button (escondidos até start_turn_order()),
 # start_button faz o caminho OPOSTO: começa visível e desabilitado (ver
-# refresh_start_button()) e some assim que a batalha começa (start_battle()).
+# refresh_deploy_buttons()) e some assim que a batalha começa (start_battle()).
 # Permite ao jogador postar SÓ PARTE do roster em campo — quem ficar na
 # coluna de staging (grid_pos.x < 0, ver get_staging_position) é removido de
 # player_units antes da batalha começar, então nunca luta e nunca ganha EXP
 # (award_experience() só itera player_units).
 @onready var start_button: Button = $HUD/StartButton
+# Logo abaixo de start_button, mesmo ciclo de vida dele (visível/habilitado
+# só durante Phase.DEPLOY, some em start_battle() — ver refresh_deploy_
+# buttons()/_on_restart_pressed()) — pedido do usuário: "add a button named
+# Restart below the Start button that returns all Deployed units to the
+# bench. It disappears after battle start".
+@onready var restart_button: Button = $HUD/RestartButton
 @onready var end_turn_button: Button = $HUD/EndTurnButton
 @onready var undo_button: Button = $HUD/UndoButton
 @onready var flee_button: Button = $HUD/FleeButton
@@ -880,23 +900,26 @@ func _ready() -> void:
 	if GameState.roster.size() > GameState.MAX_TEAM_SIZE:
 		push_warning("roster tem %d entradas, mais que o time máximo (%d) — as excedentes serão ignoradas." % [GameState.roster.size(), GameState.MAX_TEAM_SIZE])
 	randomize()
-	# Mapa desenhado à mão (ver GameState.generated_map/manual_map,
-	# Trainer.gd/boss.gd) — o CARREGAMENTO de verdade ainda não existe (ver
-	# comentário grande em GameState.manual_map: ninguém desenhou um mapa
-	# manual de verdade ainda pra saber o formato certo), então por enquanto
-	# isso só avisa no log e cai pro procedural mesmo assim, em vez de
-	# silenciosamente ignorar a configuração ou quebrar a batalha.
-	if not GameState.generated_map:
-		push_warning("generated_map=false, mas o carregamento de mapa manual ainda não está implementado — usando mapa procedural mesmo assim.")
 	_pick_battle_tileset()   # ANTES de qualquer paint_*/set_cell — as 4 layers precisam do tile_set certo já atribuído
-	build_ground_variants()
-	build_wall_detail()
-	# O terreno inteiro já é gerado de uma vez — "revelar" depois não gera
-	# nada novo, só tira a névoa de cima do que já existe.
-	paint_area(0, MAP_WIDTH)
-	generate_fluid()
-	generate_interior_walls()   # depende de fluid_cells já preenchido (não sobrepõe fluido)
-	paint_wall_border()         # depende de wall_cells já populado (se conecta com paredes internas)
+	# Mapa desenhado à mão (ver GameState.generated_map/manual_map,
+	# Trainer.gd/boss.gd) — pedido do usuário: "Ive drawn a battle map for
+	# the misty fight" (scenes/battlescenes/mistyGym.tscn). generated_map
+	# controla o RAMO inteiro: true = pipeline procedural de sempre, false =
+	# _load_manual_map() lê o TileMapLayer desenhado à mão e derruba
+	# wall_cells/fluid_cells a partir de Custom Data Layers do TileSet dele
+	# ("walkable"/"fluid" bool, escolha do usuário via AskUserQuestion:
+	# "TileSet Custom Data (Recommended)") em vez de sortear tudo.
+	if GameState.generated_map:
+		build_ground_variants()
+		build_wall_detail()
+		# O terreno inteiro já é gerado de uma vez — "revelar" depois não gera
+		# nada novo, só tira a névoa de cima do que já existe.
+		paint_area(0, MAP_WIDTH)
+		generate_fluid()
+		generate_interior_walls()   # depende de fluid_cells já preenchido (não sobrepõe fluido)
+		paint_wall_border()         # depende de wall_cells já populado (se conecta com paredes internas)
+	else:
+		_load_manual_map()
 	paint_fog(DEPLOY_ZONE_WIDTH, MAP_WIDTH)
 	spawn_player_units_staged()
 	battle_log.gui_input.connect(_on_battle_log_gui_input)
@@ -904,6 +927,7 @@ func _ready() -> void:
 	log_message("Deploy your units!")
 
 	start_button.pressed.connect(_on_start_pressed)
+	restart_button.pressed.connect(_on_restart_pressed)
 	end_turn_button.pressed.connect(_on_end_turn_pressed)
 	undo_button.pressed.connect(_on_undo_pressed)
 	flee_button.pressed.connect(_on_flee_pressed)
@@ -917,7 +941,7 @@ func _ready() -> void:
 	flee_button.visible = false
 	action_slots.visible = false
 	struggle_button.visible = false
-	refresh_start_button()
+	refresh_deploy_buttons()
 
 # Sorteia um BATTLE_TILESETS e aplica o .tile_set dele nas 4 TileMapLayer da
 # cena (TileMapLayer de verdade + HighlightLayer/AttackHighlightLayer/
@@ -942,6 +966,90 @@ func _pick_battle_tileset() -> void:
 	highlight_layer.tile_set = current_battle_tileset.tile_set
 	attack_highlight_layer.tile_set = current_battle_tileset.tile_set
 	fog_layer.tile_set = current_battle_tileset.tile_set
+
+# Igual a house_interior.gd::_tileset_has_custom_data() — duplicado aqui de
+# propósito (mesmo padrão do projeto, ver _play_portrait em pc_screen.gd/
+# party_screen.gd) em vez de criar uma dependência cruzada entre scripts de
+# cenas completamente diferentes só por causa de um helper de 5 linhas.
+func _tileset_has_custom_data(tile_set: TileSet, layer_name: String) -> bool:
+	if tile_set == null:
+		return false
+	for i in tile_set.get_custom_data_layers_count():
+		if tile_set.get_custom_data_layer_name(i) == layer_name:
+			return true
+	return false
+
+# Procura recursivamente a primeira TileMapLayer dentro da cena manual
+# (GameState.manual_map) — o usuário desenhou mistyGym.tscn como um Node2D
+# raiz com uma única TileMapLayer filha, mas não vale a pena travar nesse
+# formato exato: se algum dia ele desenhar com um Node2D intermediário no
+# meio (por organização, grupos de decoração etc.) isso continua achando.
+func _find_manual_tilemap(node: Node) -> TileMapLayer:
+	if node is TileMapLayer:
+		return node
+	for child in node.get_children():
+		var found = _find_manual_tilemap(child)
+		if found != null:
+			return found
+	return null
+
+# Carrega um mapa desenhado à mão (GameState.manual_map) no lugar do
+# pipeline procedural — ver o "if GameState.generated_map" em _ready().
+# Copia os tiles pintados por Rodrigo pra cima da TileMapLayer de verdade
+# (remapeando pelo canto superior-esquerdo do que ele desenhou, já que não
+# dá pra assumir que o desenho começa exatamente em (0,0)) e preenche
+# wall_cells/fluid_cells a partir de Custom Data Layers do TileSet dele:
+# "walkable" (bool, false ou ausente = wall_cells) e "fluid" (bool, true =
+# fluid_cells — o TIPO de fluido/status continua vindo de
+# current_battle_tileset.fluid_pass_type/fluid_status_on_enter, igual no
+# mapa procedural; o TileSet manual só decide LAYOUT, não a regra de física
+# do fluido). Célula sem nenhum tile pintado = tratada como parede também,
+# por segurança (evita buraco não-intencional no mapa).
+func _load_manual_map() -> void:
+	var manual_instance = GameState.manual_map.instantiate()
+	var manual_tilemap = _find_manual_tilemap(manual_instance)
+	if manual_tilemap == null:
+		push_error("GameState.manual_map (%s) não tem nenhuma TileMapLayer dentro — caindo pro mapa procedural." % GameState.manual_map.resource_path)
+		manual_instance.queue_free()
+		build_ground_variants()
+		build_wall_detail()
+		paint_area(0, MAP_WIDTH)
+		generate_fluid()
+		generate_interior_walls()
+		paint_wall_border()
+		return
+
+	var manual_tile_set = manual_tilemap.tile_set
+	tilemap.tile_set = manual_tile_set   # sobrescreve o tile_set sorteado por _pick_battle_tileset() — o chão agora é o desenho de Rodrigo, não mais o procedural
+	var has_walkable_layer = _tileset_has_custom_data(manual_tile_set, "walkable")
+	var has_fluid_layer = _tileset_has_custom_data(manual_tile_set, "fluid")
+
+	var origin = manual_tilemap.get_used_rect().position   # canto superior-esquerdo do que foi desenhado — vira o (0,0) do grid de batalha
+	wall_cells.clear()
+	fluid_cells.clear()
+	for x in MAP_WIDTH:
+		for y in MAP_HEIGHT:
+			var battle_cell = Vector2i(x, y)
+			var source_cell = origin + battle_cell
+			var source_id = manual_tilemap.get_cell_source_id(source_cell)
+			if source_id == -1:
+				# Nenhum tile pintado aqui — vira parede por segurança, não fica um buraco no chão.
+				wall_cells[battle_cell] = true
+				continue
+			var atlas_coords = manual_tilemap.get_cell_atlas_coords(source_cell)
+			var alt_tile = manual_tilemap.get_cell_alternative_tile(source_cell)
+			tilemap.set_cell(battle_cell, source_id, atlas_coords, alt_tile)
+
+			var tile_data = manual_tilemap.get_cell_tile_data(source_cell)
+			var walkable = true   # sem layer "walkable" nenhuma = tudo andável (fallback seguro, ver comentário na função)
+			if has_walkable_layer and tile_data != null:
+				walkable = tile_data.get_custom_data("walkable")
+			if not walkable:
+				wall_cells[battle_cell] = true
+			if has_fluid_layer and tile_data != null and tile_data.get_custom_data("fluid"):
+				fluid_cells[battle_cell] = true
+
+	manual_instance.queue_free()   # só precisávamos ler o TileMapLayer dela — a cena instanciada em si não faz parte da árvore de batalha
 
 # Anexa uma linha ao HISTÓRICO da caixa de eventos da batalha (ver
 # HUD/BattleLog em battle.tscn) e redesenha o texto visível. É o único ponto
@@ -1472,9 +1580,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	# ver handle_targeting_input); fora de mira, desseleciona a unidade atual
 	# (mesmo deselect() do "else" de handle_deploy_input/handle_battle_input).
 	# Os dois são seguros de chamar mesmo sem nada selecionado (viram no-op).
+	#
+	# Durante Phase.DEPLOY, botão direito em cima de uma unidade JÁ deployada
+	# (grid_pos.x >= 0) faz outra coisa: devolve ela pro Bench em vez de só
+	# desselecionar (ver _try_return_clicked_unit_to_bench/return_unit_to_
+	# bench abaixo) — pedido do usuário: "We need to be able to return
+	# deployed units to our Bench... during the deploy phase". Só entra nesse
+	# ramo se o clique de fato acertou uma unidade deployada; clicar em
+	# qualquer outro lugar durante o Deploy continua sendo só "Cancelar" de
+	# sempre.
 	if event.button_index == MOUSE_BUTTON_RIGHT:
 		if targeting_action != null:
 			cancel_targeting()
+		elif phase == Phase.DEPLOY and _try_return_clicked_unit_to_bench():
+			pass
 		else:
 			deselect()
 		return
@@ -1501,6 +1620,23 @@ func _unhandled_input(event: InputEvent) -> void:
 
 # ---------- Fase de deploy ----------
 
+# Chamada só pelo botão direito do mouse (ver _unhandled_input) — calcula a
+# célula clicada do ZERO em vez de reaproveitar `clicked_cell`/`clicked_unit`
+# de mais abaixo porque o bloco de botão direito roda ANTES daquele cálculo
+# (precisa decidir "Cancelar" vs "Confirmar" logo no começo da função).
+# Devolve true quando o clique acertou uma unidade do jogador já deployada
+# (grid_pos.x >= 0) — nesse caso já devolveu ela pro Bench (ver
+# return_unit_to_bench) e quem chamou NÃO deve cair no deselect() padrão
+# também. Devolve false pra qualquer outro clique (fora de unidade, ou em
+# cima de alguém ainda no Bench), deixando o "Cancelar" de sempre acontecer.
+func _try_return_clicked_unit_to_bench() -> bool:
+	var clicked_cell = tilemap.local_to_map(tilemap.to_local(get_global_mouse_position()))
+	var clicked_unit = get_unit_at(clicked_cell)
+	if clicked_unit == null or not (clicked_unit in player_units) or clicked_unit.grid_pos.x < 0:
+		return false
+	return_unit_to_bench(clicked_unit)
+	return true
+
 func handle_deploy_input(clicked_cell: Vector2i, clicked_unit: Node) -> void:
 	if clicked_unit and clicked_unit in player_units:
 		select_unit_for_deploy(clicked_unit)
@@ -1509,7 +1645,29 @@ func handle_deploy_input(clicked_cell: Vector2i, clicked_unit: Node) -> void:
 	else:
 		deselect()
 
+# Soma o weight (ver UnitData.weight) de toda unidade do jogador que já está
+# EM CAMPO agora (grid_pos.x >= 0) — quem ainda está no Bench (coluna de
+# staging, grid_pos.x < 0, ver get_staging_position) não conta. Usado só
+# durante Phase.DEPLOY, pra checar contra DEPLOY_WEIGHT_LIMIT antes de deixar
+# o jogador posicionar mais uma unidade (ver select_unit_for_deploy logo
+# abaixo) — esse é o limite que ANTES vivia no time inteiro (GameState.
+# MAX_TEAM_WEIGHT, removido) e agora só vale sobre quem está fisicamente no
+# campo.
+func get_deployed_weight() -> int:
+	var total = 0
+	for u in player_units:
+		if u.grid_pos.x >= 0:
+			total += u.data.weight
+	return total
+
 func select_unit_for_deploy(u: Node) -> void:
+	# Só barra pelo peso quem ainda está no Bench (grid_pos.x < 0) — REPOSICIONAR
+	# quem já está em campo não muda o peso total ali (a unidade sai de uma
+	# célula e entra em outra, sem ganhar nem perder "espaço"), então nunca
+	# precisa passar por essa checagem.
+	if u.grid_pos.x < 0 and get_deployed_weight() + u.data.weight > DEPLOY_WEIGHT_LIMIT:
+		log_message("%s is too heavy to deploy right now! (limit: %d)" % [u.data.unit_name, DEPLOY_WEIGHT_LIMIT])
+		return
 	clear_highlights()
 	selected_unit = u
 	highlighted_tiles = get_deploy_zone_empty_tiles()
@@ -1535,7 +1693,7 @@ func get_deploy_zone_empty_tiles() -> Array[Vector2i]:
 func place_selected_unit(target: Vector2i) -> void:
 	selected_unit.move_to(target)
 	deselect()
-	refresh_start_button()
+	refresh_deploy_buttons()
 	check_deploy_complete()
 
 func check_deploy_complete() -> void:
@@ -1544,26 +1702,65 @@ func check_deploy_complete() -> void:
 			return   # ainda tem gente esperando pra ser posicionada (coluna de staging, ver get_staging_position)
 	start_battle()
 
-# Habilita start_button assim que PELO MENOS UMA unidade estiver fora da
-# coluna de staging (grid_pos.x >= 0) — permite ao jogador escolher lutar
-# com menos que o roster inteiro. Chamada em _ready() (estado inicial, todo
-# mundo em staging = desabilitado) e de novo em place_selected_unit() toda
-# vez que alguém é posicionado/reposicionado.
-func refresh_start_button() -> void:
+# Devolve `u` pro Bench (coluna de staging fora do campo, ver
+# get_staging_position) — usada tanto pelo botão direito em cima de uma
+# unidade deployada (_try_return_clicked_unit_to_bench, ver _unhandled_input)
+# quanto pelo Restart (_on_restart_pressed), que chama isso pra CADA unidade
+# em campo de uma vez. Pedido do usuário: "We need to be able to return
+# deployed units to our Bench... during the deploy phase". player_units.
+# find(u) recupera o MESMO índice de staging que essa unidade já tinha ao
+# entrar em campo (spawn_player_units_staged monta a fila uma vez só, na
+# ordem do roster, e a ordem de player_units nunca muda durante
+# Phase.DEPLOY) — o slot de origem dela no Bench está garantido vazio (ela
+# mesma o deixou vazio ao ser deployada), sem risco de duas unidades caírem
+# em cima uma da outra. move_to() (em vez de init()) porque a unidade já
+# está visível em campo — precisa da mesma animação de "andar" que
+# place_selected_unit() usa pra ir pra lá, só que de volta.
+func return_unit_to_bench(u: Node) -> void:
+	if selected_unit == u:
+		deselect()
+	u.move_to(get_staging_position(player_units.find(u)))
+	refresh_deploy_buttons()
+
+# Habilita start_button/restart_button assim que PELO MENOS UMA unidade
+# estiver fora da coluna de staging (grid_pos.x >= 0) — permite ao jogador
+# escolher lutar com menos que o roster inteiro, e não faz sentido nenhum dos
+# dois botões ficar clicável sem ninguém em campo ainda (Start não teria
+# quem lutar, Restart não teria ninguém pra devolver). Chamada em _ready()
+# (estado inicial, todo mundo em staging = os dois desabilitados), de novo em
+# place_selected_unit() toda vez que alguém é posicionado/reposicionado, e em
+# return_unit_to_bench() toda vez que alguém volta pro Bench.
+func refresh_deploy_buttons() -> void:
+	var any_deployed = false
 	for u in player_units:
 		if u.grid_pos.x >= 0:
-			start_button.disabled = false
-			return
-	start_button.disabled = true
+			any_deployed = true
+			break
+	start_button.disabled = not any_deployed
+	restart_button.disabled = not any_deployed
 
 func _on_start_pressed() -> void:
 	if phase != Phase.DEPLOY:
 		return
 	start_battle()
 
+# Pedido do usuário: "add a button named Restart below the Start button that
+# returns all Deployed units to the bench" — devolve TODA unidade que está
+# em campo (grid_pos.x >= 0) de uma vez, iterando uma cópia de player_units
+# (return_unit_to_bench não altera o próprio array, só grid_pos de cada
+# unidade — a cópia é só uma proteção extra caso isso mude no futuro sem
+# lembrar de revisar aqui).
+func _on_restart_pressed() -> void:
+	if phase != Phase.DEPLOY:
+		return
+	for u in player_units.duplicate():
+		if u.grid_pos.x >= 0:
+			return_unit_to_bench(u)
+
 func start_battle() -> void:
 	phase = Phase.BATTLE
 	start_button.visible = false
+	restart_button.visible = false
 	# Quem ainda estiver esperando na coluna de staging (grid_pos.x < 0,
 	# ver get_staging_position) NÃO entra na batalha — o jogador escolheu
 	# deixar essa unidade de fora ao apertar Start antes de posicionar todo
@@ -2082,14 +2279,16 @@ func refresh_weather_mask() -> void:
 	weather_mask.color = WEATHER_MASK_COLORS[current_weather]
 	weather_mask.visible = true
 
-# Atualiza o texto de nível/HP de todo mundo e a borda de quem está na vez —
-# AZUL se for a vez de uma unidade do jogador, VERMELHA se for a vez de um
-# inimigo (antes a borda era sempre azul e só existia pra player_units, já
-# que unit_slots não tinha inimigo nenhum; agora que build_unit_summary_hud()
-# monta slot pra turn_queue inteira, dá pra diferenciar de quem é a vez só
-# olhando a cor). Chamar sempre que o turno mudar, o HP de alguém mudar, ou
-# alguém subir de nível. Mostra nível aqui só por debug por enquanto — xp não
-# aparece ainda (vamos precisar disso no futuro, ver ExpGroups.exp_to_next_level).
+# Atualiza o texto de HP de todo mundo, o tooltip (nível/Speed/Status, ver
+# logo abaixo) e a borda de quem está na vez — AZUL se for a vez de uma
+# unidade do jogador, VERMELHA se for a vez de um inimigo (antes a borda era
+# sempre azul e só existia pra player_units, já que unit_slots não tinha
+# inimigo nenhum; agora que build_unit_summary_hud() monta slot pra
+# turn_queue inteira, dá pra diferenciar de quem é a vez só olhando a cor).
+# Chamar sempre que o turno mudar, o HP de alguém mudar, ou alguém subir de
+# nível. Nível só aparece no tooltip (ver "Nv. %d" abaixo); exp/quanto falta
+# pro próximo nível não aparece em lugar nenhum de propósito — pedido do
+# usuário: "Remove exp to next level line".
 func refresh_unit_summary_hud() -> void:
 	var current = get_current_unit()
 	for u in unit_slots.keys():
@@ -2108,10 +2307,10 @@ func refresh_unit_summary_hud() -> void:
 		hp_label.text = "%d/%d" % [u.hp_current, u.hp_max] if not u.is_enemy else ""
 
 		# Tooltip do portrait: nível, Speed (já com estágio alterado, se
-		# tiver — ver Unit.get_effective_stat), Status Condition (se tiver
-		# alguma ativa) e quanto falta de exp pro próximo nível
-		# (ExpGroups.exp_to_next_level já existia, só não era mostrado em
-		# lugar nenhum até agora).
+		# tiver — ver Unit.get_effective_stat) e Status Condition (se tiver
+		# alguma ativa). Antes também mostrava quanto faltava de exp pro
+		# próximo nível (ExpGroups.exp_to_next_level) — removido a pedido do
+		# usuário: "Remove exp to next level line".
 		var tooltip_lines = [
 			"Nv. %d" % u.level,
 			"Speed: %d" % u.get_effective_stat("speed"),
@@ -2127,11 +2326,6 @@ func refresh_unit_summary_hud() -> void:
 				visible_statuses.append(status_name)
 		if not visible_statuses.is_empty():
 			tooltip_lines.append("Status: %s" % ", ".join(visible_statuses))
-		if u.level >= ExpGroups.MAX_LEVEL:
-			tooltip_lines.append("Nível máximo")
-		else:
-			var exp_missing = ExpGroups.exp_to_next_level(u.level, u.xp, u.data.growth_group)
-			tooltip_lines.append("Exp até o próximo nível: %d" % exp_missing)
 		slot.tooltip_text = "\n".join(tooltip_lines)
 
 		var style = StyleBoxFlat.new()
@@ -2936,11 +3130,19 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 		# mira UM inimigo, mira uma DIREÇÃO — quem de fato é atingido só é
 		# resolvido lá dentro (get_cone_cells/area_cells), então aqui só precisa
 		# calcular `dir` a partir de onde o jogador clicou, mesma convenção
-		# 8-way (sign do delta) do resto do jogo. Sem tratamento de Confused
-		# especial: uma unidade confusa ainda mira a direção certa (só o alvo de
-		# um ataque comum, mirado em 1 inimigo, é embaralhado — não faz muito
-		# sentido "embaralhar direção" pra quem já é uma área inteira).
+		# 8-way (sign do delta) do resto do jogo.
 		var dir = Vector2i(sign(clicked_cell.x - current.grid_pos.x), sign(clicked_cell.y - current.grid_pos.y))
+		# Confused: pedido do usuário (2026-07-28) — "When they declare a
+		# move, roll a random direction for the move", generalizando pra
+		# QUALQUER declaração de golpe, não só ataques de 1 alvo (que já
+		# embaralhavam desde 2026-07-22, ver ramo de baixo). SUBSTITUI a regra
+		# antiga daqui ("uma unidade confusa ainda mira a direção certa" —
+		# comentário removido, não valia mais a partir deste pedido). Exceto
+		# auto-alvo (Growth/Synthesis/Defense Curl, ver is_self_target_status
+		# — sempre mira o próprio tile, "embaralhar direção" não tem
+		# significado nenhum pra quem não mira lugar nenhum).
+		if current.has_status("Confused") and not is_self_target_status(action):
+			dir = _roll_confused_direction()
 		_run_player_status_attack(current, action, dir, index)
 	elif current != null and action is AttackData and (action.area_shape == "Burst" or action.area_shape == "Line" or action.area_shape == "Cone" or action.area_shape == "Wide" or action.area_shape == "Thick Line") and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
 		# Ataque de área "Burst", "Line" ou "Cone" QUE CAUSA DANO (ver
@@ -2954,6 +3156,10 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 		# um inimigo bem em cima da célula clicada, coisa que nenhum dos três
 		# precisa.
 		var dir = Vector2i(sign(clicked_cell.x - current.grid_pos.x), sign(clicked_cell.y - current.grid_pos.y))
+		# Confused: mesmo pedido/motivo do ramo is_status logo acima — golpe
+		# de área também é "uma direção declarada", então também embaralha.
+		if current.has_status("Confused"):
+			dir = _roll_confused_direction()
 		_run_player_burst_attack(current, action, dir, index)
 	elif current != null and action is AttackData and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action, current):
 		var target: Node = null
@@ -3004,6 +3210,11 @@ func handle_targeting_input(clicked_cell: Vector2i) -> void:
 		# sets_weather), então nunca acharia um "target" e o TM nunca
 		# dispararia (nem gastaria carga, nem faria nada, sem aviso nenhum).
 		var dir = Vector2i(sign(clicked_cell.x - current.grid_pos.x), sign(clicked_cell.y - current.grid_pos.y))
+		# Confused: mesmo pedido/motivo do ramo AttackData.is_status lá em
+		# cima — só que aqui quem carrega is_self_target_status de verdade é
+		# action.tm_attack (a AttackData de baixo do TM), não a ItemData em si.
+		if current.has_status("Confused") and not is_self_target_status(action.tm_attack):
+			dir = _roll_confused_direction()
 		_run_player_tm_status_attack(current, action, dir, index)
 	elif current != null and action is ItemData and action.category == "TM" and action.tm_attack != null and current.attacks_remaining > 0 and is_valid_target_cell(current.grid_pos, clicked_cell, action):
 		# Mesma lógica de resolução de alvo do ramo AttackData acima, só que
@@ -4369,6 +4580,22 @@ func _try_melee_lunge(attacker: Node, defender: Node, attack: AttackData) -> voi
 	# único jeito de um projétil lunge é opt-in explícito (ver AttackData.
 	# lunges_to_target/Rollout).
 	if attack.is_projectile and not attack.lunges_to_target:
+		return
+	# Bug reportado pelo usuário: "Confusion (the attack) shouldnt move the
+	# user 1 tile forward. The same is true for Psychic and other moves with
+	# similar effects" — Confusion/Psychic/Extrasensory (e vários outros:
+	# Feint, Gust, Thunder, Twister...) são ESPECIAIS de longe SEM sprite de
+	# projétil configurado (por isso is_projectile continua false pra eles,
+	# diferente de Ember/Water Gun), então o guard de cima sozinho não
+	# pegava. attack.makes_contact já existe com EXATAMENTE este
+	# significado ("encosta fisicamente no alvo ou não", ver comentário
+	# grande no @export lá em attack_data.gd) — reaproveitado aqui em vez de
+	# marcar is_projectile=true em cada .tres (que ligaria a renderização de
+	# um sprite de projétil que essas ataques nem têm configurado). Golpes
+	# de contato com range>1 (Quick Attack, Mach Punch, Sucker Punch, Wing
+	# Attack, Extreme Speed, Lunge, Rollout — todos com makes_contact=true)
+	# continuam lunge normalmente.
+	if not attack.makes_contact:
 		return
 	var delta = defender.grid_pos - attacker.grid_pos
 	var distance = max(abs(delta.x), abs(delta.y))
@@ -6192,6 +6419,20 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 		# nova desde essa derrota (ver comentário grande em GameState.
 		# defeated_trainer_badges).
 		GameState.defeated_trainer_badges[GameState.current_trainer_id] = GameState.badges.size()
+		# Pedido do usuário: "After winning misty fight my badge should
+		# increase by 1" — ver Trainer.badge_name/GameState.current_trainer_
+		# badge_name. "" (todo Trainer comum) não concede nada; badges.has()
+		# de guarda evita duplicar a MESMA badge numa revanche (regra 6 já
+		# permite reenfrentar o líder depois de uma badge NOVA de outro
+		# ginásio, mas ele continua distribuindo a mesma badge de sempre, não
+		# uma segunda). Roda DEPOIS do carimbo de defeated_trainer_badges
+		# logo acima, de propósito — esse carimbo precisa registrar quantas
+		# badges o jogador tinha ANTES desta vitória, senão a badge que
+		# Misty acabou de dar contaria como "a badge nova" que libera
+		# revanche contra ELA MESMA na hora.
+		if GameState.current_trainer_badge_name != "" and not GameState.badges.has(GameState.current_trainer_badge_name):
+			GameState.badges.append(GameState.current_trainer_badge_name)
+			log_message("You got the %s!" % GameState.current_trainer_badge_name)
 	# Treinador Rocket some PRA SEMPRE depois desta batalha, vitória OU
 	# derrota do jogador (pedido do usuário: "Rocket trainers also vanish
 	# after defeating or being defeated. They cannot be rematched") — bem
@@ -6208,6 +6449,7 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 	GameState.current_trainer_id = ""
 	GameState.current_trainer_team = []
 	GameState.current_trainer_prize = 0
+	GameState.current_trainer_badge_name = ""
 	GameState.current_trainer_iq = ""
 	GameState.current_trainer_starting_weather = ""
 	GameState.current_trainer_starting_weather_overridable = true
@@ -6228,6 +6470,27 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 	# batalha selvagem de água anterior caso algo volte a ler isso sem
 	# querer.
 	GameState.current_encounter_source = "Grass"
+
+	# Pedido do usuário: "Updating Challenge mode... When all Units from the
+	# team are defeated, display Game Over screen with the prompt Load Save
+	# or Delete Save" — checado ANTES do if/else de vitória/derrota de
+	# sempre logo abaixo, não só dentro do ramo de derrota, porque um golpe
+	# com recoil pode derrotar o último inimigo E a última unidade do
+	# jogador ao mesmo tempo (ver blocos de recoil em execute_attack/
+	# execute_status_attack — os dois chamam _apply_challenge_permadeath
+	# ANTES de checar enemy_units.is_empty()/player_units.is_empty()).
+	# Nesse caso `victory` viria `true` (enemy_units.is_empty() é quem
+	# decide isso), mas o jogador continuaria sem NENHUMA unidade pra
+	# seguir jogando — Game Over vale mesmo numa "vitória" técnica dessas.
+	# GameState.get_active_roster() (não roster.is_empty(), que sempre tem
+	# MAX_TEAM_SIZE nulls dentro, nunca fica com size() 0) é quem realmente
+	# filtra os slots vazios — ver comentário dela em game_state.gd. `return`
+	# logo depois: nenhuma das duas ramificações de baixo (troca de cena pro
+	# overworld, cura + multa + volta pro checkpoint) faz sentido nenhum sem
+	# time nenhum pra levar de volta.
+	if GameState.game_mode == "challenge" and GameState.get_active_roster().is_empty():
+		add_child(GAME_OVER_SCREEN_SCENE.instantiate())
+		return
 
 	if victory:
 		# Mesmo caminho de volta do botão Flee (ver _on_flee_pressed) — a
@@ -6393,57 +6656,79 @@ func execute_ball_throw(attacker: Node, target_cell: Vector2i, item: ItemData, s
 # guard que execute_tm_attack/execute_ball_throw já usam — se esse ataque
 # terminou a batalha (end_battle já trocou de cena dentro do await acima),
 # flee_button não existe mais nesta árvore, não mexe nele.
+# end_turn_button também escondido durante os 6 wrappers abaixo, junto de
+# flee_button — bug reportado pelo usuário ("passed the turn fast enough for
+# it to hit me before it died from my attack. This freezes the game"): antes
+# só flee_button ficava invisível aqui (ver comentário grande de
+# action_in_progress), então dava pra clicar End Turn (ou apertar "pass", que
+# tem a trava extra em _on_end_turn_pressed(), ver lá) bem no meio da
+# animação do PRÓPRIO ataque do jogador ainda suspensa num await, avançando
+# current_turn_index e começando o turno seguinte ANTES dessa animação
+# terminar de resolver (ex: matar o defensor) — duas corrotinas mexendo no
+# turn_queue ao mesmo tempo, exatamente a receita do travamento relatado.
 func _run_player_attack(attacker: Node, defender: Node, attack: AttackData, index: int) -> void:
 	action_in_progress = true
 	flee_button.visible = false
+	end_turn_button.visible = false
 	await execute_attack(attacker, defender, attack, index)
 	action_in_progress = false
 	if phase == Phase.BATTLE:
 		flee_button.visible = true
+		end_turn_button.visible = true
 
 func _run_player_status_attack(attacker: Node, attack: AttackData, dir: Vector2i, index: int) -> void:
 	action_in_progress = true
 	flee_button.visible = false
+	end_turn_button.visible = false
 	await execute_status_attack(attacker, attack, dir, index)
 	action_in_progress = false
 	if phase == Phase.BATTLE:
 		flee_button.visible = true
+		end_turn_button.visible = true
 
 # Gêmeo de _run_player_status_attack acima pra execute_attack_burst (ver
 # comentário grande lá — AttackData.area_shape == "Burst", Lava Plume).
 func _run_player_burst_attack(attacker: Node, attack: AttackData, dir: Vector2i, index: int) -> void:
 	action_in_progress = true
 	flee_button.visible = false
+	end_turn_button.visible = false
 	await execute_attack_burst(attacker, attack, dir, index)
 	action_in_progress = false
 	if phase == Phase.BATTLE:
 		flee_button.visible = true
+		end_turn_button.visible = true
 
 func _run_player_tm_attack(attacker: Node, defender: Node, item: ItemData, index: int) -> void:
 	action_in_progress = true
 	flee_button.visible = false
+	end_turn_button.visible = false
 	await execute_tm_attack(attacker, defender, item, index)
 	action_in_progress = false
 	if phase == Phase.BATTLE:
 		flee_button.visible = true
+		end_turn_button.visible = true
 
 # Gêmeo de _run_player_tm_attack acima pra execute_tm_status_attack — ver
 # comentário grande lá (TM 11/Sunny Day).
 func _run_player_tm_status_attack(attacker: Node, item: ItemData, dir: Vector2i, index: int) -> void:
 	action_in_progress = true
 	flee_button.visible = false
+	end_turn_button.visible = false
 	await execute_tm_status_attack(attacker, item, dir, index)
 	action_in_progress = false
 	if phase == Phase.BATTLE:
 		flee_button.visible = true
+		end_turn_button.visible = true
 
 func _run_player_ball_throw(attacker: Node, target_cell: Vector2i, item: ItemData, index: int) -> void:
 	action_in_progress = true
 	flee_button.visible = false
+	end_turn_button.visible = false
 	await execute_ball_throw(attacker, target_cell, item, index)
 	action_in_progress = false
 	if phase == Phase.BATTLE:
 		flee_button.visible = true
+		end_turn_button.visible = true
 
 # Resolve UMA tentativa de captura contra `defender` (já confirmado inimigo
 # selvagem válido, ver execute_ball_throw) usando `item` (a Ball
@@ -6523,17 +6808,26 @@ func resolve_capture(defender: Node, item: ItemData) -> void:
 			# capturada (UnitData.caught_location, lida de GameState.
 			# current_area — null só aconteceria se uma batalha rodasse sem
 			# NUNCA ter passado por um overworld antes, daí o "" de
-			# fallback), depois vai pra reserva normal do jogador.
+			# fallback).
 			defender.data.apply_capture_progress(defender.level, defender.hp_current)
 			defender.data.caught_location = GameState.current_area.area_name if GameState.current_area != null else ""
 			# Habilidade de Chefe (ver LearnsetEntry.is_boss_ability/UnitData.
 			# strip_boss_ability, boss.gd) — pedido do usuário: "All Boss
 			# units have a special ability that is deleted when caught".
-			# Chamado ANTES de ir pra reserva, mas depois que já não importa
-			# mais pro resultado da captura em si (só afeta o que a unidade
-			# leva pro time do jogador dali pra frente).
+			# Chamado ANTES de ir pro time/reserva, mas depois que já não
+			# importa mais pro resultado da captura em si (só afeta o que a
+			# unidade leva pro time do jogador dali pra frente).
 			defender.data.strip_boss_ability()
-			GameState.add_to_first_empty_storage_slot(defender.data)
+			# Pedido do usuário: "If a new unit is caught, it goes to the
+			# player's team. If it's full, it goes to the player's account
+			# (as we were doing before)" — tenta o time ATIVO primeiro
+			# (GameState.add_to_first_empty_roster_slot, sem limite de peso
+			# nenhum desde a remoção de MAX_TEAM_WEIGHT, só falha se os 6
+			# slots já estiverem ocupados) e só cai pra reserva normal
+			# (GameState.add_to_first_empty_storage_slot, o comportamento de
+			# ANTES desta mudança) quando o time estiver cheio.
+			if GameState.add_to_first_empty_roster_slot(defender.data) != "":
+				GameState.add_to_first_empty_storage_slot(defender.data)
 			# Regra 1 do Challenge (ver comentário grande logo acima, no
 			# `elif` que checa este mesmo Dictionary) — carimba a área AGORA,
 			# depois que a captura já deu certo, pra travar qualquer
@@ -6627,14 +6921,27 @@ func remove_defeated_unit(u: Node) -> void:
 		unit_slots.erase(u)
 	unit_hp_labels.erase(u)
 
-# Regra 2 do Challenge (pedido do usuário: "Once a unit faints it is
-# deleted forever. The items that were in its loadout are added back to
-# the bag") — chamada logo depois de remove_defeated_unit() nos dois
-# lugares onde uma unidade de verdade desmaia em batalha (dano direto e
-# Status Condition no fim do turno; NÃO no ramo de captura de
-# resolve_capture(), que não é um desmaio). `u.data` ainda é válido aqui
-# (o nó só é destruído de fato depois da animação de morte, ver Unit.die())
-# — dá pra ler o loadout dele antes de sumir.
+# Regra 2 do Challenge (pedido original do usuário: "Once a unit faints it
+# is deleted forever. The items that were in its loadout are added back to
+# the bag") — ATUALIZADA depois: "Updating Challenge mode... Dead units
+# aren't deleted, they go to Heaven Account. (Like Giovanni's account)
+# Requires password H34V3N0RH377 to access". A unidade continua saindo do
+# time ATIVO pra sempre (isso não mudou — ela nunca mais luta, nunca mais
+# aparece no Party normalmente); só o destino final mudou: em vez de só
+# sumir (sem NENHUMA referência sobrando depois de remove_from_roster,
+# efetivamente perdida), agora vai pra GameState.heaven_storage, uma quarta
+# "conta" igual giovanni_storage/baldo_storage (ver GameState.
+# add_to_first_empty_heaven_slot, baldo.gd::PASSWORDS pra senha, e
+# computer_screen.gd pro novo terminal). Rodrigo confirmou que dá pra
+# resgatar de volta pro time ativo (ver GameState.swap_active_with_heaven),
+# igual já dava com uma unidade roubada por um Rocket.
+#
+# Chamada logo depois de remove_defeated_unit() nos dois lugares onde uma
+# unidade de verdade desmaia em batalha (dano direto e Status Condition no
+# fim do turno; NÃO no ramo de captura de resolve_capture(), que não é um
+# desmaio). `u.data` ainda é válido aqui (o nó só é destruído de fato
+# depois da animação de morte, ver Unit.die()) — dá pra ler o loadout dele
+# antes de sumir E pra guardar a MESMA instância em heaven_storage.
 #
 # not u.is_enemy: só o TIME DO JOGADOR sofre permadeath — um selvagem/
 # treinador inimigo desmaiando é derrota normal de sempre, sem efeito
@@ -6645,7 +6952,11 @@ func remove_defeated_unit(u: Node) -> void:
 # pra sempre — diferente de remove_defeated_unit() acima, que só limpa a
 # contabilidade LOCAL desta batalha; sem isso a unidade voltaria a
 # aparecer no time/Party assim que a batalha terminasse e o roster fosse
-# lido de novo, exatamente como acontece nos outros 2 modos.
+# lido de novo, exatamente como acontece nos outros 2 modos. Chamada ANTES
+# de add_to_first_empty_heaven_slot — mesma ordem que resolve_capture já
+# usa com giovanni_storage (tira de um lado antes de guardar no outro),
+# pra nunca ter a MESMA UnitData referenciada em roster E heaven_storage
+# ao mesmo tempo.
 func _apply_challenge_permadeath(u: Node) -> void:
 	if GameState.game_mode != "challenge" or u.is_enemy or u.data == null:
 		return
@@ -6659,6 +6970,7 @@ func _apply_challenge_permadeath(u: Node) -> void:
 			var amount = max(u.data.get_slot_quantity(i), 1)
 			GameState.add_item(action, amount)
 	GameState.remove_from_roster(u.data)
+	GameState.add_to_first_empty_heaven_slot(u.data)
 
 func cancel_targeting() -> void:
 	targeting_action = null
@@ -6678,6 +6990,25 @@ func check_auto_end_turn() -> void:
 
 func _on_end_turn_pressed() -> void:
 	if phase != Phase.BATTLE or turn_queue.is_empty():
+		return
+	# Mesma terceira trava de _on_flee_pressed() (ver comentário grande lá) —
+	# bug reportado pelo usuário: "I killed a wild unit and passed the turn
+	# fast enough for it to hit me before it died from my attack. This
+	# freezes the game". execute_attack (e companhia) roda SEM await desde
+	# handle_targeting_input (fire and forget, ver comentário grande de
+	# action_in_progress) — sem esta trava, apertar Pass/clicar End Turn
+	# ENQUANTO essa corrotina ainda está suspensa numa animação avançava
+	# current_turn_index e começava o turno do PRÓXIMO (run_enemy_turn) AO
+	# MESMO TEMPO que a corrotina do ataque original ainda ia terminar de
+	# resolver a morte do defensor — as duas corrotinas mexendo no mesmo
+	# turn_queue/current_turn_index ao mesmo tempo é exatamente a receita
+	# pra travar o jogo (ex: run_enemy_turn tentando agir com uma unidade
+	# que remove_defeated_unit() está prestes a tirar da árvore). end_turn_
+	# button também passa a ficar invisível durante esse intervalo (ver
+	# _run_player_*() logo abaixo) — isto aqui é só a segunda camada de
+	# segurança, cobrindo o atalho de teclado "pass", que não passa pelo
+	# botão nenhum.
+	if action_in_progress:
 		return
 	# "Um turno é contabilizado depois daquela unidade afetada Passar o
 	# turno" — ou seja, o tick de Status Condition é da unidade que está
@@ -7316,9 +7647,31 @@ func run_enemy_turn(u: Node) -> void:
 			# até esse aliado, igual o jogador faz em handle_targeting_input.
 			var target: Node = plan["target"]
 			var dir = Vector2i(sign(target.grid_pos.x - u.grid_pos.x), sign(target.grid_pos.y - u.grid_pos.y))
+			# Confused: mesmo pedido/motivo do lado do jogador (ver ramo
+			# is_status de handle_targeting_input) — a IA continua "decidindo"
+			# a mesma direção de sempre (pedido do usuário: "This shouldnt
+			# affect enemy AI, the decisions are the same even if Confused"),
+			# só a EXECUÇÃO embaralha. Exclui auto-alvo pelo mesmo motivo de
+			# lá (Growth/Synthesis não miram lugar nenhum pra embaralhar).
+			if u.has_status("Confused") and not is_self_target_status(chosen_attack):
+				dir = _roll_confused_direction()
 			await execute_status_attack(u, chosen_attack, dir, plan["slot_index"])
 		else:
-			await execute_attack(u, plan["target"], chosen_attack, plan["slot_index"])
+			# Confused: bug reportado pelo usuário ("Confusion isn't working
+			# for the enemy units") — este ramo chamava execute_attack direto
+			# com plan["target"], sem NUNCA passar por resolve_confused_target
+			# (ver o mesmo tratamento já existente do lado do jogador, em
+			# handle_targeting_input). A IA "mirava" plan["target"] certinho
+			# pra decidir SE valia usar o golpe (is_valid_target_cell, dentro
+			# de cada _plan_*_action), mas quem de fato é atingido, com a
+			# unidade confusa, precisa passar pelo mesmo sorteio de 1 das 8
+			# direções que o jogador já tem — mesma regra "sempre embaralha,
+			# ~1/8 de chance de calhar no alvo certo por sorte" (ver comentário
+			# grande em handle_targeting_input).
+			var actual_target = plan["target"]
+			if u.has_status("Confused"):
+				actual_target = resolve_confused_target(u, chosen_attack)
+			await execute_attack(u, actual_target, chosen_attack, plan["slot_index"])
 		if phase != Phase.BATTLE:
 			return
 	elif plan.has("ball_throw"):

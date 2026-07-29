@@ -41,15 +41,18 @@ const ATTR_PORTRAIT_SIZE = 64.0
 # Qual reserva a coluna do meio mostra: "storage" (padrão, reserva normal do
 # jogador, ver GameState.storage), "giovanni" (GameState.giovanni_storage —
 # "Giovanni's Account", unidades roubadas por treinadores Rocket, ver
-# battle.gd::resolve_capture) ou "baldo" (GameState.baldo_storage —
+# battle.gd::resolve_capture), "baldo" (GameState.baldo_storage —
 # "Baldo's Account", 1 de cada espécie nível 100, ver GameState.
-# _seed_baldo_storage). Quem abre esta cena seta isso ANTES dela entrar na
-# árvore (ver computer_screen.gd::_open_pc_screen) — o resto do arquivo
-# nunca lê GameState.storage/giovanni_storage/baldo_storage direto, só chama
-# os 3 wrappers _reserve_* logo abaixo, que decidem qual reserva de verdade
-# usar com base neste campo. Isso é o que deixa a MESMA cena/script servir
-# as três contas, igual house_interior.gd serve qualquer interior.
-@export_enum("storage", "giovanni", "baldo") var reserve_mode: String = "storage"
+# _seed_baldo_storage) ou "heaven" (GameState.heaven_storage — "Heaven
+# Account", unidades que sofreram permadeath no modo Challenge, ver
+# battle.gd::_apply_challenge_permadeath). Quem abre esta cena seta isso
+# ANTES dela entrar na árvore (ver computer_screen.gd::_open_pc_screen) — o
+# resto do arquivo nunca lê GameState.storage/giovanni_storage/
+# baldo_storage/heaven_storage direto, só chama os 3 wrappers _reserve_*
+# logo abaixo, que decidem qual reserva de verdade usar com base neste
+# campo. Isso é o que deixa a MESMA cena/script servir as quatro contas,
+# igual house_interior.gd serve qualquer interior.
+@export_enum("storage", "giovanni", "baldo", "heaven") var reserve_mode: String = "storage"
 
 func _reserve_get_slot(index: int) -> UnitData:
 	match reserve_mode:
@@ -57,6 +60,8 @@ func _reserve_get_slot(index: int) -> UnitData:
 			return GameState.get_giovanni_slot(index)
 		"baldo":
 			return GameState.get_baldo_slot(index)
+		"heaven":
+			return GameState.get_heaven_slot(index)
 		_:
 			return GameState.get_storage_slot(index)
 
@@ -66,6 +71,8 @@ func _reserve_swap_slots(a: int, b: int) -> void:
 			GameState.swap_giovanni_slots(a, b)
 		"baldo":
 			GameState.swap_baldo_slots(a, b)
+		"heaven":
+			GameState.swap_heaven_slots(a, b)
 		_:
 			GameState.swap_storage_slots(a, b)
 
@@ -75,6 +82,8 @@ func _reserve_swap_active(active_index: int, reserve_index: int) -> void:
 			GameState.swap_active_with_giovanni(active_index, reserve_index)
 		"baldo":
 			GameState.swap_active_with_baldo(active_index, reserve_index)
+		"heaven":
+			GameState.swap_active_with_heaven(active_index, reserve_index)
 		_:
 			GameState.swap_active_with_storage(active_index, reserve_index)
 
@@ -84,8 +93,6 @@ func _reserve_swap_active(active_index: int, reserve_index: int) -> void:
 @onready var prev_box_button: Button = $Center/Panel/MarginContainer/Content/Columns/ReserveColumn/BoxNav/PrevButton
 @onready var next_box_button: Button = $Center/Panel/MarginContainer/Content/Columns/ReserveColumn/BoxNav/NextButton
 @onready var attr_container: VBoxContainer = $Center/Panel/MarginContainer/Content/Columns/AttributesPanel/AttrMargin/AttrContent
-@onready var team_weight_label: Label = $Center/Panel/MarginContainer/Content/Columns/TeamColumn/TeamWeightLabel
-@onready var weight_warning_label: Label = $Center/Panel/MarginContainer/Content/WeightWarning
 @onready var prompt_label: Label = $Center/Panel/MarginContainer/Content/Prompt
 
 var highlighted_slot: PcSlot = null
@@ -134,13 +141,6 @@ func _on_cancel_pressed() -> void:
 		picked_column = ""
 		picked_index = -1
 		_update_prompt()
-	elif _is_over_weight_limit():
-		# Time acima do limite de peso: trava a saída do PC até o jogador
-		# corrigir (tirar unidade(s) pra reserva) — o aviso vermelho
-		# (weight_warning_label, ver _refresh_weight_warning) já está visível
-		# nesse momento, então só ignorar o Z aqui é suficiente pra deixar
-		# claro que "fechar" não vai funcionar enquanto isso não for resolvido.
-		return
 	else:
 		closed.emit()
 		queue_free()
@@ -151,20 +151,6 @@ func _build_all() -> void:
 	box_label.text = "Box %d" % (current_box + 1)
 	_move_cursor(cursor_column, cursor_index)
 	_update_prompt()
-	_refresh_weight_warning()
-
-# Peso total do time (ver GameState.get_roster_weight/MAX_TEAM_WEIGHT) —
-# label persistente ("Peso: X/6") sempre visível, mais o aviso vermelho
-# "Limite de peso excedido" que só aparece acima do limite. Chamado depois
-# de QUALQUER troca (_build_all já roda isso a cada _perform_move), então o
-# aviso aparece/some na hora, sem precisar fechar e reabrir o PC.
-func _is_over_weight_limit() -> bool:
-	return GameState.get_roster_weight() > GameState.MAX_TEAM_WEIGHT
-
-func _refresh_weight_warning() -> void:
-	var weight = GameState.get_roster_weight()
-	team_weight_label.text = "Peso: %d/%d" % [weight, GameState.MAX_TEAM_WEIGHT]
-	weight_warning_label.visible = _is_over_weight_limit()
 
 func _build_team() -> void:
 	for child in team_rows_container.get_children():

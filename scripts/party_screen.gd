@@ -266,20 +266,15 @@ func _on_evolution_choice_closed(chosen_index: int, index: int, options: Array[E
 		return   # Z/cancelado — nenhuma opção escolhida, nada acontece.
 	_attempt_evolution(index, options[chosen_index].target, _consumed_action_for(options[chosen_index]))
 
-# Última checagem antes de evoluir de verdade (ver _perform_evolution) —
-# pedido do usuário: "show an error message and stop the player from
-# evolving if it would exceed the weight limit". get_roster_weight() JÁ
-# inclui o peso ATUAL da unidade evoluindo (ela está no roster agora), por
-# isso a conta é "peso total - peso antigo + peso novo" (a DIFERENÇA), não
-# "peso total + peso novo" — senão toda evolução pareceria estar somando um
-# peso extra inteiro em vez de só a diferença entre as duas espécies.
+# Antes checava se a evolução passaria do limite de peso do time
+# (GameState.MAX_TEAM_WEIGHT) e barrava — removido junto com o limite em si
+# (ver comentário grande em game_state.gd: "Remove the weight limitations
+# from the team... The player's team can carry any amount of weight on it").
+# Evoluir agora nunca falha por peso, só resta chamar _perform_evolution
+# direto.
 func _attempt_evolution(index: int, target: UnitData, consumed_action: ActionData = null) -> void:
 	var data: UnitData = GameState.get_roster_slot(index)
 	if data == null or target == null:
-		return
-	var projected_weight = GameState.get_roster_weight() - data.weight + target.weight
-	if projected_weight > GameState.MAX_TEAM_WEIGHT:
-		_show_evolution_error("%s is too heavy to evolve into %s right now!" % [data.unit_name, target.unit_name])
 		return
 	_perform_evolution(index, target, consumed_action)
 

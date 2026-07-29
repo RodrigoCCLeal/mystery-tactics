@@ -191,14 +191,14 @@ var player_gender: String = "boy"
 # spawnar unidade; use get_active_roster(), que já filtra os null.
 const MAX_TEAM_SIZE = 6
 
-# Limite de PESO total do time ativo — diferente de MAX_TEAM_SIZE (quantas
-# unidades cabem), este é quanto elas "pesam" somadas (ver UnitData.weight,
-# 0 a 4 por unidade). Com a maioria das espécies em weight=1, 6 unidades
-# comuns já batem o limite exato; uma espécie mais pesada (ex: Mamoswine,
-# weight=2) custa mais "espaço" e força abrir mão de outra unidade. Ver
-# get_roster_weight() logo abaixo e pc_screen.gd, que é quem de fato barra o
-# jogador de sair do PC enquanto o time estiver acima do limite.
-const MAX_TEAM_WEIGHT = 6
+# NÃO existe mais limite de PESO pro time ativo (antigo MAX_TEAM_WEIGHT,
+# removido) — pedido do usuário: "Remove the weight limitations from the
+# team. The player's team can carry any amount of weight on it. Now that
+# restriction applies on the Deploy phase". O time (roster) só é limitado
+# por MAX_TEAM_SIZE (quantas unidades cabem) a partir de agora; o limite de
+# peso mudou de lugar e de valor-alvo: ver battle.gd::DEPLOY_WEIGHT_LIMIT,
+# que passa a valer só sobre quem está de fato NO CAMPO durante Phase.DEPLOY,
+# não mais sobre o time inteiro.
 
 # Nível DEFAULT de uma unidade do roster na primeira vez que ela é usada
 # (ver UnitData.ensure_initialized, chamado em _ready() abaixo) — só pra já
@@ -291,6 +291,12 @@ func _apply_fresh_state(mode: String = "normal") -> void:
 	baldo_storage = []
 	while baldo_storage.size() < STORAGE_CAPACITY:
 		baldo_storage.append(null)
+	# "Heaven Account" (ver comentário grande em heaven_storage/var acima) —
+	# começa vazia como giovanni_storage (nada morreu ainda numa partida
+	# nova), enche conforme o modo Challenge aplica permadeath.
+	heaven_storage = []
+	while heaven_storage.size() < STORAGE_CAPACITY:
+		heaven_storage.append(null)
 	_seed_baldo_storage()
 	inventory = {}
 	_seed_inventory_for_mode(mode)
@@ -348,11 +354,17 @@ func _apply_fresh_state(mode: String = "normal") -> void:
 	# nesse cluster (custom_data "walkable"=true tanto no Ground quanto no
 	# objeto que também ocupa essa célula, conferido no TileSet inside.tres).
 	player_grid_pos = Vector2i(0, -16)
-	player_facing = "down"
+	# "up" a pedido do usuário: "make game start facing direction UP" — os
+	# 3 campos de facing abaixo nascem juntos, sempre representando o MESMO
+	# instante inicial (posição/direção "de verdade" do jogador, a cópia
+	# "live" que outros sistemas leem, e o checkpoint de cura mais recente —
+	# ver comentários deles em outros pontos deste arquivo), por isso os 3
+	# mudam juntos aqui, não só player_facing sozinho.
+	player_facing = "up"
 	live_grid_pos = Vector2i(0, -16)
-	live_facing = "down"
+	live_facing = "up"
 	last_heal_grid_pos = Vector2i(0, -16)
-	last_heal_facing = "down"
+	last_heal_facing = "up"
 	last_heal_scene_path = "res://scenes/overworld/red_house_interior.tscn"
 	current_area = preload("res://data/areas/archi_area.tres")
 	last_notified_area_name = ""
@@ -402,17 +414,6 @@ func get_active_roster() -> Array[UnitData]:
 				break
 	return active
 
-# Soma o weight (ver UnitData.weight) de toda unidade ativa no time — usado
-# só pra checar contra MAX_TEAM_WEIGHT (ver pc_screen.gd, que mostra o aviso
-# "Limite de peso excedido" e trava a saída do PC enquanto isto for maior que
-# o limite). Slot vazio (null) não pesa nada, por isso o "if data != null".
-func get_roster_weight() -> int:
-	var total = 0
-	for data in roster:
-		if data != null:
-			total += data.weight
-	return total
-
 # Lê o slot bruto (posição 0..5 no array, PODE ser null) — diferente de
 # get_active_roster(), que compacta e ignora os vazios. A tela de Party
 # precisa saber exatamente qual slot está vazio pra desenhar certo.
@@ -443,19 +444,14 @@ func set_roster_slot(index: int, data: UnitData) -> void:
 		return
 	roster[index] = data
 
-# Usado por loot_ball.gd (recompensa "Unit" com add_to_active_team = true) —
-# tenta colocar `data` no time ATIVO em vez da reserva do PC (ver
-# add_to_first_empty_storage_slot acima). Devolve "" em sucesso, ou uma
-# mensagem de erro pronta pra mostrar ao jogador se não coube — duas razões
-# possíveis:
-#   - TIME CHEIO: nenhum slot vazio nos MAX_TEAM_SIZE.
-#   - LIMITE DE PESO: get_roster_weight() + data.weight passaria de
-#     MAX_TEAM_WEIGHT.
-# Diferente de pc_screen.gd (que deixa o jogador passar do limite de peso
-# TEMPORARIAMENTE, só bloqueia a SAÍDA do PC até ele resolver — ver
-# comentário de MAX_TEAM_WEIGHT), aqui não existe "arrumar depois": ou cabe
-# na hora, ou a unidade não é adicionada — por isso a checagem acontece
-# ANTES de mexer no array, nunca depois.
+# Usado por loot_ball.gd (recompensa "Unit" com add_to_active_team = true) e
+# por battle.gd::resolve_capture (captura em batalha, ver comentário lá pra
+# saber por quê) — tenta colocar `data` no time ATIVO em vez da reserva do PC
+# (ver add_to_first_empty_storage_slot acima). Devolve "" em sucesso, ou uma
+# mensagem de erro pronta pra mostrar ao jogador se não coube. Sem limite de
+# PESO nenhum a checar aqui desde a remoção de MAX_TEAM_WEIGHT (ver comentário
+# grande lá em cima) — a única razão possível de falha agora é o time estar
+# cheio (nenhum slot vazio nos MAX_TEAM_SIZE).
 func add_to_first_empty_roster_slot(data: UnitData) -> String:
 	var free_index := -1
 	for i in roster.size():
@@ -464,8 +460,6 @@ func add_to_first_empty_roster_slot(data: UnitData) -> String:
 			break
 	if free_index == -1:
 		return "Your team is full!"
-	if get_roster_weight() + data.weight > MAX_TEAM_WEIGHT:
-		return "%s is too heavy for your team right now!" % data.unit_name
 	roster[free_index] = data
 	return ""
 
@@ -650,6 +644,64 @@ func swap_active_with_baldo(active_index: int, baldo_index: int) -> void:
 	var tmp = roster[active_index]
 	roster[active_index] = baldo_storage[baldo_index]
 	baldo_storage[baldo_index] = tmp
+
+# "Heaven Account" — quarta reserva, mesmo formato/tamanho fixo de
+# storage/giovanni_storage/baldo_storage acima. Pedido do usuário: "Updating
+# Challenge mode... Dead units aren't deleted, they go to Heaven Account.
+# (Like Giovanni's account) Requires password H34V3N0RH377 to access" — o
+# modo Challenge permadeath já tirava a unidade do roster pra sempre (ver
+# battle.gd::_apply_challenge_permadeath), só que sem guardar em lugar
+# nenhum depois disso (a UnitData ficava sem NENHUMA referência, então
+# efetivamente desaparecia). Agora ela vem parar aqui em vez de só sumir.
+# Rodrigo confirmou que esta conta deve funcionar EXATAMENTE como a do
+# Giovanni (inclusive podendo trocar uma unidade de volta pro time ativo,
+# ver swap_active_with_heaven logo abaixo) — não é um "museu" travado,
+# mesmo espírito de "resgatar" uma unidade roubada por um Rocket.
+var heaven_storage: Array[UnitData] = []
+
+func get_heaven_slot(index: int) -> UnitData:
+	if index < 0 or index >= heaven_storage.size():
+		return null
+	return heaven_storage[index]
+
+func swap_heaven_slots(a: int, b: int) -> void:
+	if a < 0 or a >= heaven_storage.size() or b < 0 or b >= heaven_storage.size():
+		return
+	var tmp = heaven_storage[a]
+	heaven_storage[a] = heaven_storage[b]
+	heaven_storage[b] = tmp
+
+# Chamada só por battle.gd::_apply_challenge_permadeath, logo depois de
+# remove_from_roster tirar a unidade do time — mesmo padrão de
+# add_to_first_empty_storage_slot/add_to_first_empty_giovanni_slot/
+# add_to_first_empty_baldo_slot acima.
+func add_to_first_empty_heaven_slot(data: UnitData) -> bool:
+	for i in heaven_storage.size():
+		if heaven_storage[i] == null:
+			heaven_storage[i] = data
+			return true
+	return false
+
+# Gêmea de swap_active_with_storage/swap_active_with_giovanni/
+# swap_active_with_baldo, só que trocando com heaven_storage — mesma lógica
+# dos 4 casos (ver comentário grande em swap_active_with_storage). Permite
+# "resgatar" uma unidade que sofreu permadeath de volta pro time ativo (ver
+# comentário grande de heaven_storage acima sobre essa decisão).
+func swap_active_with_heaven(active_index: int, heaven_index: int) -> void:
+	if active_index < 0 or active_index >= roster.size():
+		return
+	if heaven_index < 0 or heaven_index >= heaven_storage.size():
+		return
+	if roster[active_index] != null and heaven_storage[heaven_index] == null:
+		var active_count = 0
+		for data in roster:
+			if data != null:
+				active_count += 1
+		if active_count <= 1:
+			return
+	var tmp = roster[active_index]
+	roster[active_index] = heaven_storage[heaven_index]
+	heaven_storage[heaven_index] = tmp
 
 # Troca uma unidade do time ATIVO por uma da RESERVA (as duas únicas
 # operações que o PC sabe fazer, ver pc_screen.gd — reordenar dentro do
@@ -1299,6 +1351,13 @@ var current_trainer_team: Array[TrainerTeamEntry] = []
 # money só se o jogador VENCER (ver battle.gd::end_battle).
 var current_trainer_prize: int = 0
 
+# Ver Trainer.badge_name — "" (padrão) = este Trainer não concede badge
+# nenhuma. Copiado de Trainer.badge_name em world.gd/house_interior.gd::
+# start_trainer_battle, lido só na vitória (ver battle.gd::end_battle), que
+# também é quem zera isto de volta pra "" depois, mesmo padrão dos outros
+# current_trainer_* logo abaixo.
+var current_trainer_badge_name: String = ""
+
 # Trainer.iq (ver comentário grande lá) — copiado pra cá junto dos outros
 # 3 current_trainer_* antes da troca de cena, e usado por battle.gd::
 # _spawn_enemy_unit pra sobrescrever o iq individual de CADA unidade
@@ -1852,6 +1911,18 @@ func _save_path(slot: int) -> String:
 func has_save(slot: int) -> bool:
 	return FileAccess.file_exists(_save_path(slot))
 
+# Apaga o arquivo do slot de vez — usado só por game_over_screen.gd::
+# _delete_save() (opção "Delete Save" do modo Challenge, pedido do usuário:
+# "Delete brings you back to the Main Menu and deletes that save file").
+# DirAccess.remove_absolute() de verdade apaga o arquivo (diferente de
+# FileAccess, que só lê/escreve, nunca remove). has_save() de guarda evita
+# chamar remove_absolute() num caminho que não existe — sem efeito nenhum
+# nesse caso, sem push_error também: "apagar algo que já não existe" não é
+# um erro de verdade aqui, só um no-op.
+func delete_save(slot: int) -> void:
+	if has_save(slot):
+		DirAccess.remove_absolute(_save_path(slot))
+
 # Lê o .tres como TEXTO (sem passar pelo ResourceLoader) só pra conferir se
 # algum [ext_resource ... path="res://..."] dele aponta pra um arquivo que
 # não existe mais — bug reportado: "Game crashed" ao simplesmente ABRIR a
@@ -1935,6 +2006,7 @@ func save_game(slot: int) -> void:
 	data.storage = storage.duplicate()
 	data.giovanni_storage = giovanni_storage.duplicate()
 	data.baldo_storage = baldo_storage.duplicate()
+	data.heaven_storage = heaven_storage.duplicate()
 	# inventory.keys() devolve um Array comum (não tipado) — Array[ItemData](...)
 	# pareceria o jeito óbvio de "converter", mas isso é erro de sintaxe em
 	# GDScript (o Parser lê "Array[ItemData]" como uma expressão e tenta
@@ -2011,6 +2083,12 @@ func load_game(slot: int) -> bool:
 	# SaveData).
 	while baldo_storage.size() < STORAGE_CAPACITY:
 		baldo_storage.append(null)
+	heaven_storage = data.heaven_storage.duplicate()
+	# Mesmo motivo do padding de giovanni_storage/baldo_storage acima —
+	# saves de antes da Heaven Account existir carregam ela vazia (campo
+	# novo, default [] em SaveData).
+	while heaven_storage.size() < STORAGE_CAPACITY:
+		heaven_storage.append(null)
 	inventory = {}
 	for i in data.inventory_items.size():
 		inventory[data.inventory_items[i]] = data.inventory_quantities[i]

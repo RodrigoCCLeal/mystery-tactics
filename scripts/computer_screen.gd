@@ -28,6 +28,13 @@ extends CanvasLayer
 #     Baldo's Account". Só aparece depois de
 #     GameState.flags["BALDO_PC_UNLOCKED"] (ver baldo.gd — a senha
 #     142857080500, SEGUNDA senha válida, diferente da de Giovanni).
+#   - "Heaven" abre "Heaven Account" (GameState.heaven_storage — unidades
+#     que sofreram permadeath no modo Challenge, ver battle.gd::
+#     _apply_challenge_permadeath) — pedido do usuário: "Updating Challenge
+#     mode... Dead units aren't deleted, they go to Heaven Account. (Like
+#     Giovanni's account) Requires password H34V3N0RH377 to access". Só
+#     aparece depois de GameState.flags["HEAVEN_PC_UNLOCKED"] (ver
+#     baldo.gd — a senha H34V3N0RH377, TERCEIRA senha válida).
 #
 # "Heal" existia aqui só pra debug (curar o time sem precisar achar a Nurse)
 # e foi removido agora que existe um jeito de verdade, dentro da ficção, de
@@ -47,6 +54,7 @@ const PC_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/pc_screen.
 @onready var pc_option_label: Label = $Center/Panel/MarginContainer/Options/PC
 @onready var giovanni_option_label: Label = $Center/Panel/MarginContainer/Options/Giovanni
 @onready var baldo_option_label: Label = $Center/Panel/MarginContainer/Options/Baldo
+@onready var heaven_option_label: Label = $Center/Panel/MarginContainer/Options/Heaven
 
 var option_labels: Array[Label] = []
 var selected_index: int = 0
@@ -65,6 +73,7 @@ func _ready() -> void:
 	pc_option_label.visible = GameState.get_flag("PC_ACCOUNT_REGISTERED")
 	giovanni_option_label.visible = GameState.get_flag("GIOVANNI_PC_UNLOCKED")
 	baldo_option_label.visible = GameState.get_flag("BALDO_PC_UNLOCKED")
+	heaven_option_label.visible = GameState.get_flag("HEAVEN_PC_UNLOCKED")
 	for child in options_container.get_children():
 		if child is Label and child.visible and child != header_label:
 			option_labels.append(child)
@@ -135,9 +144,12 @@ func _activate_selected() -> void:
 			_open_pc_screen("giovanni")
 		"Baldo":
 			_open_pc_screen("baldo")
+		"Heaven":
+			_open_pc_screen("heaven")
 
 # mode repassado direto pra pc_screen.gd::reserve_mode — "storage" (reserva
-# normal) ou "giovanni" (GameState.giovanni_storage), ver comentário grande
+# normal), "giovanni" (GameState.giovanni_storage), "baldo" ou "heaven"
+# (GameState.heaven_storage), ver comentário grande
 # no topo do arquivo.
 func _open_pc_screen(mode: String) -> void:
 	hide()

@@ -39,12 +39,15 @@ const TEXT_INPUT_PROMPT_SCENE: PackedScene = preload("res://scenes/ui/popups/tex
 # Senha -> flag desbloqueada por ela. Pedido do usuário original: "the only
 # working password is R0K37B055, that unlocks Giovanni's PC" — depois:
 # "make a third account called Baldo's Account... To unlock it, must give
-# password 142857080500". Tabela em vez de duas constantes soltas + dois
-# "if" repetidos, pra uma TERCEIRA senha futura ser só mais uma linha aqui
-# (ver _on_password_submitted abaixo, já genérico pra N entradas).
+# password 142857080500" — e agora uma quarta: "Dead units aren't deleted,
+# they go to Heaven Account. (Like Giovanni's account) Requires password
+# H34V3N0RH377 to access". Tabela em vez de constantes soltas + um "if"
+# repetido por senha, pra uma QUINTA senha futura ser só mais uma linha
+# aqui (ver _on_password_submitted abaixo, já genérico pra N entradas).
 const PASSWORDS = {
 	"R0CK37B055": "GIOVANNI_PC_UNLOCKED",
 	"142857080500": "BALDO_PC_UNLOCKED",
+	"H34V3N0RH377": "HEAVEN_PC_UNLOCKED",
 }
 
 func interact() -> void:
