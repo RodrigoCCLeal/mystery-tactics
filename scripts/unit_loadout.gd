@@ -7,21 +7,22 @@ extends CanvasLayer
 # Layout em colunas, TODAS SEMPRE ABERTAS ao mesmo tempo — nada de clicar
 # num slot pra só então abrir um sub-menu por cima ou do lado: a esquerda
 # lista os 6 slots atuais, a direita já mostra de cara as opções
-# disponíveis pro slot selecionado, agora SEPARADAS EM 3 PAINÉIS (pedido do
-# usuário, 2026-07-22: "Make it 3 columns, Attack Support and Ability" —
-# Attack = AttackData com is_status=false, Support = AttackData com
-# is_status=true, Ability = AbilityData, ver _column_for_action) mais um 4º
-# painel "Item" que só aparece quando o slot selecionado realmente tem um
-# Item equipado (ver comentário grande de show_item_column em
-# _refresh_picker_options — Item nunca vem do learnset, então não tem lugar
-# natural nos outros 3). Mover a seleção na esquerda (mouse ou seta)
-# atualiza as colunas de opções NA HORA (ver _refresh_picker_options(),
-# chamada toda vez que selected_row muda).
+# disponíveis pro slot selecionado, SEPARADAS EM 4 PAINÉIS PERMANENTES
+# (pedido do usuário, 2026-07-22: "Make it 3 columns, Attack Support and
+# Ability" — Attack = AttackData com is_status=false, Support = AttackData
+# com is_status=true, Ability = AbilityData, ver _column_for_action — mais
+# "Item", pedido do usuário 2026-08-04: "Make the 'Item' column on loadout
+# screen permanent, and show all 'Held Items' options". Item nunca vem do
+# learnset (ver comentário grande em _refresh_picker_options), por isso tem
+# sua própria fonte: GameState.get_items_in_category("Held Items"), o
+# inventário de verdade do jogador, não a lista fixa por espécie das outras
+# 3 colunas). Mover a seleção na esquerda (mouse ou seta) atualiza as
+# colunas de opções NA HORA (ver _refresh_picker_options(), chamada toda
+# vez que selected_row muda).
 #
 # Navegação (decidida com o usuário): ui_left/ui_right andam em ANEL por
-# TODAS as colunas visíveis — Slots -> Attack -> Support -> Ability -> Item
-# (se estiver visível) -> Slots de novo — não é mais só um toggle de 2
-# lados (ver _step_column/_visible_ring). Up/down navega dentro da coluna
+# TODAS as colunas — Slots -> Attack -> Support -> Ability -> Item -> Slots
+# de novo (ver _step_column/_visible_ring). Up/down navega dentro da coluna
 # com foco. X escolhe a opção realçada (só faz efeito com o foco numa
 # coluna de opções) ou, com o foco nos slots, avança o foco em 1 passo no
 # anel (atalho, equivalente a apertar seta direita). Z tira o foco de volta
@@ -40,13 +41,13 @@ signal closed
 
 enum Column { SLOTS, ATTACK, SUPPORT, ABILITY, ITEM }
 
-# Ordem do anel de navegação (ver _visible_ring/_step_column) — Item entra
-# no anel só quando picker_boxes[Column.ITEM].visible for true.
+# Ordem do anel de navegação (ver _visible_ring/_step_column) — as 4
+# colunas de opções são permanentes agora (ver comentário grande no topo do
+# arquivo), então o anel inteiro está sempre disponível.
 const COLUMN_RING: Array = [Column.SLOTS, Column.ATTACK, Column.SUPPORT, Column.ABILITY, Column.ITEM]
 
-# As 3 colunas que sempre existem (Item é tratada à parte por só aparecer
-# às vezes) — usado pra iterar "todas as colunas de opções" sem precisar
-# repetir a lista toda hora.
+# As 4 colunas de opções (tudo exceto Slots) — usado pra iterar "todas as
+# colunas de opções" sem precisar repetir a lista toda hora.
 const OPTION_COLUMNS: Array = [Column.ATTACK, Column.SUPPORT, Column.ABILITY, Column.ITEM]
 
 const SLOT_COUNT = 6
@@ -181,8 +182,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	get_viewport().set_input_as_handled()
 
-# Anel de colunas VISÍVEIS agora — Item só entra quando picker_boxes[ITEM]
-# estiver mostrando (ver _refresh_picker_options). Slots sempre entra.
+# Anel de colunas VISÍVEIS agora — na prática todas (Item virou permanente,
+# ver comentário grande no topo do arquivo), mas o filtro continua aqui por
+# segurança/genericidade, caso alguma coluna volte a ser condicional no
+# futuro.
 func _visible_ring() -> Array:
 	var ring: Array = []
 	for col in COLUMN_RING:
@@ -202,6 +205,7 @@ func _step_column(delta: int) -> void:
 		idx = 0
 	idx = wrapi(idx + delta, 0, ring.size())
 	focus_column = ring[idx]
+	_refresh_all_picker_visuals()
 
 func _handle_slots_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_down"):
@@ -237,11 +241,18 @@ func _handle_options_input(event: InputEvent, col: Column) -> void:
 	elif event.is_action_pressed("confirm"):
 		_choose_picker_option(col)
 		focus_column = Column.SLOTS
+		# _choose_picker_option já chama _refresh_picker_options() (repinta
+		# tudo) por conta própria, mas ISSO roda ANTES da linha de cima
+		# mudar focus_column — o repaint de lá ainda usou o `col` antigo
+		# como foco. Precisa de mais um agora que focus_column já é SLOTS,
+		# senão a coluna recém-escolhida ficava "presa" em amarelo.
+		_refresh_all_picker_visuals()
 	elif event.is_action_pressed("cancel") or event.is_action_pressed("menu"):
 		# Só tira o foco de volta pros slots — NÃO fecha a tela (isso só
 		# acontece com cancel/menu já com o foco em slots, ver
 		# _handle_slots_input). As opções continuam abertas, do lado.
 		focus_column = Column.SLOTS
+		_refresh_all_picker_visuals()
 	else:
 		return
 	get_viewport().set_input_as_handled()
@@ -276,6 +287,23 @@ func _refresh_picker_options() -> void:
 		var col = _column_for_action(action)
 		column_options[col].append(action)
 
+	# Held Items (ver GameState.get_items_in_category) — pedido do usuário:
+	# "Make the 'Item' column on loadout screen permanent, and show all
+	# 'Held Items' options". ANTES a coluna Item só existia pra mostrar o
+	# item que a unidade JÁ carregava (dado pela Bag por fora, ver o bloco
+	# "current != null" logo abaixo) — nunca listava o resto do inventário
+	# pra ESCOLHER um novo aqui dentro. Itens nunca vêm do learnset (ver
+	# get_available_actions/_column_for_action), então precisam da própria
+	# fonte: get_items_in_category já filtra só o que o jogador REALMENTE
+	# possui (quantidade > 0). Mesmo filtro "equipado em outro slot" de cima
+	# também vale aqui — não faz sentido a mesma unidade segurar dois Focus
+	# Band ao mesmo tempo, e mais importante: cada Held Item só existe 1x no
+	# inventário até ser devolvido (ver _choose_picker_option abaixo).
+	for item in GameState.get_items_in_category("Held Items"):
+		if equipped_elsewhere.has(item):
+			continue
+		column_options[Column.ITEM].append(item)
+
 	# `current` pode ser um Item dado pela Bag (ver GameState.give_item,
 	# nunca vem do learnset) ou uma Habilidade Hidden ainda não revelada
 	# (ver UnitData.get_available_actions/hidden_ability_revealed, que já
@@ -289,16 +317,12 @@ func _refresh_picker_options() -> void:
 		if not column_options[current_col].has(current):
 			column_options[current_col].append(current)
 
-	# Coluna Item só aparece quando o slot SELECIONADO agora é de fato um
-	# Item — pedido do usuário: "Small 4th Item slot/column, only shown
-	# when relevant". Fora disso, fica escondida e os outros 3 painéis
-	# (Attack/Support/Ability) dividem o espaço sozinhos.
-	var show_item_column = current is ItemData
-	picker_boxes[Column.ITEM].visible = show_item_column
-	# Se o foco estava na coluna Item e ela acabou de sumir, não faz
-	# sentido manter foco numa coluna invisível — volta pros Slots.
-	if focus_column == Column.ITEM and not show_item_column:
-		focus_column = Column.SLOTS
+	# Coluna Item — ANTES só aparecia quando o slot selecionado já era um
+	# Item (comentário antigo: "Small 4th Item slot/column, only shown when
+	# relevant"). Pedido do usuário agora: "Make the 'Item' column on
+	# loadout screen permanent" — sempre visível, os 4 painéis (Attack/
+	# Support/Ability/Item) dividem o espaço o tempo todo, não só às vezes.
+	picker_boxes[Column.ITEM].visible = true
 
 	for col in OPTION_COLUMNS:
 		var selected = 0
@@ -329,7 +353,9 @@ func _refresh_picker_options() -> void:
 func _on_picker_mouse_entered(col: Column, index: int) -> void:
 	focus_column = col
 	column_selected[col] = index
-	_update_picker_visual(col)
+	# Todas, não só `col` — a coluna que TINHA o foco antes (mouse veio de
+	# outra coluna, ou dos Slots) precisa perder o amarelo dela também.
+	_refresh_all_picker_visuals()
 
 func _on_picker_gui_input(event: InputEvent, col: Column, index: int) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -337,17 +363,35 @@ func _on_picker_gui_input(event: InputEvent, col: Column, index: int) -> void:
 		column_selected[col] = index
 		_choose_picker_option(col)
 
+# Pedido do usuário (2026-08-04): "When selecting a loadout item, only
+# highlight in yellow the column exactly where the player is" — ANTES cada
+# coluna pintava sua própria opção realçada de amarelo o tempo TODO, mesmo
+# as 3 colunas que não tinham foco nenhum (dava a impressão de "4 seleções
+# ativas ao mesmo tempo"). Agora só pinta se ESTA coluna (col) for a que
+# está com focus_column agora — as outras 3 caem pra WHITE (sem destaque
+# nenhum), mesmo com column_selected[col] continuando guardado por baixo
+# (não esquece a posição, só para de mostrar enquanto sem foco).
 func _update_picker_visual(col: Column) -> void:
 	var labels: Array = column_labels.get(col, [])
 	var selected: int = column_selected.get(col, 0)
+	var has_focus = col == focus_column
 	for i in labels.size():
-		labels[i].modulate = Color.YELLOW if i == selected else Color.WHITE
+		labels[i].modulate = Color.YELLOW if (has_focus and i == selected) else Color.WHITE
 	# Rola a lista sozinha pra manter a opção realçada visível — sem isso,
 	# navegar com as setas além do que cabe na tela deixava o cursor "sumir"
 	# por trás da borda do ScrollContainer, mesmo bug reportado pelo usuário
 	# (agora vale por coluna, cada uma com o próprio scroll).
 	if selected >= 0 and selected < labels.size():
 		picker_scrolls[col].ensure_control_visible(labels[selected])
+
+# Repinta as 4 colunas de opções de uma vez — precisa rodar toda vez que
+# focus_column MUDA (não só quando a seleção DENTRO de uma coluna muda),
+# senão a coluna que ACABOU de perder o foco ficava com o amarelo "grudado"
+# de antes, já que _update_picker_visual(col) sozinha só sabe repintar UMA
+# coluna por chamada.
+func _refresh_all_picker_visuals() -> void:
+	for col in OPTION_COLUMNS:
+		_update_picker_visual(col)
 
 func _choose_picker_option(col: Column) -> void:
 	var old_action = data.slots[selected_row]
@@ -367,6 +411,16 @@ func _choose_picker_option(col: Column) -> void:
 		var amount = data.get_slot_quantity(selected_row) if old_action.stackable else 1
 		GameState.add_item(old_action, max(amount, 1))
 		data.set_slot_quantity(selected_row, 0)
+	# Espelho do bloco de cima: escolher um Held Item NOVO direto da coluna
+	# Item (ver GameState.get_items_in_category("Held Items") em
+	# _refresh_picker_options) tira ele do inventário — mesma semântica de
+	# "Give" pela Bag (ver item_list_screen.gd/GameState.give_item), só que
+	# disparada daqui agora que a coluna deixou de só EXIBIR o item já
+	# equipado e passou a deixar ESCOLHER um novo. Held Items nunca são
+	# Stackable (ver comentário grande de ItemData.stackable — só Ball/TM
+	# são), então é sempre exatamente 1 saindo do inventário.
+	if new_action is ItemData and new_action != old_action:
+		GameState.remove_item(new_action, 1)
 	_refresh_rows()
 	# A ação escolhida pode ter mudado o que "equipado em outro slot"
 	# exclui, e/ou mudado se a coluna Item deveria aparecer — reconstrói

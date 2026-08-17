@@ -16,24 +16,41 @@ extends CanvasLayer
 # const fixo: é montada em runtime a partir de QUAIS Labels estão visible
 # no momento (ver _build_option_list), pra "Evolve" oculto nem entrar na
 # navegação por seta.
+#
+# "Release" (novo, mesmo padrão de visibilidade de "Evolve" acima) e
+# can_loadout (esconde "Loadout") — pedido do usuário: "PC menu... When a
+# unit is clicked, some options should pop up: Summary, Switch, Release" —
+# pc_screen.gd usa este MESMO popup (em vez de duplicar toda a navegação
+# seta/mouse/Z-cancela) com can_loadout=false, can_release=true, já que
+# Loadout/Evolve não fazem sentido no contexto do PC (não tem como evoluir
+# nem reequipar ali) e Release só faz sentido lá (ver comentário grande em
+# pc_screen.gd sobre em quais reservas Release aparece). party_screen.gd
+# continua chamando setup() sem esses 2 argumentos novos — os padrões
+# (can_loadout=true, can_release=false) preservam o comportamento de sempre
+# de lá sem precisar tocar naquele call site.
 
 signal closed(option: String)
 
 @onready var header_label: Label = $Center/Panel/MarginContainer/Options/Header
+@onready var loadout_label: Label = $Center/Panel/MarginContainer/Options/Loadout
 @onready var evolve_label: Label = $Center/Panel/MarginContainer/Options/Evolve
+@onready var release_label: Label = $Center/Panel/MarginContainer/Options/Release
 @onready var options_container: VBoxContainer = $Center/Panel/MarginContainer/Options
 
 var option_labels: Array[Label] = []
 var selected_index: int = 0
 
-# can_evolve precisa ser aplicado ANTES de montar option_labels — mas
-# setup() só roda DEPOIS de _ready() (add_child() dispara _ready() na hora;
-# party_screen.gd só chama setup() depois que add_child() retorna). Por
-# isso _build_option_list() foi tirado de _ready() e só roda aqui, no fim
-# de setup(), quando evolve_label.visible já está com o valor certo.
-func setup(unit_name: String, can_evolve: bool = false) -> void:
+# can_evolve/can_loadout/can_release precisam ser aplicados ANTES de montar
+# option_labels — mas setup() só roda DEPOIS de _ready() (add_child()
+# dispara _ready() na hora; quem abre isso só chama setup() depois que
+# add_child() retorna). Por isso _build_option_list() foi tirado de _ready()
+# e só roda aqui, no fim de setup(), quando a visibilidade de todo mundo já
+# está com o valor certo.
+func setup(unit_name: String, can_evolve: bool = false, can_loadout: bool = true, can_release: bool = false) -> void:
 	header_label.text = unit_name.to_upper()
 	evolve_label.visible = can_evolve
+	loadout_label.visible = can_loadout
+	release_label.visible = can_release
 	_build_option_list()
 
 func _ready() -> void:

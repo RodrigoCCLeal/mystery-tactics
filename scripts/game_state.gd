@@ -513,6 +513,17 @@ func get_storage_slot(index: int) -> UnitData:
 		return null
 	return storage[index]
 
+# Sobrescreve UM slot da reserva com uma UnitData já pronta (ou null) — gêmeo
+# de set_roster_slot acima, mesmo motivo de existir: pc_screen.gd::"Release"
+# (pedido do usuário: "Release (deletes the unit, prompts Are you sure?
+# Yes/No first)") precisa ZERAR um slot sem trocar com outro (diferente de
+# swap_storage_slots, que troca DOIS slots entre si — não serve pra apagar
+# um só). null = a forma "delete" usa isto: set_storage_slot(index, null).
+func set_storage_slot(index: int, data: UnitData) -> void:
+	if index < 0 or index >= storage.size():
+		return
+	storage[index] = data
+
 # Troca dois slots DENTRO da reserva.
 func swap_storage_slots(a: int, b: int) -> void:
 	if a < 0 or a >= storage.size() or b < 0 or b >= storage.size():

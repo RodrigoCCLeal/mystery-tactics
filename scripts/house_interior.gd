@@ -58,6 +58,9 @@ const SYSTEM_MENU_SCENE: PackedScene = preload("res://scenes/ui/screens/system_m
 # de brilho (CanvasModulate) — pedido do usuário foi só "no overworld",
 # interior tem iluminação própria, não deve escurecer/clarear com a hora.
 const TIME_HUD_SCENE: PackedScene = preload("res://scenes/ui/hud/time_hud.tscn")
+# Mesma caixa de 1 linha que trainer.gd/loot_ball.gd já usam — reaproveitada
+# aqui pra Door.blocked_message (ver _handle_blocked_door/door.gd).
+const MESSAGE_BOX_SCENE: PackedScene = preload("res://scenes/ui/popups/trainer_message_box.tscn")
 
 const FACING_TO_DIR = {
 	"down": Vector2i(0, 1),
@@ -133,9 +136,59 @@ func _restore_player_state() -> void:
 
 func _on_player_tile_entered(cell: Vector2i) -> void:
 	_sync_live_position()
+	# IMPORTANTE: player.gd::_try_start_move() intercepta portas ANTES do
+	# passo terminar (o jogador nunca chega a "entrar" na célula da porta —
+	# fica parado na frente dela enquanto a cena já troca). Isso significa
+	# que checar door.is_blocked() aqui, em cima de get_door_at(cell), NUNCA
+	# dispara — esse código antigo era morto na prática. Pedido do usuário:
+	# "Instead of trying to stop the warp, add a threshold just like you did
+	# with route 1 (that works)". A solução (igual ao route1_area em
+	# world.gd) é reagir a uma célula anterior à porta, não à porta em si —
+	# aqui, "a célula vizinha da porta", que é sempre a ÚLTIMA célula real
+	# que o tile_entered consegue ver antes do atalho de player.gd assumir.
+	var blocked_door = _find_blocked_door_near(cell)
+	if blocked_door != null:
+		_handle_blocked_door(blocked_door)
+		return
 	var door = get_door_at(cell)
 	if door != null:
 		use_door(door)
+
+# Retorna a porta bloqueada (Door.is_blocked()) mais próxima de cell, se
+# alguma estiver a distância <= 1 (a própria célula da porta ou uma das 4
+# vizinhas ortogonais/diagonais) — ver comentário grande acima.
+func _find_blocked_door_near(cell: Vector2i) -> Door:
+	for door in get_tree().get_nodes_in_group("door"):
+		if not door.is_blocked():
+			continue
+		var diff = cell - door.grid_pos
+		if absi(diff.x) <= 1 and absi(diff.y) <= 1:
+			return door
+	return null
+
+# Porta com required_flag preenchido e a flag ainda não batendo (ver
+# Door.is_blocked) — pedido do usuário: Mom "Stops the player from leaving
+# the house" / Oak "If the player tries to leave the lab without choosing a
+# starter, Oak will stop them aswell". A cena NUNCA troca aqui (nem chama
+# use_door) — o jogador só "esbarra" na porta. blocked_message (se houver)
+# mostra o motivo numa caixa de texto simples (mesmo padrão de
+# LootBall._show_blocked_message), e só DEPOIS dela fechar é que
+# door.use_blocked dispara — dá tempo de quem estiver ouvindo (ver mom.gd,
+# que dá o dinheiro/marca a flag SÓ depois do jogador ler a mensagem) reagir
+# no momento certo, não antes.
+func _handle_blocked_door(door: Door) -> void:
+	if door.blocked_message == "":
+		door.use_blocked.emit()
+		return
+	get_tree().paused = true
+	var box = MESSAGE_BOX_SCENE.instantiate()
+	add_child(box)
+	box.setup(door.blocked_message)
+	box.closed.connect(_on_blocked_door_message_closed.bind(door))
+
+func _on_blocked_door_message_closed(door: Door) -> void:
+	get_tree().paused = false
+	door.use_blocked.emit()
 
 func _sync_live_position() -> void:
 	GameState.live_grid_pos = player.grid_pos

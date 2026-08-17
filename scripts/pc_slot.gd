@@ -13,6 +13,17 @@ extends PanelContainer
 # (uma conexão por slot, com bind do PRÓPRIO column/index como destino) e
 # chama a função certa em GameState.
 
+# clicked (novo) — pedido do usuário: "When a unit is clicked, some options
+# should pop up: Summary, Switch, Release". Emitido só no SOLTAR do botão
+# esquerdo (não no pressionar) — de propósito, pra não competir com o drag-
+# and-drop nativo já existente logo abaixo: um arrasto de verdade nunca
+# entrega o evento de soltar aqui (Godot desvia pra _drop_data() de quem
+# recebeu o solto assim que o arrasto realmente começa), então só um CLIQUE
+# simples (pressionar e soltar sem mover) chega a emitir isto. pc_screen.gd
+# escuta isso e chama a MESMA _activate_cursor() que o teclado (X) já usa —
+# o mouse só precisa sincronizar o cursor primeiro (ver `hovered`, que já
+# roda antes de qualquer clique chegar aqui).
+signal clicked
 signal dropped(source_column: String, source_index: int)
 signal hovered
 
@@ -32,12 +43,34 @@ const PANEL_SIZE = SIZE + MARGIN * 2
 
 const STYLE_NORMAL = Color(0, 0, 0, 0)
 const STYLE_HOVER = Color(1, 1, 0.3, 0.25)
+# Azul — "na mão" (Switch), mesma cor de party_screen.gd::ROW_STYLE_PICKED
+# (pedido do usuário: "While a unit is selected with switch, it should be
+# blue highlighted") — reaproveitada aqui pra ficar consistente com a MESMA
+# cor já usada pra "picked" na tela de Party.
+const STYLE_PICKED = Color(0.3, 0.6, 1, 0.35)
+
+# Pedido do usuário: "Add thicker divisors to the PC screen, so each cell is
+# clearly seen as different" — antes cada PcSlot só tinha bg_color (sem
+# borda nenhuma), então dois slots vazios lado a lado se fundiam num bloco
+# só, sem jeito de saber onde um terminava e o outro começava. BORDER_WIDTH/
+# BORDER_COLOR desenham um contorno em TODO slot, cheio ou vazio, sempre —
+# junto com STYLE_NORMAL/HOVER/PICKED continuando a colorir só o FUNDO por
+# cima da borda.
+const BORDER_WIDTH = 2
+const BORDER_COLOR = Color(1, 1, 1, 0.4)
 
 var column: String = ""
 var index: int = -1
 var unit_data: UnitData = null
 
 var _style: StyleBoxFlat
+# Dois estados independentes (ver set_highlighted/set_picked abaixo) — um
+# slot pode estar com o CURSOR em cima (_is_highlighted, amarelo, mouse OU
+# teclado) e SER o slot escolhido pra troca (_is_picked, azul) ao mesmo
+# tempo (ex: escolheu "Switch" nele e o cursor nunca saiu de cima). _is_picked
+# sempre GANHA da cor amarela quando os dois são true — ver _refresh_style.
+var _is_highlighted: bool = false
+var _is_picked: bool = false
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(PANEL_SIZE, PANEL_SIZE)
@@ -49,8 +82,19 @@ func _ready() -> void:
 	_style.content_margin_right = MARGIN
 	_style.content_margin_top = MARGIN
 	_style.content_margin_bottom = MARGIN
+	_style.border_width_left = BORDER_WIDTH
+	_style.border_width_right = BORDER_WIDTH
+	_style.border_width_top = BORDER_WIDTH
+	_style.border_width_bottom = BORDER_WIDTH
+	_style.border_color = BORDER_COLOR
 	add_theme_stylebox_override("panel", _style)
 	mouse_entered.connect(func() -> void: hovered.emit())
+
+# Só no SOLTAR do botão esquerdo — ver comentário grande do sinal `clicked`
+# lá em cima pro motivo de não ser no pressionar.
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and not event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		clicked.emit()
 
 # column/index identificam ONDE esse slot mora ("team"/i ou "reserve"/i) —
 # é o que pc_screen.gd usa tanto pra saber quem é o destino de um drop
@@ -73,7 +117,23 @@ func setup(column_: String, index_: int, data: UnitData) -> void:
 	_play_portrait(portrait, data, SIZE)
 
 func set_highlighted(is_highlighted: bool) -> void:
-	_style.bg_color = STYLE_HOVER if is_highlighted else STYLE_NORMAL
+	_is_highlighted = is_highlighted
+	_refresh_style()
+
+# Pedido do usuário: "While a unit is selected with switch, it should be
+# blue highlighted" — ver pc_screen.gd::_refresh_switch_highlight, chamado
+# toda vez que o modo Switch entra/sai ou o slot escolhido muda.
+func set_picked(is_picked: bool) -> void:
+	_is_picked = is_picked
+	_refresh_style()
+
+func _refresh_style() -> void:
+	if _is_picked:
+		_style.bg_color = STYLE_PICKED
+	elif _is_highlighted:
+		_style.bg_color = STYLE_HOVER
+	else:
+		_style.bg_color = STYLE_NORMAL
 
 # Desmaiada (current_hp <= 0) toca Sleep em vez de Idle — mesmo critério de
 # party_screen.gd::_refresh_portrait.

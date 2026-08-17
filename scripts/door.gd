@@ -100,6 +100,43 @@ func _find_ground_tile_map() -> TileMapLayer:
 var grid_pos: Vector2i = Vector2i.ZERO
 var anim: AnimatedSprite2D = null
 
+# ---------- Bloqueio condicional (opcional) ----------
+# Pedido do usuário: Mom "Stops the player from leaving the house the first
+# time they try to... give them 3000$, then update mom_leave_house flag" e
+# Professor Oak "If the player tries to leave the lab without choosing a
+# starter, Oak will stop them aswell" — as duas pedem a MESMA coisa no
+# fundo (uma porta que às vezes recusa passagem, dependendo de uma flag),
+# só que com consequência diferente na hora do bloqueio (Oak: só uma
+# mensagem; Mom: mensagem + dinheiro + a MESMA flag que libera a porta pra
+# sempre depois, ver mom.gd). Por isso a porta em si só cuida da DECISÃO
+# (bloqueia ou não, genérico, guiado por dado) e do feedback SIMPLES
+# (blocked_message, mesmo padrão de LootBall.blocked_message) — qualquer
+# efeito colateral extra (dar dinheiro, teleportar em vez de só recusar) é
+# responsabilidade de quem estiver ouvindo o sinal `use_blocked` abaixo (ver
+# mom.gd), não desta classe genérica.
+
+# "" (padrão, toda porta de sempre) = sem bloqueio nenhum, comportamento
+# idêntico a antes deste campo existir. Preenchido = a porta só deixa
+# passar quando GameState.get_flag(required_flag) == required_flag_value;
+# caso contrário, o jogador simplesmente PARA na célula da porta (a cena
+# nunca troca) e, se blocked_message não estiver vazio, uma caixa de texto
+# aparece explicando o motivo antes de devolver o controle (ver
+# house_interior.gd::_handle_blocked_door).
+@export var required_flag: String = ""
+@export var required_flag_value: bool = true
+@export var blocked_message: String = ""
+
+# Emitido (por house_interior.gd::_handle_blocked_door, DEPOIS de qualquer
+# blocked_message fechar) toda vez que esta porta recusa passagem — quem
+# precisar de um efeito colateral extra além da mensagem (ver mom.gd) escuta
+# isto em vez de duplicar a checagem de flag por conta própria.
+signal use_blocked
+
+func is_blocked() -> bool:
+	if required_flag == "":
+		return false
+	return GameState.get_flag(required_flag) != required_flag_value
+
 # Ajuste fino pedido pelo usuário: cada quadro do sheet tem uma coluna de
 # pixel EXTRA sobrando (ver o "- 1" no recorte do AtlasTexture em
 # _build_open_animation) — cortar essa coluna encolhe o quadro em 1px de

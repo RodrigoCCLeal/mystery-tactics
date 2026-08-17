@@ -42,6 +42,27 @@ const GRASS_RUSTLE_SCENE: PackedScene = preload("res://scenes/effects/grass_rust
 const GAME_MENU_SCENE: PackedScene = preload("res://scenes/ui/screens/game_menu.tscn")
 const SYSTEM_MENU_SCENE: PackedScene = preload("res://scenes/ui/screens/system_menu.tscn")
 const SONG_MENU_SCENE: PackedScene = preload("res://scenes/ui/popups/song_menu.tscn")
+# Mesma caixa de 1 linha que trainer.gd/loot_ball.gd já usam — reaproveitada
+# aqui pro aviso do Oak (ver _block_leaving_without_starter).
+const MESSAGE_BOX_SCENE: PackedScene = preload("res://scenes/ui/popups/trainer_message_box.tscn")
+
+# ---------- Professor Oak: travar saída de Archi sem starter ----------
+# Pedido do usuário (2026-08-04): "Professor Oak: Stops the player from
+# leaving Archis town the first time they try to, if the 'chose a starter'
+# flag is negative, then teleports the player to his lab." Resposta do
+# usuário à pergunta de esclarecimento (não existe porta nenhuma de "sair
+# da cidade" ainda, só as entradas de casa/ginásio) — "leaving" aqui
+# significa ENTRAR no mato alto/área selvagem (Route 1 via ROUTE1_BOUNDARY_Y
+# ou Barias via BARIAS_BOUNDS), não atravessar uma Door. Mesma flag que os
+# 3 StarterX de oak_lab_interior.tscn já usam como exclusive_flag
+# (loot_ball.gd), então escolher QUALQUER starter já destrava isto de
+# graça, sem precisar duplicar nada.
+const OAK_LAB_SCENE_PATH = "uid://cw0tstklsgtt6"
+# Mesmo alvo que DoorToOakLab/BackDoorToOakLab (ver world.tscn) já usam pra
+# entrar no laboratório — reaproveitado aqui pra cair no mesmo lugar de
+# sempre, não um ponto novo.
+const OAK_LAB_ENTRY_GRID_POS = Vector2i(0, 2)
+const OAK_BLOCK_MESSAGE = "OAK: Whoa there! You shouldn't wander out without a Pokémon partner. Let's get you sorted first."
 
 const FACING_TO_DIR = {
 	"down": Vector2i(0, 1),
@@ -199,6 +220,17 @@ func _on_player_tile_entered(cell: Vector2i) -> void:
 	_sync_live_position()
 	_update_current_area()
 
+	# Professor Oak (ver comentário grande em OAK_LAB_SCENE_PATH acima) —
+	# roda ANTES de porta/água/grama de propósito: sem starter nenhum, o
+	# jogador não deveria conseguir nem abrir uma porta de dentro de Route
+	# 1/Barias (não que exista uma lá) nem disparar um encontro selvagem
+	# impossível de vencer. Vale TODA VEZ que a área mudar pra fora de Archi
+	# enquanto a flag continuar negativa, não só a primeira tentativa —
+	# GameState.current_area já foi atualizado por _update_current_area()
+	# uma linha acima.
+	if _block_leaving_without_starter():
+		return
+
 	# Porta/entrada (ver door.gd) manda ANTES de qualquer coisa.
 	var door = get_door_at(cell)
 	if door != null:
@@ -248,6 +280,35 @@ func use_door(door: Door) -> void:
 	await door.play_open_animation()
 	GameState.save_player_state(door.target_grid_pos, door.target_facing, door.target_scene_path)
 	SceneTransition.change_scene_with_fade(door.target_scene_path)
+
+# true (e já disparou a mensagem/teleporte) se o jogador acabou de entrar
+# numa área que NÃO é Archi (Route 1 ou Barias, ver _area_for_position)
+# enquanto GameState.get_flag("STARTER1_CHOSEN") ainda for false — ver
+# comentário grande em OAK_LAB_SCENE_PATH acima. current_area == null
+# (encounter_area de Archi não configurado no Inspector) ou == encounter_area
+# (ainda dentro de Archi) = nada a bloquear, false direto, sem gastar
+# mensagem nenhuma.
+func _block_leaving_without_starter() -> bool:
+	if GameState.get_flag("STARTER1_CHOSEN"):
+		return false
+	if GameState.current_area == null or GameState.current_area == encounter_area:
+		return false
+	get_tree().paused = true
+	var box = MESSAGE_BOX_SCENE.instantiate()
+	add_child(box)
+	box.setup(OAK_BLOCK_MESSAGE)
+	box.closed.connect(_on_oak_block_message_closed)
+	return true
+
+# Só desliga o pause e troca de cena DEPOIS do jogador ler o aviso — mesmo
+# GameState.save_player_state + SceneTransition.change_scene_with_fade que
+# use_door() já usa pra qualquer outra transição de cena, só que sem porta
+# nenhuma envolvida (não tem play_open_animation() aqui, o jogador não
+# "abriu" nada, foi Oak quem interviu).
+func _on_oak_block_message_closed() -> void:
+	get_tree().paused = false
+	GameState.save_player_state(OAK_LAB_ENTRY_GRID_POS, "down", OAK_LAB_SCENE_PATH)
+	SceneTransition.change_scene_with_fade(OAK_LAB_SCENE_PATH)
 
 func _sync_live_position() -> void:
 	GameState.live_grid_pos = player.grid_pos

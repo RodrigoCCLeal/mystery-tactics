@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://d26pj4i16thtp" path="res://scripts/door.gd" id="4_0ktju"]
 [ext_resource type="PackedScene" uid="uid://cddnryw8qsono" path="res://scenes/npc/open_pc.tscn" id="5_m1ovl"]
 [ext_resource type="PackedScene" path="res://scenes/npc/bed.tscn" id="5_x3xrc"]
-[ext_resource type="PackedScene" path="res://scenes/npc/nurse.tscn" id="6_s3oyo"]
+[ext_resource type="PackedScene" path="res://scenes/npc/mom.tscn" id="6_s3oyo"]
 [ext_resource type="Texture2D" uid="uid://ceatbmmrctmun" path="res://assets/sprites/Human/NPC/NPC 28.png" id="7_uxp17"]
 
 [node name="HouseInterior" type="Node2D" unique_id=1248770916]
@@ -45,12 +45,15 @@ position = Vector2(-112.22012, -494.31998)
 position = Vector2(78, -45)
 sheet = ExtResource("7_uxp17")
 facing = "left"
+guarded_door_path = NodePath("../../Door")
 
 [node name="Door" type="Node2D" parent="." unique_id=1916441077]
 position = Vector2(16, 106)
 script = ExtResource("4_0ktju")
 target_scene_path = "uid://buoxvep8rshcn"
 target_grid_pos = Vector2i(-17, -2)
+required_flag = "mom_leave_house"
+blocked_message = "MOM: Hold on, honey! You're not leaving without this."
 
 [node name="StairsUp" type="Node2D" parent="." unique_id=1279523920]
 position = Vector2(142.14377, -121.36438)

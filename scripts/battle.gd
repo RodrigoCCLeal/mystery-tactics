@@ -6414,25 +6414,28 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 		# a caixa fechar" por "esperar X/Z ser apertado", sem UI nova
 		# nenhuma, dando tempo do jogador ler o log antes da troca de cena.
 		await _await_confirm_press()
-		# Carimba o número de badges de AGORA, não só "true" — é isso que
-		# deixa trainer.gd::interact() saber depois se já rolou uma badge
-		# nova desde essa derrota (ver comentário grande em GameState.
-		# defeated_trainer_badges).
-		GameState.defeated_trainer_badges[GameState.current_trainer_id] = GameState.badges.size()
 		# Pedido do usuário: "After winning misty fight my badge should
 		# increase by 1" — ver Trainer.badge_name/GameState.current_trainer_
 		# badge_name. "" (todo Trainer comum) não concede nada; badges.has()
-		# de guarda evita duplicar a MESMA badge numa revanche (regra 6 já
+		# de guarda evita duplicar a MESMA badge numa revanche (regra 6
 		# permite reenfrentar o líder depois de uma badge NOVA de outro
 		# ginásio, mas ele continua distribuindo a mesma badge de sempre, não
-		# uma segunda). Roda DEPOIS do carimbo de defeated_trainer_badges
-		# logo acima, de propósito — esse carimbo precisa registrar quantas
-		# badges o jogador tinha ANTES desta vitória, senão a badge que
-		# Misty acabou de dar contaria como "a badge nova" que libera
-		# revanche contra ELA MESMA na hora.
+		# uma segunda).
 		if GameState.current_trainer_badge_name != "" and not GameState.badges.has(GameState.current_trainer_badge_name):
 			GameState.badges.append(GameState.current_trainer_badge_name)
 			log_message("You got the %s!" % GameState.current_trainer_badge_name)
+		# Carimba o número de badges de AGORA — DEPOIS de conceder a badge
+		# deste líder (bloco acima), não antes. Bug reportado pelo usuário:
+		# "The gym leader is infinitely able to battle" — a ordem antiga
+		# carimbava badges.size() ANTES do append, então a PRÓPRIA badge que
+		# Misty acabava de dar já contava como "uma badge nova desde a
+		# derrota" (trainer.gd::interact() libera revanche assim que
+		# badges.size() > badges_at_defeat), liberando revanche IMEDIATA
+		# contra ela mesma. Carimbando DEPOIS do append, badges_at_defeat já
+		# inclui a badge dela — só uma badge de OUTRO líder (badges.size()
+		# maior ainda) libera revanche de verdade, como deveria ser desde o
+		# início.
+		GameState.defeated_trainer_badges[GameState.current_trainer_id] = GameState.badges.size()
 	# Treinador Rocket some PRA SEMPRE depois desta batalha, vitória OU
 	# derrota do jogador (pedido do usuário: "Rocket trainers also vanish
 	# after defeating or being defeated. They cannot be rematched") — bem
