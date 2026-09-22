@@ -15,12 +15,16 @@ const UnitScript = preload("res://scripts/unit.gd")
 var has_saved_position: bool = false
 var player_grid_pos: Vector2i = Vector2i.ZERO
 var player_facing: String = "down"
-# world.tscn (não mais test.tscn — "Ilha de Testes" foi removida, pedido do
+# world_archis.tscn (não mais o world.tscn monolítico antigo, nem o
+# test.tscn ainda mais antigo — "Ilha de Testes" foi removida, pedido do
 # usuário: "Lets delete ilha de testes, we dont need it anymore") é a cena
-# overworld de verdade do jogo agora.
-var overworld_scene_path: String = "res://scenes/overworld/world.tscn"
+# overworld de verdade do jogo agora. Pedido do usuário (2026-09-21) de
+# cortar world.tscn em 3 (Archis/Route 1/Barias) — ver world_archis.gd pro
+# comentário grande explicando o corte; world.tscn/world.gd originais
+# continuam existindo intocados, só não são mais o destino padrão.
+var overworld_scene_path: String = "res://scenes/overworld/world_archis.tscn"
 
-func save_player_state(cell: Vector2i, facing: String, scene_path: String = "res://scenes/overworld/world.tscn") -> void:
+func save_player_state(cell: Vector2i, facing: String, scene_path: String = "res://scenes/overworld/world_archis.tscn") -> void:
 	has_saved_position = true
 	player_grid_pos = cell
 	player_facing = facing
