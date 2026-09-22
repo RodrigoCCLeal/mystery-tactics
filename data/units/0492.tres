@@ -4,8 +4,256 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0492/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0492/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/growth.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/defense_curl.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/leafage.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/magical_leaf.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/sleep_powder.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/air_slash.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/recover.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/synthesis.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/energy_ball.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/sweet_scent.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/natural_gift.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/play_rough.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/worry_seed.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/seed_flare.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/aromatherapy.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/grassy_terrain.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/sweet_kiss.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/grass_whistle.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/healing_wish.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/lucky_chant.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/natural_cure.tres" id="123"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/lum_berry.tres" id="124"]
+[sub_resource type="Resource" id="LE_new_0492_growth"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0492_defense_curl"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0492_leafage"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0492_quick_attack"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0492_magical_leaf"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0492_sleep_powder"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0492_leech_seed"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0492_air_slash"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0492_recover"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0492_synthesis"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0492_energy_ball"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0492_sweet_scent"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0492_natural_gift"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0492_earth_power"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0492_play_rough"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0492_worry_seed"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0492_seed_flare"]
+script = ExtResource("learnset_script")
+level = 57
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0492_aromatherapy"]
+script = ExtResource("learnset_script")
+level = 64
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0492_grassy_terrain"]
+script = ExtResource("learnset_script")
+level = 64
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0492_sweet_kiss"]
+script = ExtResource("learnset_script")
+level = 82
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0492_grass_whistle"]
+script = ExtResource("learnset_script")
+level = 82
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0492_healing_wish"]
+script = ExtResource("learnset_script")
+level = 91
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0492_lucky_chant"]
+script = ExtResource("learnset_script")
+level = 91
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0492_natural_cure"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="WHI_0492_lum_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("124")
+chance = 0.78
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_defense_curl"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_growth"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_quick_attack"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_magical_leaf"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_sleep_powder"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_air_slash"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_leech_seed"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_recover"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_synthesis"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_sweet_scent"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_earth_power"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_healing_wish"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_natural_gift"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_worry_seed"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_aromatherapy"]
+script = ExtResource("learnset_script")
+level = 64
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_energy_ball"]
+script = ExtResource("learnset_script")
+level = 73
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_grasswhistle"]
+script = ExtResource("learnset_script")
+level = 82
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_sweet_kiss"]
+script = ExtResource("learnset_script")
+level = 82
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_lucky_chant"]
+script = ExtResource("learnset_script")
+level = 91
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0492_seed_flare"]
+script = ExtResource("learnset_script")
+level = 100
+action = ExtResource("116")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0492_lum_berry")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0492_defense_curl"), SubResource("LE_pokmmo_0492_growth"), SubResource("LE_pokmmo_0492_quick_attack"), SubResource("LE_pokmmo_0492_magical_leaf"), SubResource("LE_pokmmo_0492_sleep_powder"), SubResource("LE_pokmmo_0492_air_slash"), SubResource("LE_pokmmo_0492_leech_seed"), SubResource("LE_pokmmo_0492_recover"), SubResource("LE_pokmmo_0492_synthesis"), SubResource("LE_pokmmo_0492_sweet_scent"), SubResource("LE_pokmmo_0492_earth_power"), SubResource("LE_pokmmo_0492_healing_wish"), SubResource("LE_pokmmo_0492_natural_gift"), SubResource("LE_pokmmo_0492_worry_seed"), SubResource("LE_pokmmo_0492_aromatherapy"), SubResource("LE_pokmmo_0492_energy_ball"), SubResource("LE_pokmmo_0492_grasswhistle"), SubResource("LE_pokmmo_0492_sweet_kiss"), SubResource("LE_pokmmo_0492_lucky_chant"), SubResource("LE_pokmmo_0492_seed_flare"), SubResource("LE_new_0492_natural_cure")])
 unit_name = "Shaymin"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -4,8 +4,254 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0453/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0453/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/mud_slap.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/astonish.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/rock_smash.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/taunt.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/mud_bomb.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/flatter.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/pursuit.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/venoshock.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/low_kick.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/revenge.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/feint_attack.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/nasty_plot.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/swagger.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/sucker_punch.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/poison_jab.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/toxic.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/sludge_bomb.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/close_combat.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/belch.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/anticipation.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/dry_skin.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/poison_touch.tres" id="123"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/black_sludge.tres" id="124"]
+[sub_resource type="Resource" id="LE_new_0453_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0453_mud_slap"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0453_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0453_rock_smash"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0453_taunt"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0453_mud_bomb"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0453_flatter"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0453_pursuit"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0453_venoshock"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0453_low_kick"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0453_revenge"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0453_feint_attack"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0453_nasty_plot"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0453_swagger"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0453_sucker_punch"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0453_poison_jab"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0453_toxic"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0453_earth_power"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0453_sludge_bomb"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0453_close_combat"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0453_belch"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0453_anticipation"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0453_dry_skin"]
+script = ExtResource("learnset_script")
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0453_poison_touch"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="WHI_0453_black_sludge"]
+script = ExtResource("wild_item_script")
+item = ExtResource("124")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_mud_slap"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_rock_smash"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_taunt"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_flatter"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_pursuit"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_low_kick"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_revenge"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_faint_attack"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_venoshock"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_sucker_punch"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_swagger"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_mud_bomb"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_poison_jab"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_toxic"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_earth_power"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_nasty_plot"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_sludge_bomb"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0453_close_combat"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("119")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0453_black_sludge")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0453_astonish"), SubResource("LE_pokmmo_0453_mud_slap"), SubResource("LE_pokmmo_0453_poison_sting"), SubResource("LE_pokmmo_0453_rock_smash"), SubResource("LE_pokmmo_0453_taunt"), SubResource("LE_pokmmo_0453_flatter"), SubResource("LE_pokmmo_0453_pursuit"), SubResource("LE_pokmmo_0453_low_kick"), SubResource("LE_pokmmo_0453_revenge"), SubResource("LE_pokmmo_0453_faint_attack"), SubResource("LE_pokmmo_0453_venoshock"), SubResource("LE_pokmmo_0453_sucker_punch"), SubResource("LE_pokmmo_0453_swagger"), SubResource("LE_pokmmo_0453_mud_bomb"), SubResource("LE_pokmmo_0453_poison_jab"), SubResource("LE_pokmmo_0453_toxic"), SubResource("LE_pokmmo_0453_earth_power"), SubResource("LE_pokmmo_0453_nasty_plot"), SubResource("LE_pokmmo_0453_sludge_bomb"), SubResource("LE_pokmmo_0453_close_combat"), SubResource("LE_new_0453_anticipation"), SubResource("LE_new_0453_dry_skin"), SubResource("LE_new_0453_poison_touch")])
 unit_name = "Croagunk"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -4,8 +4,200 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0109/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0109/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/smog.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/poison_gas.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/smokescreen.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/assurance.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/clear_smog.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/self_destruct.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/sludge.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/haze.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/gyro_ball.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/toxic.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/sludge_bomb.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/explosion.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/destiny_bond.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/belch.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/memento.tres" id="115"]
+[ext_resource type="Resource" path="res://data/abilities/levitate.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/neutralizing_gas.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/stench.tres" id="118"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/smoke_ball.tres" id="119"]
+[sub_resource type="Resource" id="LE_new_0109_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0109_smog"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0109_poison_gas"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0109_smokescreen"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0109_assurance"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0109_clear_smog"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0109_self_destruct"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0109_sludge"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0109_haze"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0109_gyro_ball"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0109_toxic"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0109_sludge_bomb"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0109_explosion"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0109_destiny_bond"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0109_belch"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0109_memento"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0109_levitate"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0109_neutralizing_gas"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0109_stench"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="WHI_0109_smoke_ball"]
+script = ExtResource("wild_item_script")
+item = ExtResource("119")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_poison_gas"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_smog"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_smokescreen"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_clear_smog"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_assurance"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_sludge"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_haze"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_selfdestruct"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_gyro_ball"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_toxic"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_sludge_bomb"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_explosion"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_memento"]
+script = ExtResource("learnset_script")
+level = 48
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0109_destiny_bond"]
+script = ExtResource("learnset_script")
+level = 52
+action = ExtResource("113")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0109_smoke_ball")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0109_poison_gas"), SubResource("LE_pokmmo_0109_tackle"), SubResource("LE_pokmmo_0109_smog"), SubResource("LE_pokmmo_0109_smokescreen"), SubResource("LE_pokmmo_0109_clear_smog"), SubResource("LE_pokmmo_0109_assurance"), SubResource("LE_pokmmo_0109_sludge"), SubResource("LE_pokmmo_0109_haze"), SubResource("LE_pokmmo_0109_selfdestruct"), SubResource("LE_pokmmo_0109_gyro_ball"), SubResource("LE_pokmmo_0109_toxic"), SubResource("LE_pokmmo_0109_sludge_bomb"), SubResource("LE_pokmmo_0109_explosion"), SubResource("LE_pokmmo_0109_memento"), SubResource("LE_pokmmo_0109_destiny_bond"), SubResource("LE_new_0109_levitate"), SubResource("LE_new_0109_neutralizing_gas"), SubResource("LE_new_0109_stench")])
 unit_name = "Koffing"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -11,6 +11,26 @@
 [ext_resource type="Resource" path="res://data/abilities/torrent.tres" id="7"]
 [ext_resource type="Resource" path="res://data/abilities/sheer_force.tres" id="8"]
 
+[ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="9"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="10"]
+[ext_resource type="Resource" path="res://data/attacks/rage.tres" id="11"]
+[ext_resource type="Resource" path="res://data/attacks/mud_slap.tres" id="12"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="13"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="14"]
+[ext_resource type="Resource" path="res://data/attacks/ice_fang.tres" id="15"]
+[ext_resource type="Resource" path="res://data/attacks/thrash.tres" id="16"]
+[ext_resource type="Resource" path="res://data/attacks/flail.tres" id="17"]
+[ext_resource type="Resource" path="res://data/attacks/crunch.tres" id="18"]
+[ext_resource type="Resource" path="res://data/attacks/low_kick.tres" id="19"]
+[ext_resource type="Resource" path="res://data/attacks/slash.tres" id="20"]
+[ext_resource type="Resource" path="res://data/attacks/chip_away.tres" id="21"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="22"]
+[ext_resource type="Resource" path="res://data/attacks/aqua_tail.tres" id="23"]
+[ext_resource type="Resource" path="res://data/attacks/superpower.tres" id="24"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="25"]
+[ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="26"]
+[ext_resource type="Resource" path="res://data/attacks/aqua_jet.tres" id="27"]
+[ext_resource type="Resource" path="res://data/attacks/outrage.tres" id="28"]
 [sub_resource type="Resource" id="LearnsetEntry_0158_tackle"]
 script = ExtResource("5")
 action = ExtResource("4")
@@ -29,6 +49,210 @@ script = ExtResource("5")
 action = ExtResource("8")
 is_hidden_ability = true
 
+[sub_resource type="Resource" id="LE_new_0158_scratch"]
+script = ExtResource("5")
+action = ExtResource("9")
+
+[sub_resource type="Resource" id="LE_new_0158_leer"]
+script = ExtResource("5")
+action = ExtResource("10")
+
+[sub_resource type="Resource" id="LE_new_0158_water_gun"]
+script = ExtResource("5")
+level = 6
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LE_new_0158_rage"]
+script = ExtResource("5")
+level = 7
+action = ExtResource("11")
+
+[sub_resource type="Resource" id="LE_new_0158_mud_slap"]
+script = ExtResource("5")
+level = 8
+action = ExtResource("12")
+
+[sub_resource type="Resource" id="LE_new_0158_bite"]
+script = ExtResource("5")
+level = 9
+action = ExtResource("13")
+
+[sub_resource type="Resource" id="LE_new_0158_scary_face"]
+script = ExtResource("5")
+level = 13
+action = ExtResource("14")
+
+[sub_resource type="Resource" id="LE_new_0158_ice_fang"]
+script = ExtResource("5")
+level = 19
+action = ExtResource("15")
+
+[sub_resource type="Resource" id="LE_new_0158_thrash"]
+script = ExtResource("5")
+level = 22
+action = ExtResource("16")
+
+[sub_resource type="Resource" id="LE_new_0158_flail"]
+script = ExtResource("5")
+level = 22
+action = ExtResource("17")
+
+[sub_resource type="Resource" id="LE_new_0158_crunch"]
+script = ExtResource("5")
+level = 27
+action = ExtResource("18")
+
+[sub_resource type="Resource" id="LE_new_0158_low_kick"]
+script = ExtResource("5")
+level = 29
+action = ExtResource("19")
+
+[sub_resource type="Resource" id="LE_new_0158_slash"]
+script = ExtResource("5")
+level = 29
+action = ExtResource("20")
+
+[sub_resource type="Resource" id="LE_new_0158_chip_away"]
+script = ExtResource("5")
+level = 29
+action = ExtResource("21")
+
+[sub_resource type="Resource" id="LE_new_0158_screech"]
+script = ExtResource("5")
+level = 33
+action = ExtResource("22")
+
+[sub_resource type="Resource" id="LE_new_0158_aqua_tail"]
+script = ExtResource("5")
+level = 36
+action = ExtResource("23")
+
+[sub_resource type="Resource" id="LE_new_0158_superpower"]
+script = ExtResource("5")
+level = 41
+action = ExtResource("24")
+
+[sub_resource type="Resource" id="LE_new_0158_hydro_pump"]
+script = ExtResource("5")
+level = 43
+action = ExtResource("25")
+
+[sub_resource type="Resource" id="LE_new_0158_torrent"]
+script = ExtResource("5")
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LE_new_0158_sheer_force"]
+script = ExtResource("5")
+is_hidden_ability = true
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_leer"]
+script = ExtResource("5")
+action = ExtResource("10")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_scratch"]
+script = ExtResource("5")
+action = ExtResource("9")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_tackle"]
+script = ExtResource("5")
+action = ExtResource("4")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_water_gun"]
+script = ExtResource("5")
+level = 6
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_mud_slap"]
+script = ExtResource("5")
+level = 8
+action = ExtResource("12")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_rage"]
+script = ExtResource("5")
+level = 8
+action = ExtResource("11")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_bite"]
+script = ExtResource("5")
+level = 9
+action = ExtResource("13")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_scary_face"]
+script = ExtResource("5")
+level = 13
+action = ExtResource("14")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_bubblebeam"]
+script = ExtResource("5")
+level = 15
+action = ExtResource("26")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_ice_fang"]
+script = ExtResource("5")
+level = 19
+action = ExtResource("15")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_aqua_jet"]
+script = ExtResource("5")
+level = 21
+action = ExtResource("27")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_flail"]
+script = ExtResource("5")
+level = 22
+action = ExtResource("17")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_crunch"]
+script = ExtResource("5")
+level = 27
+action = ExtResource("18")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_chip_away"]
+script = ExtResource("5")
+level = 29
+action = ExtResource("21")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_low_kick"]
+script = ExtResource("5")
+level = 29
+action = ExtResource("19")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_slash"]
+script = ExtResource("5")
+level = 30
+action = ExtResource("20")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_screech"]
+script = ExtResource("5")
+level = 33
+action = ExtResource("22")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_thrash"]
+script = ExtResource("5")
+level = 37
+action = ExtResource("16")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_aqua_tail"]
+script = ExtResource("5")
+level = 41
+action = ExtResource("23")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_superpower"]
+script = ExtResource("5")
+level = 45
+action = ExtResource("24")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_hydro_pump"]
+script = ExtResource("5")
+level = 50
+action = ExtResource("25")
+
+[sub_resource type="Resource" id="LE_pokmmo_0158_outrage"]
+script = ExtResource("5")
+level = 56
+action = ExtResource("28")
+
 [resource]
 script = ExtResource("1")
 unit_name = "Totodile"
@@ -38,7 +262,7 @@ attack_hit_delay = 0.35
 special_hit_delay = 0.45
 types = Array[String](["Water"])
 slots = Array[ExtResource("5_typ5f")]([ExtResource("4"), ExtResource("7")])
-learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0158_tackle"), SubResource("LearnsetEntry_0158_water_gun"), SubResource("LearnsetEntry_0158_torrent"), SubResource("LearnsetEntry_0158_sheer_force")])
+learnset = Array[ExtResource("5")]([SubResource("LE_pokmmo_0158_leer"), SubResource("LE_pokmmo_0158_scratch"), SubResource("LE_pokmmo_0158_tackle"), SubResource("LE_pokmmo_0158_water_gun"), SubResource("LE_pokmmo_0158_mud_slap"), SubResource("LE_pokmmo_0158_rage"), SubResource("LE_pokmmo_0158_bite"), SubResource("LE_pokmmo_0158_scary_face"), SubResource("LE_pokmmo_0158_bubblebeam"), SubResource("LE_pokmmo_0158_ice_fang"), SubResource("LE_pokmmo_0158_aqua_jet"), SubResource("LE_pokmmo_0158_flail"), SubResource("LE_pokmmo_0158_crunch"), SubResource("LE_pokmmo_0158_chip_away"), SubResource("LE_pokmmo_0158_low_kick"), SubResource("LE_pokmmo_0158_slash"), SubResource("LE_pokmmo_0158_screech"), SubResource("LE_pokmmo_0158_thrash"), SubResource("LE_pokmmo_0158_aqua_tail"), SubResource("LE_pokmmo_0158_superpower"), SubResource("LE_pokmmo_0158_hydro_pump"), SubResource("LE_pokmmo_0158_outrage"), SubResource("LE_new_0158_torrent"), SubResource("LE_new_0158_sheer_force")])
 hp_base = 50
 attack_base = 65
 defense_base = 64

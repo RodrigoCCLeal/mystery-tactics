@@ -4,8 +4,278 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0124/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0124/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/lick.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/lovely_kiss.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/powder_snow.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/sweet_kiss.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/perish_song.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/copycat.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/draining_kiss.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/double_slap.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/covet.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/ice_punch.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/sing.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/mean_look.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/heart_stamp.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/fake_tears.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/wake_up_slap.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/body_slam.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/avalanche.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/wring_out.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/blizzard.tres" id="122"]
+[ext_resource type="Resource" path="res://data/attacks/thrash.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/oblivious.tres" id="124"]
+[ext_resource type="Resource" path="res://data/abilities/forewarn.tres" id="125"]
+[ext_resource type="Resource" path="res://data/abilities/dry_skin.tres" id="126"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/aspear_berry.tres" id="127"]
+[sub_resource type="Resource" id="LE_new_0124_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0124_lick"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0124_lovely_kiss"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0124_powder_snow"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0124_sweet_kiss"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0124_perish_song"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0124_copycat"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0124_draining_kiss"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0124_confusion"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0124_double_slap"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0124_covet"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0124_ice_punch"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0124_screech"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0124_sing"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0124_mean_look"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0124_heart_stamp"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0124_fake_tears"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0124_wake_up_slap"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0124_body_slam"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0124_avalanche"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0124_psychic"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0124_wring_out"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0124_blizzard"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0124_thrash"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0124_oblivious"]
+script = ExtResource("learnset_script")
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_new_0124_forewarn"]
+script = ExtResource("learnset_script")
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_new_0124_dry_skin"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("126")
+
+[sub_resource type="Resource" id="WHI_0124_aspear_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("127")
+chance = 1.0
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_copycat"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_lick"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_lovely_kiss"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_perish_song"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_powder_snow"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_sweet_kiss"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_confusion"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_doubleslap"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_covet"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_screech"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_sing"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_heart_stamp"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_fake_tears"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_ice_punch"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_body_slam"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_wake_up_slap"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_psychic"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_avalanche"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_blizzard"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_mean_look"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_thrash"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_pokmmo_0124_wring_out"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("121")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0124_aspear_berry")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0124_copycat"), SubResource("LE_pokmmo_0124_lick"), SubResource("LE_pokmmo_0124_lovely_kiss"), SubResource("LE_pokmmo_0124_perish_song"), SubResource("LE_pokmmo_0124_pound"), SubResource("LE_pokmmo_0124_powder_snow"), SubResource("LE_pokmmo_0124_sweet_kiss"), SubResource("LE_pokmmo_0124_confusion"), SubResource("LE_pokmmo_0124_doubleslap"), SubResource("LE_pokmmo_0124_covet"), SubResource("LE_pokmmo_0124_screech"), SubResource("LE_pokmmo_0124_sing"), SubResource("LE_pokmmo_0124_heart_stamp"), SubResource("LE_pokmmo_0124_fake_tears"), SubResource("LE_pokmmo_0124_ice_punch"), SubResource("LE_pokmmo_0124_body_slam"), SubResource("LE_pokmmo_0124_wake_up_slap"), SubResource("LE_pokmmo_0124_psychic"), SubResource("LE_pokmmo_0124_avalanche"), SubResource("LE_pokmmo_0124_blizzard"), SubResource("LE_pokmmo_0124_mean_look"), SubResource("LE_pokmmo_0124_thrash"), SubResource("LE_pokmmo_0124_wring_out"), SubResource("LE_new_0124_oblivious"), SubResource("LE_new_0124_forewarn"), SubResource("LE_new_0124_dry_skin")])
 unit_name = "Jynx"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

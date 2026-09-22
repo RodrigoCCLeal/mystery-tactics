@@ -101,13 +101,16 @@ var trainer_class: String = "Youngster"
 # selectable... for boss battles and important npc battles, I will draw the
 # map manually. So we need a checkbox for 'Generated map', if it's false,
 # it receives the address for the drawn map" — apesar do pedido ter sido
-# sobre chefes (ver boss.gd, primeiro a usar isto de fato), o usuário pediu
-# explicitamente pra também existir aqui em Trainer desde já ("important
-# npc battles" cobre Trainers importantes, não só chefes), mesmo que nenhum
-# Trainer real use manual_map ainda. Ver nota de limitação conhecida em
-# GameState.manual_map: o CARREGAMENTO de verdade de um mapa manual ainda
-# não existe, só o campo/checkbox — perguntar o formato exato quando o
-# usuário tiver um mapa desenhado à mão pra testar.
+# sobre chefes (ver boss.gd), o usuário pediu explicitamente pra também
+# existir aqui em Trainer desde já ("important npc battles" cobre Trainers
+# importantes, não só chefes). O primeiro Trainer real a usar isto é a
+# GymLeader Misty (ver Actors/GymLeader em barias_gym_interior.tscn):
+# generated_map = false, manual_map = scenes/battlescenes/mistyGym.tscn —
+# o mapa desenhado à mão pelo usuário ("Ive drawn a battle map for the
+# misty fight"). Ver battle.gd::_load_manual_map() pro CARREGAMENTO de
+# verdade (lê o TileMapLayer de dentro deste PackedScene e copia pra cima
+# da TileMapLayer de batalha) — já implementado, não é mais só o
+# campo/checkbox.
 @export var generated_map: bool = true
 @export var manual_map: PackedScene = null
 # null (padrão, todo Trainer de hoje) = sorteia entre os BATTLE_TILESETS

@@ -4,8 +4,208 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0249/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0249/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/gust.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/whirlwind.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/aeroblast.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/weather_ball.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_rush.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/mist.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/safeguard.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/recover.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/extrasensory.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/calm_mind.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/rain_dance.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/swift.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/punishment.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/natural_gift.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/future_sight.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/sky_attack.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/pressure.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/multiscale.tres" id="119"]
+[sub_resource type="Resource" id="LE_new_0249_gust"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0249_whirlwind"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0249_aeroblast"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0249_ancient_power"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0249_weather_ball"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0249_dragon_rush"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0249_mist"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0249_safeguard"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0249_recover"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0249_extrasensory"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0249_calm_mind"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0249_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0249_rain_dance"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0249_swift"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0249_punishment"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0249_natural_gift"]
+script = ExtResource("learnset_script")
+level = 51
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0249_future_sight"]
+script = ExtResource("learnset_script")
+level = 79
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0249_sky_attack"]
+script = ExtResource("learnset_script")
+level = 90
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0249_pressure"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0249_multiscale"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_ancientpower"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_dragon_rush"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_gust"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_weather_ball"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_whirlwind"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_mist"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_safeguard"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_calm_mind"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_extrasensory"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_recover"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_punishment"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_aeroblast"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_rain_dance"]
+script = ExtResource("learnset_script")
+level = 63
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_swift"]
+script = ExtResource("learnset_script")
+level = 66
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 72
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_future_sight"]
+script = ExtResource("learnset_script")
+level = 81
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_natural_gift"]
+script = ExtResource("learnset_script")
+level = 85
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0249_sky_attack"]
+script = ExtResource("learnset_script")
+level = 90
+action = ExtResource("117")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0249_ancientpower"), SubResource("LE_pokmmo_0249_dragon_rush"), SubResource("LE_pokmmo_0249_gust"), SubResource("LE_pokmmo_0249_weather_ball"), SubResource("LE_pokmmo_0249_whirlwind"), SubResource("LE_pokmmo_0249_mist"), SubResource("LE_pokmmo_0249_safeguard"), SubResource("LE_pokmmo_0249_calm_mind"), SubResource("LE_pokmmo_0249_extrasensory"), SubResource("LE_pokmmo_0249_recover"), SubResource("LE_pokmmo_0249_punishment"), SubResource("LE_pokmmo_0249_aeroblast"), SubResource("LE_pokmmo_0249_rain_dance"), SubResource("LE_pokmmo_0249_swift"), SubResource("LE_pokmmo_0249_hydro_pump"), SubResource("LE_pokmmo_0249_future_sight"), SubResource("LE_pokmmo_0249_natural_gift"), SubResource("LE_pokmmo_0249_sky_attack"), SubResource("LE_new_0249_pressure"), SubResource("LE_new_0249_multiscale")])
 unit_name = "Lugia"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

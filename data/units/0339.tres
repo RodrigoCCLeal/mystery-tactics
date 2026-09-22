@@ -4,8 +4,209 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0339/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0339/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/mud_slap.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/rest.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/snore.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/mud_sport.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/water_sport.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/water_pulse.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/mud_bomb.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/magnitude.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/aqua_tail.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/earthquake.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/muddy_water.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/future_sight.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/fissure.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/oblivious.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/anticipation.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/hydration.tres" id="119"]
+[sub_resource type="Resource" id="LE_new_0339_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0339_mud_slap"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0339_rest"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0339_snore"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0339_mud_sport"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0339_water_sport"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0339_water_pulse"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0339_mud_bomb"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0339_amnesia"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0339_magnitude"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0339_aqua_tail"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0339_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0339_earthquake"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0339_muddy_water"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0339_future_sight"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0339_fissure"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0339_earth_power"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0339_oblivious"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0339_anticipation"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0339_hydration"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_mud_slap"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_mud_sport"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_rest"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_snore"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_water_sport"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_water_pulse"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_mud_bomb"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_amnesia"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_magnitude"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_aqua_tail"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_muddy_water"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_earthquake"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_future_sight"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_earth_power"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0339_fissure"]
+script = ExtResource("learnset_script")
+level = 48
+action = ExtResource("115")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0339_mud_slap"), SubResource("LE_pokmmo_0339_water_gun"), SubResource("LE_pokmmo_0339_mud_sport"), SubResource("LE_pokmmo_0339_rest"), SubResource("LE_pokmmo_0339_snore"), SubResource("LE_pokmmo_0339_water_sport"), SubResource("LE_pokmmo_0339_water_pulse"), SubResource("LE_pokmmo_0339_mud_bomb"), SubResource("LE_pokmmo_0339_amnesia"), SubResource("LE_pokmmo_0339_magnitude"), SubResource("LE_pokmmo_0339_aqua_tail"), SubResource("LE_pokmmo_0339_zen_headbutt"), SubResource("LE_pokmmo_0339_muddy_water"), SubResource("LE_pokmmo_0339_earthquake"), SubResource("LE_pokmmo_0339_future_sight"), SubResource("LE_pokmmo_0339_earth_power"), SubResource("LE_pokmmo_0339_fissure"), SubResource("LE_new_0339_oblivious"), SubResource("LE_new_0339_anticipation"), SubResource("LE_new_0339_hydration")])
 unit_name = "Barboach"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -13,6 +13,23 @@
 [ext_resource type="Resource" uid="uid://mnqlmdnh2wc6" path="res://data/units/0006.tres" id="10"]
 [ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="evo_opt_script"]
 
+[ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="11"]
+[ext_resource type="Resource" path="res://data/attacks/smokescreen.tres" id="12"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_breath.tres" id="13"]
+[ext_resource type="Resource" path="res://data/attacks/metal_claw.tres" id="14"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="15"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_rage.tres" id="16"]
+[ext_resource type="Resource" path="res://data/attacks/fire_fang.tres" id="17"]
+[ext_resource type="Resource" path="res://data/attacks/rage.tres" id="18"]
+[ext_resource type="Resource" path="res://data/attacks/fury_swipes.tres" id="19"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="20"]
+[ext_resource type="Resource" path="res://data/attacks/slash.tres" id="21"]
+[ext_resource type="Resource" path="res://data/attacks/flamethrower.tres" id="22"]
+[ext_resource type="Resource" path="res://data/attacks/flame_burst.tres" id="23"]
+[ext_resource type="Resource" path="res://data/attacks/fire_spin.tres" id="24"]
+[ext_resource type="Resource" path="res://data/attacks/inferno.tres" id="25"]
+[ext_resource type="Resource" path="res://data/attacks/flare_blitz.tres" id="26"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_rush.tres" id="27"]
 [sub_resource type="Resource" id="EvolutionOption_1"]
 script = ExtResource("evo_opt_script")
 target = ExtResource("10")
@@ -40,6 +57,196 @@ script = ExtResource("5")
 action = ExtResource("9")
 is_hidden_ability = true
 
+[sub_resource type="Resource" id="LE_new_0005_scratch"]
+script = ExtResource("5")
+action = ExtResource("11")
+
+[sub_resource type="Resource" id="LE_new_0005_growl"]
+script = ExtResource("5")
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LE_new_0005_ember"]
+script = ExtResource("5")
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LE_new_0005_smokescreen"]
+script = ExtResource("5")
+action = ExtResource("12")
+
+[sub_resource type="Resource" id="LE_new_0005_dragon_breath"]
+script = ExtResource("5")
+level = 12
+action = ExtResource("13")
+
+[sub_resource type="Resource" id="LE_new_0005_metal_claw"]
+script = ExtResource("5")
+level = 13
+action = ExtResource("14")
+
+[sub_resource type="Resource" id="LE_new_0005_leer"]
+script = ExtResource("5")
+level = 15
+action = ExtResource("15")
+
+[sub_resource type="Resource" id="LE_new_0005_dragon_rage"]
+script = ExtResource("5")
+level = 17
+action = ExtResource("16")
+
+[sub_resource type="Resource" id="LE_new_0005_fire_fang"]
+script = ExtResource("5")
+level = 19
+action = ExtResource("17")
+
+[sub_resource type="Resource" id="LE_new_0005_rage"]
+script = ExtResource("5")
+level = 20
+action = ExtResource("18")
+
+[sub_resource type="Resource" id="LE_new_0005_fury_swipes"]
+script = ExtResource("5")
+level = 20
+action = ExtResource("19")
+
+[sub_resource type="Resource" id="LE_new_0005_scary_face"]
+script = ExtResource("5")
+level = 21
+action = ExtResource("20")
+
+[sub_resource type="Resource" id="LE_new_0005_slash"]
+script = ExtResource("5")
+level = 24
+action = ExtResource("21")
+
+[sub_resource type="Resource" id="LE_new_0005_flamethrower"]
+script = ExtResource("5")
+level = 30
+action = ExtResource("22")
+
+[sub_resource type="Resource" id="LE_new_0005_flame_burst"]
+script = ExtResource("5")
+level = 32
+action = ExtResource("23")
+
+[sub_resource type="Resource" id="LE_new_0005_fire_spin"]
+script = ExtResource("5")
+level = 33
+action = ExtResource("24")
+
+[sub_resource type="Resource" id="LE_new_0005_inferno"]
+script = ExtResource("5")
+level = 48
+action = ExtResource("25")
+
+[sub_resource type="Resource" id="LE_new_0005_flare_blitz"]
+script = ExtResource("5")
+level = 54
+action = ExtResource("26")
+
+[sub_resource type="Resource" id="LE_new_0005_blaze"]
+script = ExtResource("5")
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LE_new_0005_solar_power"]
+script = ExtResource("5")
+is_hidden_ability = true
+action = ExtResource("9")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_ember"]
+script = ExtResource("5")
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_growl"]
+script = ExtResource("5")
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_scratch"]
+script = ExtResource("5")
+action = ExtResource("11")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_smokescreen"]
+script = ExtResource("5")
+action = ExtResource("12")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_tackle"]
+script = ExtResource("5")
+action = ExtResource("4")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_dragonbreath"]
+script = ExtResource("5")
+level = 12
+action = ExtResource("13")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_metal_claw"]
+script = ExtResource("5")
+level = 13
+action = ExtResource("14")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_leer"]
+script = ExtResource("5")
+level = 15
+action = ExtResource("15")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_fire_fang"]
+script = ExtResource("5")
+level = 17
+action = ExtResource("17")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_fire_spin"]
+script = ExtResource("5")
+level = 20
+action = ExtResource("24")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_fury_swipes"]
+script = ExtResource("5")
+level = 20
+action = ExtResource("19")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_rage"]
+script = ExtResource("5")
+level = 24
+action = ExtResource("18")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_slash"]
+script = ExtResource("5")
+level = 24
+action = ExtResource("21")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_dragon_rage"]
+script = ExtResource("5")
+level = 26
+action = ExtResource("16")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_flamethrower"]
+script = ExtResource("5")
+level = 30
+action = ExtResource("22")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_flame_burst"]
+script = ExtResource("5")
+level = 32
+action = ExtResource("23")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_scary_face"]
+script = ExtResource("5")
+level = 37
+action = ExtResource("20")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_dragon_rush"]
+script = ExtResource("5")
+level = 42
+action = ExtResource("27")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_inferno"]
+script = ExtResource("5")
+level = 48
+action = ExtResource("25")
+
+[sub_resource type="Resource" id="LE_pokmmo_0005_flare_blitz"]
+script = ExtResource("5")
+level = 54
+action = ExtResource("26")
+
 [resource]
 script = ExtResource("1")
 unit_name = "Charmeleon"
@@ -49,7 +256,7 @@ attack_hit_delay = 0.6
 special_hit_delay = 0.2
 types = Array[String](["Fire"])
 slots = Array[ExtResource("7_charmeleon")]([ExtResource("4"), ExtResource("6"), ExtResource("7")])
-learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0005_tackle"), SubResource("LearnsetEntry_0005_growl"), SubResource("LearnsetEntry_0005_ember"), SubResource("LearnsetEntry_0005_blaze"), SubResource("LearnsetEntry_0005_solar_power")])
+learnset = Array[ExtResource("5")]([SubResource("LE_pokmmo_0005_ember"), SubResource("LE_pokmmo_0005_growl"), SubResource("LE_pokmmo_0005_scratch"), SubResource("LE_pokmmo_0005_smokescreen"), SubResource("LE_pokmmo_0005_tackle"), SubResource("LE_pokmmo_0005_dragonbreath"), SubResource("LE_pokmmo_0005_metal_claw"), SubResource("LE_pokmmo_0005_leer"), SubResource("LE_pokmmo_0005_fire_fang"), SubResource("LE_pokmmo_0005_fire_spin"), SubResource("LE_pokmmo_0005_fury_swipes"), SubResource("LE_pokmmo_0005_rage"), SubResource("LE_pokmmo_0005_slash"), SubResource("LE_pokmmo_0005_dragon_rage"), SubResource("LE_pokmmo_0005_flamethrower"), SubResource("LE_pokmmo_0005_flame_burst"), SubResource("LE_pokmmo_0005_scary_face"), SubResource("LE_pokmmo_0005_dragon_rush"), SubResource("LE_pokmmo_0005_inferno"), SubResource("LE_pokmmo_0005_flare_blitz"), SubResource("LE_new_0005_blaze"), SubResource("LE_new_0005_solar_power")])
 hp_base = 58
 attack_base = 64
 defense_base = 58

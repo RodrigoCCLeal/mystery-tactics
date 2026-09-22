@@ -295,6 +295,11 @@ func _open_party_picker(item: ItemData, mode: String) -> void:
 		elif item.reveals_hidden_ability:
 			screen.picker_filter = _has_unrevealed_hidden_ability
 			screen.picker_filter_hint = "(sem Habilidade Hidden)"
+		# Mesmo raciocínio pro Rare Candy: não faz nada numa unidade já no
+		# teto de nível atual (ver GameState.get_level_cap()).
+		elif item.grants_levels > 0:
+			screen.picker_filter = _is_below_level_cap
+			screen.picker_filter_hint = "(nível máximo)"
 	else:
 		screen.picker_prompt = "Dar %s pra qual unidade?" % item.action_name
 	add_child(screen)
@@ -307,6 +312,9 @@ func _has_missing_hp(data: UnitData) -> bool:
 
 func _has_unrevealed_hidden_ability(data: UnitData) -> bool:
 	return data.has_unrevealed_hidden_ability()
+
+func _is_below_level_cap(data: UnitData) -> bool:
+	return data.level < min(ExpGroups.MAX_LEVEL, GameState.get_level_cap())
 
 func _on_party_target_picked(index: int, item: ItemData, mode: String) -> void:
 	var target = GameState.get_roster_slot(index)

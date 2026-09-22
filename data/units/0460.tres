@@ -4,8 +4,210 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0460/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0460/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/ice_punch.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/mist.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/razor_leaf.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/powder_snow.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/icy_wind.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/leafage.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/aurora_veil.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/ice_shard.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/grass_whistle.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/swagger.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/icicle_crash.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/energy_ball.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/ingrain.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/blizzard.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/wood_hammer.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/sheer_cold.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/snow_warning.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/soundproof.tres" id="118"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/never_melt_ice.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/growth.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/leaf_storm.tres" id="122"]
+[sub_resource type="Resource" id="LE_new_0460_ice_punch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0460_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0460_mist"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0460_razor_leaf"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0460_powder_snow"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0460_icy_wind"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0460_leafage"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0460_aurora_veil"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0460_ice_shard"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0460_grass_whistle"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0460_swagger"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0460_icicle_crash"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0460_energy_ball"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0460_ingrain"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0460_blizzard"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0460_wood_hammer"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0460_sheer_cold"]
+script = ExtResource("learnset_script")
+level = 56
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0460_snow_warning"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0460_soundproof"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="WHI_0460_never_melt_ice"]
+script = ExtResource("wild_item_script")
+item = ExtResource("119")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_ice_punch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_icy_wind"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_mist"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_powder_snow"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_razor_leaf"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_grasswhistle"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_ice_shard"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_icicle_crash"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_energy_ball"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_growth"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_swagger"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_ingrain"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_leech_seed"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_wood_hammer"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_blizzard"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_leaf_storm"]
+script = ExtResource("learnset_script")
+level = 53
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0460_sheer_cold"]
+script = ExtResource("learnset_script")
+level = 56
+action = ExtResource("116")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0460_never_melt_ice")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0460_ice_punch"), SubResource("LE_pokmmo_0460_icy_wind"), SubResource("LE_pokmmo_0460_leer"), SubResource("LE_pokmmo_0460_mist"), SubResource("LE_pokmmo_0460_powder_snow"), SubResource("LE_pokmmo_0460_razor_leaf"), SubResource("LE_pokmmo_0460_grasswhistle"), SubResource("LE_pokmmo_0460_ice_shard"), SubResource("LE_pokmmo_0460_icicle_crash"), SubResource("LE_pokmmo_0460_energy_ball"), SubResource("LE_pokmmo_0460_growth"), SubResource("LE_pokmmo_0460_swagger"), SubResource("LE_pokmmo_0460_ingrain"), SubResource("LE_pokmmo_0460_leech_seed"), SubResource("LE_pokmmo_0460_wood_hammer"), SubResource("LE_pokmmo_0460_blizzard"), SubResource("LE_pokmmo_0460_leaf_storm"), SubResource("LE_pokmmo_0460_sheer_cold"), SubResource("LE_new_0460_snow_warning"), SubResource("LE_new_0460_soundproof")])
 unit_name = "Abomasnow"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -24,6 +24,10 @@
 [ext_resource type="Resource" path="res://data/attacks/poison_fang.tres" id="22_poison_fang"]
 [ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="23_psychic"]
 
+[ext_resource type="Resource" path="res://data/attacks/foresight.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/struggle_bug.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/mega_drain.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/signal_beam.tres" id="103"]
 [sub_resource type="Resource" id="Resource_evo"]
 script = ExtResource("4_evo")
 target = ExtResource("7_target")
@@ -105,6 +109,181 @@ script = ExtResource("5_learn")
 level = 47
 action = ExtResource("23_psychic")
 
+[sub_resource type="Resource" id="LE_new_0048_tackle"]
+script = ExtResource("5_learn")
+action = ExtResource("12_tackle")
+
+[sub_resource type="Resource" id="LE_new_0048_disable"]
+script = ExtResource("5_learn")
+action = ExtResource("11_disable")
+
+[sub_resource type="Resource" id="LE_new_0048_foresight"]
+script = ExtResource("5_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0048_struggle_bug"]
+script = ExtResource("5_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0048_supersonic"]
+script = ExtResource("5_learn")
+level = 5
+action = ExtResource("13_supersonic")
+
+[sub_resource type="Resource" id="LE_new_0048_confusion"]
+script = ExtResource("5_learn")
+level = 11
+action = ExtResource("14_confusion")
+
+[sub_resource type="Resource" id="LE_new_0048_poison_powder"]
+script = ExtResource("5_learn")
+level = 13
+action = ExtResource("15_poison_powder")
+
+[sub_resource type="Resource" id="LE_new_0048_stun_spore"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("17_stun_spore")
+
+[sub_resource type="Resource" id="LE_new_0048_psybeam"]
+script = ExtResource("5_learn")
+level = 17
+action = ExtResource("16_psybeam")
+
+[sub_resource type="Resource" id="LE_new_0048_leech_life"]
+script = ExtResource("5_learn")
+level = 17
+action = ExtResource("20_leech_life")
+
+[sub_resource type="Resource" id="LE_new_0048_sleep_powder"]
+script = ExtResource("5_learn")
+level = 24
+action = ExtResource("19_sleep_powder")
+
+[sub_resource type="Resource" id="LE_new_0048_mega_drain"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0048_signal_beam"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0048_bug_buzz"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("18_bug_buzz")
+
+[sub_resource type="Resource" id="LE_new_0048_psychic"]
+script = ExtResource("5_learn")
+level = 32
+action = ExtResource("23_psychic")
+
+[sub_resource type="Resource" id="LE_new_0048_zen_headbutt"]
+script = ExtResource("5_learn")
+level = 37
+action = ExtResource("21_zen_headbutt")
+
+[sub_resource type="Resource" id="LE_new_0048_poison_fang"]
+script = ExtResource("5_learn")
+level = 41
+action = ExtResource("22_poison_fang")
+
+[sub_resource type="Resource" id="LE_new_0048_compound_eyes"]
+script = ExtResource("5_learn")
+action = ExtResource("8_compound_eyes")
+
+[sub_resource type="Resource" id="LE_new_0048_tinted_lens"]
+script = ExtResource("5_learn")
+action = ExtResource("9_tinted_lens")
+
+[sub_resource type="Resource" id="LE_new_0048_run_away"]
+script = ExtResource("5_learn")
+is_hidden_ability = true
+action = ExtResource("10_run_away")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_disable"]
+script = ExtResource("5_learn")
+action = ExtResource("11_disable")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_foresight"]
+script = ExtResource("5_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_struggle_bug"]
+script = ExtResource("5_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_tackle"]
+script = ExtResource("5_learn")
+action = ExtResource("12_tackle")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_supersonic"]
+script = ExtResource("5_learn")
+level = 5
+action = ExtResource("13_supersonic")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_confusion"]
+script = ExtResource("5_learn")
+level = 11
+action = ExtResource("14_confusion")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_poisonpowder"]
+script = ExtResource("5_learn")
+level = 13
+action = ExtResource("15_poison_powder")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_stun_spore"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("17_stun_spore")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_psybeam"]
+script = ExtResource("5_learn")
+level = 17
+action = ExtResource("16_psybeam")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_sleep_powder"]
+script = ExtResource("5_learn")
+level = 24
+action = ExtResource("19_sleep_powder")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_bug_buzz"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("18_bug_buzz")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_mega_drain"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_signal_beam"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_leech_life"]
+script = ExtResource("5_learn")
+level = 28
+action = ExtResource("20_leech_life")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_psychic"]
+script = ExtResource("5_learn")
+level = 32
+action = ExtResource("23_psychic")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_zen_headbutt"]
+script = ExtResource("5_learn")
+level = 37
+action = ExtResource("21_zen_headbutt")
+
+[sub_resource type="Resource" id="LE_pokmmo_0048_poison_fang"]
+script = ExtResource("5_learn")
+level = 41
+action = ExtResource("22_poison_fang")
+
 [resource]
 script = ExtResource("1_script")
 unit_name = "Venonat"
@@ -112,7 +291,7 @@ sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Poison"])
 slots = Array[ExtResource("6_action")]([ExtResource("12_tackle"), ExtResource("11_disable"), ExtResource("8_compound_eyes")])
-learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0048_compound_eyes"), SubResource("LearnsetEntry_0048_tinted_lens"), SubResource("LearnsetEntry_0048_run_away"), SubResource("LearnsetEntry_0048_disable"), SubResource("LearnsetEntry_0048_tackle"), SubResource("LearnsetEntry_0048_supersonic"), SubResource("LearnsetEntry_0048_confusion"), SubResource("LearnsetEntry_0048_poison_powder"), SubResource("LearnsetEntry_0048_psybeam"), SubResource("LearnsetEntry_0048_stun_spore"), SubResource("LearnsetEntry_0048_bug_buzz"), SubResource("LearnsetEntry_0048_sleep_powder"), SubResource("LearnsetEntry_0048_leech_life"), SubResource("LearnsetEntry_0048_zen_headbutt"), SubResource("LearnsetEntry_0048_poison_fang"), SubResource("LearnsetEntry_0048_psychic")])
+learnset = Array[ExtResource("5_learn")]([SubResource("LE_pokmmo_0048_disable"), SubResource("LE_pokmmo_0048_foresight"), SubResource("LE_pokmmo_0048_struggle_bug"), SubResource("LE_pokmmo_0048_tackle"), SubResource("LE_pokmmo_0048_supersonic"), SubResource("LE_pokmmo_0048_confusion"), SubResource("LE_pokmmo_0048_poisonpowder"), SubResource("LE_pokmmo_0048_stun_spore"), SubResource("LE_pokmmo_0048_psybeam"), SubResource("LE_pokmmo_0048_sleep_powder"), SubResource("LE_pokmmo_0048_bug_buzz"), SubResource("LE_pokmmo_0048_mega_drain"), SubResource("LE_pokmmo_0048_signal_beam"), SubResource("LE_pokmmo_0048_leech_life"), SubResource("LE_pokmmo_0048_psychic"), SubResource("LE_pokmmo_0048_zen_headbutt"), SubResource("LE_pokmmo_0048_poison_fang"), SubResource("LE_new_0048_compound_eyes"), SubResource("LE_new_0048_tinted_lens"), SubResource("LE_new_0048_run_away")])
 hp_base = 60
 attack_base = 55
 defense_base = 50

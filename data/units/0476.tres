@@ -4,8 +4,287 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0476/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0476/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/rock_throw.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/tri_attack.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/iron_defense.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/block.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/gravity.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/magnet_rise.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/magnet_bomb.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/wide_guard.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/magnetic_flux.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_wave.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/smack_down.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/spark.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/rest.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/rock_blast.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/rock_slide.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/power_gem.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/discharge.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/sandstorm.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/flash_cannon.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/stone_edge.tres" id="122"]
+[ext_resource type="Resource" path="res://data/attacks/zap_cannon.tres" id="123"]
+[ext_resource type="Resource" path="res://data/attacks/lock_on.tres" id="124"]
+[ext_resource type="Resource" path="res://data/attacks/body_press.tres" id="125"]
+[ext_resource type="Resource" path="res://data/abilities/sturdy.tres" id="126"]
+[ext_resource type="Resource" path="res://data/abilities/magnet_pull.tres" id="127"]
+[ext_resource type="Resource" path="res://data/abilities/sand_force.tres" id="128"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/hard_stone.tres" id="129"]
+[ext_resource type="Resource" path="res://data/items/magnet.tres" id="130"]
+[sub_resource type="Resource" id="LE_new_0476_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0476_rock_throw"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0476_harden"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0476_tri_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0476_iron_defense"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0476_block"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0476_gravity"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0476_magnet_rise"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0476_magnet_bomb"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0476_wide_guard"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0476_magnetic_flux"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0476_thunder_wave"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0476_smack_down"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0476_spark"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0476_rest"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0476_rock_blast"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0476_rock_slide"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0476_power_gem"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0476_discharge"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0476_sandstorm"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0476_earth_power"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0476_flash_cannon"]
+script = ExtResource("learnset_script")
+level = 38
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0476_stone_edge"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0476_zap_cannon"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0476_lock_on"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_new_0476_body_press"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_new_0476_sturdy"]
+script = ExtResource("learnset_script")
+action = ExtResource("126")
+
+[sub_resource type="Resource" id="LE_new_0476_magnet_pull"]
+script = ExtResource("learnset_script")
+action = ExtResource("127")
+
+[sub_resource type="Resource" id="LE_new_0476_sand_force"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("128")
+
+[sub_resource type="Resource" id="WHI_0476_hard_stone"]
+script = ExtResource("wild_item_script")
+item = ExtResource("129")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0476_magnet"]
+script = ExtResource("wild_item_script")
+item = ExtResource("130")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_block"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_gravity"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_iron_defense"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_magnet_bomb"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_magnet_rise"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_tri_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_wide_guard"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_smack_down"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_thunder_wave"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_rest"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_spark"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_rock_slide"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_power_gem"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_rock_blast"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_discharge"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_sandstorm"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_earth_power"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_flash_cannon"]
+script = ExtResource("learnset_script")
+level = 38
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_stone_edge"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_lock_on"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_pokmmo_0476_zap_cannon"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("123")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0476_hard_stone"), SubResource("WHI_0476_magnet")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0476_block"), SubResource("LE_pokmmo_0476_gravity"), SubResource("LE_pokmmo_0476_iron_defense"), SubResource("LE_pokmmo_0476_magnet_bomb"), SubResource("LE_pokmmo_0476_magnet_rise"), SubResource("LE_pokmmo_0476_tackle"), SubResource("LE_pokmmo_0476_tri_attack"), SubResource("LE_pokmmo_0476_wide_guard"), SubResource("LE_pokmmo_0476_smack_down"), SubResource("LE_pokmmo_0476_thunder_wave"), SubResource("LE_pokmmo_0476_rest"), SubResource("LE_pokmmo_0476_spark"), SubResource("LE_pokmmo_0476_rock_slide"), SubResource("LE_pokmmo_0476_power_gem"), SubResource("LE_pokmmo_0476_rock_blast"), SubResource("LE_pokmmo_0476_discharge"), SubResource("LE_pokmmo_0476_sandstorm"), SubResource("LE_pokmmo_0476_earth_power"), SubResource("LE_pokmmo_0476_flash_cannon"), SubResource("LE_pokmmo_0476_stone_edge"), SubResource("LE_pokmmo_0476_lock_on"), SubResource("LE_pokmmo_0476_zap_cannon"), SubResource("LE_new_0476_sturdy"), SubResource("LE_new_0476_magnet_pull"), SubResource("LE_new_0476_sand_force")])
 unit_name = "Probopass"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

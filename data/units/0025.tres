@@ -24,6 +24,22 @@
 [ext_resource type="Resource" path="res://data/attacks/thunder.tres" id="22_thunder"]
 [ext_resource type="Resource" path="res://data/attacks/volt_tackle.tres" id="23_volt_tackle"]
 
+[ext_resource type="Resource" path="res://data/attacks/sweet_kiss.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/nasty_plot.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/play_nice.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/double_team.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/double_kick.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/electro_ball.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/swift.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/feint.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/slam.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/iron_tail.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/discharge.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/wild_charge.tres" id="112"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/oran_berry.tres" id="113"]
+[ext_resource type="Resource" path="res://data/items/light_ball.tres" id="114"]
 [sub_resource type="Resource" id="Resource_evo"]
 script = ExtResource("4_evo")
 target = ExtResource("7_target")
@@ -100,14 +116,253 @@ script = ExtResource("5_learn")
 level = 99
 action = ExtResource("23_volt_tackle")
 
+[sub_resource type="Resource" id="LE_new_0025_tail_whip"]
+script = ExtResource("5_learn")
+action = ExtResource("13_tail_whip")
+
+[sub_resource type="Resource" id="LE_new_0025_growl"]
+script = ExtResource("5_learn")
+action = ExtResource("11_growl")
+
+[sub_resource type="Resource" id="LE_new_0025_thunder_shock"]
+script = ExtResource("5_learn")
+action = ExtResource("14_thunder_shock")
+
+[sub_resource type="Resource" id="LE_new_0025_quick_attack"]
+script = ExtResource("5_learn")
+action = ExtResource("12_quick_attack")
+
+[sub_resource type="Resource" id="LE_new_0025_sweet_kiss"]
+script = ExtResource("5_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0025_charm"]
+script = ExtResource("5_learn")
+action = ExtResource("18_charm")
+
+[sub_resource type="Resource" id="LE_new_0025_nasty_plot"]
+script = ExtResource("5_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0025_play_nice"]
+script = ExtResource("5_learn")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0025_nuzzle"]
+script = ExtResource("5_learn")
+action = ExtResource("16_nuzzle")
+
+[sub_resource type="Resource" id="LE_new_0025_thunder_wave"]
+script = ExtResource("5_learn")
+level = 4
+action = ExtResource("15_thunder_wave")
+
+[sub_resource type="Resource" id="LE_new_0025_double_team"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0025_double_kick"]
+script = ExtResource("5_learn")
+level = 9
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0025_electro_ball"]
+script = ExtResource("5_learn")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0025_swift"]
+script = ExtResource("5_learn")
+level = 15
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0025_feint"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0025_light_screen"]
+script = ExtResource("5_learn")
+level = 18
+action = ExtResource("21_light_screen")
+
+[sub_resource type="Resource" id="LE_new_0025_slam"]
+script = ExtResource("5_learn")
+level = 20
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0025_spark"]
+script = ExtResource("5_learn")
+level = 20
+action = ExtResource("17_spark")
+
+[sub_resource type="Resource" id="LE_new_0025_thunderbolt"]
+script = ExtResource("5_learn")
+level = 21
+action = ExtResource("19_thunderbolt")
+
+[sub_resource type="Resource" id="LE_new_0025_agility"]
+script = ExtResource("5_learn")
+level = 24
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0025_iron_tail"]
+script = ExtResource("5_learn")
+level = 28
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0025_thunder"]
+script = ExtResource("5_learn")
+level = 30
+action = ExtResource("22_thunder")
+
+[sub_resource type="Resource" id="LE_new_0025_discharge"]
+script = ExtResource("5_learn")
+level = 32
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0025_wild_charge"]
+script = ExtResource("5_learn")
+level = 50
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0025_static"]
+script = ExtResource("5_learn")
+action = ExtResource("9_static")
+
+[sub_resource type="Resource" id="LE_new_0025_lightning_rod"]
+script = ExtResource("5_learn")
+is_hidden_ability = true
+action = ExtResource("10_lightning_rod")
+
+[sub_resource type="Resource" id="WHI_0025_oran_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("113")
+chance = 0.5
+
+[sub_resource type="Resource" id="WHI_0025_light_ball"]
+script = ExtResource("wild_item_script")
+item = ExtResource("114")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_charm"]
+script = ExtResource("5_learn")
+action = ExtResource("18_charm")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_growl"]
+script = ExtResource("5_learn")
+action = ExtResource("11_growl")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_nasty_plot"]
+script = ExtResource("5_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_quick_attack"]
+script = ExtResource("5_learn")
+action = ExtResource("12_quick_attack")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_sweet_kiss"]
+script = ExtResource("5_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_tail_whip"]
+script = ExtResource("5_learn")
+action = ExtResource("13_tail_whip")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_thundershock"]
+script = ExtResource("5_learn")
+action = ExtResource("14_thunder_shock")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_thunder_wave"]
+script = ExtResource("5_learn")
+level = 4
+action = ExtResource("15_thunder_wave")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_double_team"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_double_kick"]
+script = ExtResource("5_learn")
+level = 9
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_electro_ball"]
+script = ExtResource("5_learn")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_feint"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_spark"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("17_spark")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_light_screen"]
+script = ExtResource("5_learn")
+level = 18
+action = ExtResource("21_light_screen")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_thunderbolt"]
+script = ExtResource("5_learn")
+level = 21
+action = ExtResource("19_thunderbolt")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_agility"]
+script = ExtResource("5_learn")
+level = 24
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_slam"]
+script = ExtResource("5_learn")
+level = 24
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_swift"]
+script = ExtResource("5_learn")
+level = 26
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_iron_tail"]
+script = ExtResource("5_learn")
+level = 28
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_charge"]
+script = ExtResource("5_learn")
+level = 30
+action = ExtResource("20_charge")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_thunder"]
+script = ExtResource("5_learn")
+level = 30
+action = ExtResource("22_thunder")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_discharge"]
+script = ExtResource("5_learn")
+level = 32
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0025_wild_charge"]
+script = ExtResource("5_learn")
+level = 50
+action = ExtResource("112")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0025_oran_berry"), SubResource("WHI_0025_light_ball")])
 unit_name = "Pikachu"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Electric"])
 slots = Array[ExtResource("6_action")]([ExtResource("11_growl"), ExtResource("12_quick_attack"), ExtResource("13_tail_whip"), ExtResource("9_static")])
-learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0025_static"), SubResource("LearnsetEntry_0025_lightning_rod"), SubResource("LearnsetEntry_0025_growl"), SubResource("LearnsetEntry_0025_quick_attack"), SubResource("LearnsetEntry_0025_tail_whip"), SubResource("LearnsetEntry_0025_thunder_shock"), SubResource("LearnsetEntry_0025_thunder_wave"), SubResource("LearnsetEntry_0025_nuzzle"), SubResource("LearnsetEntry_0025_spark"), SubResource("LearnsetEntry_0025_charm"), SubResource("LearnsetEntry_0025_thunderbolt"), SubResource("LearnsetEntry_0025_charge"), SubResource("LearnsetEntry_0025_light_screen"), SubResource("LearnsetEntry_0025_thunder"), SubResource("LearnsetEntry_0025_volt_tackle")])
+learnset = Array[ExtResource("5_learn")]([SubResource("LE_pokmmo_0025_charm"), SubResource("LE_pokmmo_0025_growl"), SubResource("LE_pokmmo_0025_nasty_plot"), SubResource("LE_pokmmo_0025_quick_attack"), SubResource("LE_pokmmo_0025_sweet_kiss"), SubResource("LE_pokmmo_0025_tail_whip"), SubResource("LE_pokmmo_0025_thundershock"), SubResource("LE_pokmmo_0025_thunder_wave"), SubResource("LE_pokmmo_0025_double_team"), SubResource("LE_pokmmo_0025_double_kick"), SubResource("LE_pokmmo_0025_electro_ball"), SubResource("LE_pokmmo_0025_feint"), SubResource("LE_pokmmo_0025_spark"), SubResource("LE_pokmmo_0025_light_screen"), SubResource("LE_pokmmo_0025_thunderbolt"), SubResource("LE_pokmmo_0025_agility"), SubResource("LE_pokmmo_0025_slam"), SubResource("LE_pokmmo_0025_swift"), SubResource("LE_pokmmo_0025_iron_tail"), SubResource("LE_pokmmo_0025_charge"), SubResource("LE_pokmmo_0025_thunder"), SubResource("LE_pokmmo_0025_discharge"), SubResource("LE_pokmmo_0025_wild_charge"), SubResource("LE_new_0025_static"), SubResource("LE_new_0025_lightning_rod")])
 hp_base = 35
 attack_base = 55
 defense_base = 40

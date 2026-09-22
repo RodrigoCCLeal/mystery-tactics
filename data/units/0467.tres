@@ -4,8 +4,250 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0467/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0467/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_punch.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/ember.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/smokescreen.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/smog.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/flame_wheel.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/feint_attack.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/clear_smog.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/fire_spin.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/poison_gas.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/confuse_ray.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/flame_burst.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/fire_punch.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/flamethrower.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/lava_plume.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/low_kick.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/sunny_day.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/fire_blast.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/hyper_beam.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/flame_body.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/vital_spirit.tres" id="122"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/magmarizer.tres" id="123"]
+[sub_resource type="Resource" id="LE_new_0467_thunder_punch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0467_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0467_ember"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0467_smokescreen"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0467_smog"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0467_tackle"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0467_flame_wheel"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0467_feint_attack"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0467_clear_smog"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0467_fire_spin"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0467_poison_gas"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0467_confuse_ray"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0467_flame_burst"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0467_scary_face"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0467_fire_punch"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0467_flamethrower"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0467_lava_plume"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0467_low_kick"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0467_sunny_day"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0467_fire_blast"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0467_hyper_beam"]
+script = ExtResource("learnset_script")
+level = 62
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0467_flame_body"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0467_vital_spirit"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="WHI_0467_magmarizer"]
+script = ExtResource("wild_item_script")
+item = ExtResource("123")
+chance = 0.1
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_ember"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_smog"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_smokescreen"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_thunderpunch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_tackle"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_clear_smog"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_faint_attack"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_fire_spin"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_flame_wheel"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_poison_gas"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_confuse_ray"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_flame_burst"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_scary_face"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_fire_punch"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_lava_plume"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_low_kick"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_flamethrower"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_sunny_day"]
+script = ExtResource("learnset_script")
+level = 52
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_fire_blast"]
+script = ExtResource("learnset_script")
+level = 58
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0467_hyper_beam"]
+script = ExtResource("learnset_script")
+level = 64
+action = ExtResource("120")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0467_magmarizer")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0467_ember"), SubResource("LE_pokmmo_0467_leer"), SubResource("LE_pokmmo_0467_smog"), SubResource("LE_pokmmo_0467_smokescreen"), SubResource("LE_pokmmo_0467_thunderpunch"), SubResource("LE_pokmmo_0467_tackle"), SubResource("LE_pokmmo_0467_clear_smog"), SubResource("LE_pokmmo_0467_faint_attack"), SubResource("LE_pokmmo_0467_fire_spin"), SubResource("LE_pokmmo_0467_flame_wheel"), SubResource("LE_pokmmo_0467_poison_gas"), SubResource("LE_pokmmo_0467_confuse_ray"), SubResource("LE_pokmmo_0467_flame_burst"), SubResource("LE_pokmmo_0467_scary_face"), SubResource("LE_pokmmo_0467_fire_punch"), SubResource("LE_pokmmo_0467_lava_plume"), SubResource("LE_pokmmo_0467_low_kick"), SubResource("LE_pokmmo_0467_flamethrower"), SubResource("LE_pokmmo_0467_sunny_day"), SubResource("LE_pokmmo_0467_fire_blast"), SubResource("LE_pokmmo_0467_hyper_beam"), SubResource("LE_new_0467_flame_body"), SubResource("LE_new_0467_vital_spirit")])
 unit_name = "Magmortar"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

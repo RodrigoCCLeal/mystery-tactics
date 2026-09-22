@@ -4,8 +4,257 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0222/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0222/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/bubble.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/recover.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/aqua_ring.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/refresh.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/endure.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/spike_cannon.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/rock_blast.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/lucky_chant.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/brine.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/iron_defense.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/flail.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/life_dew.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/mirror_coat.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/power_gem.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/hustle.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/natural_cure.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/regenerator.tres" id="122"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/red_shard.tres" id="123"]
+[ext_resource type="Resource" path="res://data/items/hard_stone.tres" id="124"]
+[ext_resource type="Resource" path="res://data/items/luminous_moss.tres" id="125"]
+[sub_resource type="Resource" id="LE_new_0222_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0222_harden"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0222_bubble"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0222_water_gun"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0222_recover"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0222_bubble_beam"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0222_aqua_ring"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0222_refresh"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0222_endure"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0222_ancient_power"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0222_spike_cannon"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0222_rock_blast"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0222_lucky_chant"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0222_brine"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0222_iron_defense"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0222_flail"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0222_life_dew"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0222_mirror_coat"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0222_power_gem"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0222_earth_power"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0222_hustle"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0222_natural_cure"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0222_regenerator"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="WHI_0222_red_shard"]
+script = ExtResource("wild_item_script")
+item = ExtResource("123")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0222_hard_stone"]
+script = ExtResource("wild_item_script")
+item = ExtResource("124")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0222_luminous_moss"]
+script = ExtResource("wild_item_script")
+item = ExtResource("125")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_harden"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_bubble"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_water_gun"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_aqua_ring"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_refresh"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_endure"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_ancientpower"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_spike_cannon"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_lucky_chant"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_bubblebeam"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_brine"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_iron_defense"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_flail"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_rock_blast"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_power_gem"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_earth_power"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_recover"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0222_mirror_coat"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("117")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0222_red_shard"), SubResource("WHI_0222_hard_stone"), SubResource("WHI_0222_luminous_moss")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0222_harden"), SubResource("LE_pokmmo_0222_tackle"), SubResource("LE_pokmmo_0222_bubble"), SubResource("LE_pokmmo_0222_water_gun"), SubResource("LE_pokmmo_0222_aqua_ring"), SubResource("LE_pokmmo_0222_refresh"), SubResource("LE_pokmmo_0222_endure"), SubResource("LE_pokmmo_0222_ancientpower"), SubResource("LE_pokmmo_0222_spike_cannon"), SubResource("LE_pokmmo_0222_lucky_chant"), SubResource("LE_pokmmo_0222_bubblebeam"), SubResource("LE_pokmmo_0222_brine"), SubResource("LE_pokmmo_0222_iron_defense"), SubResource("LE_pokmmo_0222_flail"), SubResource("LE_pokmmo_0222_rock_blast"), SubResource("LE_pokmmo_0222_power_gem"), SubResource("LE_pokmmo_0222_earth_power"), SubResource("LE_pokmmo_0222_recover"), SubResource("LE_pokmmo_0222_mirror_coat"), SubResource("LE_new_0222_hustle"), SubResource("LE_new_0222_natural_cure"), SubResource("LE_new_0222_regenerator")])
 unit_name = "Corsola"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

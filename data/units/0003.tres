@@ -25,6 +25,11 @@
 [ext_resource type="Resource" uid="uid://cdmrqfvjb8ksf" path="res://data/attacks/solar_beam.tres" id="21"]
 [ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="22"]
 
+[ext_resource type="Resource" path="res://data/attacks/petal_dance.tres" id="23"]
+[ext_resource type="Resource" path="res://data/attacks/petal_blizzard.tres" id="24"]
+[ext_resource type="Resource" path="res://data/attacks/seed_bomb.tres" id="25"]
+[ext_resource type="Resource" path="res://data/attacks/sweet_scent.tres" id="26"]
+[ext_resource type="Resource" path="res://data/attacks/worry_seed.tres" id="27"]
 [sub_resource type="Resource" id="LearnsetEntry_0003_tackle"]
 script = ExtResource("5")
 action = ExtResource("4")
@@ -112,6 +117,189 @@ script = ExtResource("5")
 action = ExtResource("9")
 is_hidden_ability = true
 
+[sub_resource type="Resource" id="LE_new_0003_vine_whip"]
+script = ExtResource("5")
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LE_new_0003_tackle"]
+script = ExtResource("5")
+action = ExtResource("4")
+
+[sub_resource type="Resource" id="LE_new_0003_growl"]
+script = ExtResource("5")
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LE_new_0003_leech_seed"]
+script = ExtResource("5")
+action = ExtResource("11")
+
+[sub_resource type="Resource" id="LE_new_0003_growth"]
+script = ExtResource("5")
+action = ExtResource("10")
+
+[sub_resource type="Resource" id="LE_new_0003_petal_dance"]
+script = ExtResource("5")
+action = ExtResource("23")
+
+[sub_resource type="Resource" id="LE_new_0003_amnesia"]
+script = ExtResource("5")
+action = ExtResource("19")
+
+[sub_resource type="Resource" id="LE_new_0003_power_whip"]
+script = ExtResource("5")
+action = ExtResource("17")
+
+[sub_resource type="Resource" id="LE_new_0003_petal_blizzard"]
+script = ExtResource("5")
+action = ExtResource("24")
+
+[sub_resource type="Resource" id="LE_new_0003_razor_leaf"]
+script = ExtResource("5")
+level = 12
+action = ExtResource("12")
+
+[sub_resource type="Resource" id="LE_new_0003_poison_powder"]
+script = ExtResource("5")
+level = 13
+action = ExtResource("13")
+
+[sub_resource type="Resource" id="LE_new_0003_sleep_powder"]
+script = ExtResource("5")
+level = 13
+action = ExtResource("14")
+
+[sub_resource type="Resource" id="LE_new_0003_take_down"]
+script = ExtResource("5")
+level = 15
+action = ExtResource("15")
+
+[sub_resource type="Resource" id="LE_new_0003_seed_bomb"]
+script = ExtResource("5")
+level = 20
+action = ExtResource("25")
+
+[sub_resource type="Resource" id="LE_new_0003_sweet_scent"]
+script = ExtResource("5")
+level = 23
+action = ExtResource("26")
+
+[sub_resource type="Resource" id="LE_new_0003_double_edge"]
+script = ExtResource("5")
+level = 31
+action = ExtResource("22")
+
+[sub_resource type="Resource" id="LE_new_0003_synthesis"]
+script = ExtResource("5")
+level = 37
+action = ExtResource("18")
+
+[sub_resource type="Resource" id="LE_new_0003_worry_seed"]
+script = ExtResource("5")
+level = 39
+action = ExtResource("27")
+
+[sub_resource type="Resource" id="LE_new_0003_solar_beam"]
+script = ExtResource("5")
+level = 53
+action = ExtResource("21")
+
+[sub_resource type="Resource" id="LE_new_0003_overgrow"]
+script = ExtResource("5")
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LE_new_0003_chlorophyll"]
+script = ExtResource("5")
+is_hidden_ability = true
+action = ExtResource("9")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_amnesia"]
+script = ExtResource("5")
+action = ExtResource("19")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_growl"]
+script = ExtResource("5")
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_growth"]
+script = ExtResource("5")
+action = ExtResource("10")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_leech_seed"]
+script = ExtResource("5")
+action = ExtResource("11")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_petal_dance"]
+script = ExtResource("5")
+action = ExtResource("23")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_tackle"]
+script = ExtResource("5")
+action = ExtResource("4")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_vine_whip"]
+script = ExtResource("5")
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_razor_leaf"]
+script = ExtResource("5")
+level = 12
+action = ExtResource("12")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_poisonpowder"]
+script = ExtResource("5")
+level = 14
+action = ExtResource("13")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_sleep_powder"]
+script = ExtResource("5")
+level = 14
+action = ExtResource("14")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_seed_bomb"]
+script = ExtResource("5")
+level = 20
+action = ExtResource("25")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_take_down"]
+script = ExtResource("5")
+level = 22
+action = ExtResource("15")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_magical_leaf"]
+script = ExtResource("5")
+level = 30
+action = ExtResource("16")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_sweet_scent"]
+script = ExtResource("5")
+level = 30
+action = ExtResource("26")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_synthesis"]
+script = ExtResource("5")
+level = 35
+action = ExtResource("18")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_sludge_wave"]
+script = ExtResource("5")
+level = 42
+action = ExtResource("20")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_worry_seed"]
+script = ExtResource("5")
+level = 44
+action = ExtResource("27")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_double_edge"]
+script = ExtResource("5")
+level = 45
+action = ExtResource("22")
+
+[sub_resource type="Resource" id="LE_pokmmo_0003_solarbeam"]
+script = ExtResource("5")
+level = 55
+action = ExtResource("21")
+
 [resource]
 script = ExtResource("1")
 unit_name = "Venusaur"
@@ -121,7 +309,7 @@ attack_hit_delay = 0.7
 special_hit_delay = 0.8
 types = Array[String](["Grass", "Poison"])
 slots = Array[ExtResource("5_venusaur")]([ExtResource("4"), ExtResource("6"), ExtResource("7")])
-learnset = Array[ExtResource("5")]([SubResource("LearnsetEntry_0003_tackle"), SubResource("LearnsetEntry_0003_growl"), SubResource("LearnsetEntry_0003_vine_whip"), SubResource("LearnsetEntry_0003_growth"), SubResource("LearnsetEntry_0003_leech_seed"), SubResource("LearnsetEntry_0003_razor_leaf"), SubResource("LearnsetEntry_0003_poison_powder"), SubResource("LearnsetEntry_0003_sleep_powder"), SubResource("LearnsetEntry_0003_take_down"), SubResource("LearnsetEntry_0003_magical_leaf"), SubResource("LearnsetEntry_0003_power_whip"), SubResource("LearnsetEntry_0003_synthesis"), SubResource("LearnsetEntry_0003_amnesia"), SubResource("LearnsetEntry_0003_sludge_wave"), SubResource("LearnsetEntry_0003_double_edge"), SubResource("LearnsetEntry_0003_solar_beam"), SubResource("LearnsetEntry_0003_overgrow"), SubResource("LearnsetEntry_0003_chlorophyll")])
+learnset = Array[ExtResource("5")]([SubResource("LE_pokmmo_0003_amnesia"), SubResource("LE_pokmmo_0003_growl"), SubResource("LE_pokmmo_0003_growth"), SubResource("LE_pokmmo_0003_leech_seed"), SubResource("LE_pokmmo_0003_petal_dance"), SubResource("LE_pokmmo_0003_tackle"), SubResource("LE_pokmmo_0003_vine_whip"), SubResource("LE_pokmmo_0003_razor_leaf"), SubResource("LE_pokmmo_0003_poisonpowder"), SubResource("LE_pokmmo_0003_sleep_powder"), SubResource("LE_pokmmo_0003_seed_bomb"), SubResource("LE_pokmmo_0003_take_down"), SubResource("LE_pokmmo_0003_magical_leaf"), SubResource("LE_pokmmo_0003_sweet_scent"), SubResource("LE_pokmmo_0003_synthesis"), SubResource("LE_pokmmo_0003_sludge_wave"), SubResource("LE_pokmmo_0003_worry_seed"), SubResource("LE_pokmmo_0003_double_edge"), SubResource("LE_pokmmo_0003_solarbeam"), SubResource("LE_new_0003_overgrow"), SubResource("LE_new_0003_chlorophyll")])
 weight = 2
 hp_base = 80
 attack_base = 82

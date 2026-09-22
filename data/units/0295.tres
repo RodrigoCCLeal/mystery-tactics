@@ -4,8 +4,224 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0295/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0295/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/crunch.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/uproar.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/astonish.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/howl.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_fang.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/ice_fang.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/fire_fang.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/echoed_voice.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/boomburst.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/rest.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/sleep_talk.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/stomp.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/roar.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/hyper_beam.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/hyper_voice.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/synchronoise.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/soundproof.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/scrappy.tres" id="121"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/chesto_berry.tres" id="122"]
+[sub_resource type="Resource" id="LE_new_0295_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0295_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0295_crunch"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0295_uproar"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0295_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0295_howl"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0295_thunder_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0295_ice_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0295_fire_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0295_echoed_voice"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0295_boomburst"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0295_screech"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0295_rest"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0295_sleep_talk"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0295_supersonic"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0295_stomp"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0295_roar"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0295_hyper_beam"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0295_hyper_voice"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0295_synchronoise"]
+script = ExtResource("learnset_script")
+level = 53
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0295_soundproof"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0295_scrappy"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="WHI_0295_chesto_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("122")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_crunch"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_echoed_voice"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_fire_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_howl"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_ice_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_thunder_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_rest"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_sleep_talk"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_stomp"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_roar"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_supersonic"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_uproar"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_synchronoise"]
+script = ExtResource("learnset_script")
+level = 53
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_screech"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_hyper_voice"]
+script = ExtResource("learnset_script")
+level = 63
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0295_hyper_beam"]
+script = ExtResource("learnset_script")
+level = 81
+action = ExtResource("117")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0295_chesto_berry")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0295_astonish"), SubResource("LE_pokmmo_0295_bite"), SubResource("LE_pokmmo_0295_crunch"), SubResource("LE_pokmmo_0295_echoed_voice"), SubResource("LE_pokmmo_0295_fire_fang"), SubResource("LE_pokmmo_0295_howl"), SubResource("LE_pokmmo_0295_ice_fang"), SubResource("LE_pokmmo_0295_pound"), SubResource("LE_pokmmo_0295_thunder_fang"), SubResource("LE_pokmmo_0295_rest"), SubResource("LE_pokmmo_0295_sleep_talk"), SubResource("LE_pokmmo_0295_stomp"), SubResource("LE_pokmmo_0295_roar"), SubResource("LE_pokmmo_0295_supersonic"), SubResource("LE_pokmmo_0295_uproar"), SubResource("LE_pokmmo_0295_synchronoise"), SubResource("LE_pokmmo_0295_screech"), SubResource("LE_pokmmo_0295_hyper_voice"), SubResource("LE_pokmmo_0295_hyper_beam"), SubResource("LE_new_0295_soundproof"), SubResource("LE_new_0295_scrappy")])
 unit_name = "Exploud"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

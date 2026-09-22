@@ -76,6 +76,17 @@ var category: String = "Medicine"
 # campo não trava isso, do mesmo jeito que heal_amount também não trava.
 @export var reveals_hidden_ability: bool = false
 
+# Quantos NÍVEIS "Use" (ver GameState.use_item) soma de uma vez na unidade
+# alvo — pedido do usuário: "Rare Candy... increases units level by 1". 0
+# (padrão) = este item não mexe em nível nenhum. Sobe hp_current JUNTO na
+# mesma quantidade que hp_max sobe (preserva o dano já tomado, mesmo
+# espírito de Unit.gain_exp() ao subir de nível em batalha), e nunca passa
+# do teto de GameState.get_level_cap() — numa unidade já no teto, "Use" não
+# faz nada (nem consome o item, ver segunda trava em use_item(), mesmo
+# padrão de heal_amount/reveals_hidden_ability acima). Só faz sentido
+# category == "Medicine", mesmo espírito dos dois campos acima.
+@export var grants_levels: int = 0
+
 # Multiplicador de precisão dos ataques de quem carrega este item
 # equipado no loadout (ver Unit.get_accuracy_multiplier). 1.0 = sem
 # efeito. Nenhum AttackData implementado ainda varia accuracy de verdade

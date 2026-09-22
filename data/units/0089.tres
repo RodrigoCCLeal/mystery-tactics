@@ -4,8 +4,258 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0089/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0089/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/disable.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/minimize.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/haze.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/poison_gas.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/mud_slap.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/moonblast.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/venom_drench.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/sludge.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/smog.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/mud_shot.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/mud_bomb.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/toxic.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/sludge_bomb.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/fling.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/sludge_wave.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/acid_armor.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/gunk_shot.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/belch.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/memento.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/stench.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/sticky_hold.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/poison_touch.tres" id="124"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/nugget.tres" id="125"]
+[ext_resource type="Resource" path="res://data/items/toxic_orb.tres" id="126"]
+[ext_resource type="Resource" path="res://data/items/black_sludge.tres" id="127"]
+[sub_resource type="Resource" id="LE_new_0089_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0089_disable"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0089_harden"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0089_minimize"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0089_haze"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0089_poison_gas"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0089_mud_slap"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0089_moonblast"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0089_venom_drench"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0089_sludge"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0089_smog"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0089_mud_shot"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0089_mud_bomb"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0089_toxic"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0089_screech"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0089_sludge_bomb"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0089_fling"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0089_sludge_wave"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0089_acid_armor"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0089_gunk_shot"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0089_belch"]
+script = ExtResource("learnset_script")
+level = 52
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0089_memento"]
+script = ExtResource("learnset_script")
+level = 57
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0089_stench"]
+script = ExtResource("learnset_script")
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0089_sticky_hold"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0089_poison_touch"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="WHI_0089_nugget"]
+script = ExtResource("wild_item_script")
+item = ExtResource("125")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0089_toxic_orb"]
+script = ExtResource("wild_item_script")
+item = ExtResource("126")
+chance = 0.01
+
+[sub_resource type="Resource" id="WHI_0089_black_sludge"]
+script = ExtResource("wild_item_script")
+item = ExtResource("127")
+chance = 0.5
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_harden"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_haze"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_minimize"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_mud_slap"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_poison_gas"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_disable"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_sludge"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_mud_bomb"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_mud_shot"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_smog"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_fling"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_toxic"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_sludge_bomb"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_screech"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_sludge_wave"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_gunk_shot"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_acid_armor"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0089_memento"]
+script = ExtResource("learnset_script")
+level = 57
+action = ExtResource("121")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0089_nugget"), SubResource("WHI_0089_toxic_orb"), SubResource("WHI_0089_black_sludge")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0089_harden"), SubResource("LE_pokmmo_0089_haze"), SubResource("LE_pokmmo_0089_minimize"), SubResource("LE_pokmmo_0089_mud_slap"), SubResource("LE_pokmmo_0089_poison_gas"), SubResource("LE_pokmmo_0089_pound"), SubResource("LE_pokmmo_0089_disable"), SubResource("LE_pokmmo_0089_sludge"), SubResource("LE_pokmmo_0089_mud_bomb"), SubResource("LE_pokmmo_0089_mud_shot"), SubResource("LE_pokmmo_0089_smog"), SubResource("LE_pokmmo_0089_fling"), SubResource("LE_pokmmo_0089_toxic"), SubResource("LE_pokmmo_0089_sludge_bomb"), SubResource("LE_pokmmo_0089_screech"), SubResource("LE_pokmmo_0089_sludge_wave"), SubResource("LE_pokmmo_0089_gunk_shot"), SubResource("LE_pokmmo_0089_acid_armor"), SubResource("LE_pokmmo_0089_memento"), SubResource("LE_new_0089_stench"), SubResource("LE_new_0089_sticky_hold"), SubResource("LE_new_0089_poison_touch")])
 unit_name = "Muk"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

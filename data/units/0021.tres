@@ -22,6 +22,10 @@
 [ext_resource type="Resource" path="res://data/attacks/roost.tres" id="20_roost"]
 [ext_resource type="Resource" path="res://data/attacks/drill_peck.tres" id="21_drill_peck"]
 
+[ext_resource type="Resource" path="res://data/attacks/pursuit.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/mirror_move.tres" id="101"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/sharp_beak.tres" id="102"]
 [sub_resource type="Resource" id="Resource_evo"]
 script = ExtResource("4_evo")
 target = ExtResource("7_target")
@@ -93,15 +97,166 @@ script = ExtResource("5_learn")
 level = 36
 action = ExtResource("21_drill_peck")
 
+[sub_resource type="Resource" id="LE_new_0021_growl"]
+script = ExtResource("5_learn")
+action = ExtResource("10_growl")
+
+[sub_resource type="Resource" id="LE_new_0021_peck"]
+script = ExtResource("5_learn")
+action = ExtResource("11_peck")
+
+[sub_resource type="Resource" id="LE_new_0021_leer"]
+script = ExtResource("5_learn")
+level = 4
+action = ExtResource("12_leer")
+
+[sub_resource type="Resource" id="LE_new_0021_pursuit"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0021_assurance"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("13_assurance")
+
+[sub_resource type="Resource" id="LE_new_0021_fury_attack"]
+script = ExtResource("5_learn")
+level = 9
+action = ExtResource("14_fury_attack")
+
+[sub_resource type="Resource" id="LE_new_0021_focus_energy"]
+script = ExtResource("5_learn")
+level = 11
+action = ExtResource("19_focus_energy")
+
+[sub_resource type="Resource" id="LE_new_0021_aerial_ace"]
+script = ExtResource("5_learn")
+level = 15
+action = ExtResource("15_aerial_ace")
+
+[sub_resource type="Resource" id="LE_new_0021_wing_attack"]
+script = ExtResource("5_learn")
+level = 18
+action = ExtResource("16_wing_attack")
+
+[sub_resource type="Resource" id="LE_new_0021_mirror_move"]
+script = ExtResource("5_learn")
+level = 18
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0021_take_down"]
+script = ExtResource("5_learn")
+level = 22
+action = ExtResource("17_take_down")
+
+[sub_resource type="Resource" id="LE_new_0021_roost"]
+script = ExtResource("5_learn")
+level = 24
+action = ExtResource("20_roost")
+
+[sub_resource type="Resource" id="LE_new_0021_agility"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("18_agility")
+
+[sub_resource type="Resource" id="LE_new_0021_drill_peck"]
+script = ExtResource("5_learn")
+level = 29
+action = ExtResource("21_drill_peck")
+
+[sub_resource type="Resource" id="LE_new_0021_keen_eye"]
+script = ExtResource("5_learn")
+action = ExtResource("8_keen_eye")
+
+[sub_resource type="Resource" id="LE_new_0021_sniper"]
+script = ExtResource("5_learn")
+is_hidden_ability = true
+action = ExtResource("9_sniper")
+
+[sub_resource type="Resource" id="WHI_0021_sharp_beak"]
+script = ExtResource("wild_item_script")
+item = ExtResource("102")
+chance = 0.24
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_growl"]
+script = ExtResource("5_learn")
+action = ExtResource("10_growl")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_peck"]
+script = ExtResource("5_learn")
+action = ExtResource("11_peck")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_leer"]
+script = ExtResource("5_learn")
+level = 4
+action = ExtResource("12_leer")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_assurance"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("13_assurance")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_pursuit"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_focus_energy"]
+script = ExtResource("5_learn")
+level = 11
+action = ExtResource("19_focus_energy")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_fury_attack"]
+script = ExtResource("5_learn")
+level = 11
+action = ExtResource("14_fury_attack")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_aerial_ace"]
+script = ExtResource("5_learn")
+level = 15
+action = ExtResource("15_aerial_ace")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_mirror_move"]
+script = ExtResource("5_learn")
+level = 18
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_wing_attack"]
+script = ExtResource("5_learn")
+level = 18
+action = ExtResource("16_wing_attack")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_take_down"]
+script = ExtResource("5_learn")
+level = 22
+action = ExtResource("17_take_down")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_roost"]
+script = ExtResource("5_learn")
+level = 24
+action = ExtResource("20_roost")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_agility"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("18_agility")
+
+[sub_resource type="Resource" id="LE_pokmmo_0021_drill_peck"]
+script = ExtResource("5_learn")
+level = 32
+action = ExtResource("21_drill_peck")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0021_sharp_beak")])
 unit_name = "Spearow"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Normal", "Flying"])
 grounded = false
 slots = Array[ExtResource("6_action")]([ExtResource("10_growl"), ExtResource("11_peck"), ExtResource("12_leer"), ExtResource("8_keen_eye")])
-learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0021_keen_eye"), SubResource("LearnsetEntry_0021_sniper"), SubResource("LearnsetEntry_0021_growl"), SubResource("LearnsetEntry_0021_peck"), SubResource("LearnsetEntry_0021_leer"), SubResource("LearnsetEntry_0021_assurance"), SubResource("LearnsetEntry_0021_fury_attack"), SubResource("LearnsetEntry_0021_aerial_ace"), SubResource("LearnsetEntry_0021_wing_attack"), SubResource("LearnsetEntry_0021_take_down"), SubResource("LearnsetEntry_0021_agility"), SubResource("LearnsetEntry_0021_focus_energy"), SubResource("LearnsetEntry_0021_roost"), SubResource("LearnsetEntry_0021_drill_peck")])
+learnset = Array[ExtResource("5_learn")]([SubResource("LE_pokmmo_0021_growl"), SubResource("LE_pokmmo_0021_peck"), SubResource("LE_pokmmo_0021_leer"), SubResource("LE_pokmmo_0021_assurance"), SubResource("LE_pokmmo_0021_pursuit"), SubResource("LE_pokmmo_0021_focus_energy"), SubResource("LE_pokmmo_0021_fury_attack"), SubResource("LE_pokmmo_0021_aerial_ace"), SubResource("LE_pokmmo_0021_mirror_move"), SubResource("LE_pokmmo_0021_wing_attack"), SubResource("LE_pokmmo_0021_take_down"), SubResource("LE_pokmmo_0021_roost"), SubResource("LE_pokmmo_0021_agility"), SubResource("LE_pokmmo_0021_drill_peck"), SubResource("LE_new_0021_keen_eye"), SubResource("LE_new_0021_sniper")])
 hp_base = 40
 attack_base = 60
 defense_base = 30

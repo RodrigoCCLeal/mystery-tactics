@@ -4,8 +4,203 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0309/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0309/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_wave.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/howl.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/spark.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/odor_sleuth.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/shock_wave.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_fang.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/roar.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/discharge.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/thunder.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/charge.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/wild_charge.tres" id="114"]
+[ext_resource type="Resource" path="res://data/abilities/static.tres" id="115"]
+[ext_resource type="Resource" path="res://data/abilities/lightning_rod.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/minus.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_shock.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/snarl.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/thunderbolt.tres" id="120"]
+[sub_resource type="Resource" id="LE_new_0309_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0309_thunder_wave"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0309_leer"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0309_howl"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0309_quick_attack"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0309_spark"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0309_odor_sleuth"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0309_shock_wave"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0309_thunder_fang"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0309_bite"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0309_roar"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0309_discharge"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0309_thunder"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0309_charge"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0309_wild_charge"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0309_static"]
+script = ExtResource("learnset_script")
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0309_lightning_rod"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0309_minus"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_quick_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_thunder_wave"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_howl"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_thundershock"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_spark"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_odor_sleuth"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_shock_wave"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_bite"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_thunder_fang"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_roar"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_snarl"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_discharge"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_charge"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_thunderbolt"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_wild_charge"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0309_thunder"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("112")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0309_leer"), SubResource("LE_pokmmo_0309_quick_attack"), SubResource("LE_pokmmo_0309_tackle"), SubResource("LE_pokmmo_0309_thunder_wave"), SubResource("LE_pokmmo_0309_howl"), SubResource("LE_pokmmo_0309_thundershock"), SubResource("LE_pokmmo_0309_spark"), SubResource("LE_pokmmo_0309_odor_sleuth"), SubResource("LE_pokmmo_0309_shock_wave"), SubResource("LE_pokmmo_0309_bite"), SubResource("LE_pokmmo_0309_thunder_fang"), SubResource("LE_pokmmo_0309_roar"), SubResource("LE_pokmmo_0309_snarl"), SubResource("LE_pokmmo_0309_discharge"), SubResource("LE_pokmmo_0309_charge"), SubResource("LE_pokmmo_0309_thunderbolt"), SubResource("LE_pokmmo_0309_wild_charge"), SubResource("LE_pokmmo_0309_thunder"), SubResource("LE_new_0309_static"), SubResource("LE_new_0309_lightning_rod"), SubResource("LE_new_0309_minus")])
 unit_name = "Electrike"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

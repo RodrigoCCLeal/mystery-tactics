@@ -4,8 +4,216 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0367/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0367/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/whirlpool.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/iron_defense.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/shell_smash.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/feint_attack.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/rain_dance.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/water_pulse.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/ice_fang.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/brine.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/sucker_punch.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/dive.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/baton_pass.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/crunch.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/aqua_tail.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/coil.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/swift_swim.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/water_veil.tres" id="120"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/deep_sea_tooth.tres" id="121"]
+[sub_resource type="Resource" id="LE_new_0367_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0367_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0367_whirlpool"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0367_iron_defense"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0367_shell_smash"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0367_screech"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0367_scary_face"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0367_feint_attack"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0367_rain_dance"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0367_water_pulse"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0367_ice_fang"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0367_brine"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0367_sucker_punch"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0367_dive"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0367_baton_pass"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0367_crunch"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0367_aqua_tail"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0367_coil"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0367_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0367_swift_swim"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0367_water_veil"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="WHI_0367_deep_sea_tooth"]
+script = ExtResource("wild_item_script")
+item = ExtResource("121")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_whirlpool"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_screech"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_scary_face"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_faint_attack"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_rain_dance"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_water_pulse"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_ice_fang"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_brine"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_sucker_punch"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_dive"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_baton_pass"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_crunch"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_aqua_tail"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_coil"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0367_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("118")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0367_deep_sea_tooth")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0367_bite"), SubResource("LE_pokmmo_0367_whirlpool"), SubResource("LE_pokmmo_0367_screech"), SubResource("LE_pokmmo_0367_scary_face"), SubResource("LE_pokmmo_0367_faint_attack"), SubResource("LE_pokmmo_0367_rain_dance"), SubResource("LE_pokmmo_0367_water_pulse"), SubResource("LE_pokmmo_0367_ice_fang"), SubResource("LE_pokmmo_0367_brine"), SubResource("LE_pokmmo_0367_sucker_punch"), SubResource("LE_pokmmo_0367_dive"), SubResource("LE_pokmmo_0367_baton_pass"), SubResource("LE_pokmmo_0367_crunch"), SubResource("LE_pokmmo_0367_aqua_tail"), SubResource("LE_pokmmo_0367_coil"), SubResource("LE_pokmmo_0367_hydro_pump"), SubResource("LE_new_0367_swift_swim"), SubResource("LE_new_0367_water_veil")])
 unit_name = "Huntail"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

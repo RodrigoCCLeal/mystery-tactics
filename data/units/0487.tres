@@ -4,8 +4,201 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0487/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0487/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_breath.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/shadow_sneak.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/defog.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/ominous_wind.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/slash.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/hex.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/destiny_bond.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_claw.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/aura_sphere.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/shadow_force.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/shadow_claw.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/pain_split.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/heal_block.tres" id="115"]
+[ext_resource type="Resource" path="res://data/abilities/pressure.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/telepathy.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/shadow_ball.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_pulse.tres" id="119"]
+[sub_resource type="Resource" id="LE_new_0487_scary_face"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0487_dragon_breath"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0487_shadow_sneak"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0487_defog"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0487_ominous_wind"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0487_ancient_power"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0487_slash"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0487_hex"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0487_destiny_bond"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0487_dragon_claw"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0487_earth_power"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0487_aura_sphere"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0487_shadow_force"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0487_shadow_claw"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0487_pain_split"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0487_heal_block"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0487_pressure"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0487_telepathy"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_defog"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_dragonbreath"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_scary_face"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_shadow_sneak"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_ominous_wind"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_ancientpower"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_hex"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_slash"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_shadow_ball"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_dragon_pulse"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_shadow_claw"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_pain_split"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_heal_block"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_aura_sphere"]
+script = ExtResource("learnset_script")
+level = 56
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_dragon_claw"]
+script = ExtResource("learnset_script")
+level = 63
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_earth_power"]
+script = ExtResource("learnset_script")
+level = 70
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_shadow_force"]
+script = ExtResource("learnset_script")
+level = 77
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0487_destiny_bond"]
+script = ExtResource("learnset_script")
+level = 84
+action = ExtResource("108")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0487_defog"), SubResource("LE_pokmmo_0487_dragonbreath"), SubResource("LE_pokmmo_0487_scary_face"), SubResource("LE_pokmmo_0487_shadow_sneak"), SubResource("LE_pokmmo_0487_ominous_wind"), SubResource("LE_pokmmo_0487_ancientpower"), SubResource("LE_pokmmo_0487_hex"), SubResource("LE_pokmmo_0487_slash"), SubResource("LE_pokmmo_0487_shadow_ball"), SubResource("LE_pokmmo_0487_dragon_pulse"), SubResource("LE_pokmmo_0487_shadow_claw"), SubResource("LE_pokmmo_0487_pain_split"), SubResource("LE_pokmmo_0487_heal_block"), SubResource("LE_pokmmo_0487_aura_sphere"), SubResource("LE_pokmmo_0487_dragon_claw"), SubResource("LE_pokmmo_0487_earth_power"), SubResource("LE_pokmmo_0487_shadow_force"), SubResource("LE_pokmmo_0487_destiny_bond"), SubResource("LE_new_0487_pressure"), SubResource("LE_new_0487_telepathy")])
 unit_name = "Giratina"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

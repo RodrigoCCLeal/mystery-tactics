@@ -1327,6 +1327,22 @@ var current_area: EncounterArea = preload("res://data/areas/archi_area.tres")
 # antes de qualquer batalha nova mesmo.
 var current_encounter_source: String = "Grass"
 
+# Lista de (espécie, nível) que vira o time INIMIGO da PRÓXIMA batalha
+# selvagem de GRAMA (source == "Grass") — refactor de encontro selvagem
+# (2026-09-10, pedido do usuário verbatim): "When combat starts, all units
+# in the overworld are added to the enemy team" (as unidades do MESMO
+# "grupo" de grama conectada que a tocada, ver world.gd::
+# _get_connected_grass_patch/_get_wild_sprites_in_patch, NÃO a área/rota
+# inteira). Escrito por world.gd::_on_player_tile_entered logo antes de
+# _start_encounter("Grass"), lido de volta por battle.gd::spawn_enemies()
+# no lugar do antigo EncounterArea.pick_group("Grass") (que continua
+# existindo e sendo usado normalmente pra source == "Water", fora do escopo
+# deste pedido). Reaproveita EncounterEntry (mesmo par espécie+nível que
+# EncounterGroup já usava) em vez de uma classe nova só pra isso. Resetado
+# pra vazio no fim de toda batalha (ver battle.gd::end_battle), mesma
+# higiene de current_encounter_source acima.
+var current_wild_group: Array[EncounterEntry] = []
+
 # ---------- Batalha contra Trainer (ver trainer.gd) ----------
 # Espelha, do mesmo jeito que current_area faz pra encontro selvagem, os
 # dados que battle.gd precisa DEPOIS que change_scene_to_file() já destruiu
@@ -1444,20 +1460,22 @@ var forced_battle_tileset: BattleTileset = null
 # etc.), sem olhar pra nenhum dos dois campos abaixo. false = ver
 # manual_map logo abaixo.
 #
-# NOTA (limitação conhecida, documentada de propósito em vez de resolvida
-# no escuro): battle.gd::_ready() ainda não tem um caminho de código pra
-# CARREGAR de verdade um manual_map quando generated_map == false — hoje
-# isso é só o campo/checkbox (Trainer.gd/boss.gd já expõem os dois no
-# Inspector, e world.gd já copia os dois pra cá antes de trocar de cena),
-# preparado pra existir assim que o usuário tiver um mapa desenhado à mão
-# de verdade pra testar contra. Suicune usa generated_map=true (pedido
-# explícito: "For now, we will test it procedurally generated"), então
-# nenhuma batalha de verdade depende do caminho `false` ainda — construir
-# esse caminho às cegas (que formato exato o mapa desenhado tem? uma cena
-# de TileMapLayer só? um Resource com as células? de onde vêm os pontos de
-# spawn?) seria adivinhar em vez de perguntar, o que este projeto
-# explicitamente evita (ver [[feedback_ask_dont_approximate]]) — perguntar
-# de novo quando houver um mapa de verdade pra decidir o formato certo.
+# CARREGAMENTO de verdade (ver battle.gd::_load_manual_map(), chamado por
+# _ready() quando generated_map == false): lê a primeira TileMapLayer de
+# dentro do manual_map (formato decidido junto com o usuário quando ele
+# trouxe o primeiro mapa de verdade — Node2D raiz com uma TileMapLayer
+# filha, ver mistyGym.tscn) e copia os tiles pra cima da TileMapLayer de
+# batalha de verdade, remapeando pelo canto superior-esquerdo do desenho.
+# wall_cells/fluid_cells vêm de Custom Data Layers OPCIONAIS no TileSet do
+# mapa manual ("walkable"/"fluid", bool) — sem essas layers, todo tile
+# desenhado conta como andável e sem fluido (fallback seguro, não trava
+# esperando o usuário pintar nada). Primeiro (e hoje único) uso real: a
+# GymLeader Misty (ver Actors/GymLeader em barias_gym_interior.tscn),
+# generated_map=false + manual_map=mistyGym.tscn — pedido do usuário:
+# "Ive drawn a battle map for the misty fight". Suicune continua
+# generated_map=true (pedido explícito: "For now, we will test it
+# procedurally generated") — nada te obriga a desenhar um mapa pra cada
+# Boss/Trainer, só quem tiver um.
 var generated_map: bool = true
 var manual_map: PackedScene = null
 
@@ -1664,7 +1682,15 @@ var inventory: Dictionary = {}
 # padrão de ALL_SPECIES logo abaixo neste arquivo (preload explícito, não
 # leitura de pasta em tempo de execução): precisa ganhar uma linha nova
 # toda vez que um item novo for criado, mesmo "custo" que ALL_SPECIES já
-# tem hoje pra espécie nova.
+# tem hoje pra espécie nova. Pedido do usuário (2026-09-11, verbatim):
+# "whenever we add an item, remember to give 'Debbuger' 99 of them" — é
+# exatamente isto aqui: _seed_inventory_for_mode() (ver logo abaixo) dá
+# DEBUGGER_STARTING_ITEM_COUNT (99) de CADA item desta lista pro save
+# "debugger", então "lembrar de dar 99 pro Debugger" = "lembrar de
+# adicionar o preload() do item novo aqui em ALL_ITEMS" — não existe passo
+# separado nenhum, os dois são o MESMO passo. Item criado sem entrar aqui
+# nunca aparece no inventário de teste do Debugger, mesmo já jogável no
+# resto do jogo.
 const ALL_ITEMS: Array[ItemData] = [
 	preload("res://data/items/potion.tres"),
 	preload("res://data/items/super_potion.tres"),
@@ -1698,6 +1724,7 @@ const ALL_ITEMS: Array[ItemData] = [
 	# padrão de Thunder Stone).
 	preload("res://data/items/shiny_stone.tres"),
 	preload("res://data/items/dragon_scale.tres"),
+	preload("res://data/items/rare_candy.tres"),
 ]
 
 # Inventário inicial de acordo com o modo escolhido em mode_select_screen.gd
@@ -1785,9 +1812,33 @@ func use_item(item: ItemData, target: UnitData) -> void:
 	# é a segunda trava.
 	if item.reveals_hidden_ability and not target.has_unrevealed_hidden_ability():
 		return
+	# Mesmo padrão pro Rare Candy: não faz nada (não consome) numa unidade
+	# já no teto de nível atual (min(ExpGroups.MAX_LEVEL, get_level_cap()),
+	# mesmo teto que Unit.gain_exp() respeita em batalha) — item_list_screen.
+	# gd já filtra isso na escolha do alvo, esta é a segunda trava.
+	var level_cap = min(ExpGroups.MAX_LEVEL, get_level_cap())
+	if item.grants_levels > 0 and target.level >= level_cap:
+		return
 	target.current_hp = min(target.current_hp + item.heal_amount, hp_max)
 	if item.reveals_hidden_ability:
 		target.hidden_ability_revealed = true
+	if item.grants_levels > 0:
+		# Pedido do usuário: "Rare Candy... increases units level by 1" — sobe
+		# de nível igual Unit.gain_exp() faria fora de batalha (sem Unit node
+		# nenhum pra chamar aqui, target é só o UnitData do roster): hp_current
+		# sobe JUNTO na mesma quantidade que hp_max aumentou (preserva o dano já
+		# tomado, em vez de curar tudo ou só esticar a barra — hp_max acima já
+		# foi calculado no nível ANTIGO, antes de qualquer mudança). xp usa
+		# max() em vez de sobrescrever, pra nunca "roubar" xp acumulada além do
+		# que este nível exige (diferente de UnitData.ensure_initialized/
+		# apply_capture_progress, que são INICIALIZAÇÃO, não ganho incremental
+		# em cima de progresso já existente). Clampado no MESMO level_cap
+		# checado acima, então nunca ultrapassa o teto do Challenge.
+		var new_level = min(target.level + item.grants_levels, level_cap)
+		var hp_max_after = UnitScript.calc_hp_static(target.hp_base, new_level, target.weight)
+		target.level = new_level
+		target.xp = max(target.xp, ExpGroups.total_exp_for_level(new_level, target.growth_group))
+		target.current_hp += hp_max_after - hp_max
 	inventory[item] = get_item_quantity(item) - 1
 
 # "Use" de um item Tool (ver ItemData.category == "Tool") — diferente de

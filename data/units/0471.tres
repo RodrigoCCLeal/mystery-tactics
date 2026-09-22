@@ -4,8 +4,294 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0471/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0471/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/tail_whip.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/swift.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/powder_snow.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/icy_wind.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/baton_pass.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/helping_hand.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/covet.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/copycat.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/sand_attack.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/baby_doll_eyes.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/ice_shard.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/ice_fang.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/ice_beam.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/mimic.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/barrier.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/mirror_coat.tres" id="122"]
+[ext_resource type="Resource" path="res://data/attacks/calm_mind.tres" id="123"]
+[ext_resource type="Resource" path="res://data/attacks/hail.tres" id="124"]
+[ext_resource type="Resource" path="res://data/attacks/snowscape.tres" id="125"]
+[ext_resource type="Resource" path="res://data/attacks/freeze_dry.tres" id="126"]
+[ext_resource type="Resource" path="res://data/attacks/last_resort.tres" id="127"]
+[ext_resource type="Resource" path="res://data/attacks/blizzard.tres" id="128"]
+[ext_resource type="Resource" path="res://data/abilities/snow_cloak.tres" id="129"]
+[ext_resource type="Resource" path="res://data/abilities/ice_body.tres" id="130"]
+[ext_resource type="Resource" path="res://data/attacks/mist.tres" id="131"]
+[sub_resource type="Resource" id="LE_new_0471_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0471_take_down"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0471_double_edge"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0471_tail_whip"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0471_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0471_swift"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0471_powder_snow"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0471_icy_wind"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0471_charm"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0471_baton_pass"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0471_helping_hand"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0471_covet"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0471_copycat"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0471_sand_attack"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0471_quick_attack"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0471_baby_doll_eyes"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0471_bite"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0471_ice_shard"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0471_ice_fang"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0471_ice_beam"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0471_mimic"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0471_barrier"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0471_mirror_coat"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0471_calm_mind"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0471_hail"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_new_0471_snowscape"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_new_0471_freeze_dry"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("126")
+
+[sub_resource type="Resource" id="LE_new_0471_last_resort"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("127")
+
+[sub_resource type="Resource" id="LE_new_0471_blizzard"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("128")
+
+[sub_resource type="Resource" id="LE_new_0471_snow_cloak"]
+script = ExtResource("learnset_script")
+action = ExtResource("129")
+
+[sub_resource type="Resource" id="LE_new_0471_ice_body"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("130")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_baton_pass"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_copycat"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_covet"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_helping_hand"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_icy_wind"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_tail_whip"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_sand_attack"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_quick_attack"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_swift"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_mist"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("131")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_ice_shard"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_ice_beam"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_mimic"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_ice_fang"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_barrier"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_calm_mind"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_snowscape"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_double_edge"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_mirror_coat"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_blizzard"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("128")
+
+[sub_resource type="Resource" id="LE_pokmmo_0471_last_resort"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("127")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0471_baton_pass"), SubResource("LE_pokmmo_0471_bite"), SubResource("LE_pokmmo_0471_copycat"), SubResource("LE_pokmmo_0471_covet"), SubResource("LE_pokmmo_0471_growl"), SubResource("LE_pokmmo_0471_helping_hand"), SubResource("LE_pokmmo_0471_icy_wind"), SubResource("LE_pokmmo_0471_tackle"), SubResource("LE_pokmmo_0471_tail_whip"), SubResource("LE_pokmmo_0471_sand_attack"), SubResource("LE_pokmmo_0471_quick_attack"), SubResource("LE_pokmmo_0471_swift"), SubResource("LE_pokmmo_0471_mist"), SubResource("LE_pokmmo_0471_ice_shard"), SubResource("LE_pokmmo_0471_ice_beam"), SubResource("LE_pokmmo_0471_mimic"), SubResource("LE_pokmmo_0471_ice_fang"), SubResource("LE_pokmmo_0471_barrier"), SubResource("LE_pokmmo_0471_calm_mind"), SubResource("LE_pokmmo_0471_snowscape"), SubResource("LE_pokmmo_0471_double_edge"), SubResource("LE_pokmmo_0471_mirror_coat"), SubResource("LE_pokmmo_0471_blizzard"), SubResource("LE_pokmmo_0471_last_resort"), SubResource("LE_new_0471_snow_cloak"), SubResource("LE_new_0471_ice_body")])
 unit_name = "Glaceon"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

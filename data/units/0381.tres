@@ -4,8 +4,290 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0381/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0381/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/psywave.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/safeguard.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/memento.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/helping_hand.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_dance.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/heal_block.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_pulse.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/power_split.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/telekinesis.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/stored_power.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/heal_pulse.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/protect.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/recover.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/refresh.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_breath.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/tailwind.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/luster_purge.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/psycho_shift.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/ally_switch.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/simple_beam.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/levitate.tres" id="123"]
+[ext_resource type="Resource" path="res://data/attacks/work_up.tres" id="124"]
+[ext_resource type="Resource" path="res://data/attacks/twister.tres" id="125"]
+[ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="126"]
+[ext_resource type="Resource" path="res://data/attacks/wish.tres" id="127"]
+[ext_resource type="Resource" path="res://data/attacks/water_pulse.tres" id="128"]
+[ext_resource type="Resource" path="res://data/attacks/aura_sphere.tres" id="129"]
+[ext_resource type="Resource" path="res://data/attacks/air_slash.tres" id="130"]
+[sub_resource type="Resource" id="LE_new_0381_psywave"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0381_safeguard"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0381_memento"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0381_helping_hand"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0381_dragon_dance"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0381_heal_block"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0381_dragon_pulse"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0381_power_split"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0381_telekinesis"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0381_stored_power"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0381_heal_pulse"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0381_protect"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0381_recover"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0381_refresh"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0381_confusion"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0381_dragon_breath"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0381_tailwind"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0381_luster_purge"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0381_psycho_shift"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0381_ally_switch"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0381_psychic"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0381_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0381_simple_beam"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0381_levitate"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_dragon_dance"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_heal_block"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_helping_hand"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_luster_purge"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_memento"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_psywave"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_safeguard"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_stored_power"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_work_up"]
+script = ExtResource("learnset_script")
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_protect"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_twister"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_recover"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_refresh"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_confusion"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_psybeam"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("126")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_tailwind"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_dragonbreath"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_ally_switch"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_wish"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("127")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_water_pulse"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("128")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_telekinesis"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_dragon_pulse"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_aura_sphere"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("129")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_heal_pulse"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_simple_beam"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_psychic"]
+script = ExtResource("learnset_script")
+level = 60
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_air_slash"]
+script = ExtResource("learnset_script")
+level = 65
+action = ExtResource("130")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_power_split"]
+script = ExtResource("learnset_script")
+level = 65
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0381_psycho_shift"]
+script = ExtResource("learnset_script")
+level = 75
+action = ExtResource("118")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0381_dragon_dance"), SubResource("LE_pokmmo_0381_heal_block"), SubResource("LE_pokmmo_0381_helping_hand"), SubResource("LE_pokmmo_0381_luster_purge"), SubResource("LE_pokmmo_0381_memento"), SubResource("LE_pokmmo_0381_psywave"), SubResource("LE_pokmmo_0381_safeguard"), SubResource("LE_pokmmo_0381_stored_power"), SubResource("LE_pokmmo_0381_work_up"), SubResource("LE_pokmmo_0381_protect"), SubResource("LE_pokmmo_0381_twister"), SubResource("LE_pokmmo_0381_recover"), SubResource("LE_pokmmo_0381_refresh"), SubResource("LE_pokmmo_0381_confusion"), SubResource("LE_pokmmo_0381_psybeam"), SubResource("LE_pokmmo_0381_tailwind"), SubResource("LE_pokmmo_0381_dragonbreath"), SubResource("LE_pokmmo_0381_ally_switch"), SubResource("LE_pokmmo_0381_wish"), SubResource("LE_pokmmo_0381_water_pulse"), SubResource("LE_pokmmo_0381_telekinesis"), SubResource("LE_pokmmo_0381_zen_headbutt"), SubResource("LE_pokmmo_0381_dragon_pulse"), SubResource("LE_pokmmo_0381_aura_sphere"), SubResource("LE_pokmmo_0381_heal_pulse"), SubResource("LE_pokmmo_0381_simple_beam"), SubResource("LE_pokmmo_0381_psychic"), SubResource("LE_pokmmo_0381_air_slash"), SubResource("LE_pokmmo_0381_power_split"), SubResource("LE_pokmmo_0381_psycho_shift"), SubResource("LE_new_0381_levitate")])
 unit_name = "Latios"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

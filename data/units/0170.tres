@@ -4,8 +4,204 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0170/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0170/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_wave.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/bubble.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/electro_ball.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/flail.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/confuse_ray.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/spark.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/charge.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/signal_beam.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/discharge.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/aqua_ring.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/ion_deluge.tres" id="115"]
+[ext_resource type="Resource" path="res://data/abilities/volt_absorb.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/illuminate.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/water_absorb.tres" id="118"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/yellow_shard.tres" id="119"]
+[ext_resource type="Resource" path="res://data/items/deep_sea_scale.tres" id="120"]
+[sub_resource type="Resource" id="LE_new_0170_supersonic"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0170_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0170_thunder_wave"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0170_bubble"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0170_electro_ball"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0170_flail"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0170_bubble_beam"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0170_confuse_ray"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0170_spark"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0170_take_down"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0170_charge"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0170_signal_beam"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0170_discharge"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0170_aqua_ring"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0170_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0170_ion_deluge"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0170_volt_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0170_illuminate"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0170_water_absorb"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="WHI_0170_yellow_shard"]
+script = ExtResource("wild_item_script")
+item = ExtResource("119")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0170_deep_sea_scale"]
+script = ExtResource("wild_item_script")
+item = ExtResource("120")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_bubble"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_supersonic"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_electro_ball"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_thunder_wave"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_bubblebeam"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_confuse_ray"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_spark"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_charge"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_discharge"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_signal_beam"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_aqua_ring"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_flail"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_take_down"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0170_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("114")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0170_yellow_shard"), SubResource("WHI_0170_deep_sea_scale")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0170_bubble"), SubResource("LE_pokmmo_0170_supersonic"), SubResource("LE_pokmmo_0170_water_gun"), SubResource("LE_pokmmo_0170_electro_ball"), SubResource("LE_pokmmo_0170_thunder_wave"), SubResource("LE_pokmmo_0170_bubblebeam"), SubResource("LE_pokmmo_0170_confuse_ray"), SubResource("LE_pokmmo_0170_spark"), SubResource("LE_pokmmo_0170_charge"), SubResource("LE_pokmmo_0170_discharge"), SubResource("LE_pokmmo_0170_signal_beam"), SubResource("LE_pokmmo_0170_aqua_ring"), SubResource("LE_pokmmo_0170_flail"), SubResource("LE_pokmmo_0170_take_down"), SubResource("LE_pokmmo_0170_hydro_pump"), SubResource("LE_new_0170_volt_absorb"), SubResource("LE_new_0170_illuminate"), SubResource("LE_new_0170_water_absorb")])
 unit_name = "Chinchou"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

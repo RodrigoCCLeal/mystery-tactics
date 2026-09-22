@@ -26,6 +26,27 @@
 [ext_resource type="Resource" path="res://data/attacks/outrage.tres" id="24_outrage"]
 [ext_resource type="Resource" path="res://data/attacks/dynamic_punch.tres" id="25_dynamic_punch"]
 
+[ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/low_kick.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/covet.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/fury_swipes.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/karate_chop.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/mud_slap.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/taunt.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/seismic_toss.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/pursuit.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/retaliate.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/swagger.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/cross_chop.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/assurance.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/thrash.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/skull_bash.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/u_turn.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/punishment.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/stomping_tantrum.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/final_gambit.tres" id="118"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/payapa_berry.tres" id="119"]
 [sub_resource type="Resource" id="Resource_evo"]
 script = ExtResource("4_evo")
 target = ExtResource("7_target")
@@ -116,14 +137,307 @@ script = ExtResource("5_learn")
 level = 54
 action = ExtResource("25_dynamic_punch")
 
+[sub_resource type="Resource" id="LE_new_0056_scratch"]
+script = ExtResource("5_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0056_leer"]
+script = ExtResource("5_learn")
+action = ExtResource("12_leer")
+
+[sub_resource type="Resource" id="LE_new_0056_low_kick"]
+script = ExtResource("5_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0056_focus_energy"]
+script = ExtResource("5_learn")
+action = ExtResource("11_focus_energy")
+
+[sub_resource type="Resource" id="LE_new_0056_covet"]
+script = ExtResource("5_learn")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0056_fury_swipes"]
+script = ExtResource("5_learn")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0056_karate_chop"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0056_mud_slap"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0056_taunt"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0056_seismic_toss"]
+script = ExtResource("5_learn")
+level = 12
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0056_pursuit"]
+script = ExtResource("5_learn")
+level = 12
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0056_retaliate"]
+script = ExtResource("5_learn")
+level = 15
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0056_swagger"]
+script = ExtResource("5_learn")
+level = 17
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0056_screech"]
+script = ExtResource("5_learn")
+level = 21
+action = ExtResource("22_screech")
+
+[sub_resource type="Resource" id="LE_new_0056_cross_chop"]
+script = ExtResource("5_learn")
+level = 22
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0056_assurance"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0056_thrash"]
+script = ExtResource("5_learn")
+level = 29
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0056_skull_bash"]
+script = ExtResource("5_learn")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0056_u_turn"]
+script = ExtResource("5_learn")
+level = 29
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0056_punishment"]
+script = ExtResource("5_learn")
+level = 29
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0056_close_combat"]
+script = ExtResource("5_learn")
+level = 33
+action = ExtResource("23_close_combat")
+
+[sub_resource type="Resource" id="LE_new_0056_outrage"]
+script = ExtResource("5_learn")
+level = 40
+action = ExtResource("24_outrage")
+
+[sub_resource type="Resource" id="LE_new_0056_stomping_tantrum"]
+script = ExtResource("5_learn")
+level = 40
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0056_final_gambit"]
+script = ExtResource("5_learn")
+level = 48
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0056_vital_spirit"]
+script = ExtResource("5_learn")
+action = ExtResource("8_vital_spirit")
+
+[sub_resource type="Resource" id="LE_new_0056_anger_point"]
+script = ExtResource("5_learn")
+action = ExtResource("9_anger_point")
+
+[sub_resource type="Resource" id="LE_new_0056_defiant"]
+script = ExtResource("5_learn")
+is_hidden_ability = true
+action = ExtResource("10_defiant")
+
+[sub_resource type="Resource" id="WHI_0056_payapa_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("119")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_covet"]
+script = ExtResource("5_learn")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_focus_energy"]
+script = ExtResource("5_learn")
+action = ExtResource("11_focus_energy")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_leer"]
+script = ExtResource("5_learn")
+action = ExtResource("12_leer")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_low_kick"]
+script = ExtResource("5_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_scratch"]
+script = ExtResource("5_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_tackle"]
+script = ExtResource("5_learn")
+action = ExtResource("13_tackle")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_fury_swipes"]
+script = ExtResource("5_learn")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_karate_chop"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_mud_slap"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_rock_throw"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("14_rock_throw")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_taunt"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_rock_smash"]
+script = ExtResource("5_learn")
+level = 10
+action = ExtResource("15_rock_smash")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_pursuit"]
+script = ExtResource("5_learn")
+level = 12
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_seismic_toss"]
+script = ExtResource("5_learn")
+level = 12
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_take_down"]
+script = ExtResource("5_learn")
+level = 13
+action = ExtResource("16_take_down")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_retaliate"]
+script = ExtResource("5_learn")
+level = 15
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_low_sweep"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("17_low_sweep")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_swagger"]
+script = ExtResource("5_learn")
+level = 17
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_knock_off"]
+script = ExtResource("5_learn")
+level = 18
+action = ExtResource("18_knock_off")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_bulldoze"]
+script = ExtResource("5_learn")
+level = 22
+action = ExtResource("19_bulldoze")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_cross_chop"]
+script = ExtResource("5_learn")
+level = 22
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_brick_break"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("20_brick_break")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_assurance"]
+script = ExtResource("5_learn")
+level = 26
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_facade"]
+script = ExtResource("5_learn")
+level = 28
+action = ExtResource("21_facade")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_punishment"]
+script = ExtResource("5_learn")
+level = 29
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_skull_bash"]
+script = ExtResource("5_learn")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_thrash"]
+script = ExtResource("5_learn")
+level = 29
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_u_turn"]
+script = ExtResource("5_learn")
+level = 29
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_screech"]
+script = ExtResource("5_learn")
+level = 32
+action = ExtResource("22_screech")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_close_combat"]
+script = ExtResource("5_learn")
+level = 33
+action = ExtResource("23_close_combat")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_outrage"]
+script = ExtResource("5_learn")
+level = 40
+action = ExtResource("24_outrage")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_final_gambit"]
+script = ExtResource("5_learn")
+level = 48
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0056_dynamicpunch"]
+script = ExtResource("5_learn")
+level = 54
+action = ExtResource("25_dynamic_punch")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0056_payapa_berry")])
 unit_name = "Mankey"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Fighting"])
 slots = Array[ExtResource("6_action")]([ExtResource("11_focus_energy"), ExtResource("12_leer"), ExtResource("13_tackle"), ExtResource("8_vital_spirit")])
-learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0056_vital_spirit"), SubResource("LearnsetEntry_0056_anger_point"), SubResource("LearnsetEntry_0056_defiant"), SubResource("LearnsetEntry_0056_focus_energy"), SubResource("LearnsetEntry_0056_leer"), SubResource("LearnsetEntry_0056_tackle"), SubResource("LearnsetEntry_0056_rock_throw"), SubResource("LearnsetEntry_0056_rock_smash"), SubResource("LearnsetEntry_0056_take_down"), SubResource("LearnsetEntry_0056_low_sweep"), SubResource("LearnsetEntry_0056_knock_off"), SubResource("LearnsetEntry_0056_bulldoze"), SubResource("LearnsetEntry_0056_brick_break"), SubResource("LearnsetEntry_0056_facade"), SubResource("LearnsetEntry_0056_screech"), SubResource("LearnsetEntry_0056_close_combat"), SubResource("LearnsetEntry_0056_outrage"), SubResource("LearnsetEntry_0056_dynamic_punch")])
+learnset = Array[ExtResource("5_learn")]([SubResource("LE_pokmmo_0056_covet"), SubResource("LE_pokmmo_0056_focus_energy"), SubResource("LE_pokmmo_0056_leer"), SubResource("LE_pokmmo_0056_low_kick"), SubResource("LE_pokmmo_0056_scratch"), SubResource("LE_pokmmo_0056_tackle"), SubResource("LE_pokmmo_0056_fury_swipes"), SubResource("LE_pokmmo_0056_karate_chop"), SubResource("LE_pokmmo_0056_mud_slap"), SubResource("LE_pokmmo_0056_rock_throw"), SubResource("LE_pokmmo_0056_taunt"), SubResource("LE_pokmmo_0056_rock_smash"), SubResource("LE_pokmmo_0056_pursuit"), SubResource("LE_pokmmo_0056_seismic_toss"), SubResource("LE_pokmmo_0056_take_down"), SubResource("LE_pokmmo_0056_retaliate"), SubResource("LE_pokmmo_0056_low_sweep"), SubResource("LE_pokmmo_0056_swagger"), SubResource("LE_pokmmo_0056_knock_off"), SubResource("LE_pokmmo_0056_bulldoze"), SubResource("LE_pokmmo_0056_cross_chop"), SubResource("LE_pokmmo_0056_brick_break"), SubResource("LE_pokmmo_0056_assurance"), SubResource("LE_pokmmo_0056_facade"), SubResource("LE_pokmmo_0056_punishment"), SubResource("LE_pokmmo_0056_skull_bash"), SubResource("LE_pokmmo_0056_thrash"), SubResource("LE_pokmmo_0056_u_turn"), SubResource("LE_pokmmo_0056_screech"), SubResource("LE_pokmmo_0056_close_combat"), SubResource("LE_pokmmo_0056_outrage"), SubResource("LE_pokmmo_0056_final_gambit"), SubResource("LE_pokmmo_0056_dynamicpunch"), SubResource("LE_new_0056_vital_spirit"), SubResource("LE_new_0056_anger_point"), SubResource("LE_new_0056_defiant")])
 hp_base = 40
 attack_base = 80
 defense_base = 35

@@ -4,8 +4,274 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0335/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0335/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/fury_cutter.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/swords_dance.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/pursuit.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/metal_claw.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/hone_claws.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/slash.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/aerial_ace.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/embargo.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/revenge.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/crush_claw.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/power_trip.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/false_swipe.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/detect.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/facade.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/switcheroo.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/taunt.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/x_scissor.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/close_combat.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/immunity.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/toxic_boost.tres" id="122"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/quick_claw.tres" id="123"]
+[ext_resource type="Resource" path="res://data/items/silk_scarf.tres" id="124"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="125"]
+[ext_resource type="Resource" path="res://data/attacks/night_slash.tres" id="126"]
+[ext_resource type="Resource" path="res://data/attacks/dig.tres" id="127"]
+[sub_resource type="Resource" id="LE_new_0335_scratch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0335_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0335_quick_attack"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0335_fury_cutter"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0335_swords_dance"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0335_pursuit"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0335_metal_claw"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0335_hone_claws"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0335_slash"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0335_aerial_ace"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0335_embargo"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0335_revenge"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0335_crush_claw"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0335_power_trip"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0335_false_swipe"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0335_detect"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0335_facade"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0335_switcheroo"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0335_taunt"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0335_x_scissor"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0335_close_combat"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0335_immunity"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0335_toxic_boost"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="WHI_0335_quick_claw"]
+script = ExtResource("wild_item_script")
+item = ExtResource("123")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0335_silk_scarf"]
+script = ExtResource("wild_item_script")
+item = ExtResource("124")
+chance = 1.0
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_scratch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_quick_attack"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_fury_cutter"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_metal_claw"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_pursuit"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_aerial_ace"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_hone_claws"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_slash"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_revenge"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_night_slash"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("126")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_crush_claw"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_false_swipe"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_dig"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("127")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_embargo"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_facade"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_switcheroo"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_detect"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_x_scissor"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_taunt"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_swords_dance"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0335_close_combat"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("120")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0335_quick_claw"), SubResource("WHI_0335_silk_scarf")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0335_leer"), SubResource("LE_pokmmo_0335_scratch"), SubResource("LE_pokmmo_0335_tackle"), SubResource("LE_pokmmo_0335_quick_attack"), SubResource("LE_pokmmo_0335_fury_cutter"), SubResource("LE_pokmmo_0335_metal_claw"), SubResource("LE_pokmmo_0335_pursuit"), SubResource("LE_pokmmo_0335_aerial_ace"), SubResource("LE_pokmmo_0335_hone_claws"), SubResource("LE_pokmmo_0335_slash"), SubResource("LE_pokmmo_0335_revenge"), SubResource("LE_pokmmo_0335_night_slash"), SubResource("LE_pokmmo_0335_crush_claw"), SubResource("LE_pokmmo_0335_false_swipe"), SubResource("LE_pokmmo_0335_dig"), SubResource("LE_pokmmo_0335_embargo"), SubResource("LE_pokmmo_0335_facade"), SubResource("LE_pokmmo_0335_switcheroo"), SubResource("LE_pokmmo_0335_detect"), SubResource("LE_pokmmo_0335_x_scissor"), SubResource("LE_pokmmo_0335_taunt"), SubResource("LE_pokmmo_0335_swords_dance"), SubResource("LE_pokmmo_0335_close_combat"), SubResource("LE_new_0335_immunity"), SubResource("LE_new_0335_toxic_boost")])
 unit_name = "Zangoose"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -24,6 +24,19 @@
 [ext_resource type="Resource" path="res://data/attacks/heavy_slam.tres" id="21_heavy_slam"]
 [ext_resource type="Resource" path="res://data/attacks/giga_impact.tres" id="22_giga_impact"]
 
+[ext_resource type="Resource" path="res://data/attacks/sandstorm.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/payback.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/dark_pulse.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_fang.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/ice_fang.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/fire_fang.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/chip_away.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/stomping_tantrum.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/thrash.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/smack_down.tres" id="110"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/nugget.tres" id="111"]
 [sub_resource type="Resource" id="LearnsetEntry_0248_sand_stream"]
 script = ExtResource("4_learn")
 action = ExtResource("6_sand_stream")
@@ -104,14 +117,242 @@ script = ExtResource("4_learn")
 level = 56
 action = ExtResource("22_giga_impact")
 
+[sub_resource type="Resource" id="LE_new_0248_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("10_tackle")
+
+[sub_resource type="Resource" id="LE_new_0248_leer"]
+script = ExtResource("4_learn")
+action = ExtResource("9_leer")
+
+[sub_resource type="Resource" id="LE_new_0248_bite"]
+script = ExtResource("4_learn")
+action = ExtResource("12_bite")
+
+[sub_resource type="Resource" id="LE_new_0248_rock_throw"]
+script = ExtResource("4_learn")
+action = ExtResource("11_rock_throw")
+
+[sub_resource type="Resource" id="LE_new_0248_screech"]
+script = ExtResource("4_learn")
+action = ExtResource("15_screech")
+
+[sub_resource type="Resource" id="LE_new_0248_sandstorm"]
+script = ExtResource("4_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0248_iron_defense"]
+script = ExtResource("4_learn")
+action = ExtResource("8_iron_defense")
+
+[sub_resource type="Resource" id="LE_new_0248_payback"]
+script = ExtResource("4_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0248_dark_pulse"]
+script = ExtResource("4_learn")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0248_thunder_fang"]
+script = ExtResource("4_learn")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0248_ice_fang"]
+script = ExtResource("4_learn")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0248_fire_fang"]
+script = ExtResource("4_learn")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0248_scary_face"]
+script = ExtResource("4_learn")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0248_rock_slide"]
+script = ExtResource("4_learn")
+level = 14
+action = ExtResource("14_rock_slide")
+
+[sub_resource type="Resource" id="LE_new_0248_chip_away"]
+script = ExtResource("4_learn")
+level = 14
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0248_stomping_tantrum"]
+script = ExtResource("4_learn")
+level = 18
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0248_thrash"]
+script = ExtResource("4_learn")
+level = 23
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0248_smack_down"]
+script = ExtResource("4_learn")
+level = 24
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0248_crunch"]
+script = ExtResource("4_learn")
+level = 27
+action = ExtResource("16_crunch")
+
+[sub_resource type="Resource" id="LE_new_0248_earthquake"]
+script = ExtResource("4_learn")
+level = 33
+action = ExtResource("17_earthquake")
+
+[sub_resource type="Resource" id="LE_new_0248_stone_edge"]
+script = ExtResource("4_learn")
+level = 37
+action = ExtResource("18_stone_edge")
+
+[sub_resource type="Resource" id="LE_new_0248_hyper_beam"]
+script = ExtResource("4_learn")
+level = 52
+action = ExtResource("20_hyper_beam")
+
+[sub_resource type="Resource" id="LE_new_0248_giga_impact"]
+script = ExtResource("4_learn")
+level = 59
+action = ExtResource("22_giga_impact")
+
+[sub_resource type="Resource" id="LE_new_0248_sand_stream"]
+script = ExtResource("4_learn")
+action = ExtResource("6_sand_stream")
+
+[sub_resource type="Resource" id="LE_new_0248_unnerve"]
+script = ExtResource("4_learn")
+is_hidden_ability = true
+action = ExtResource("7_unnerve")
+
+[sub_resource type="Resource" id="WHI_0248_nugget"]
+script = ExtResource("wild_item_script")
+item = ExtResource("111")
+chance = 1.0
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_bite"]
+script = ExtResource("4_learn")
+action = ExtResource("12_bite")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_fire_fang"]
+script = ExtResource("4_learn")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_ice_fang"]
+script = ExtResource("4_learn")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_leer"]
+script = ExtResource("4_learn")
+action = ExtResource("9_leer")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_payback"]
+script = ExtResource("4_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_rock_throw"]
+script = ExtResource("4_learn")
+action = ExtResource("11_rock_throw")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_sandstorm"]
+script = ExtResource("4_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_screech"]
+script = ExtResource("4_learn")
+action = ExtResource("15_screech")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("10_tackle")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_thunder_fang"]
+script = ExtResource("4_learn")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_sand_tomb"]
+script = ExtResource("4_learn")
+level = 12
+action = ExtResource("13_sand_tomb")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_scary_face"]
+script = ExtResource("4_learn")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_chip_away"]
+script = ExtResource("4_learn")
+level = 14
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_rock_slide"]
+script = ExtResource("4_learn")
+level = 15
+action = ExtResource("14_rock_slide")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_dark_pulse"]
+script = ExtResource("4_learn")
+level = 24
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_smack_down"]
+script = ExtResource("4_learn")
+level = 24
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_crunch"]
+script = ExtResource("4_learn")
+level = 27
+action = ExtResource("16_crunch")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_earthquake"]
+script = ExtResource("4_learn")
+level = 33
+action = ExtResource("17_earthquake")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_stone_edge"]
+script = ExtResource("4_learn")
+level = 37
+action = ExtResource("18_stone_edge")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_rock_blast"]
+script = ExtResource("4_learn")
+level = 40
+action = ExtResource("19_rock_blast")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_thrash"]
+script = ExtResource("4_learn")
+level = 42
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_hyper_beam"]
+script = ExtResource("4_learn")
+level = 48
+action = ExtResource("20_hyper_beam")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_heavy_slam"]
+script = ExtResource("4_learn")
+level = 53
+action = ExtResource("21_heavy_slam")
+
+[sub_resource type="Resource" id="LE_pokmmo_0248_giga_impact"]
+script = ExtResource("4_learn")
+level = 56
+action = ExtResource("22_giga_impact")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0248_nugget")])
 unit_name = "Tyranitar"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Rock", "Dark"])
 slots = Array[ExtResource("5_action")]([ExtResource("8_iron_defense"), ExtResource("9_leer"), ExtResource("10_tackle"), ExtResource("6_sand_stream")])
-learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0248_sand_stream"), SubResource("LearnsetEntry_0248_unnerve"), SubResource("LearnsetEntry_0248_iron_defense"), SubResource("LearnsetEntry_0248_leer"), SubResource("LearnsetEntry_0248_tackle"), SubResource("LearnsetEntry_0248_rock_throw"), SubResource("LearnsetEntry_0248_bite"), SubResource("LearnsetEntry_0248_sand_tomb"), SubResource("LearnsetEntry_0248_rock_slide"), SubResource("LearnsetEntry_0248_screech"), SubResource("LearnsetEntry_0248_crunch"), SubResource("LearnsetEntry_0248_earthquake"), SubResource("LearnsetEntry_0248_stone_edge"), SubResource("LearnsetEntry_0248_rock_blast"), SubResource("LearnsetEntry_0248_hyper_beam"), SubResource("LearnsetEntry_0248_heavy_slam"), SubResource("LearnsetEntry_0248_giga_impact")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LE_pokmmo_0248_bite"), SubResource("LE_pokmmo_0248_fire_fang"), SubResource("LE_pokmmo_0248_ice_fang"), SubResource("LE_pokmmo_0248_leer"), SubResource("LE_pokmmo_0248_payback"), SubResource("LE_pokmmo_0248_rock_throw"), SubResource("LE_pokmmo_0248_sandstorm"), SubResource("LE_pokmmo_0248_screech"), SubResource("LE_pokmmo_0248_tackle"), SubResource("LE_pokmmo_0248_thunder_fang"), SubResource("LE_pokmmo_0248_sand_tomb"), SubResource("LE_pokmmo_0248_scary_face"), SubResource("LE_pokmmo_0248_chip_away"), SubResource("LE_pokmmo_0248_rock_slide"), SubResource("LE_pokmmo_0248_dark_pulse"), SubResource("LE_pokmmo_0248_smack_down"), SubResource("LE_pokmmo_0248_crunch"), SubResource("LE_pokmmo_0248_earthquake"), SubResource("LE_pokmmo_0248_stone_edge"), SubResource("LE_pokmmo_0248_rock_blast"), SubResource("LE_pokmmo_0248_thrash"), SubResource("LE_pokmmo_0248_hyper_beam"), SubResource("LE_pokmmo_0248_heavy_slam"), SubResource("LE_pokmmo_0248_giga_impact"), SubResource("LE_new_0248_sand_stream"), SubResource("LE_new_0248_unnerve")])
 weight = 3
 hp_base = 100
 attack_base = 134

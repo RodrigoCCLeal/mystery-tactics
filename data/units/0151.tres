@@ -4,8 +4,222 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0151/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0151/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/mimic.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/transform.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/reflect_type.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/mega_punch.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/swift.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/metronome.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/baton_pass.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/psywave.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/barrier.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/life_dew.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/nasty_plot.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/imprison.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/me_first.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/aura_sphere.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/synchronize.tres" id="119"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/lum_berry.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/reflect.tres" id="121"]
+[sub_resource type="Resource" id="LE_new_0151_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0151_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0151_mimic"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0151_transform"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0151_reflect_type"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0151_mega_punch"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0151_amnesia"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0151_swift"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0151_metronome"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0151_baton_pass"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0151_psychic"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0151_ancient_power"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0151_psywave"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0151_barrier"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0151_life_dew"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0151_nasty_plot"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0151_imprison"]
+script = ExtResource("learnset_script")
+level = 70
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0151_me_first"]
+script = ExtResource("learnset_script")
+level = 70
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0151_aura_sphere"]
+script = ExtResource("learnset_script")
+level = 90
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0151_synchronize"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="WHI_0151_lum_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("120")
+chance = 0.81
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_mimic"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_reflect"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_reflect_type"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_transform"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_amnesia"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_mega_punch"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_swift"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_baton_pass"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_ancientpower"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_psywave"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_barrier"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_nasty_plot"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_metronome"]
+script = ExtResource("learnset_script")
+level = 60
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_imprison"]
+script = ExtResource("learnset_script")
+level = 70
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_me_first"]
+script = ExtResource("learnset_script")
+level = 70
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_psychic"]
+script = ExtResource("learnset_script")
+level = 77
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0151_aura_sphere"]
+script = ExtResource("learnset_script")
+level = 90
+action = ExtResource("118")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0151_lum_berry")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0151_confusion"), SubResource("LE_pokmmo_0151_mimic"), SubResource("LE_pokmmo_0151_pound"), SubResource("LE_pokmmo_0151_reflect"), SubResource("LE_pokmmo_0151_reflect_type"), SubResource("LE_pokmmo_0151_transform"), SubResource("LE_pokmmo_0151_amnesia"), SubResource("LE_pokmmo_0151_mega_punch"), SubResource("LE_pokmmo_0151_swift"), SubResource("LE_pokmmo_0151_baton_pass"), SubResource("LE_pokmmo_0151_ancientpower"), SubResource("LE_pokmmo_0151_psywave"), SubResource("LE_pokmmo_0151_barrier"), SubResource("LE_pokmmo_0151_nasty_plot"), SubResource("LE_pokmmo_0151_metronome"), SubResource("LE_pokmmo_0151_imprison"), SubResource("LE_pokmmo_0151_me_first"), SubResource("LE_pokmmo_0151_psychic"), SubResource("LE_pokmmo_0151_aura_sphere"), SubResource("LE_new_0151_synchronize")])
 unit_name = "Mew"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -26,6 +26,11 @@
 [ext_resource type="Resource" path="res://data/attacks/rain_dance.tres" id="23_rain_dance"]
 [ext_resource type="Resource" path="res://data/attacks/wave_crash.tres" id="24_wave_crash"]
 
+[ext_resource type="Resource" path="res://data/attacks/bubble.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/brine.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/laser_focus.tres" id="102"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/dragon_scale.tres" id="103"]
 [sub_resource type="Resource" id="LearnsetEntry_0230_swift_swim"]
 script = ExtResource("4_learn")
 action = ExtResource("6_swift_swim")
@@ -113,14 +118,196 @@ script = ExtResource("4_learn")
 level = 72
 action = ExtResource("24_wave_crash")
 
+[sub_resource type="Resource" id="LE_new_0230_leer"]
+script = ExtResource("4_learn")
+action = ExtResource("11_leer")
+
+[sub_resource type="Resource" id="LE_new_0230_water_gun"]
+script = ExtResource("4_learn")
+action = ExtResource("14_water_gun")
+
+[sub_resource type="Resource" id="LE_new_0230_hydro_pump"]
+script = ExtResource("4_learn")
+action = ExtResource("21_hydro_pump")
+
+[sub_resource type="Resource" id="LE_new_0230_smokescreen"]
+script = ExtResource("4_learn")
+action = ExtResource("12_smokescreen")
+
+[sub_resource type="Resource" id="LE_new_0230_bubble"]
+script = ExtResource("4_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0230_twister"]
+script = ExtResource("4_learn")
+action = ExtResource("13_twister")
+
+[sub_resource type="Resource" id="LE_new_0230_whirlpool"]
+script = ExtResource("4_learn")
+action = ExtResource("10_whirlpool")
+
+[sub_resource type="Resource" id="LE_new_0230_yawn"]
+script = ExtResource("4_learn")
+action = ExtResource("9_yawn")
+
+[sub_resource type="Resource" id="LE_new_0230_dragon_pulse"]
+script = ExtResource("4_learn")
+action = ExtResource("20_dragon_pulse")
+
+[sub_resource type="Resource" id="LE_new_0230_focus_energy"]
+script = ExtResource("4_learn")
+level = 14
+action = ExtResource("15_focus_energy")
+
+[sub_resource type="Resource" id="LE_new_0230_bubble_beam"]
+script = ExtResource("4_learn")
+level = 18
+action = ExtResource("17_bubble_beam")
+
+[sub_resource type="Resource" id="LE_new_0230_dragon_breath"]
+script = ExtResource("4_learn")
+level = 20
+action = ExtResource("16_dragon_breath")
+
+[sub_resource type="Resource" id="LE_new_0230_agility"]
+script = ExtResource("4_learn")
+level = 23
+action = ExtResource("18_agility")
+
+[sub_resource type="Resource" id="LE_new_0230_brine"]
+script = ExtResource("4_learn")
+level = 30
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0230_water_pulse"]
+script = ExtResource("4_learn")
+level = 37
+action = ExtResource("19_water_pulse")
+
+[sub_resource type="Resource" id="LE_new_0230_laser_focus"]
+script = ExtResource("4_learn")
+level = 37
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0230_dragon_dance"]
+script = ExtResource("4_learn")
+level = 48
+action = ExtResource("22_dragon_dance")
+
+[sub_resource type="Resource" id="LE_new_0230_rain_dance"]
+script = ExtResource("4_learn")
+level = 65
+action = ExtResource("23_rain_dance")
+
+[sub_resource type="Resource" id="LE_new_0230_wave_crash"]
+script = ExtResource("4_learn")
+level = 72
+action = ExtResource("24_wave_crash")
+
+[sub_resource type="Resource" id="LE_new_0230_swift_swim"]
+script = ExtResource("4_learn")
+action = ExtResource("6_swift_swim")
+
+[sub_resource type="Resource" id="LE_new_0230_sniper"]
+script = ExtResource("4_learn")
+action = ExtResource("7_sniper")
+
+[sub_resource type="Resource" id="LE_new_0230_damp"]
+script = ExtResource("4_learn")
+is_hidden_ability = true
+action = ExtResource("8_damp")
+
+[sub_resource type="Resource" id="WHI_0230_dragon_scale"]
+script = ExtResource("wild_item_script")
+item = ExtResource("103")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_bubble"]
+script = ExtResource("4_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_hydro_pump"]
+script = ExtResource("4_learn")
+action = ExtResource("21_hydro_pump")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_leer"]
+script = ExtResource("4_learn")
+action = ExtResource("11_leer")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_smokescreen"]
+script = ExtResource("4_learn")
+action = ExtResource("12_smokescreen")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_twister"]
+script = ExtResource("4_learn")
+action = ExtResource("13_twister")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_water_gun"]
+script = ExtResource("4_learn")
+action = ExtResource("14_water_gun")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_whirlpool"]
+script = ExtResource("4_learn")
+action = ExtResource("10_whirlpool")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_yawn"]
+script = ExtResource("4_learn")
+action = ExtResource("9_yawn")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_focus_energy"]
+script = ExtResource("4_learn")
+level = 15
+action = ExtResource("15_focus_energy")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_dragonbreath"]
+script = ExtResource("4_learn")
+level = 20
+action = ExtResource("16_dragon_breath")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_bubblebeam"]
+script = ExtResource("4_learn")
+level = 25
+action = ExtResource("17_bubble_beam")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_agility"]
+script = ExtResource("4_learn")
+level = 30
+action = ExtResource("18_agility")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_brine"]
+script = ExtResource("4_learn")
+level = 31
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_water_pulse"]
+script = ExtResource("4_learn")
+level = 37
+action = ExtResource("19_water_pulse")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_dragon_pulse"]
+script = ExtResource("4_learn")
+level = 44
+action = ExtResource("20_dragon_pulse")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_dragon_dance"]
+script = ExtResource("4_learn")
+level = 58
+action = ExtResource("22_dragon_dance")
+
+[sub_resource type="Resource" id="LE_pokmmo_0230_rain_dance"]
+script = ExtResource("4_learn")
+level = 65
+action = ExtResource("23_rain_dance")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0230_dragon_scale")])
 unit_name = "Kingdra"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Water", "Dragon"])
 slots = Array[ExtResource("5_action")]([ExtResource("9_yawn"), ExtResource("10_whirlpool"), ExtResource("14_water_gun"), ExtResource("6_swift_swim")])
-learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0230_swift_swim"), SubResource("LearnsetEntry_0230_sniper"), SubResource("LearnsetEntry_0230_damp"), SubResource("LearnsetEntry_0230_yawn"), SubResource("LearnsetEntry_0230_whirlpool"), SubResource("LearnsetEntry_0230_leer"), SubResource("LearnsetEntry_0230_smokescreen"), SubResource("LearnsetEntry_0230_twister"), SubResource("LearnsetEntry_0230_water_gun"), SubResource("LearnsetEntry_0230_focus_energy"), SubResource("LearnsetEntry_0230_dragon_breath"), SubResource("LearnsetEntry_0230_bubble_beam"), SubResource("LearnsetEntry_0230_agility"), SubResource("LearnsetEntry_0230_water_pulse"), SubResource("LearnsetEntry_0230_dragon_pulse"), SubResource("LearnsetEntry_0230_hydro_pump"), SubResource("LearnsetEntry_0230_dragon_dance"), SubResource("LearnsetEntry_0230_rain_dance"), SubResource("LearnsetEntry_0230_wave_crash")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LE_pokmmo_0230_bubble"), SubResource("LE_pokmmo_0230_hydro_pump"), SubResource("LE_pokmmo_0230_leer"), SubResource("LE_pokmmo_0230_smokescreen"), SubResource("LE_pokmmo_0230_twister"), SubResource("LE_pokmmo_0230_water_gun"), SubResource("LE_pokmmo_0230_whirlpool"), SubResource("LE_pokmmo_0230_yawn"), SubResource("LE_pokmmo_0230_focus_energy"), SubResource("LE_pokmmo_0230_dragonbreath"), SubResource("LE_pokmmo_0230_bubblebeam"), SubResource("LE_pokmmo_0230_agility"), SubResource("LE_pokmmo_0230_brine"), SubResource("LE_pokmmo_0230_water_pulse"), SubResource("LE_pokmmo_0230_dragon_pulse"), SubResource("LE_pokmmo_0230_dragon_dance"), SubResource("LE_pokmmo_0230_rain_dance"), SubResource("LE_new_0230_swift_swim"), SubResource("LE_new_0230_sniper"), SubResource("LE_new_0230_damp")])
 hp_base = 75
 attack_base = 95
 defense_base = 95

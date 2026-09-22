@@ -4,8 +4,201 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0219/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0219/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/ember.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/rock_throw.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/smog.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/yawn.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/shell_smash.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/incinerate.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/recover.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/clear_smog.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/flame_burst.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/rock_slide.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/lava_plume.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/flamethrower.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/body_slam.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/magma_armor.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/flame_body.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/weak_armor.tres" id="119"]
+[sub_resource type="Resource" id="LE_new_0219_ember"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0219_rock_throw"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0219_smog"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0219_yawn"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0219_earth_power"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0219_shell_smash"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0219_harden"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0219_incinerate"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0219_recover"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0219_clear_smog"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0219_ancient_power"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0219_flame_burst"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0219_amnesia"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0219_rock_slide"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0219_lava_plume"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0219_flamethrower"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0219_body_slam"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0219_magma_armor"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0219_flame_body"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0219_weak_armor"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_earth_power"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_ember"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_rock_throw"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_shell_smash"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_smog"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_yawn"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_harden"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_incinerate"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_clear_smog"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_ancientpower"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_flame_burst"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_rock_slide"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_lava_plume"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_amnesia"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_body_slam"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_recover"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0219_flamethrower"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("115")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0219_earth_power"), SubResource("LE_pokmmo_0219_ember"), SubResource("LE_pokmmo_0219_rock_throw"), SubResource("LE_pokmmo_0219_shell_smash"), SubResource("LE_pokmmo_0219_smog"), SubResource("LE_pokmmo_0219_yawn"), SubResource("LE_pokmmo_0219_harden"), SubResource("LE_pokmmo_0219_incinerate"), SubResource("LE_pokmmo_0219_clear_smog"), SubResource("LE_pokmmo_0219_ancientpower"), SubResource("LE_pokmmo_0219_flame_burst"), SubResource("LE_pokmmo_0219_rock_slide"), SubResource("LE_pokmmo_0219_lava_plume"), SubResource("LE_pokmmo_0219_amnesia"), SubResource("LE_pokmmo_0219_body_slam"), SubResource("LE_pokmmo_0219_recover"), SubResource("LE_pokmmo_0219_flamethrower"), SubResource("LE_new_0219_magma_armor"), SubResource("LE_new_0219_flame_body"), SubResource("LE_new_0219_weak_armor")])
 unit_name = "Magcargo"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

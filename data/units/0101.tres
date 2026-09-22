@@ -4,8 +4,221 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0101/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0101/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/sonic_boom.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_shock.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/light_screen.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/self_destruct.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/spark.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/charge.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/eerie_impulse.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/magnetic_flux.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/rollout.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/swift.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/charge_beam.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/electro_ball.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/thunderbolt.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/magnet_rise.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/discharge.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/explosion.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/gyro_ball.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/mirror_coat.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/soundproof.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/static.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/aftermath.tres" id="122"]
+[sub_resource type="Resource" id="LE_new_0101_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0101_sonic_boom"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0101_thunder_shock"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0101_screech"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0101_light_screen"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0101_self_destruct"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0101_spark"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0101_charge"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0101_eerie_impulse"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0101_magnetic_flux"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0101_rollout"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0101_swift"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0101_charge_beam"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0101_electro_ball"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0101_thunderbolt"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0101_magnet_rise"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0101_discharge"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0101_explosion"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0101_gyro_ball"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0101_mirror_coat"]
+script = ExtResource("learnset_script")
+level = 48
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0101_soundproof"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0101_static"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0101_aftermath"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_charge"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_light_screen"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_sonicboom"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_thundershock"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_spark"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_rollout"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_screech"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_swift"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_charge_beam"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_selfdestruct"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_electro_ball"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_magnet_rise"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_thunderbolt"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_discharge"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_explosion"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_mirror_coat"]
+script = ExtResource("learnset_script")
+level = 48
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0101_gyro_ball"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("118")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0101_charge"), SubResource("LE_pokmmo_0101_light_screen"), SubResource("LE_pokmmo_0101_sonicboom"), SubResource("LE_pokmmo_0101_tackle"), SubResource("LE_pokmmo_0101_thundershock"), SubResource("LE_pokmmo_0101_spark"), SubResource("LE_pokmmo_0101_rollout"), SubResource("LE_pokmmo_0101_screech"), SubResource("LE_pokmmo_0101_swift"), SubResource("LE_pokmmo_0101_charge_beam"), SubResource("LE_pokmmo_0101_selfdestruct"), SubResource("LE_pokmmo_0101_electro_ball"), SubResource("LE_pokmmo_0101_magnet_rise"), SubResource("LE_pokmmo_0101_thunderbolt"), SubResource("LE_pokmmo_0101_discharge"), SubResource("LE_pokmmo_0101_explosion"), SubResource("LE_pokmmo_0101_mirror_coat"), SubResource("LE_pokmmo_0101_gyro_ball"), SubResource("LE_new_0101_soundproof"), SubResource("LE_new_0101_static"), SubResource("LE_new_0101_aftermath")])
 unit_name = "Electrode"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -19,6 +19,24 @@
 [ext_resource type="Resource" path="res://data/attacks/lunge.tres" id="17_lunge"]
 [ext_resource type="Resource" path="res://data/attacks/poison_jab.tres" id="18_poison_jab"]
 
+[ext_resource type="Resource" path="res://data/attacks/fury_attack.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/twineedle.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/peck.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/bug_bite.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/fury_cutter.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/rage.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/laser_focus.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/pursuit.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/venoshock.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/toxic_spikes.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/assurance.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/outrage.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/endeavor.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/fell_stinger.tres" id="114"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/poison_barb.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/drill_run.tres" id="116"]
 [sub_resource type="Resource" id="LearnsetEntry_0015_swarm"]
 script = ExtResource("2_rbgf5")
 action = ExtResource("3_kkn37")
@@ -76,8 +94,225 @@ script = ExtResource("2_rbgf5")
 level = 35
 action = ExtResource("18_poison_jab")
 
+[sub_resource type="Resource" id="LE_new_0015_fury_attack"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0015_poison_sting"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("9_poison_sting")
+
+[sub_resource type="Resource" id="LE_new_0015_twineedle"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0015_peck"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0015_string_shot"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("10_string_shot")
+
+[sub_resource type="Resource" id="LE_new_0015_harden"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("11_harden")
+
+[sub_resource type="Resource" id="LE_new_0015_bug_bite"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0015_fury_cutter"]
+script = ExtResource("2_rbgf5")
+level = 11
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0015_rage"]
+script = ExtResource("2_rbgf5")
+level = 13
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0015_focus_energy"]
+script = ExtResource("2_rbgf5")
+level = 13
+action = ExtResource("13_focus_energy")
+
+[sub_resource type="Resource" id="LE_new_0015_laser_focus"]
+script = ExtResource("2_rbgf5")
+level = 14
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0015_pursuit"]
+script = ExtResource("2_rbgf5")
+level = 17
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0015_poison_jab"]
+script = ExtResource("2_rbgf5")
+level = 22
+action = ExtResource("18_poison_jab")
+
+[sub_resource type="Resource" id="LE_new_0015_venoshock"]
+script = ExtResource("2_rbgf5")
+level = 23
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0015_agility"]
+script = ExtResource("2_rbgf5")
+level = 25
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0015_toxic_spikes"]
+script = ExtResource("2_rbgf5")
+level = 25
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0015_assurance"]
+script = ExtResource("2_rbgf5")
+level = 26
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0015_pin_missile"]
+script = ExtResource("2_rbgf5")
+level = 28
+action = ExtResource("12_pin_missile")
+
+[sub_resource type="Resource" id="LE_new_0015_outrage"]
+script = ExtResource("2_rbgf5")
+level = 31
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0015_endeavor"]
+script = ExtResource("2_rbgf5")
+level = 40
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0015_fell_stinger"]
+script = ExtResource("2_rbgf5")
+level = 44
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0015_swarm"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("3_kkn37")
+
+[sub_resource type="Resource" id="LE_new_0015_sniper"]
+script = ExtResource("2_rbgf5")
+is_hidden_ability = true
+action = ExtResource("4_ogmch")
+
+[sub_resource type="Resource" id="WHI_0015_poison_barb"]
+script = ExtResource("wild_item_script")
+item = ExtResource("115")
+chance = 0.09
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_bug_bite"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_fury_attack"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_peck"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_poison_sting"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("9_poison_sting")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_string_shot"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("10_string_shot")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_twineedle"]
+script = ExtResource("2_rbgf5")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_harden"]
+script = ExtResource("2_rbgf5")
+level = 7
+action = ExtResource("11_harden")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_fury_cutter"]
+script = ExtResource("2_rbgf5")
+level = 11
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_rage"]
+script = ExtResource("2_rbgf5")
+level = 13
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_focus_energy"]
+script = ExtResource("2_rbgf5")
+level = 15
+action = ExtResource("13_focus_energy")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_pursuit"]
+script = ExtResource("2_rbgf5")
+level = 17
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_poison_jab"]
+script = ExtResource("2_rbgf5")
+level = 22
+action = ExtResource("18_poison_jab")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_venoshock"]
+script = ExtResource("2_rbgf5")
+level = 23
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_agility"]
+script = ExtResource("2_rbgf5")
+level = 25
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_x_scissor"]
+script = ExtResource("2_rbgf5")
+level = 25
+action = ExtResource("15_x_scissor")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_assurance"]
+script = ExtResource("2_rbgf5")
+level = 26
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_bug_buzz"]
+script = ExtResource("2_rbgf5")
+level = 27
+action = ExtResource("16_bug_buzz")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_pin_missile"]
+script = ExtResource("2_rbgf5")
+level = 28
+action = ExtResource("12_pin_missile")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_toxic_spikes"]
+script = ExtResource("2_rbgf5")
+level = 29
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_outrage"]
+script = ExtResource("2_rbgf5")
+level = 31
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_drill_run"]
+script = ExtResource("2_rbgf5")
+level = 40
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0015_endeavor"]
+script = ExtResource("2_rbgf5")
+level = 41
+action = ExtResource("113")
+
 [resource]
 script = ExtResource("6_7ax3a")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0015_poison_barb")])
 unit_name = "Beedrill"
 sprite_frames = ExtResource("8_t4hx8")
 portrait = ExtResource("5_ypj7p")
@@ -86,7 +321,7 @@ special_hit_delay = 0.8
 types = Array[String](["Bug", "Poison"])
 grounded = false
 slots = Array[ExtResource("7_4vin8")]([ExtResource("9_poison_sting"), ExtResource("10_string_shot"), ExtResource("3_kkn37")])
-learnset = Array[ExtResource("2_rbgf5")]([SubResource("LearnsetEntry_0015_swarm"), SubResource("LearnsetEntry_0015_sniper"), SubResource("LearnsetEntry_0015_poison_sting"), SubResource("LearnsetEntry_0015_string_shot"), SubResource("LearnsetEntry_0015_harden"), SubResource("LearnsetEntry_0015_pin_missile"), SubResource("LearnsetEntry_0015_focus_energy"), SubResource("LearnsetEntry_0015_brutal_swing"), SubResource("LearnsetEntry_0015_x_scissor"), SubResource("LearnsetEntry_0015_bug_buzz"), SubResource("LearnsetEntry_0015_lunge"), SubResource("LearnsetEntry_0015_poison_jab")])
+learnset = Array[ExtResource("2_rbgf5")]([SubResource("LE_pokmmo_0015_bug_bite"), SubResource("LE_pokmmo_0015_fury_attack"), SubResource("LE_pokmmo_0015_peck"), SubResource("LE_pokmmo_0015_poison_sting"), SubResource("LE_pokmmo_0015_string_shot"), SubResource("LE_pokmmo_0015_twineedle"), SubResource("LE_pokmmo_0015_harden"), SubResource("LE_pokmmo_0015_fury_cutter"), SubResource("LE_pokmmo_0015_rage"), SubResource("LE_pokmmo_0015_focus_energy"), SubResource("LE_pokmmo_0015_pursuit"), SubResource("LE_pokmmo_0015_poison_jab"), SubResource("LE_pokmmo_0015_venoshock"), SubResource("LE_pokmmo_0015_agility"), SubResource("LE_pokmmo_0015_x_scissor"), SubResource("LE_pokmmo_0015_assurance"), SubResource("LE_pokmmo_0015_bug_buzz"), SubResource("LE_pokmmo_0015_pin_missile"), SubResource("LE_pokmmo_0015_toxic_spikes"), SubResource("LE_pokmmo_0015_outrage"), SubResource("LE_pokmmo_0015_drill_run"), SubResource("LE_pokmmo_0015_endeavor"), SubResource("LE_new_0015_swarm"), SubResource("LE_new_0015_sniper")])
 hp_base = 65
 attack_base = 90
 defense_base = 40

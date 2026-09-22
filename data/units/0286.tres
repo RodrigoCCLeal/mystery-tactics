@@ -28,6 +28,15 @@
 [ext_resource type="Resource" path="res://data/attacks/dynamic_punch.tres" id="25_dynamic_punch"]
 [ext_resource type="Resource" path="res://data/attacks/focus_punch.tres" id="26_focus_punch"]
 
+[ext_resource type="Resource" path="res://data/attacks/spore.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/giga_drain.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/mind_reader.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/sky_uppercut.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/drain_punch.tres" id="104"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/tiny_mushroom.tres" id="105"]
+[ext_resource type="Resource" path="res://data/items/big_mushroom.tres" id="106"]
+[ext_resource type="Resource" path="res://data/items/kebia_berry.tres" id="107"]
 [sub_resource type="Resource" id="LearnsetEntry_0286_effect_spore"]
 script = ExtResource("4_learn")
 action = ExtResource("6_effect_spore")
@@ -124,14 +133,244 @@ script = ExtResource("4_learn")
 level = 55
 action = ExtResource("26_focus_punch")
 
+[sub_resource type="Resource" id="LE_new_0286_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("14_tackle")
+
+[sub_resource type="Resource" id="LE_new_0286_absorb"]
+script = ExtResource("4_learn")
+action = ExtResource("9_absorb")
+
+[sub_resource type="Resource" id="LE_new_0286_leech_seed"]
+script = ExtResource("4_learn")
+action = ExtResource("11_leech_seed")
+
+[sub_resource type="Resource" id="LE_new_0286_growth"]
+script = ExtResource("4_learn")
+action = ExtResource("10_growth")
+
+[sub_resource type="Resource" id="LE_new_0286_poison_powder"]
+script = ExtResource("4_learn")
+action = ExtResource("12_poison_powder")
+
+[sub_resource type="Resource" id="LE_new_0286_stun_spore"]
+script = ExtResource("4_learn")
+action = ExtResource("13_stun_spore")
+
+[sub_resource type="Resource" id="LE_new_0286_toxic"]
+script = ExtResource("4_learn")
+action = ExtResource("15_toxic")
+
+[sub_resource type="Resource" id="LE_new_0286_spore"]
+script = ExtResource("4_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0286_mach_punch"]
+script = ExtResource("4_learn")
+action = ExtResource("20_mach_punch")
+
+[sub_resource type="Resource" id="LE_new_0286_giga_drain"]
+script = ExtResource("4_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0286_worry_seed"]
+script = ExtResource("4_learn")
+action = ExtResource("22_worry_seed")
+
+[sub_resource type="Resource" id="LE_new_0286_mega_drain"]
+script = ExtResource("4_learn")
+level = 12
+action = ExtResource("16_mega_drain")
+
+[sub_resource type="Resource" id="LE_new_0286_headbutt"]
+script = ExtResource("4_learn")
+level = 15
+action = ExtResource("17_headbutt")
+
+[sub_resource type="Resource" id="LE_new_0286_feint"]
+script = ExtResource("4_learn")
+level = 19
+action = ExtResource("18_feint")
+
+[sub_resource type="Resource" id="LE_new_0286_counter"]
+script = ExtResource("4_learn")
+level = 22
+action = ExtResource("19_counter")
+
+[sub_resource type="Resource" id="LE_new_0286_force_palm"]
+script = ExtResource("4_learn")
+level = 28
+action = ExtResource("21_force_palm")
+
+[sub_resource type="Resource" id="LE_new_0286_mind_reader"]
+script = ExtResource("4_learn")
+level = 33
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0286_sky_uppercut"]
+script = ExtResource("4_learn")
+level = 33
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0286_brick_break"]
+script = ExtResource("4_learn")
+level = 39
+action = ExtResource("23_brick_break")
+
+[sub_resource type="Resource" id="LE_new_0286_drain_punch"]
+script = ExtResource("4_learn")
+level = 39
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0286_seed_bomb"]
+script = ExtResource("4_learn")
+level = 41
+action = ExtResource("24_seed_bomb")
+
+[sub_resource type="Resource" id="LE_new_0286_dynamic_punch"]
+script = ExtResource("4_learn")
+level = 45
+action = ExtResource("25_dynamic_punch")
+
+[sub_resource type="Resource" id="LE_new_0286_focus_punch"]
+script = ExtResource("4_learn")
+level = 55
+action = ExtResource("26_focus_punch")
+
+[sub_resource type="Resource" id="LE_new_0286_effect_spore"]
+script = ExtResource("4_learn")
+action = ExtResource("6_effect_spore")
+
+[sub_resource type="Resource" id="LE_new_0286_poison_heal"]
+script = ExtResource("4_learn")
+action = ExtResource("7_poison_heal")
+
+[sub_resource type="Resource" id="LE_new_0286_technician"]
+script = ExtResource("4_learn")
+is_hidden_ability = true
+action = ExtResource("8_technician")
+
+[sub_resource type="Resource" id="WHI_0286_tiny_mushroom"]
+script = ExtResource("wild_item_script")
+item = ExtResource("105")
+chance = 0.5
+
+[sub_resource type="Resource" id="WHI_0286_big_mushroom"]
+script = ExtResource("wild_item_script")
+item = ExtResource("106")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0286_kebia_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("107")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_absorb"]
+script = ExtResource("4_learn")
+action = ExtResource("9_absorb")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_growth"]
+script = ExtResource("4_learn")
+action = ExtResource("10_growth")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_leech_seed"]
+script = ExtResource("4_learn")
+action = ExtResource("11_leech_seed")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_mach_punch"]
+script = ExtResource("4_learn")
+action = ExtResource("20_mach_punch")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_poisonpowder"]
+script = ExtResource("4_learn")
+action = ExtResource("12_poison_powder")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_stun_spore"]
+script = ExtResource("4_learn")
+action = ExtResource("13_stun_spore")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("14_tackle")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_toxic"]
+script = ExtResource("4_learn")
+action = ExtResource("15_toxic")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_mega_drain"]
+script = ExtResource("4_learn")
+level = 12
+action = ExtResource("16_mega_drain")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_headbutt"]
+script = ExtResource("4_learn")
+level = 15
+action = ExtResource("17_headbutt")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_feint"]
+script = ExtResource("4_learn")
+level = 19
+action = ExtResource("18_feint")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_counter"]
+script = ExtResource("4_learn")
+level = 22
+action = ExtResource("19_counter")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_force_palm"]
+script = ExtResource("4_learn")
+level = 28
+action = ExtResource("21_force_palm")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_mind_reader"]
+script = ExtResource("4_learn")
+level = 33
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_worry_seed"]
+script = ExtResource("4_learn")
+level = 33
+action = ExtResource("22_worry_seed")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_brick_break"]
+script = ExtResource("4_learn")
+level = 39
+action = ExtResource("23_brick_break")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_drain_punch"]
+script = ExtResource("4_learn")
+level = 39
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_sky_uppercut"]
+script = ExtResource("4_learn")
+level = 39
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_seed_bomb"]
+script = ExtResource("4_learn")
+level = 44
+action = ExtResource("24_seed_bomb")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_dynamicpunch"]
+script = ExtResource("4_learn")
+level = 50
+action = ExtResource("25_dynamic_punch")
+
+[sub_resource type="Resource" id="LE_pokmmo_0286_focus_punch"]
+script = ExtResource("4_learn")
+level = 55
+action = ExtResource("26_focus_punch")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0286_tiny_mushroom"), SubResource("WHI_0286_big_mushroom"), SubResource("WHI_0286_kebia_berry")])
 unit_name = "Breloom"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Grass", "Fighting"])
 slots = Array[ExtResource("5_action")]([ExtResource("14_tackle"), ExtResource("9_absorb"), ExtResource("6_effect_spore")])
-learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0286_effect_spore"), SubResource("LearnsetEntry_0286_poison_heal"), SubResource("LearnsetEntry_0286_technician"), SubResource("LearnsetEntry_0286_absorb"), SubResource("LearnsetEntry_0286_growth"), SubResource("LearnsetEntry_0286_leech_seed"), SubResource("LearnsetEntry_0286_poison_powder"), SubResource("LearnsetEntry_0286_stun_spore"), SubResource("LearnsetEntry_0286_tackle"), SubResource("LearnsetEntry_0286_toxic"), SubResource("LearnsetEntry_0286_mega_drain"), SubResource("LearnsetEntry_0286_headbutt"), SubResource("LearnsetEntry_0286_feint"), SubResource("LearnsetEntry_0286_counter"), SubResource("LearnsetEntry_0286_mach_punch"), SubResource("LearnsetEntry_0286_force_palm"), SubResource("LearnsetEntry_0286_worry_seed"), SubResource("LearnsetEntry_0286_brick_break"), SubResource("LearnsetEntry_0286_seed_bomb"), SubResource("LearnsetEntry_0286_dynamic_punch"), SubResource("LearnsetEntry_0286_focus_punch")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LE_pokmmo_0286_absorb"), SubResource("LE_pokmmo_0286_growth"), SubResource("LE_pokmmo_0286_leech_seed"), SubResource("LE_pokmmo_0286_mach_punch"), SubResource("LE_pokmmo_0286_poisonpowder"), SubResource("LE_pokmmo_0286_stun_spore"), SubResource("LE_pokmmo_0286_tackle"), SubResource("LE_pokmmo_0286_toxic"), SubResource("LE_pokmmo_0286_mega_drain"), SubResource("LE_pokmmo_0286_headbutt"), SubResource("LE_pokmmo_0286_feint"), SubResource("LE_pokmmo_0286_counter"), SubResource("LE_pokmmo_0286_force_palm"), SubResource("LE_pokmmo_0286_mind_reader"), SubResource("LE_pokmmo_0286_worry_seed"), SubResource("LE_pokmmo_0286_brick_break"), SubResource("LE_pokmmo_0286_drain_punch"), SubResource("LE_pokmmo_0286_sky_uppercut"), SubResource("LE_pokmmo_0286_seed_bomb"), SubResource("LE_pokmmo_0286_dynamicpunch"), SubResource("LE_pokmmo_0286_focus_punch"), SubResource("LE_new_0286_effect_spore"), SubResource("LE_new_0286_poison_heal"), SubResource("LE_new_0286_technician")])
 hp_base = 60
 attack_base = 130
 defense_base = 80

@@ -4,8 +4,189 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0483/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0483/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_breath.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/metal_claw.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/twister.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/slash.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_claw.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/power_gem.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/metal_burst.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/flash_cannon.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_pulse.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/aura_sphere.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/roar_of_time.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/iron_tail.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/heal_block.tres" id="115"]
+[ext_resource type="Resource" path="res://data/abilities/pressure.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/telepathy.tres" id="117"]
+[sub_resource type="Resource" id="LE_new_0483_scary_face"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0483_dragon_breath"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0483_metal_claw"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0483_twister"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0483_ancient_power"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0483_slash"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0483_dragon_claw"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0483_power_gem"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0483_metal_burst"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0483_flash_cannon"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0483_earth_power"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0483_dragon_pulse"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0483_aura_sphere"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0483_roar_of_time"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0483_iron_tail"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0483_heal_block"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0483_pressure"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0483_telepathy"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_dragonbreath"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_metal_claw"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_scary_face"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_twister"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_ancientpower"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_slash"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_flash_cannon"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_dragon_pulse"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_dragon_claw"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_aura_sphere"]
+script = ExtResource("learnset_script")
+level = 48
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_heal_block"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_power_gem"]
+script = ExtResource("learnset_script")
+level = 56
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_metal_burst"]
+script = ExtResource("learnset_script")
+level = 64
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_earth_power"]
+script = ExtResource("learnset_script")
+level = 72
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_iron_tail"]
+script = ExtResource("learnset_script")
+level = 80
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0483_roar_of_time"]
+script = ExtResource("learnset_script")
+level = 88
+action = ExtResource("113")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0483_dragonbreath"), SubResource("LE_pokmmo_0483_metal_claw"), SubResource("LE_pokmmo_0483_scary_face"), SubResource("LE_pokmmo_0483_twister"), SubResource("LE_pokmmo_0483_ancientpower"), SubResource("LE_pokmmo_0483_slash"), SubResource("LE_pokmmo_0483_flash_cannon"), SubResource("LE_pokmmo_0483_dragon_pulse"), SubResource("LE_pokmmo_0483_dragon_claw"), SubResource("LE_pokmmo_0483_aura_sphere"), SubResource("LE_pokmmo_0483_heal_block"), SubResource("LE_pokmmo_0483_power_gem"), SubResource("LE_pokmmo_0483_metal_burst"), SubResource("LE_pokmmo_0483_earth_power"), SubResource("LE_pokmmo_0483_iron_tail"), SubResource("LE_pokmmo_0483_roar_of_time"), SubResource("LE_new_0483_pressure"), SubResource("LE_new_0483_telepathy")])
 unit_name = "Dialga"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

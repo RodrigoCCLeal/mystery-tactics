@@ -4,8 +4,239 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0252/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0252/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/leafage.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/mega_drain.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/detect.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/quick_guard.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/pursuit.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/assurance.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/giga_drain.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/slam.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/double_team.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/energy_ball.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/endeavor.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/leaf_storm.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/overgrow.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/unburden.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_breath.tres" id="122"]
+[ext_resource type="Resource" path="res://data/attacks/slash.tres" id="123"]
+[ext_resource type="Resource" path="res://data/attacks/synthesis.tres" id="124"]
+[sub_resource type="Resource" id="LE_new_0252_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0252_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0252_leafage"]
+script = ExtResource("learnset_script")
+level = 3
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0252_absorb"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0252_quick_attack"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0252_mega_drain"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0252_detect"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0252_quick_guard"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0252_pursuit"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0252_assurance"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0252_screech"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0252_giga_drain"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0252_slam"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0252_agility"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0252_double_team"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0252_energy_ball"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0252_endeavor"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0252_leaf_storm"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0252_overgrow"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0252_unburden"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_absorb"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_quick_attack"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_mega_drain"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_detect"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_leech_seed"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_quick_guard"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_pursuit"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_assurance"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_giga_drain"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_slam"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_agility"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_double_team"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_dragonbreath"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_energy_ball"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_screech"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_slash"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_endeavor"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_leaf_storm"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0252_synthesis"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("124")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0252_leer"), SubResource("LE_pokmmo_0252_pound"), SubResource("LE_pokmmo_0252_tackle"), SubResource("LE_pokmmo_0252_absorb"), SubResource("LE_pokmmo_0252_quick_attack"), SubResource("LE_pokmmo_0252_mega_drain"), SubResource("LE_pokmmo_0252_detect"), SubResource("LE_pokmmo_0252_leech_seed"), SubResource("LE_pokmmo_0252_quick_guard"), SubResource("LE_pokmmo_0252_pursuit"), SubResource("LE_pokmmo_0252_assurance"), SubResource("LE_pokmmo_0252_giga_drain"), SubResource("LE_pokmmo_0252_slam"), SubResource("LE_pokmmo_0252_agility"), SubResource("LE_pokmmo_0252_double_team"), SubResource("LE_pokmmo_0252_dragonbreath"), SubResource("LE_pokmmo_0252_energy_ball"), SubResource("LE_pokmmo_0252_screech"), SubResource("LE_pokmmo_0252_slash"), SubResource("LE_pokmmo_0252_endeavor"), SubResource("LE_pokmmo_0252_leaf_storm"), SubResource("LE_pokmmo_0252_synthesis"), SubResource("LE_new_0252_overgrow"), SubResource("LE_new_0252_unburden")])
 unit_name = "Treecko"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

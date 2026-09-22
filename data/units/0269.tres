@@ -4,8 +4,242 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0269/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0269/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/gust.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/string_shot.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/bug_bite.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/iron_defense.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/protect.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/moonlight.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/silver_wind.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/venoshock.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/leech_life.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/whirlwind.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/light_screen.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/toxic.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/extrasensory.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/bug_buzz.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/quiver_dance.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/shield_dust.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/compound_eyes.tres" id="122"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/silver_powder.tres" id="123"]
+[ext_resource type="Resource" path="res://data/items/shed_shell.tres" id="124"]
+[sub_resource type="Resource" id="LE_new_0269_gust"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0269_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0269_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0269_string_shot"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0269_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0269_harden"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0269_bug_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0269_iron_defense"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0269_poison_powder"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0269_protect"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0269_moonlight"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0269_silver_wind"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0269_venoshock"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0269_psybeam"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0269_leech_life"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0269_whirlwind"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0269_light_screen"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0269_toxic"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0269_extrasensory"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0269_bug_buzz"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0269_quiver_dance"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0269_shield_dust"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0269_compound_eyes"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="WHI_0269_silver_powder"]
+script = ExtResource("wild_item_script")
+item = ExtResource("123")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0269_shed_shell"]
+script = ExtResource("wild_item_script")
+item = ExtResource("124")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_gust"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_iron_defense"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_tackle"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_confusion"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_poisonpowder"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_moonlight"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_venoshock"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_psybeam"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_leech_life"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_silver_wind"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_light_screen"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_whirlwind"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_toxic"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_extrasensory"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_bug_buzz"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_protect"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0269_quiver_dance"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("120")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0269_silver_powder"), SubResource("WHI_0269_shed_shell")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0269_gust"), SubResource("LE_pokmmo_0269_poison_sting"), SubResource("LE_pokmmo_0269_iron_defense"), SubResource("LE_pokmmo_0269_tackle"), SubResource("LE_pokmmo_0269_confusion"), SubResource("LE_pokmmo_0269_poisonpowder"), SubResource("LE_pokmmo_0269_moonlight"), SubResource("LE_pokmmo_0269_venoshock"), SubResource("LE_pokmmo_0269_psybeam"), SubResource("LE_pokmmo_0269_leech_life"), SubResource("LE_pokmmo_0269_silver_wind"), SubResource("LE_pokmmo_0269_light_screen"), SubResource("LE_pokmmo_0269_whirlwind"), SubResource("LE_pokmmo_0269_toxic"), SubResource("LE_pokmmo_0269_extrasensory"), SubResource("LE_pokmmo_0269_bug_buzz"), SubResource("LE_pokmmo_0269_protect"), SubResource("LE_pokmmo_0269_quiver_dance"), SubResource("LE_new_0269_shield_dust"), SubResource("LE_new_0269_compound_eyes")])
 unit_name = "Dustox"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

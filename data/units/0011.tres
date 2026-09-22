@@ -23,6 +23,18 @@ action = ExtResource("5")
 script = ExtResource("4")
 action = ExtResource("7_harden")
 
+[sub_resource type="Resource" id="LE_new_0011_harden"]
+script = ExtResource("4")
+action = ExtResource("7_harden")
+
+[sub_resource type="Resource" id="LE_new_0011_shed_skin"]
+script = ExtResource("4")
+action = ExtResource("5")
+
+[sub_resource type="Resource" id="LE_pokmmo_0011_harden"]
+script = ExtResource("4")
+action = ExtResource("7_harden")
+
 [resource]
 script = ExtResource("1")
 unit_name = "Metapod"
@@ -32,7 +44,7 @@ attack_hit_delay = 0.35
 special_hit_delay = 0.5
 types = Array[String](["Bug"])
 slots = Array[ExtResource("4_metapod")]([ExtResource("7_harden"), ExtResource("5")])
-learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0011_shed_skin"), SubResource("LearnsetEntry_0011_harden")])
+learnset = Array[ExtResource("4")]([SubResource("LE_pokmmo_0011_harden"), SubResource("LE_new_0011_shed_skin")])
 hp_base = 50
 attack_base = 20
 defense_base = 55

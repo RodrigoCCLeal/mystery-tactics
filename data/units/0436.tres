@@ -4,8 +4,228 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0436/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0436/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/confuse_ray.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/hypnosis.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/payback.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/imprison.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/iron_defense.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/psywave.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/gyro_ball.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/hex.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/extrasensory.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/feint_attack.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/safeguard.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/future_sight.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/metal_sound.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/heavy_slam.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/flash_cannon.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/heal_block.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/levitate.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/heatproof.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/heavy_metal.tres" id="120"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/metal_coat.tres" id="121"]
+[sub_resource type="Resource" id="LE_new_0436_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0436_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0436_confuse_ray"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0436_hypnosis"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0436_payback"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0436_imprison"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0436_iron_defense"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0436_psywave"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0436_gyro_ball"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0436_hex"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0436_extrasensory"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0436_feint_attack"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0436_safeguard"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0436_future_sight"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0436_metal_sound"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0436_heavy_slam"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0436_flash_cannon"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0436_heal_block"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0436_levitate"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0436_heatproof"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0436_heavy_metal"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="WHI_0436_metal_coat"]
+script = ExtResource("wild_item_script")
+item = ExtResource("121")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_confuse_ray"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_payback"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_imprison"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_psywave"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_gyro_ball"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_hex"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_hypnosis"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_faint_attack"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_safeguard"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_extrasensory"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_heavy_slam"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_flash_cannon"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_iron_defense"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_metal_sound"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_future_sight"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0436_heal_block"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("117")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0436_metal_coat")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0436_confusion"), SubResource("LE_pokmmo_0436_tackle"), SubResource("LE_pokmmo_0436_confuse_ray"), SubResource("LE_pokmmo_0436_payback"), SubResource("LE_pokmmo_0436_imprison"), SubResource("LE_pokmmo_0436_psywave"), SubResource("LE_pokmmo_0436_gyro_ball"), SubResource("LE_pokmmo_0436_hex"), SubResource("LE_pokmmo_0436_hypnosis"), SubResource("LE_pokmmo_0436_faint_attack"), SubResource("LE_pokmmo_0436_safeguard"), SubResource("LE_pokmmo_0436_extrasensory"), SubResource("LE_pokmmo_0436_heavy_slam"), SubResource("LE_pokmmo_0436_flash_cannon"), SubResource("LE_pokmmo_0436_iron_defense"), SubResource("LE_pokmmo_0436_metal_sound"), SubResource("LE_pokmmo_0436_future_sight"), SubResource("LE_pokmmo_0436_heal_block"), SubResource("LE_new_0436_levitate"), SubResource("LE_new_0436_heatproof"), SubResource("LE_new_0436_heavy_metal")])
 unit_name = "Bronzor"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

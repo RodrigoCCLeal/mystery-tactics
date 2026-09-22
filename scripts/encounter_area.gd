@@ -10,6 +10,15 @@ extends Resource
 @export var area_name: String = ""
 @export var groups: Array[EncounterGroup] = []
 
+# Fonte "Grass" NOVA (ver wild_spawn_entry.gd) — substitui `groups` só pra
+# grama alta, refactor de encontro selvagem (2026-09-10): cada espécie tem
+# sua PRÓPRIA chance de virar um sprite visível no overworld, em vez de um
+# EncounterGroup fixo inteiro ser sorteado. `groups` continua valendo pra
+# "Water"/"Fishing" (fora do escopo deste pedido) — pick_group() acima nem
+# precisou mudar, só passou a nunca mais ser chamado com source == "Grass"
+# (ver world.gd::_refresh_grass_patch, único lugar que lê isto).
+@export var wild_spawn_entries: Array[WildSpawnEntry] = []
+
 # Clima permanente (ver battle.gd::WEATHER_*/try_set_weather) que toda
 # batalha SELVAGEM nesta área já começa tendo — "" (padrão) = sem clima
 # nenhum ao entrar em batalha, comportamento de sempre. Pedido do usuário:
@@ -92,3 +101,18 @@ func pick_group(source: String = "Grass") -> EncounterGroup:
 # NENHUM grupo "Water" configurado não devia abrir uma batalha vazia).
 func has_source(source: String) -> bool:
 	return groups.any(func(g): return g.source == source)
+
+# wild_spawn_entries filtrado por badge/horário ATUAIS (ver WildSpawnEntry —
+# mesmos dois filtros "macios" que EncounterGroup.pick_group() já aplicava,
+# só que SEM fallback pro conjunto mais amplo: uma espécie fora do badge/
+# horário simplesmente não participa do sorteio de nenhum tile agora, não
+# existe "grupo vazio" pra evitar aqui (ver comentário grande em
+# wild_spawn_entry.gd). Usado só por world.gd::_refresh_grass_patch, uma vez
+# por PATCH de grama conectada (ver MAX_UNITS_PER_GRASS_GROUP em world.gd),
+# não por tile — os filtros não mudam tile a tile.
+func get_eligible_wild_spawn_entries() -> Array[WildSpawnEntry]:
+	var badge_count := GameState.badges.size()
+	var time_bit := GameState.get_time_of_day_bit()
+	return wild_spawn_entries.filter(func(e):
+		return badge_count >= e.min_badges and (e.times_of_day & time_bit) != 0
+	)

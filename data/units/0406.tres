@@ -4,8 +4,161 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0406/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0406/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/growth.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/stun_spore.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/worry_seed.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/water_sport.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/mega_drain.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/venoshock.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/poison_jab.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/energy_ball.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/petal_dance.tres" id="111"]
+[ext_resource type="Resource" path="res://data/abilities/natural_cure.tres" id="112"]
+[ext_resource type="Resource" path="res://data/abilities/poison_point.tres" id="113"]
+[ext_resource type="Resource" path="res://data/abilities/leaf_guard.tres" id="114"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/poison_barb.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="116"]
+[sub_resource type="Resource" id="LE_new_0406_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0406_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0406_growth"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0406_stun_spore"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0406_worry_seed"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0406_water_sport"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0406_poison_powder"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0406_mega_drain"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0406_venoshock"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0406_poison_jab"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0406_energy_ball"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0406_petal_dance"]
+script = ExtResource("learnset_script")
+level = 52
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0406_natural_cure"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0406_poison_point"]
+script = ExtResource("learnset_script")
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0406_leaf_guard"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="WHI_0406_poison_barb"]
+script = ExtResource("wild_item_script")
+item = ExtResource("115")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_charm"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_growth"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_stun_spore"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_worry_seed"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_water_sport"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_poisonpowder"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_mega_drain"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_venoshock"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_poison_jab"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_energy_ball"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0406_petal_dance"]
+script = ExtResource("learnset_script")
+level = 52
+action = ExtResource("111")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0406_poison_barb")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0406_absorb"), SubResource("LE_pokmmo_0406_charm"), SubResource("LE_pokmmo_0406_growth"), SubResource("LE_pokmmo_0406_poison_sting"), SubResource("LE_pokmmo_0406_stun_spore"), SubResource("LE_pokmmo_0406_worry_seed"), SubResource("LE_pokmmo_0406_water_sport"), SubResource("LE_pokmmo_0406_poisonpowder"), SubResource("LE_pokmmo_0406_mega_drain"), SubResource("LE_pokmmo_0406_venoshock"), SubResource("LE_pokmmo_0406_poison_jab"), SubResource("LE_pokmmo_0406_energy_ball"), SubResource("LE_pokmmo_0406_petal_dance"), SubResource("LE_new_0406_natural_cure"), SubResource("LE_new_0406_poison_point"), SubResource("LE_new_0406_leaf_guard")])
 unit_name = "Budew"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

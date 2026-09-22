@@ -4,8 +4,250 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0051/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0051/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/sand_attack.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/dig.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/tri_attack.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/magnitude.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/astonish.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/sand_tomb.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/night_slash.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/rototiller.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/mud_slap.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/fury_swipes.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/bulldoze.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/sucker_punch.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/slash.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/mud_bomb.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/sandstorm.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/earthquake.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/fissure.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/sand_veil.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/arena_trap.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/sand_force.tres" id="124"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/soft_sand.tres" id="125"]
+[sub_resource type="Resource" id="LE_new_0051_scratch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0051_sand_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0051_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0051_dig"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0051_agility"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0051_screech"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0051_tri_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0051_magnitude"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0051_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0051_sand_tomb"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0051_night_slash"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0051_rototiller"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0051_mud_slap"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0051_fury_swipes"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0051_bulldoze"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0051_sucker_punch"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0051_slash"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0051_mud_bomb"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0051_earth_power"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0051_sandstorm"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0051_earthquake"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0051_fissure"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0051_sand_veil"]
+script = ExtResource("learnset_script")
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0051_arena_trap"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0051_sand_force"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="WHI_0051_soft_sand"]
+script = ExtResource("wild_item_script")
+item = ExtResource("125")
+chance = 0.1
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_agility"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_night_slash"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_sand_tomb"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_sand_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_scratch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_screech"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_tri_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_mud_slap"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_magnitude"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_fury_swipes"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_bulldoze"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_dig"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_sucker_punch"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_slash"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_mud_bomb"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_sandstorm"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_earthquake"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_earth_power"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0051_fissure"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("121")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0051_soft_sand")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0051_agility"), SubResource("LE_pokmmo_0051_astonish"), SubResource("LE_pokmmo_0051_growl"), SubResource("LE_pokmmo_0051_night_slash"), SubResource("LE_pokmmo_0051_sand_tomb"), SubResource("LE_pokmmo_0051_sand_attack"), SubResource("LE_pokmmo_0051_scratch"), SubResource("LE_pokmmo_0051_screech"), SubResource("LE_pokmmo_0051_tri_attack"), SubResource("LE_pokmmo_0051_mud_slap"), SubResource("LE_pokmmo_0051_magnitude"), SubResource("LE_pokmmo_0051_fury_swipes"), SubResource("LE_pokmmo_0051_bulldoze"), SubResource("LE_pokmmo_0051_dig"), SubResource("LE_pokmmo_0051_sucker_punch"), SubResource("LE_pokmmo_0051_slash"), SubResource("LE_pokmmo_0051_mud_bomb"), SubResource("LE_pokmmo_0051_sandstorm"), SubResource("LE_pokmmo_0051_earthquake"), SubResource("LE_pokmmo_0051_earth_power"), SubResource("LE_pokmmo_0051_fissure"), SubResource("LE_new_0051_sand_veil"), SubResource("LE_new_0051_arena_trap"), SubResource("LE_new_0051_sand_force")])
 unit_name = "Dugtrio"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

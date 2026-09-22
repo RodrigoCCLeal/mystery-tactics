@@ -4,8 +4,247 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0181/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0181/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/fire_punch.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_punch.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_shock.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_wave.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/zap_cannon.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_pulse.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/ion_deluge.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/magnetic_flux.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/cotton_spore.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/charge.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/electro_ball.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/confuse_ray.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/discharge.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/power_gem.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/cotton_guard.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/light_screen.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/signal_beam.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/charge_beam.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/dazzling_gleam.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/thunder.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/static.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/plus.tres" id="124"]
+[ext_resource type="Resource" path="res://data/attacks/thunderbolt.tres" id="125"]
+[sub_resource type="Resource" id="LE_new_0181_fire_punch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0181_thunder_punch"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0181_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0181_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0181_thunder_shock"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0181_thunder_wave"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0181_zap_cannon"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0181_dragon_pulse"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0181_ion_deluge"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0181_magnetic_flux"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0181_cotton_spore"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0181_charge"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0181_take_down"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0181_electro_ball"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0181_confuse_ray"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0181_discharge"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0181_power_gem"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0181_cotton_guard"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0181_light_screen"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0181_signal_beam"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0181_charge_beam"]
+script = ExtResource("learnset_script")
+level = 51
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0181_dazzling_gleam"]
+script = ExtResource("learnset_script")
+level = 51
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0181_thunder"]
+script = ExtResource("learnset_script")
+level = 57
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0181_static"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0181_plus"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_dragon_pulse"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_fire_punch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_thunder_wave"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_thunderpunch"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_thundershock"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_zap_cannon"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_cotton_spore"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_charge"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_confuse_ray"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_take_down"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_electro_ball"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_cotton_guard"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_power_gem"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_thunderbolt"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_discharge"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_light_screen"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_thunder"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_charge_beam"]
+script = ExtResource("learnset_script")
+level = 51
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0181_signal_beam"]
+script = ExtResource("learnset_script")
+level = 51
+action = ExtResource("119")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0181_dragon_pulse"), SubResource("LE_pokmmo_0181_fire_punch"), SubResource("LE_pokmmo_0181_growl"), SubResource("LE_pokmmo_0181_tackle"), SubResource("LE_pokmmo_0181_thunder_wave"), SubResource("LE_pokmmo_0181_thunderpunch"), SubResource("LE_pokmmo_0181_thundershock"), SubResource("LE_pokmmo_0181_zap_cannon"), SubResource("LE_pokmmo_0181_cotton_spore"), SubResource("LE_pokmmo_0181_charge"), SubResource("LE_pokmmo_0181_confuse_ray"), SubResource("LE_pokmmo_0181_take_down"), SubResource("LE_pokmmo_0181_electro_ball"), SubResource("LE_pokmmo_0181_cotton_guard"), SubResource("LE_pokmmo_0181_power_gem"), SubResource("LE_pokmmo_0181_thunderbolt"), SubResource("LE_pokmmo_0181_discharge"), SubResource("LE_pokmmo_0181_light_screen"), SubResource("LE_pokmmo_0181_thunder"), SubResource("LE_pokmmo_0181_charge_beam"), SubResource("LE_pokmmo_0181_signal_beam"), SubResource("LE_new_0181_static"), SubResource("LE_new_0181_plus")])
 unit_name = "Ampharos"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

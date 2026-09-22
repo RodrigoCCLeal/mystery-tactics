@@ -838,15 +838,18 @@ func take_damage(amount: int) -> void:
 # a unidade carregar duas por algum motivo, a segunda fica pra próxima vez
 # que o HP cair abaixo de 50% de novo).
 #
-# is_enemy: trava por DESIGN, não mais por segurança de dados — desde que
-# apply_fresh_data() passou a duplicar UnitData pra montar o loadout
-# automático (ver get_recent_loadout()), mutar data.slots de um inimigo já
-# não vaza mais pro catálogo compartilhado. A trava continua porque inimigo
-# SELVAGEM nunca carrega item nenhum (loadout vem só do learnset — ataques e
-# Habilidades, nunca ItemData): só times de TREINADOR (feature futura, loadout
-# montado à mão pelo design) vão poder ter Berry/item equipado. Até lá, essa
-# condição aqui é redundante com a ausência de itens no loadout, mas serve de
-# documentação da regra e trava de segurança se algo mudar antes da hora.
+# is_enemy: trava por DESIGN — Berry NUNCA se auto-consome sozinha num
+# inimigo (selvagem ou treinador), só numa unidade do time do jogador. Antes
+# do refactor de encontro selvagem (2026-09-10), essa trava também era
+# redundante com o fato de inimigo selvagem nunca carregar item nenhum (só
+# ataques/Habilidades no loadout automático) — isso MUDOU: UnitData.
+# get_recent_loadout() agora pode incluir um ItemData de verdade no slot 6
+# (ver UnitData.wild_held_items/_pick_random_held_item), então esta condição
+# passou a ser a ÚNICA coisa impedindo uma Berry selvagem de se auto-curar —
+# decisão explícita: o item aparece no loadout/HUD (accuracy_multiplier de
+# Focus Band, por exemplo, já funciona normal pra inimigo), mas o efeito de
+# auto-cura de Berry continua exclusivo do time do jogador até o usuário
+# pedir o contrário.
 func _check_berry_auto_use() -> void:
 	if is_enemy or data == null or hp_max <= 0:
 		return

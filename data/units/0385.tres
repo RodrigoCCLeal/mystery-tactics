@@ -4,8 +4,212 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0385/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0385/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/wish.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/rest.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/swift.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/helping_hand.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/life_dew.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/refresh.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/lucky_chant.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/gravity.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/future_sight.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/cosmic_power.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/meteor_mash.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/doom_desire.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/healing_wish.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/last_resort.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/serene_grace.tres" id="118"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/star_piece.tres" id="119"]
+[sub_resource type="Resource" id="LE_new_0385_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0385_wish"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0385_rest"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0385_swift"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0385_helping_hand"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0385_psychic"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0385_life_dew"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0385_refresh"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0385_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0385_lucky_chant"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0385_double_edge"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0385_gravity"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0385_future_sight"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0385_cosmic_power"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0385_meteor_mash"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0385_doom_desire"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0385_healing_wish"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0385_last_resort"]
+script = ExtResource("learnset_script")
+level = 65
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0385_serene_grace"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="WHI_0385_star_piece"]
+script = ExtResource("wild_item_script")
+item = ExtResource("119")
+chance = 0.83
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_wish"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_swift"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_helping_hand"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_refresh"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_lucky_chant"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_gravity"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_psychic"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_meteor_mash"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_healing_wish"]
+script = ExtResource("learnset_script")
+level = 56
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_rest"]
+script = ExtResource("learnset_script")
+level = 63
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_future_sight"]
+script = ExtResource("learnset_script")
+level = 70
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_double_edge"]
+script = ExtResource("learnset_script")
+level = 77
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_cosmic_power"]
+script = ExtResource("learnset_script")
+level = 84
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_last_resort"]
+script = ExtResource("learnset_script")
+level = 91
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0385_doom_desire"]
+script = ExtResource("learnset_script")
+level = 98
+action = ExtResource("115")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0385_star_piece")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0385_confusion"), SubResource("LE_pokmmo_0385_wish"), SubResource("LE_pokmmo_0385_swift"), SubResource("LE_pokmmo_0385_helping_hand"), SubResource("LE_pokmmo_0385_refresh"), SubResource("LE_pokmmo_0385_zen_headbutt"), SubResource("LE_pokmmo_0385_lucky_chant"), SubResource("LE_pokmmo_0385_gravity"), SubResource("LE_pokmmo_0385_psychic"), SubResource("LE_pokmmo_0385_meteor_mash"), SubResource("LE_pokmmo_0385_healing_wish"), SubResource("LE_pokmmo_0385_rest"), SubResource("LE_pokmmo_0385_future_sight"), SubResource("LE_pokmmo_0385_double_edge"), SubResource("LE_pokmmo_0385_cosmic_power"), SubResource("LE_pokmmo_0385_last_resort"), SubResource("LE_pokmmo_0385_doom_desire"), SubResource("LE_new_0385_serene_grace")])
 unit_name = "Jirachi"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

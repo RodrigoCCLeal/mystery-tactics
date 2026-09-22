@@ -26,6 +26,8 @@
 [ext_resource type="Resource" path="res://data/attacks/endeavor.tres" id="24_endeavor"]
 [ext_resource type="Resource" path="res://data/attacks/guillotine.tres" id="25_guillotine"]
 
+[ext_resource type="Resource" path="res://data/attacks/bubble.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/vice_grip.tres" id="101"]
 [sub_resource type="Resource" id="Resource_evo"]
 script = ExtResource("4_evo")
 target = ExtResource("7_target")
@@ -117,6 +119,183 @@ script = ExtResource("5_learn")
 level = 52
 action = ExtResource("25_guillotine")
 
+[sub_resource type="Resource" id="LE_new_0341_water_gun"]
+script = ExtResource("5_learn")
+action = ExtResource("12_water_gun")
+
+[sub_resource type="Resource" id="LE_new_0341_harden"]
+script = ExtResource("5_learn")
+action = ExtResource("11_harden")
+
+[sub_resource type="Resource" id="LE_new_0341_bubble"]
+script = ExtResource("5_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0341_leer"]
+script = ExtResource("5_learn")
+level = 4
+action = ExtResource("13_leer")
+
+[sub_resource type="Resource" id="LE_new_0341_vice_grip"]
+script = ExtResource("5_learn")
+level = 7
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0341_taunt"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("14_taunt")
+
+[sub_resource type="Resource" id="LE_new_0341_bubble_beam"]
+script = ExtResource("5_learn")
+level = 12
+action = ExtResource("15_bubble_beam")
+
+[sub_resource type="Resource" id="LE_new_0341_knock_off"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("16_knock_off")
+
+[sub_resource type="Resource" id="LE_new_0341_protect"]
+script = ExtResource("5_learn")
+level = 17
+action = ExtResource("18_protect")
+
+[sub_resource type="Resource" id="LE_new_0341_double_hit"]
+script = ExtResource("5_learn")
+level = 20
+action = ExtResource("17_double_hit")
+
+[sub_resource type="Resource" id="LE_new_0341_night_slash"]
+script = ExtResource("5_learn")
+level = 26
+action = ExtResource("19_night_slash")
+
+[sub_resource type="Resource" id="LE_new_0341_razor_shell"]
+script = ExtResource("5_learn")
+level = 31
+action = ExtResource("20_razor_shell")
+
+[sub_resource type="Resource" id="LE_new_0341_crabhammer"]
+script = ExtResource("5_learn")
+level = 34
+action = ExtResource("23_crabhammer")
+
+[sub_resource type="Resource" id="LE_new_0341_swords_dance"]
+script = ExtResource("5_learn")
+level = 36
+action = ExtResource("21_swords_dance")
+
+[sub_resource type="Resource" id="LE_new_0341_crunch"]
+script = ExtResource("5_learn")
+level = 39
+action = ExtResource("22_crunch")
+
+[sub_resource type="Resource" id="LE_new_0341_guillotine"]
+script = ExtResource("5_learn")
+level = 44
+action = ExtResource("25_guillotine")
+
+[sub_resource type="Resource" id="LE_new_0341_endeavor"]
+script = ExtResource("5_learn")
+level = 48
+action = ExtResource("24_endeavor")
+
+[sub_resource type="Resource" id="LE_new_0341_hyper_cutter"]
+script = ExtResource("5_learn")
+action = ExtResource("8_hyper_cutter")
+
+[sub_resource type="Resource" id="LE_new_0341_shell_armor"]
+script = ExtResource("5_learn")
+action = ExtResource("9_shell_armor")
+
+[sub_resource type="Resource" id="LE_new_0341_adaptability"]
+script = ExtResource("5_learn")
+is_hidden_ability = true
+action = ExtResource("10_adaptability")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_bubble"]
+script = ExtResource("5_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_harden"]
+script = ExtResource("5_learn")
+action = ExtResource("11_harden")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_water_gun"]
+script = ExtResource("5_learn")
+action = ExtResource("12_water_gun")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_leer"]
+script = ExtResource("5_learn")
+level = 4
+action = ExtResource("13_leer")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_vicegrip"]
+script = ExtResource("5_learn")
+level = 7
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_taunt"]
+script = ExtResource("5_learn")
+level = 8
+action = ExtResource("14_taunt")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_bubblebeam"]
+script = ExtResource("5_learn")
+level = 12
+action = ExtResource("15_bubble_beam")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_knock_off"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("16_knock_off")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_double_hit"]
+script = ExtResource("5_learn")
+level = 20
+action = ExtResource("17_double_hit")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_protect"]
+script = ExtResource("5_learn")
+level = 24
+action = ExtResource("18_protect")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_night_slash"]
+script = ExtResource("5_learn")
+level = 28
+action = ExtResource("19_night_slash")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_razor_shell"]
+script = ExtResource("5_learn")
+level = 32
+action = ExtResource("20_razor_shell")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_swords_dance"]
+script = ExtResource("5_learn")
+level = 36
+action = ExtResource("21_swords_dance")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_crunch"]
+script = ExtResource("5_learn")
+level = 40
+action = ExtResource("22_crunch")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_crabhammer"]
+script = ExtResource("5_learn")
+level = 44
+action = ExtResource("23_crabhammer")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_endeavor"]
+script = ExtResource("5_learn")
+level = 48
+action = ExtResource("24_endeavor")
+
+[sub_resource type="Resource" id="LE_pokmmo_0341_guillotine"]
+script = ExtResource("5_learn")
+level = 52
+action = ExtResource("25_guillotine")
+
 [resource]
 script = ExtResource("1_script")
 unit_name = "Corphish"
@@ -124,7 +303,7 @@ sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Water"])
 slots = Array[ExtResource("6_action")]([ExtResource("11_harden"), ExtResource("12_water_gun"), ExtResource("8_hyper_cutter")])
-learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0341_hyper_cutter"), SubResource("LearnsetEntry_0341_shell_armor"), SubResource("LearnsetEntry_0341_adaptability"), SubResource("LearnsetEntry_0341_harden"), SubResource("LearnsetEntry_0341_water_gun"), SubResource("LearnsetEntry_0341_leer"), SubResource("LearnsetEntry_0341_taunt"), SubResource("LearnsetEntry_0341_bubble_beam"), SubResource("LearnsetEntry_0341_knock_off"), SubResource("LearnsetEntry_0341_double_hit"), SubResource("LearnsetEntry_0341_protect"), SubResource("LearnsetEntry_0341_night_slash"), SubResource("LearnsetEntry_0341_razor_shell"), SubResource("LearnsetEntry_0341_swords_dance"), SubResource("LearnsetEntry_0341_crunch"), SubResource("LearnsetEntry_0341_crabhammer"), SubResource("LearnsetEntry_0341_endeavor"), SubResource("LearnsetEntry_0341_guillotine")])
+learnset = Array[ExtResource("5_learn")]([SubResource("LE_pokmmo_0341_bubble"), SubResource("LE_pokmmo_0341_harden"), SubResource("LE_pokmmo_0341_water_gun"), SubResource("LE_pokmmo_0341_leer"), SubResource("LE_pokmmo_0341_vicegrip"), SubResource("LE_pokmmo_0341_taunt"), SubResource("LE_pokmmo_0341_bubblebeam"), SubResource("LE_pokmmo_0341_knock_off"), SubResource("LE_pokmmo_0341_double_hit"), SubResource("LE_pokmmo_0341_protect"), SubResource("LE_pokmmo_0341_night_slash"), SubResource("LE_pokmmo_0341_razor_shell"), SubResource("LE_pokmmo_0341_swords_dance"), SubResource("LE_pokmmo_0341_crunch"), SubResource("LE_pokmmo_0341_crabhammer"), SubResource("LE_pokmmo_0341_endeavor"), SubResource("LE_pokmmo_0341_guillotine"), SubResource("LE_new_0341_hyper_cutter"), SubResource("LE_new_0341_shell_armor"), SubResource("LE_new_0341_adaptability")])
 hp_base = 43
 attack_base = 80
 defense_base = 65

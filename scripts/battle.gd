@@ -1898,12 +1898,24 @@ func spawn_enemies() -> void:
 		if GameState.current_boss_entry != null:
 			var entry = GameState.current_boss_entry
 			_spawn_enemy_unit(entry.species, entry.level, entry.loadout, hidden_cells, [])
+	elif GameState.current_encounter_source == "Grass":
+		# Refactor de encontro selvagem (2026-09-10, pedido do usuário
+		# verbatim): "When combat starts, all units in the overworld are
+		# added to the enemy team" — GameState.current_wild_group já vem
+		# pronto de world.gd::_on_player_tile_entered (ver comentário grande
+		# em GameState.current_wild_group), um EncounterEntry por WildSprite
+		# do MESMO patch de grama conectada que o jogador tocou. Substitui
+		# EncounterArea.pick_group("Grass") por completo — esse caminho só
+		# continua existindo pra "Water"/"Fishing" logo abaixo, fora do
+		# escopo deste pedido (só "grass areas" foram mencionadas).
+		for entry in GameState.current_wild_group:
+			_spawn_enemy_unit(entry.species, entry.level, [], hidden_cells, [])
 	else:
-		# current_encounter_source ("Grass"/"Water"/"Fishing", ver
-		# EncounterGroup.source) — quem chamou world.gd::_start_encounter()
-		# antes de trocar de cena pra cá já escreveu o valor certo em
-		# GameState (grama alta = "Grass" de sempre; surfando em cima
-		# d'água = "Water", ver world.gd::_on_player_tile_entered).
+		# current_encounter_source ("Water"/"Fishing", ver EncounterGroup.
+		# source) — ainda o sistema ANTIGO de grupo fixo sorteado por peso
+		# (ver encounter_area.gd/encounter_group.gd), intocado pelo refactor
+		# de "Grass" acima. Surfando em cima d'água = "Water", ver
+		# world.gd::_on_player_tile_entered.
 		var group = GameState.current_area.pick_group(GameState.current_encounter_source) if GameState.current_area != null else null
 		var entries: Array[EncounterEntry] = group.entries if group != null else []
 		for entry in entries:
@@ -6473,6 +6485,7 @@ func end_battle(last_defeated: Node, victory: bool) -> void:
 	# batalha selvagem de água anterior caso algo volte a ler isso sem
 	# querer.
 	GameState.current_encounter_source = "Grass"
+	GameState.current_wild_group = []   # mesma higiene do campo acima (ver comentário lá)
 
 	# Pedido do usuário: "Updating Challenge mode... When all Units from the
 	# team are defeated, display Game Over screen with the prompt Load Save

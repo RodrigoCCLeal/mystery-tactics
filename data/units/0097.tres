@@ -4,8 +4,250 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0097/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0097/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/disable.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/hypnosis.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/barrier.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/nightmare.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/future_sight.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/switcheroo.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/nasty_plot.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/headbutt.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/poison_gas.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/meditate.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/psych_up.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/mind_reader.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/wake_up_slap.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/swagger.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/synchronoise.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/psyshock.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/dream_eater.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/insomnia.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/forewarn.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/inner_focus.tres" id="124"]
+[sub_resource type="Resource" id="LE_new_0097_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0097_disable"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0097_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0097_hypnosis"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0097_barrier"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0097_nightmare"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0097_future_sight"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0097_switcheroo"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0097_nasty_plot"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0097_headbutt"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0097_poison_gas"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0097_meditate"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0097_psybeam"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0097_psych_up"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0097_mind_reader"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0097_wake_up_slap"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0097_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0097_psychic"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0097_swagger"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0097_synchronoise"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0097_psyshock"]
+script = ExtResource("learnset_script")
+level = 51
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0097_dream_eater"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0097_insomnia"]
+script = ExtResource("learnset_script")
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0097_forewarn"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0097_inner_focus"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_barrier"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_disable"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_future_sight"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_hypnosis"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_nasty_plot"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_nightmare"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_switcheroo"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_headbutt"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_poison_gas"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_meditate"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_psybeam"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_psych_up"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_mind_reader"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_wake_up_slap"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_psychic"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_swagger"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_synchronoise"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_psyshock"]
+script = ExtResource("learnset_script")
+level = 51
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0097_dream_eater"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("121")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0097_barrier"), SubResource("LE_pokmmo_0097_confusion"), SubResource("LE_pokmmo_0097_disable"), SubResource("LE_pokmmo_0097_future_sight"), SubResource("LE_pokmmo_0097_hypnosis"), SubResource("LE_pokmmo_0097_nasty_plot"), SubResource("LE_pokmmo_0097_nightmare"), SubResource("LE_pokmmo_0097_pound"), SubResource("LE_pokmmo_0097_switcheroo"), SubResource("LE_pokmmo_0097_headbutt"), SubResource("LE_pokmmo_0097_poison_gas"), SubResource("LE_pokmmo_0097_meditate"), SubResource("LE_pokmmo_0097_psybeam"), SubResource("LE_pokmmo_0097_psych_up"), SubResource("LE_pokmmo_0097_mind_reader"), SubResource("LE_pokmmo_0097_wake_up_slap"), SubResource("LE_pokmmo_0097_zen_headbutt"), SubResource("LE_pokmmo_0097_psychic"), SubResource("LE_pokmmo_0097_swagger"), SubResource("LE_pokmmo_0097_synchronoise"), SubResource("LE_pokmmo_0097_psyshock"), SubResource("LE_pokmmo_0097_dream_eater"), SubResource("LE_new_0097_insomnia"), SubResource("LE_new_0097_forewarn"), SubResource("LE_new_0097_inner_focus")])
 unit_name = "Hypno"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

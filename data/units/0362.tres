@@ -4,8 +4,254 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0362/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0362/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/headbutt.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/double_team.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/powder_snow.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/ice_ball.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/astonish.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/sheer_cold.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/ice_shard.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/freeze_dry.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/icy_wind.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/ice_fang.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/protect.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/crunch.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/frost_breath.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/ice_beam.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/icicle_crash.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/hail.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/blizzard.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/snowscape.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/weather_ball.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/inner_focus.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/ice_body.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/moody.tres" id="123"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/babiri_berry.tres" id="124"]
+[ext_resource type="Resource" path="res://data/items/never_melt_ice.tres" id="125"]
+[ext_resource type="Resource" path="res://data/attacks/fake_tears.tres" id="126"]
+[ext_resource type="Resource" path="res://data/attacks/explosion.tres" id="127"]
+[sub_resource type="Resource" id="LE_new_0362_headbutt"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0362_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0362_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0362_double_team"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0362_powder_snow"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0362_ice_ball"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0362_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0362_sheer_cold"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0362_ice_shard"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0362_freeze_dry"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0362_icy_wind"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0362_ice_fang"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0362_protect"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0362_crunch"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0362_frost_breath"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0362_ice_beam"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0362_icicle_crash"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0362_hail"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0362_blizzard"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0362_snowscape"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0362_weather_ball"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0362_inner_focus"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0362_ice_body"]
+script = ExtResource("learnset_script")
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0362_moody"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="WHI_0362_babiri_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("124")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0362_never_melt_ice"]
+script = ExtResource("wild_item_script")
+item = ExtResource("125")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_double_team"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_headbutt"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_ice_ball"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_ice_shard"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_powder_snow"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_sheer_cold"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_protect"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_icy_wind"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_fake_tears"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("126")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_frost_breath"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_ice_fang"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_ice_beam"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_icicle_crash"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_crunch"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_snowscape"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_blizzard"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_weather_ball"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0362_explosion"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("127")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0362_babiri_berry"), SubResource("WHI_0362_never_melt_ice")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0362_astonish"), SubResource("LE_pokmmo_0362_bite"), SubResource("LE_pokmmo_0362_double_team"), SubResource("LE_pokmmo_0362_headbutt"), SubResource("LE_pokmmo_0362_ice_ball"), SubResource("LE_pokmmo_0362_ice_shard"), SubResource("LE_pokmmo_0362_leer"), SubResource("LE_pokmmo_0362_powder_snow"), SubResource("LE_pokmmo_0362_sheer_cold"), SubResource("LE_pokmmo_0362_protect"), SubResource("LE_pokmmo_0362_icy_wind"), SubResource("LE_pokmmo_0362_fake_tears"), SubResource("LE_pokmmo_0362_frost_breath"), SubResource("LE_pokmmo_0362_ice_fang"), SubResource("LE_pokmmo_0362_ice_beam"), SubResource("LE_pokmmo_0362_icicle_crash"), SubResource("LE_pokmmo_0362_crunch"), SubResource("LE_pokmmo_0362_snowscape"), SubResource("LE_pokmmo_0362_blizzard"), SubResource("LE_pokmmo_0362_weather_ball"), SubResource("LE_pokmmo_0362_explosion"), SubResource("LE_new_0362_inner_focus"), SubResource("LE_new_0362_ice_body"), SubResource("LE_new_0362_moody")])
 unit_name = "Glalie"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -78,6 +78,15 @@ func set_slot_quantity(index: int, amount: int) -> void:
 # deveria ser escolhido (num menu futuro de equipar ataques/habilidades).
 @export var learnset: Array[LearnsetEntry] = []
 
+# Tabela de item segurado ao nascer SELVAGEM — cada entrada é um par
+# (ItemData, chance 0.0-1.0), dados vindos do PokeMMO (ver
+# wild_held_item_entry.gd e _pick_random_held_item() logo abaixo). Vazio
+# (padrão) = esta espécie nunca nasce com item nenhum (a grande maioria das
+# espécies sem dado de item no PokeMMO cai aqui). Só lido por
+# get_recent_loadout() — o time do jogador (`slots`, montado/editado à mão)
+# nunca consulta isso.
+@export var wild_held_items: Array[WildHeldItemEntry] = []
+
 # Ações do learnset já disponíveis num dado nível (level <= o informado) —
 # EXCETO Habilidade Hidden ainda não revelada (ver hidden_ability_revealed
 # logo abaixo): por padrão ela não aparece como opção pra equipar, só depois
@@ -152,28 +161,28 @@ func strip_boss_ability() -> void:
 	learnset = learnset.filter(func(entry): return not entry.is_boss_ability)
 	slots = slots.filter(func(action): return not boss_actions.has(action))
 
-# Loadout AUTOMÁTICO de inimigo: até `max_slots - 1` ATAQUES mais RECENTES
-# que essa espécie já teria aprendido até `level` (fila FIFO, mesma lógica de
-# sempre — quem aprendeu por último entra, o mais antigo sai quando não tem
-# mais espaço), MAIS exatamente 1 Habilidade sorteada pro último slot — pedido
-# do usuário (2026-07-24): "Slot 6 is always 1 ability... The other 5 slots
-# follow the same former logic, they will be the last 5 learned MOVES".
-# Diferente de antes (Habilidade e Ataque disputavam os mesmos 6 espaços na
-# MESMA fila de recência), agora são dois grupos separados: Ataques usam a
-# fila de recência (ver _get_recent_moves logo abaixo), Habilidade usa um
-# sorteio à parte (ver _pick_random_ability). Diferente do time do jogador
-# (que usa `slots` tal como foi montado/editado no menu de Loadout), inimigo
-# nunca teve um loadout escolhido à mão — ver Unit.apply_fresh_data(), único
-# lugar que chama isso.
+# Loadout AUTOMÁTICO de inimigo SELVAGEM: estrutura FIXA de 6 slots (pedido
+# do usuário, refactor do encontro selvagem, 2026-09-10, verbatim): "The
+# first 4 slots will follow the previous rule, the 4 most recently learned
+# moves. The fifth slot is one of that unit's abilities, using rules
+# previously stated. The sixth slot is supposed to be empty most of the
+# time, but will have a random chance of containing an item, also following
+# the Pokemmo data". Diferente da versão anterior (que variava o nº de
+# ataques pra sempre preencher todos os max_slots quando não tinha
+# Habilidade), agora os slots 1-4/5/6 são INDEPENDENTES: sempre até 4
+# ataques (nunca mais, mesmo que falte Habilidade ou item pra completar os 6
+# espaços — um slot vazio fica vazio de verdade, não é redistribuído).
+# max_slots continua existindo só por compatibilidade de assinatura (Unit.
+# apply_fresh_data() chama isso sem argumento extra) — não controla mais
+# nada, a estrutura é sempre 4+1+1.
 func get_recent_loadout(level: int, max_slots: int = 6) -> Array[ActionData]:
+	var loadout: Array[ActionData] = _get_recent_moves(level, 4)
 	var ability = _pick_random_ability(level)
-	# Reserva 1 slot pra Habilidade só se achou alguma pra sortear — uma
-	# espécie (hipotética) sem Habilidade nenhuma no learnset continua usando
-	# TODOS os max_slots só pra Ataques, em vez de desperdiçar um espaço vazio.
-	var move_slots = max_slots - 1 if ability != null else max_slots
-	var loadout: Array[ActionData] = _get_recent_moves(level, move_slots)
 	if ability != null:
 		loadout.append(ability)
+	var item = _pick_random_held_item()
+	if item != null:
+		loadout.append(item)
 	return loadout
 
 # Só os Ataques (AttackData) do learnset, mesma fila FIFO de recência de
@@ -258,6 +267,26 @@ func _pick_random_ability(level: int) -> ActionData:
 		if roll < cumulative:
 			return candidate
 	return ability_1   # fallback de arredondamento (roll >= soma por um triz)
+
+# Sorteia SE o slot 6 vem com item, e qual — dados de wild_held_items (ver
+# comentário lá, valores vindos do PokeMMO). Sorteio cumulativo: rola um
+# float 0.0-1.0, soma as chances em ordem até passar do valor sorteado; se a
+# soma de TODAS as chances (tipicamente bem menor que 1.0) nunca alcançar o
+# roll, null = sem item (o caso comum, "empty most of the time" — pedido do
+# usuário). Ordem de declaração usada como critério (mesmo padrão de
+# _pick_random_ability), sem desempate especial porque as chances não deviam
+# somar mais que 1.0 na prática (dado real do PokeMMO), mas nada impede uma
+# espécie hipotética passar disso — o excesso simplesmente nunca é alcançado.
+func _pick_random_held_item() -> ItemData:
+	if wild_held_items.is_empty():
+		return null
+	var roll = randf()
+	var cumulative = 0.0
+	for entry in wild_held_items:
+		cumulative += entry.chance
+		if roll < cumulative:
+			return entry.item
+	return null
 
 @export_group("Stats base")
 @export var weight: int = 1             # 0 a 4 — inerente à unidade, não muda com o nível

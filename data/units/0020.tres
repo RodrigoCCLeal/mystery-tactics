@@ -25,6 +25,14 @@
 [ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="22_double_edge"]
 [ext_resource type="Resource" path="res://data/attacks/endeavor.tres" id="23_endeavor"]
 
+[ext_resource type="Resource" path="res://data/attacks/counter.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/fury_swipes.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/hyper_fang.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/laser_focus.tres" id="103"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/oran_berry.tres" id="104"]
+[ext_resource type="Resource" path="res://data/items/sitrus_berry.tres" id="105"]
+[ext_resource type="Resource" path="res://data/items/chilan_berry.tres" id="106"]
 [sub_resource type="Resource" id="LearnsetEntry_0020_run_away"]
 script = ExtResource("4_learn")
 action = ExtResource("6_run_away")
@@ -107,8 +115,206 @@ script = ExtResource("4_learn")
 level = 44
 action = ExtResource("23_endeavor")
 
+[sub_resource type="Resource" id="LE_new_0020_swords_dance"]
+script = ExtResource("4_learn")
+action = ExtResource("12_swords_dance")
+
+[sub_resource type="Resource" id="LE_new_0020_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("13_tackle")
+
+[sub_resource type="Resource" id="LE_new_0020_tail_whip"]
+script = ExtResource("4_learn")
+action = ExtResource("14_tail_whip")
+
+[sub_resource type="Resource" id="LE_new_0020_counter"]
+script = ExtResource("4_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0020_quick_attack"]
+script = ExtResource("4_learn")
+action = ExtResource("10_quick_attack")
+
+[sub_resource type="Resource" id="LE_new_0020_focus_energy"]
+script = ExtResource("4_learn")
+action = ExtResource("9_focus_energy")
+
+[sub_resource type="Resource" id="LE_new_0020_fury_swipes"]
+script = ExtResource("4_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0020_scary_face"]
+script = ExtResource("4_learn")
+action = ExtResource("11_scary_face")
+
+[sub_resource type="Resource" id="LE_new_0020_bite"]
+script = ExtResource("4_learn")
+level = 10
+action = ExtResource("15_bite")
+
+[sub_resource type="Resource" id="LE_new_0020_hyper_fang"]
+script = ExtResource("4_learn")
+level = 13
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0020_pursuit"]
+script = ExtResource("4_learn")
+level = 13
+action = ExtResource("16_pursuit")
+
+[sub_resource type="Resource" id="LE_new_0020_laser_focus"]
+script = ExtResource("4_learn")
+level = 13
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0020_super_fang"]
+script = ExtResource("4_learn")
+level = 15
+action = ExtResource("21_super_fang")
+
+[sub_resource type="Resource" id="LE_new_0020_take_down"]
+script = ExtResource("4_learn")
+level = 16
+action = ExtResource("17_take_down")
+
+[sub_resource type="Resource" id="LE_new_0020_crunch"]
+script = ExtResource("4_learn")
+level = 18
+action = ExtResource("19_crunch")
+
+[sub_resource type="Resource" id="LE_new_0020_assurance"]
+script = ExtResource("4_learn")
+level = 19
+action = ExtResource("18_assurance")
+
+[sub_resource type="Resource" id="LE_new_0020_sucker_punch"]
+script = ExtResource("4_learn")
+level = 19
+action = ExtResource("20_sucker_punch")
+
+[sub_resource type="Resource" id="LE_new_0020_double_edge"]
+script = ExtResource("4_learn")
+level = 39
+action = ExtResource("22_double_edge")
+
+[sub_resource type="Resource" id="LE_new_0020_endeavor"]
+script = ExtResource("4_learn")
+level = 44
+action = ExtResource("23_endeavor")
+
+[sub_resource type="Resource" id="LE_new_0020_run_away"]
+script = ExtResource("4_learn")
+action = ExtResource("6_run_away")
+
+[sub_resource type="Resource" id="LE_new_0020_guts"]
+script = ExtResource("4_learn")
+action = ExtResource("7_guts")
+
+[sub_resource type="Resource" id="LE_new_0020_hustle"]
+script = ExtResource("4_learn")
+is_hidden_ability = true
+action = ExtResource("8_hustle")
+
+[sub_resource type="Resource" id="WHI_0020_oran_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("104")
+chance = 0.5
+
+[sub_resource type="Resource" id="WHI_0020_sitrus_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("105")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0020_chilan_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("106")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_counter"]
+script = ExtResource("4_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_focus_energy"]
+script = ExtResource("4_learn")
+action = ExtResource("9_focus_energy")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_fury_swipes"]
+script = ExtResource("4_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_quick_attack"]
+script = ExtResource("4_learn")
+action = ExtResource("10_quick_attack")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_scary_face"]
+script = ExtResource("4_learn")
+action = ExtResource("11_scary_face")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_swords_dance"]
+script = ExtResource("4_learn")
+action = ExtResource("12_swords_dance")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_tackle"]
+script = ExtResource("4_learn")
+action = ExtResource("13_tackle")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_tail_whip"]
+script = ExtResource("4_learn")
+action = ExtResource("14_tail_whip")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_bite"]
+script = ExtResource("4_learn")
+level = 10
+action = ExtResource("15_bite")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_pursuit"]
+script = ExtResource("4_learn")
+level = 13
+action = ExtResource("16_pursuit")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_super_fang"]
+script = ExtResource("4_learn")
+level = 15
+action = ExtResource("21_super_fang")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_hyper_fang"]
+script = ExtResource("4_learn")
+level = 16
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_take_down"]
+script = ExtResource("4_learn")
+level = 16
+action = ExtResource("17_take_down")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_crunch"]
+script = ExtResource("4_learn")
+level = 18
+action = ExtResource("19_crunch")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_assurance"]
+script = ExtResource("4_learn")
+level = 19
+action = ExtResource("18_assurance")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_sucker_punch"]
+script = ExtResource("4_learn")
+level = 29
+action = ExtResource("20_sucker_punch")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_double_edge"]
+script = ExtResource("4_learn")
+level = 39
+action = ExtResource("22_double_edge")
+
+[sub_resource type="Resource" id="LE_pokmmo_0020_endeavor"]
+script = ExtResource("4_learn")
+level = 44
+action = ExtResource("23_endeavor")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0020_oran_berry"), SubResource("WHI_0020_sitrus_berry"), SubResource("WHI_0020_chilan_berry")])
 unit_name = "Raticate"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
@@ -116,7 +322,7 @@ attack_hit_delay = 0.1833
 special_hit_delay = 0.0667
 types = Array[String](["Normal"])
 slots = Array[ExtResource("5_action")]([ExtResource("13_tackle"), ExtResource("14_tail_whip"), ExtResource("6_run_away")])
-learnset = Array[ExtResource("4_learn")]([SubResource("LearnsetEntry_0020_run_away"), SubResource("LearnsetEntry_0020_guts"), SubResource("LearnsetEntry_0020_hustle"), SubResource("LearnsetEntry_0020_focus_energy"), SubResource("LearnsetEntry_0020_quick_attack"), SubResource("LearnsetEntry_0020_scary_face"), SubResource("LearnsetEntry_0020_swords_dance"), SubResource("LearnsetEntry_0020_tackle"), SubResource("LearnsetEntry_0020_tail_whip"), SubResource("LearnsetEntry_0020_bite"), SubResource("LearnsetEntry_0020_pursuit"), SubResource("LearnsetEntry_0020_take_down"), SubResource("LearnsetEntry_0020_assurance"), SubResource("LearnsetEntry_0020_crunch"), SubResource("LearnsetEntry_0020_sucker_punch"), SubResource("LearnsetEntry_0020_super_fang"), SubResource("LearnsetEntry_0020_double_edge"), SubResource("LearnsetEntry_0020_endeavor")])
+learnset = Array[ExtResource("4_learn")]([SubResource("LE_pokmmo_0020_counter"), SubResource("LE_pokmmo_0020_focus_energy"), SubResource("LE_pokmmo_0020_fury_swipes"), SubResource("LE_pokmmo_0020_quick_attack"), SubResource("LE_pokmmo_0020_scary_face"), SubResource("LE_pokmmo_0020_swords_dance"), SubResource("LE_pokmmo_0020_tackle"), SubResource("LE_pokmmo_0020_tail_whip"), SubResource("LE_pokmmo_0020_bite"), SubResource("LE_pokmmo_0020_pursuit"), SubResource("LE_pokmmo_0020_super_fang"), SubResource("LE_pokmmo_0020_hyper_fang"), SubResource("LE_pokmmo_0020_take_down"), SubResource("LE_pokmmo_0020_crunch"), SubResource("LE_pokmmo_0020_assurance"), SubResource("LE_pokmmo_0020_sucker_punch"), SubResource("LE_pokmmo_0020_double_edge"), SubResource("LE_pokmmo_0020_endeavor"), SubResource("LE_new_0020_run_away"), SubResource("LE_new_0020_guts"), SubResource("LE_new_0020_hustle")])
 hp_base = 55
 attack_base = 81
 defense_base = 60

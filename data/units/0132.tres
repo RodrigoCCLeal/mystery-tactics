@@ -4,8 +4,44 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0132/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0132/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/transform.tres" id="100"]
+[ext_resource type="Resource" path="res://data/abilities/limber.tres" id="101"]
+[ext_resource type="Resource" path="res://data/abilities/imposter.tres" id="102"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/metal_powder.tres" id="103"]
+[ext_resource type="Resource" path="res://data/items/quick_powder.tres" id="104"]
+[sub_resource type="Resource" id="LE_new_0132_transform"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0132_limber"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0132_imposter"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="WHI_0132_metal_powder"]
+script = ExtResource("wild_item_script")
+item = ExtResource("103")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0132_quick_powder"]
+script = ExtResource("wild_item_script")
+item = ExtResource("104")
+chance = 0.5
+
+[sub_resource type="Resource" id="LE_pokmmo_0132_transform"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0132_metal_powder"), SubResource("WHI_0132_quick_powder")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0132_transform"), SubResource("LE_new_0132_limber"), SubResource("LE_new_0132_imposter")])
 unit_name = "Ditto"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

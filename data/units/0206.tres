@@ -4,8 +4,268 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0206/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0206/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/rage.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/defense_curl.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/flail.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/rollout.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/mud_slap.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/spite.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/pursuit.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/yawn.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/glare.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/body_slam.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/drill_run.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/roost.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/coil.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/dig.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/hyper_drill.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/endeavor.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/endure.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/dragon_rush.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/air_slash.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/serene_grace.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/run_away.tres" id="124"]
+[ext_resource type="Resource" path="res://data/abilities/rattled.tres" id="125"]
+[sub_resource type="Resource" id="LE_new_0206_rage"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0206_defense_curl"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0206_flail"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0206_rollout"]
+script = ExtResource("learnset_script")
+level = 3
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0206_mud_slap"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0206_spite"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0206_pursuit"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0206_yawn"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0206_screech"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0206_glare"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0206_ancient_power"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0206_body_slam"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0206_drill_run"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0206_take_down"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0206_roost"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0206_coil"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0206_dig"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0206_hyper_drill"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0206_double_edge"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0206_endeavor"]
+script = ExtResource("learnset_script")
+level = 38
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0206_endure"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0206_dragon_rush"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0206_air_slash"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0206_serene_grace"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0206_run_away"]
+script = ExtResource("learnset_script")
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_new_0206_rattled"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_defense_curl"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_flail"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_rage"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_mud_slap"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_spite"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_pursuit"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_rollout"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_glare"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_screech"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_ancientpower"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_drill_run"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_yawn"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_dig"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_body_slam"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_roost"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_take_down"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_dragon_rush"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_air_slash"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_coil"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_endure"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_double_edge"]
+script = ExtResource("learnset_script")
+level = 48
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0206_endeavor"]
+script = ExtResource("learnset_script")
+level = 52
+action = ExtResource("119")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0206_defense_curl"), SubResource("LE_pokmmo_0206_flail"), SubResource("LE_pokmmo_0206_rage"), SubResource("LE_pokmmo_0206_mud_slap"), SubResource("LE_pokmmo_0206_spite"), SubResource("LE_pokmmo_0206_pursuit"), SubResource("LE_pokmmo_0206_rollout"), SubResource("LE_pokmmo_0206_glare"), SubResource("LE_pokmmo_0206_screech"), SubResource("LE_pokmmo_0206_ancientpower"), SubResource("LE_pokmmo_0206_drill_run"), SubResource("LE_pokmmo_0206_yawn"), SubResource("LE_pokmmo_0206_dig"), SubResource("LE_pokmmo_0206_body_slam"), SubResource("LE_pokmmo_0206_roost"), SubResource("LE_pokmmo_0206_take_down"), SubResource("LE_pokmmo_0206_dragon_rush"), SubResource("LE_pokmmo_0206_air_slash"), SubResource("LE_pokmmo_0206_coil"), SubResource("LE_pokmmo_0206_endure"), SubResource("LE_pokmmo_0206_double_edge"), SubResource("LE_pokmmo_0206_endeavor"), SubResource("LE_new_0206_serene_grace"), SubResource("LE_new_0206_run_away"), SubResource("LE_new_0206_rattled")])
 unit_name = "Dunsparce"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

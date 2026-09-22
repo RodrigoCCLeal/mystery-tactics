@@ -4,8 +4,246 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0099/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0099/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/vice_grip.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/harden.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/bubble.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/metal_claw.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/mud_sport.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/hammer_arm.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/wide_guard.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/mud_shot.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/protect.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/stomp.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/guillotine.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/flail.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/razor_shell.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/slam.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/crabhammer.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/swords_dance.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/brine.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/hyper_cutter.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/shell_armor.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/sheer_force.tres" id="124"]
+[sub_resource type="Resource" id="LE_new_0099_vice_grip"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0099_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0099_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0099_agility"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0099_harden"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0099_amnesia"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0099_bubble"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0099_metal_claw"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0099_mud_sport"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0099_hammer_arm"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0099_wide_guard"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0099_mud_shot"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0099_bubble_beam"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0099_protect"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0099_stomp"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0099_guillotine"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0099_flail"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0099_razor_shell"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0099_slam"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0099_crabhammer"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0099_swords_dance"]
+script = ExtResource("learnset_script")
+level = 48
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0099_brine"]
+script = ExtResource("learnset_script")
+level = 51
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0099_hyper_cutter"]
+script = ExtResource("learnset_script")
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0099_shell_armor"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0099_sheer_force"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_agility"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_amnesia"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_bubble"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_hammer_arm"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_harden"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_metal_claw"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_mud_sport"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_vicegrip"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_wide_guard"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_mud_shot"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_protect"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_bubblebeam"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_stomp"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_flail"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_razor_shell"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_slam"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_crabhammer"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_swords_dance"]
+script = ExtResource("learnset_script")
+level = 48
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_brine"]
+script = ExtResource("learnset_script")
+level = 51
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0099_guillotine"]
+script = ExtResource("learnset_script")
+level = 56
+action = ExtResource("115")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0099_agility"), SubResource("LE_pokmmo_0099_amnesia"), SubResource("LE_pokmmo_0099_bubble"), SubResource("LE_pokmmo_0099_hammer_arm"), SubResource("LE_pokmmo_0099_harden"), SubResource("LE_pokmmo_0099_leer"), SubResource("LE_pokmmo_0099_metal_claw"), SubResource("LE_pokmmo_0099_mud_sport"), SubResource("LE_pokmmo_0099_vicegrip"), SubResource("LE_pokmmo_0099_water_gun"), SubResource("LE_pokmmo_0099_wide_guard"), SubResource("LE_pokmmo_0099_mud_shot"), SubResource("LE_pokmmo_0099_protect"), SubResource("LE_pokmmo_0099_bubblebeam"), SubResource("LE_pokmmo_0099_stomp"), SubResource("LE_pokmmo_0099_flail"), SubResource("LE_pokmmo_0099_razor_shell"), SubResource("LE_pokmmo_0099_slam"), SubResource("LE_pokmmo_0099_crabhammer"), SubResource("LE_pokmmo_0099_swords_dance"), SubResource("LE_pokmmo_0099_brine"), SubResource("LE_pokmmo_0099_guillotine"), SubResource("LE_new_0099_hyper_cutter"), SubResource("LE_new_0099_shell_armor"), SubResource("LE_new_0099_sheer_force")])
 unit_name = "Kingler"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

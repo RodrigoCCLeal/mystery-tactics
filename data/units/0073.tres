@@ -4,8 +4,283 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0073/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0073/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/wrap.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/acid.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/haze.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/constrict.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/mirror_coat.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/wring_out.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/reflect_type.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/bubble.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/water_pulse.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/toxic_spikes.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/hex.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/acid_spray.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/poison_jab.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/barrier.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/surf.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/acid_armor.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/brine.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="122"]
+[ext_resource type="Resource" path="res://data/attacks/sludge_wave.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/clear_body.tres" id="124"]
+[ext_resource type="Resource" path="res://data/abilities/liquid_ooze.tres" id="125"]
+[ext_resource type="Resource" path="res://data/abilities/rain_dish.tres" id="126"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/poison_barb.tres" id="127"]
+[ext_resource type="Resource" path="res://data/attacks/reflect.tres" id="128"]
+[sub_resource type="Resource" id="LE_new_0073_wrap"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0073_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0073_supersonic"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0073_acid"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0073_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0073_haze"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0073_constrict"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0073_mirror_coat"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0073_wring_out"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0073_reflect_type"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0073_bubble"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0073_water_pulse"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0073_toxic_spikes"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0073_bubble_beam"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0073_hex"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0073_screech"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0073_acid_spray"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0073_poison_jab"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0073_barrier"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0073_surf"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0073_acid_armor"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0073_brine"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0073_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0073_sludge_wave"]
+script = ExtResource("learnset_script")
+level = 48
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0073_clear_body"]
+script = ExtResource("learnset_script")
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_new_0073_liquid_ooze"]
+script = ExtResource("learnset_script")
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_new_0073_rain_dish"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("126")
+
+[sub_resource type="Resource" id="WHI_0073_poison_barb"]
+script = ExtResource("wild_item_script")
+item = ExtResource("127")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_acid"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_constrict"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_haze"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_mirror_coat"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_reflect"]
+script = ExtResource("learnset_script")
+action = ExtResource("128")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_reflect_type"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_supersonic"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_wrap"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_wring_out"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_bubble"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_toxic_spikes"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_water_pulse"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_bubblebeam"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_screech"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_acid_spray"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_surf"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_barrier"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_hex"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_acid_armor"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_brine"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_poison_jab"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_sludge_wave"]
+script = ExtResource("learnset_script")
+level = 52
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_pokmmo_0073_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 58
+action = ExtResource("122")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0073_poison_barb")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0073_acid"), SubResource("LE_pokmmo_0073_constrict"), SubResource("LE_pokmmo_0073_haze"), SubResource("LE_pokmmo_0073_mirror_coat"), SubResource("LE_pokmmo_0073_poison_sting"), SubResource("LE_pokmmo_0073_reflect"), SubResource("LE_pokmmo_0073_reflect_type"), SubResource("LE_pokmmo_0073_supersonic"), SubResource("LE_pokmmo_0073_water_gun"), SubResource("LE_pokmmo_0073_wrap"), SubResource("LE_pokmmo_0073_wring_out"), SubResource("LE_pokmmo_0073_bubble"), SubResource("LE_pokmmo_0073_toxic_spikes"), SubResource("LE_pokmmo_0073_water_pulse"), SubResource("LE_pokmmo_0073_bubblebeam"), SubResource("LE_pokmmo_0073_screech"), SubResource("LE_pokmmo_0073_acid_spray"), SubResource("LE_pokmmo_0073_surf"), SubResource("LE_pokmmo_0073_barrier"), SubResource("LE_pokmmo_0073_hex"), SubResource("LE_pokmmo_0073_acid_armor"), SubResource("LE_pokmmo_0073_brine"), SubResource("LE_pokmmo_0073_poison_jab"), SubResource("LE_pokmmo_0073_sludge_wave"), SubResource("LE_pokmmo_0073_hydro_pump"), SubResource("LE_new_0073_clear_body"), SubResource("LE_new_0073_liquid_ooze"), SubResource("LE_new_0073_rain_dish")])
 unit_name = "Tentacruel"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

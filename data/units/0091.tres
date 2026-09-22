@@ -4,8 +4,238 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0091/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0091/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/twineedle.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/ice_beam.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/aurora_beam.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/withdraw.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/barrier.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/clamp.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/spike_cannon.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/protect.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/spikes.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/whirlpool.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/icicle_spear.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/iron_defense.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/toxic_spikes.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/ice_shard.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/shell_smash.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/razor_shell.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/icicle_crash.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/shell_armor.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/skill_link.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/overcoat.tres" id="124"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/pearl.tres" id="125"]
+[ext_resource type="Resource" path="res://data/items/big_pearl.tres" id="126"]
+[sub_resource type="Resource" id="LE_new_0091_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0091_twineedle"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0091_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0091_supersonic"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0091_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0091_hydro_pump"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0091_ice_beam"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0091_aurora_beam"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0091_withdraw"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0091_barrier"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0091_clamp"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0091_spike_cannon"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0091_protect"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0091_spikes"]
+script = ExtResource("learnset_script")
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0091_whirlpool"]
+script = ExtResource("learnset_script")
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0091_icicle_spear"]
+script = ExtResource("learnset_script")
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0091_iron_defense"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0091_toxic_spikes"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0091_ice_shard"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0091_shell_smash"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0091_razor_shell"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0091_icicle_crash"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0091_shell_armor"]
+script = ExtResource("learnset_script")
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0091_skill_link"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0091_overcoat"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="WHI_0091_pearl"]
+script = ExtResource("wild_item_script")
+item = ExtResource("125")
+chance = 0.5
+
+[sub_resource type="Resource" id="WHI_0091_big_pearl"]
+script = ExtResource("wild_item_script")
+item = ExtResource("126")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_aurora_beam"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_barrier"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_clamp"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_hydro_pump"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_ice_beam"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_ice_shard"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_icicle_crash"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_icicle_spear"]
+script = ExtResource("learnset_script")
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_iron_defense"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_protect"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_razor_shell"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_shell_smash"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_spike_cannon"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_spikes"]
+script = ExtResource("learnset_script")
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_supersonic"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_toxic_spikes"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_twineedle"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_whirlpool"]
+script = ExtResource("learnset_script")
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0091_withdraw"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0091_pearl"), SubResource("WHI_0091_big_pearl")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0091_aurora_beam"), SubResource("LE_pokmmo_0091_barrier"), SubResource("LE_pokmmo_0091_clamp"), SubResource("LE_pokmmo_0091_hydro_pump"), SubResource("LE_pokmmo_0091_ice_beam"), SubResource("LE_pokmmo_0091_ice_shard"), SubResource("LE_pokmmo_0091_icicle_crash"), SubResource("LE_pokmmo_0091_icicle_spear"), SubResource("LE_pokmmo_0091_iron_defense"), SubResource("LE_pokmmo_0091_leer"), SubResource("LE_pokmmo_0091_protect"), SubResource("LE_pokmmo_0091_razor_shell"), SubResource("LE_pokmmo_0091_shell_smash"), SubResource("LE_pokmmo_0091_spike_cannon"), SubResource("LE_pokmmo_0091_spikes"), SubResource("LE_pokmmo_0091_supersonic"), SubResource("LE_pokmmo_0091_tackle"), SubResource("LE_pokmmo_0091_toxic_spikes"), SubResource("LE_pokmmo_0091_twineedle"), SubResource("LE_pokmmo_0091_water_gun"), SubResource("LE_pokmmo_0091_whirlpool"), SubResource("LE_pokmmo_0091_withdraw"), SubResource("LE_new_0091_shell_armor"), SubResource("LE_new_0091_skill_link"), SubResource("LE_new_0091_overcoat")])
 unit_name = "Cloyster"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -21,6 +21,24 @@
 [ext_resource type="Resource" path="res://data/attacks/extrasensory.tres" id="19_extrasensory"]
 [ext_resource type="Resource" path="res://data/attacks/moonblast.tres" id="20_moonblast"]
 
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/metronome.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/sweet_kiss.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/magical_leaf.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/life_dew.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/yawn.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/encore.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/follow_me.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/bestow.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/baby_doll_eyes.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/wish.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/after_you.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/safeguard.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/baton_pass.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/last_resort.tres" id="117"]
 [sub_resource type="Resource" id="Resource_evo"]
 script = ExtResource("4_evo")
 target = ExtResource("7_target")
@@ -81,6 +99,242 @@ script = ExtResource("5_learn")
 level = 43
 action = ExtResource("20_moonblast")
 
+[sub_resource type="Resource" id="LE_new_0176_pound"]
+script = ExtResource("5_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0176_tackle"]
+script = ExtResource("5_learn")
+action = ExtResource("13_tackle")
+
+[sub_resource type="Resource" id="LE_new_0176_growl"]
+script = ExtResource("5_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0176_metronome"]
+script = ExtResource("5_learn")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0176_sweet_kiss"]
+script = ExtResource("5_learn")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0176_charm"]
+script = ExtResource("5_learn")
+action = ExtResource("18_charm")
+
+[sub_resource type="Resource" id="LE_new_0176_air_cutter"]
+script = ExtResource("5_learn")
+action = ExtResource("12_air_cutter")
+
+[sub_resource type="Resource" id="LE_new_0176_magical_leaf"]
+script = ExtResource("5_learn")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0176_fairy_wind"]
+script = ExtResource("5_learn")
+action = ExtResource("14_fairy_wind")
+
+[sub_resource type="Resource" id="LE_new_0176_life_dew"]
+script = ExtResource("5_learn")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0176_draining_kiss"]
+script = ExtResource("5_learn")
+level = 11
+action = ExtResource("15_draining_kiss")
+
+[sub_resource type="Resource" id="LE_new_0176_yawn"]
+script = ExtResource("5_learn")
+level = 13
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0176_ancient_power"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0176_encore"]
+script = ExtResource("5_learn")
+level = 17
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0176_calm_mind"]
+script = ExtResource("5_learn")
+level = 18
+action = ExtResource("16_calm_mind")
+
+[sub_resource type="Resource" id="LE_new_0176_follow_me"]
+script = ExtResource("5_learn")
+level = 21
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0176_air_slash"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("17_air_slash")
+
+[sub_resource type="Resource" id="LE_new_0176_bestow"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0176_baby_doll_eyes"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0176_wish"]
+script = ExtResource("5_learn")
+level = 28
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0176_after_you"]
+script = ExtResource("5_learn")
+level = 28
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0176_safeguard"]
+script = ExtResource("5_learn")
+level = 31
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0176_double_edge"]
+script = ExtResource("5_learn")
+level = 32
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0176_extrasensory"]
+script = ExtResource("5_learn")
+level = 34
+action = ExtResource("19_extrasensory")
+
+[sub_resource type="Resource" id="LE_new_0176_baton_pass"]
+script = ExtResource("5_learn")
+level = 41
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0176_moonblast"]
+script = ExtResource("5_learn")
+level = 43
+action = ExtResource("20_moonblast")
+
+[sub_resource type="Resource" id="LE_new_0176_last_resort"]
+script = ExtResource("5_learn")
+level = 48
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0176_hustle"]
+script = ExtResource("5_learn")
+action = ExtResource("9_hustle")
+
+[sub_resource type="Resource" id="LE_new_0176_serene_grace"]
+script = ExtResource("5_learn")
+action = ExtResource("10_serene_grace")
+
+[sub_resource type="Resource" id="LE_new_0176_super_luck"]
+script = ExtResource("5_learn")
+is_hidden_ability = true
+action = ExtResource("11_super_luck")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_charm"]
+script = ExtResource("5_learn")
+action = ExtResource("18_charm")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_growl"]
+script = ExtResource("5_learn")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_magical_leaf"]
+script = ExtResource("5_learn")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_metronome"]
+script = ExtResource("5_learn")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_pound"]
+script = ExtResource("5_learn")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_sweet_kiss"]
+script = ExtResource("5_learn")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_tackle"]
+script = ExtResource("5_learn")
+action = ExtResource("13_tackle")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_ancientpower"]
+script = ExtResource("5_learn")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_encore"]
+script = ExtResource("5_learn")
+level = 17
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_calm_mind"]
+script = ExtResource("5_learn")
+level = 18
+action = ExtResource("16_calm_mind")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_yawn"]
+script = ExtResource("5_learn")
+level = 20
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_air_slash"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("17_air_slash")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_bestow"]
+script = ExtResource("5_learn")
+level = 25
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_after_you"]
+script = ExtResource("5_learn")
+level = 28
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_double_edge"]
+script = ExtResource("5_learn")
+level = 32
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_extrasensory"]
+script = ExtResource("5_learn")
+level = 34
+action = ExtResource("19_extrasensory")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_safeguard"]
+script = ExtResource("5_learn")
+level = 36
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_follow_me"]
+script = ExtResource("5_learn")
+level = 40
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_baton_pass"]
+script = ExtResource("5_learn")
+level = 44
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_last_resort"]
+script = ExtResource("5_learn")
+level = 48
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0176_wish"]
+script = ExtResource("5_learn")
+level = 52
+action = ExtResource("112")
+
 [resource]
 script = ExtResource("1_script")
 unit_name = "Togetic"
@@ -89,7 +343,7 @@ portrait = ExtResource("2_portrait")
 types = Array[String](["Fairy", "Flying"])
 grounded = false
 slots = Array[ExtResource("6_action")]([ExtResource("12_air_cutter"), ExtResource("13_tackle"), ExtResource("14_fairy_wind"), ExtResource("9_hustle")])
-learnset = Array[ExtResource("5_learn")]([SubResource("LearnsetEntry_0176_hustle"), SubResource("LearnsetEntry_0176_serene_grace"), SubResource("LearnsetEntry_0176_super_luck"), SubResource("LearnsetEntry_0176_air_cutter"), SubResource("LearnsetEntry_0176_tackle"), SubResource("LearnsetEntry_0176_fairy_wind"), SubResource("LearnsetEntry_0176_draining_kiss"), SubResource("LearnsetEntry_0176_calm_mind"), SubResource("LearnsetEntry_0176_air_slash"), SubResource("LearnsetEntry_0176_charm"), SubResource("LearnsetEntry_0176_extrasensory"), SubResource("LearnsetEntry_0176_moonblast")])
+learnset = Array[ExtResource("5_learn")]([SubResource("LE_pokmmo_0176_charm"), SubResource("LE_pokmmo_0176_growl"), SubResource("LE_pokmmo_0176_magical_leaf"), SubResource("LE_pokmmo_0176_metronome"), SubResource("LE_pokmmo_0176_pound"), SubResource("LE_pokmmo_0176_sweet_kiss"), SubResource("LE_pokmmo_0176_tackle"), SubResource("LE_pokmmo_0176_ancientpower"), SubResource("LE_pokmmo_0176_encore"), SubResource("LE_pokmmo_0176_calm_mind"), SubResource("LE_pokmmo_0176_yawn"), SubResource("LE_pokmmo_0176_air_slash"), SubResource("LE_pokmmo_0176_bestow"), SubResource("LE_pokmmo_0176_after_you"), SubResource("LE_pokmmo_0176_double_edge"), SubResource("LE_pokmmo_0176_extrasensory"), SubResource("LE_pokmmo_0176_safeguard"), SubResource("LE_pokmmo_0176_follow_me"), SubResource("LE_pokmmo_0176_baton_pass"), SubResource("LE_pokmmo_0176_last_resort"), SubResource("LE_pokmmo_0176_wish"), SubResource("LE_new_0176_hustle"), SubResource("LE_new_0176_serene_grace"), SubResource("LE_new_0176_super_luck")])
 hp_base = 55
 attack_base = 40
 defense_base = 85

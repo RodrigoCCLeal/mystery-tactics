@@ -4,8 +4,204 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0490/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0490/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/bubble.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/tail_glow.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/water_sport.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/heart_swap.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/water_pulse.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/acid_armor.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/moonblast.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/whirlpool.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/take_heart.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/aqua_ring.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/dive.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/rain_dance.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/hydration.tres" id="119"]
+[sub_resource type="Resource" id="LE_new_0490_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0490_bubble"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0490_tail_glow"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0490_water_sport"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0490_heart_swap"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0490_confusion"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0490_charm"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0490_water_pulse"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0490_supersonic"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0490_acid_armor"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0490_bubble_beam"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0490_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0490_moonblast"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0490_whirlpool"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0490_take_heart"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0490_aqua_ring"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0490_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 57
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0490_dive"]
+script = ExtResource("learnset_script")
+level = 61
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0490_rain_dance"]
+script = ExtResource("learnset_script")
+level = 69
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0490_hydration"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_bubble"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_heart_swap"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_tail_glow"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_water_sport"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_confusion"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_charm"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_supersonic"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_bubblebeam"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_acid_armor"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_whirlpool"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_water_pulse"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_aqua_ring"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 57
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_dive"]
+script = ExtResource("learnset_script")
+level = 61
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0490_rain_dance"]
+script = ExtResource("learnset_script")
+level = 69
+action = ExtResource("118")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0490_bubble"), SubResource("LE_pokmmo_0490_heart_swap"), SubResource("LE_pokmmo_0490_tail_glow"), SubResource("LE_pokmmo_0490_water_gun"), SubResource("LE_pokmmo_0490_water_sport"), SubResource("LE_pokmmo_0490_confusion"), SubResource("LE_pokmmo_0490_charm"), SubResource("LE_pokmmo_0490_supersonic"), SubResource("LE_pokmmo_0490_bubblebeam"), SubResource("LE_pokmmo_0490_zen_headbutt"), SubResource("LE_pokmmo_0490_acid_armor"), SubResource("LE_pokmmo_0490_whirlpool"), SubResource("LE_pokmmo_0490_water_pulse"), SubResource("LE_pokmmo_0490_aqua_ring"), SubResource("LE_pokmmo_0490_hydro_pump"), SubResource("LE_pokmmo_0490_dive"), SubResource("LE_pokmmo_0490_rain_dance"), SubResource("LE_new_0490_hydration")])
 unit_name = "Manaphy"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -4,8 +4,219 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0103/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0103/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/stomp.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/mega_drain.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/solar_beam.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/stun_spore.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/hypnosis.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/reflect.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/egg_bomb.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/barrage.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/giga_drain.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/synthesis.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/uproar.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/extrasensory.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/bullet_seed.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/worry_seed.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/seed_bomb.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/leaf_storm.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/power_whip.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/wood_hammer.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/psyshock.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/chlorophyll.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/harvest.tres" id="123"]
+[sub_resource type="Resource" id="LE_new_0103_stomp"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0103_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0103_mega_drain"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0103_leech_seed"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0103_solar_beam"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0103_stun_spore"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0103_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0103_hypnosis"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0103_reflect"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0103_egg_bomb"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0103_barrage"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0103_giga_drain"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0103_synthesis"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0103_uproar"]
+script = ExtResource("learnset_script")
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0103_extrasensory"]
+script = ExtResource("learnset_script")
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0103_bullet_seed"]
+script = ExtResource("learnset_script")
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0103_worry_seed"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0103_seed_bomb"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0103_leaf_storm"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0103_power_whip"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0103_wood_hammer"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0103_psyshock"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0103_chlorophyll"]
+script = ExtResource("learnset_script")
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0103_harvest"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_barrage"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_bullet_seed"]
+script = ExtResource("learnset_script")
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_egg_bomb"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_extrasensory"]
+script = ExtResource("learnset_script")
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_giga_drain"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_hypnosis"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_leaf_storm"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_leech_seed"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_mega_drain"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_power_whip"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_psyshock"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_reflect"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_seed_bomb"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_solarbeam"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_stomp"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_stun_spore"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_synthesis"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_uproar"]
+script = ExtResource("learnset_script")
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_wood_hammer"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0103_worry_seed"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0103_absorb"), SubResource("LE_pokmmo_0103_barrage"), SubResource("LE_pokmmo_0103_bullet_seed"), SubResource("LE_pokmmo_0103_confusion"), SubResource("LE_pokmmo_0103_egg_bomb"), SubResource("LE_pokmmo_0103_extrasensory"), SubResource("LE_pokmmo_0103_giga_drain"), SubResource("LE_pokmmo_0103_hypnosis"), SubResource("LE_pokmmo_0103_leaf_storm"), SubResource("LE_pokmmo_0103_leech_seed"), SubResource("LE_pokmmo_0103_mega_drain"), SubResource("LE_pokmmo_0103_power_whip"), SubResource("LE_pokmmo_0103_psyshock"), SubResource("LE_pokmmo_0103_reflect"), SubResource("LE_pokmmo_0103_seed_bomb"), SubResource("LE_pokmmo_0103_solarbeam"), SubResource("LE_pokmmo_0103_stomp"), SubResource("LE_pokmmo_0103_stun_spore"), SubResource("LE_pokmmo_0103_synthesis"), SubResource("LE_pokmmo_0103_uproar"), SubResource("LE_pokmmo_0103_wood_hammer"), SubResource("LE_pokmmo_0103_worry_seed"), SubResource("LE_new_0103_chlorophyll"), SubResource("LE_new_0103_harvest")])
 unit_name = "Exeggutor"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

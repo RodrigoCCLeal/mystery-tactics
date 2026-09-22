@@ -4,8 +4,234 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0256/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0256/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/double_kick.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/sand_attack.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/ember.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/flamethrower.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/focus_energy.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/feather_dance.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/flame_charge.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/detect.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/peck.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/aerial_ace.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/slash.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/bulk_up.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/bounce.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/blaze_kick.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/mirror_move.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/reversal.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/sky_uppercut.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/flare_blitz.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/blaze.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/speed_boost.tres" id="122"]
+[sub_resource type="Resource" id="LE_new_0256_scratch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0256_double_kick"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0256_sand_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0256_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0256_ember"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0256_flamethrower"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0256_quick_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0256_focus_energy"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0256_feather_dance"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0256_flame_charge"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0256_detect"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0256_peck"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0256_aerial_ace"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0256_slash"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0256_bulk_up"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0256_bounce"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0256_blaze_kick"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0256_mirror_move"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0256_reversal"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0256_sky_uppercut"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0256_flare_blitz"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0256_blaze"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0256_speed_boost"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_double_kick"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_ember"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_featherdance"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_flamethrower"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_peck"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_quick_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_sand_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_scratch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_flame_charge"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_detect"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_aerial_ace"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_slash"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_bounce"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_focus_energy"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_blaze_kick"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_bulk_up"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_mirror_move"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_reversal"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_sky_uppercut"]
+script = ExtResource("learnset_script")
+level = 53
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0256_flare_blitz"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("120")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0256_double_kick"), SubResource("LE_pokmmo_0256_ember"), SubResource("LE_pokmmo_0256_featherdance"), SubResource("LE_pokmmo_0256_flamethrower"), SubResource("LE_pokmmo_0256_growl"), SubResource("LE_pokmmo_0256_peck"), SubResource("LE_pokmmo_0256_quick_attack"), SubResource("LE_pokmmo_0256_sand_attack"), SubResource("LE_pokmmo_0256_scratch"), SubResource("LE_pokmmo_0256_flame_charge"), SubResource("LE_pokmmo_0256_detect"), SubResource("LE_pokmmo_0256_aerial_ace"), SubResource("LE_pokmmo_0256_slash"), SubResource("LE_pokmmo_0256_bounce"), SubResource("LE_pokmmo_0256_focus_energy"), SubResource("LE_pokmmo_0256_blaze_kick"), SubResource("LE_pokmmo_0256_bulk_up"), SubResource("LE_pokmmo_0256_mirror_move"), SubResource("LE_pokmmo_0256_reversal"), SubResource("LE_pokmmo_0256_sky_uppercut"), SubResource("LE_pokmmo_0256_flare_blitz"), SubResource("LE_new_0256_blaze"), SubResource("LE_new_0256_speed_boost")])
 unit_name = "Combusken"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

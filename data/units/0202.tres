@@ -6,8 +6,92 @@
 [ext_resource type="Texture2D" uid="uid://bxj8dqb5xcxg1" path="res://assets/sprites/Pokemon/Sprites/0202/Normal.png" id="3"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="4_ced6m"]
 
+[ext_resource type="Resource" path="res://data/attacks/counter.tres" id="4"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="5"]
+[ext_resource type="Resource" path="res://data/attacks/splash.tres" id="6"]
+[ext_resource type="Resource" path="res://data/attacks/destiny_bond.tres" id="7"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="8"]
+[ext_resource type="Resource" path="res://data/attacks/safeguard.tres" id="9"]
+[ext_resource type="Resource" path="res://data/attacks/encore.tres" id="10"]
+[ext_resource type="Resource" path="res://data/attacks/mirror_coat.tres" id="11"]
+[ext_resource type="Resource" path="res://data/abilities/shadow_tag.tres" id="12"]
+[ext_resource type="Resource" path="res://data/abilities/telepathy.tres" id="13"]
+[sub_resource type="Resource" id="LE_new_0202_counter"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("4")
+
+[sub_resource type="Resource" id="LE_new_0202_amnesia"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("5")
+
+[sub_resource type="Resource" id="LE_new_0202_splash"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LE_new_0202_destiny_bond"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LE_new_0202_charm"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LE_new_0202_safeguard"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("9")
+
+[sub_resource type="Resource" id="LE_new_0202_encore"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("10")
+
+[sub_resource type="Resource" id="LE_new_0202_mirror_coat"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("11")
+
+[sub_resource type="Resource" id="LE_new_0202_shadow_tag"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("12")
+
+[sub_resource type="Resource" id="LE_new_0202_telepathy"]
+script = ExtResource("1_o5gnm")
+is_hidden_ability = true
+action = ExtResource("13")
+
+[sub_resource type="Resource" id="LE_pokmmo_0202_amnesia"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("5")
+
+[sub_resource type="Resource" id="LE_pokmmo_0202_charm"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LE_pokmmo_0202_counter"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("4")
+
+[sub_resource type="Resource" id="LE_pokmmo_0202_destiny_bond"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LE_pokmmo_0202_encore"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("10")
+
+[sub_resource type="Resource" id="LE_pokmmo_0202_mirror_coat"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("11")
+
+[sub_resource type="Resource" id="LE_pokmmo_0202_safeguard"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("9")
+
+[sub_resource type="Resource" id="LE_pokmmo_0202_splash"]
+script = ExtResource("1_o5gnm")
+action = ExtResource("6")
+
 [resource]
 script = ExtResource("1")
+learnset = Array[ExtResource("1_o5gnm")]([SubResource("LE_pokmmo_0202_amnesia"), SubResource("LE_pokmmo_0202_charm"), SubResource("LE_pokmmo_0202_counter"), SubResource("LE_pokmmo_0202_destiny_bond"), SubResource("LE_pokmmo_0202_encore"), SubResource("LE_pokmmo_0202_mirror_coat"), SubResource("LE_pokmmo_0202_safeguard"), SubResource("LE_pokmmo_0202_splash"), SubResource("LE_new_0202_shadow_tag"), SubResource("LE_new_0202_telepathy")])
 unit_name = "Wobbuffet"
 sprite_frames = ExtResource("2")
 portrait = ExtResource("3")

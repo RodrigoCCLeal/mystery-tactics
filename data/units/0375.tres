@@ -4,8 +4,214 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0375/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0375/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/metal_claw.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/magnet_rise.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/bullet_punch.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/hone_claws.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/flash_cannon.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/pursuit.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/miracle_eye.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/iron_defense.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/meteor_mash.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/hyper_beam.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/clear_body.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/light_metal.tres" id="118"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/metal_coat.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/psycho_cut.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/iron_head.tres" id="121"]
+[sub_resource type="Resource" id="LE_new_0375_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0375_take_down"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0375_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0375_metal_claw"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0375_magnet_rise"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0375_bullet_punch"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0375_hone_claws"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0375_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0375_flash_cannon"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0375_pursuit"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0375_scary_face"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0375_miracle_eye"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0375_psychic"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0375_agility"]
+script = ExtResource("learnset_script")
+level = 38
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0375_iron_defense"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0375_meteor_mash"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0375_hyper_beam"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0375_clear_body"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0375_light_metal"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="WHI_0375_metal_coat"]
+script = ExtResource("wild_item_script")
+item = ExtResource("119")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_bullet_punch"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_hone_claws"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_magnet_rise"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_metal_claw"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_take_down"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_flash_cannon"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_pursuit"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_miracle_eye"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_psychic"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_psycho_cut"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_scary_face"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_iron_head"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_meteor_mash"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_iron_defense"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_hyper_beam"]
+script = ExtResource("learnset_script")
+level = 58
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0375_agility"]
+script = ExtResource("learnset_script")
+level = 66
+action = ExtResource("113")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0375_metal_coat")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0375_bullet_punch"), SubResource("LE_pokmmo_0375_confusion"), SubResource("LE_pokmmo_0375_hone_claws"), SubResource("LE_pokmmo_0375_magnet_rise"), SubResource("LE_pokmmo_0375_metal_claw"), SubResource("LE_pokmmo_0375_tackle"), SubResource("LE_pokmmo_0375_take_down"), SubResource("LE_pokmmo_0375_zen_headbutt"), SubResource("LE_pokmmo_0375_flash_cannon"), SubResource("LE_pokmmo_0375_pursuit"), SubResource("LE_pokmmo_0375_miracle_eye"), SubResource("LE_pokmmo_0375_psychic"), SubResource("LE_pokmmo_0375_psycho_cut"), SubResource("LE_pokmmo_0375_scary_face"), SubResource("LE_pokmmo_0375_iron_head"), SubResource("LE_pokmmo_0375_meteor_mash"), SubResource("LE_pokmmo_0375_iron_defense"), SubResource("LE_pokmmo_0375_hyper_beam"), SubResource("LE_pokmmo_0375_agility"), SubResource("LE_new_0375_clear_body"), SubResource("LE_new_0375_light_metal")])
 unit_name = "Metang"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

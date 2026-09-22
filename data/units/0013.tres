@@ -41,6 +41,41 @@ script = ExtResource("2_mjyxb")
 level = 9
 action = ExtResource("11_bug_bite")
 
+[sub_resource type="Resource" id="LE_new_0013_poison_sting"]
+script = ExtResource("2_mjyxb")
+action = ExtResource("9_poison_sting")
+
+[sub_resource type="Resource" id="LE_new_0013_string_shot"]
+script = ExtResource("2_mjyxb")
+action = ExtResource("10_string_shot")
+
+[sub_resource type="Resource" id="LE_new_0013_bug_bite"]
+script = ExtResource("2_mjyxb")
+level = 9
+action = ExtResource("11_bug_bite")
+
+[sub_resource type="Resource" id="LE_new_0013_shield_dust"]
+script = ExtResource("2_mjyxb")
+action = ExtResource("3_tc1jx")
+
+[sub_resource type="Resource" id="LE_new_0013_run_away"]
+script = ExtResource("2_mjyxb")
+is_hidden_ability = true
+action = ExtResource("4_nco3c")
+
+[sub_resource type="Resource" id="LE_pokmmo_0013_poison_sting"]
+script = ExtResource("2_mjyxb")
+action = ExtResource("9_poison_sting")
+
+[sub_resource type="Resource" id="LE_pokmmo_0013_string_shot"]
+script = ExtResource("2_mjyxb")
+action = ExtResource("10_string_shot")
+
+[sub_resource type="Resource" id="LE_pokmmo_0013_bug_bite"]
+script = ExtResource("2_mjyxb")
+level = 9
+action = ExtResource("11_bug_bite")
+
 [resource]
 script = ExtResource("6_a6ric")
 unit_name = "Weedle"
@@ -50,7 +85,7 @@ attack_hit_delay = 0.55
 special_hit_delay = 0.8
 types = Array[String](["Bug", "Poison"])
 slots = Array[ExtResource("7_2gg4a")]([ExtResource("9_poison_sting"), ExtResource("10_string_shot"), ExtResource("3_tc1jx")])
-learnset = Array[ExtResource("2_mjyxb")]([SubResource("LearnsetEntry_0013_shield_dust"), SubResource("LearnsetEntry_0013_run_away"), SubResource("LearnsetEntry_0013_poison_sting"), SubResource("LearnsetEntry_0013_string_shot"), SubResource("LearnsetEntry_0013_bug_bite")])
+learnset = Array[ExtResource("2_mjyxb")]([SubResource("LE_pokmmo_0013_poison_sting"), SubResource("LE_pokmmo_0013_string_shot"), SubResource("LE_pokmmo_0013_bug_bite"), SubResource("LE_new_0013_shield_dust"), SubResource("LE_new_0013_run_away")])
 hp_base = 40
 attack_base = 35
 defense_base = 30

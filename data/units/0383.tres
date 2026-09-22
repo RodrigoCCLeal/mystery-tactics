@@ -8,10 +8,207 @@
 [ext_resource type="Resource" path="res://data/abilities/desolate_land.tres" id="5_desolate_land"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_cthjb"]
 
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/mud_shot.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/lava_plume.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/precipice_blades.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/bulk_up.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/slash.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/hammer_arm.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/earthquake.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/rest.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/fissure.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/fire_blast.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/eruption.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/solar_beam.tres" id="114"]
+[ext_resource type="Resource" path="res://data/abilities/drought.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/sand_tomb.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/rock_blast.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/fire_spin.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/heavy_slam.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/stone_edge.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/dynamic_punch.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/heat_crash.tres" id="122"]
 [sub_resource type="Resource" id="LearnsetEntry_0383_desolate_land"]
 script = ExtResource("4_learnset")
 action = ExtResource("5_desolate_land")
 is_hidden_ability = true
+
+[sub_resource type="Resource" id="LE_new_0383_scary_face"]
+script = ExtResource("4_learnset")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0383_ancient_power"]
+script = ExtResource("4_learnset")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0383_mud_shot"]
+script = ExtResource("4_learnset")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0383_lava_plume"]
+script = ExtResource("4_learnset")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0383_precipice_blades"]
+script = ExtResource("4_learnset")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0383_earth_power"]
+script = ExtResource("4_learnset")
+level = 9
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0383_bulk_up"]
+script = ExtResource("4_learnset")
+level = 18
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0383_slash"]
+script = ExtResource("4_learnset")
+level = 20
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0383_hammer_arm"]
+script = ExtResource("4_learnset")
+level = 20
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0383_earthquake"]
+script = ExtResource("4_learnset")
+level = 27
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0383_rest"]
+script = ExtResource("4_learnset")
+level = 30
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0383_fissure"]
+script = ExtResource("4_learnset")
+level = 45
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0383_fire_blast"]
+script = ExtResource("4_learnset")
+level = 45
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0383_eruption"]
+script = ExtResource("4_learnset")
+level = 50
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0383_solar_beam"]
+script = ExtResource("4_learnset")
+level = 60
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0383_drought"]
+script = ExtResource("4_learnset")
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_ancientpower"]
+script = ExtResource("4_learnset")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_lava_plume"]
+script = ExtResource("4_learnset")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_mud_shot"]
+script = ExtResource("4_learnset")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_sand_tomb"]
+script = ExtResource("4_learnset")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_scary_face"]
+script = ExtResource("4_learnset")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_earth_power"]
+script = ExtResource("4_learnset")
+level = 9
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_bulk_up"]
+script = ExtResource("4_learnset")
+level = 18
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_slash"]
+script = ExtResource("4_learnset")
+level = 20
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_earthquake"]
+script = ExtResource("4_learnset")
+level = 27
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_rock_blast"]
+script = ExtResource("4_learnset")
+level = 28
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_fire_spin"]
+script = ExtResource("4_learnset")
+level = 30
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_hammer_arm"]
+script = ExtResource("4_learnset")
+level = 36
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_heavy_slam"]
+script = ExtResource("4_learnset")
+level = 40
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_stone_edge"]
+script = ExtResource("4_learnset")
+level = 43
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_fissure"]
+script = ExtResource("4_learnset")
+level = 45
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_rest"]
+script = ExtResource("4_learnset")
+level = 54
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_dynamicpunch"]
+script = ExtResource("4_learnset")
+level = 62
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_fire_blast"]
+script = ExtResource("4_learnset")
+level = 68
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_heat_crash"]
+script = ExtResource("4_learnset")
+level = 75
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_solarbeam"]
+script = ExtResource("4_learnset")
+level = 81
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0383_eruption"]
+script = ExtResource("4_learnset")
+level = 90
+action = ExtResource("113")
 
 [resource]
 script = ExtResource("1_script")
@@ -19,7 +216,7 @@ unit_name = "Groudon"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
 types = Array[String](["Ground"])
-learnset = Array[ExtResource("4_learnset")]([SubResource("LearnsetEntry_0383_desolate_land")])
+learnset = Array[ExtResource("4_learnset")]([SubResource("LE_pokmmo_0383_ancientpower"), SubResource("LE_pokmmo_0383_lava_plume"), SubResource("LE_pokmmo_0383_mud_shot"), SubResource("LE_pokmmo_0383_sand_tomb"), SubResource("LE_pokmmo_0383_scary_face"), SubResource("LE_pokmmo_0383_earth_power"), SubResource("LE_pokmmo_0383_bulk_up"), SubResource("LE_pokmmo_0383_slash"), SubResource("LE_pokmmo_0383_earthquake"), SubResource("LE_pokmmo_0383_rock_blast"), SubResource("LE_pokmmo_0383_fire_spin"), SubResource("LE_pokmmo_0383_hammer_arm"), SubResource("LE_pokmmo_0383_heavy_slam"), SubResource("LE_pokmmo_0383_stone_edge"), SubResource("LE_pokmmo_0383_fissure"), SubResource("LE_pokmmo_0383_rest"), SubResource("LE_pokmmo_0383_dynamicpunch"), SubResource("LE_pokmmo_0383_fire_blast"), SubResource("LE_pokmmo_0383_heat_crash"), SubResource("LE_pokmmo_0383_solarbeam"), SubResource("LE_pokmmo_0383_eruption"), SubResource("LE_new_0383_drought")])
 hp_base = 100
 attack_base = 150
 defense_base = 140

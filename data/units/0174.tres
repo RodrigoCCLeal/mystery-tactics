@@ -4,8 +4,156 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0174/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0174/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/sing.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/copycat.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/defense_curl.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/sweet_kiss.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/disarming_voice.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/disable.tres" id="107"]
+[ext_resource type="Resource" path="res://data/abilities/cute_charm.tres" id="108"]
+[ext_resource type="Resource" path="res://data/abilities/competitive.tres" id="109"]
+[ext_resource type="Resource" path="res://data/abilities/friend_guard.tres" id="110"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/oran_berry.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/rollout.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/fake_tears.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/facade.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/mimic.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/wish.tres" id="119"]
+[sub_resource type="Resource" id="LE_new_0174_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0174_sing"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0174_charm"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0174_copycat"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0174_defense_curl"]
+script = ExtResource("learnset_script")
+level = 3
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0174_sweet_kiss"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0174_disarming_voice"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0174_disable"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0174_cute_charm"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0174_competitive"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0174_friend_guard"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="WHI_0174_oran_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("111")
+chance = 0.5
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_charm"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_copycat"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_sing"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_defense_curl"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_sweet_kiss"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_rollout"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_fake_tears"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_confusion"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_disable"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_facade"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_take_down"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_mimic"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0174_wish"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("119")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0174_oran_berry")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0174_charm"), SubResource("LE_pokmmo_0174_copycat"), SubResource("LE_pokmmo_0174_pound"), SubResource("LE_pokmmo_0174_sing"), SubResource("LE_pokmmo_0174_tackle"), SubResource("LE_pokmmo_0174_defense_curl"), SubResource("LE_pokmmo_0174_sweet_kiss"), SubResource("LE_pokmmo_0174_rollout"), SubResource("LE_pokmmo_0174_fake_tears"), SubResource("LE_pokmmo_0174_confusion"), SubResource("LE_pokmmo_0174_disable"), SubResource("LE_pokmmo_0174_facade"), SubResource("LE_pokmmo_0174_take_down"), SubResource("LE_pokmmo_0174_mimic"), SubResource("LE_pokmmo_0174_wish"), SubResource("LE_new_0174_cute_charm"), SubResource("LE_new_0174_competitive"), SubResource("LE_new_0174_friend_guard")])
 unit_name = "Igglybuff"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

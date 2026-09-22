@@ -4,8 +4,330 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0036/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0036/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/double_slap.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/sing.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/minimize.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/defense_curl.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/metronome.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/splash.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/sweet_kiss.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/encore.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/moonlight.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/follow_me.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/meteor_mash.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/cosmic_power.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/gravity.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/healing_wish.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/copycat.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/after_you.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/stored_power.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/disarming_voice.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/moonblast.tres" id="122"]
+[ext_resource type="Resource" path="res://data/attacks/spotlight.tres" id="123"]
+[ext_resource type="Resource" path="res://data/attacks/life_dew.tres" id="124"]
+[ext_resource type="Resource" path="res://data/attacks/fairy_wind.tres" id="125"]
+[ext_resource type="Resource" path="res://data/attacks/baby_doll_eyes.tres" id="126"]
+[ext_resource type="Resource" path="res://data/attacks/draining_kiss.tres" id="127"]
+[ext_resource type="Resource" path="res://data/attacks/calm_mind.tres" id="128"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="129"]
+[ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="130"]
+[ext_resource type="Resource" path="res://data/abilities/cute_charm.tres" id="131"]
+[ext_resource type="Resource" path="res://data/abilities/magic_guard.tres" id="132"]
+[ext_resource type="Resource" path="res://data/abilities/unaware.tres" id="133"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/moon_stone.tres" id="134"]
+[ext_resource type="Resource" path="res://data/items/leppa_berry.tres" id="135"]
+[ext_resource type="Resource" path="res://data/items/comet_shard.tres" id="136"]
+[ext_resource type="Resource" path="res://data/attacks/magical_leaf.tres" id="137"]
+[ext_resource type="Resource" path="res://data/attacks/bubble_beam.tres" id="138"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="139"]
+[ext_resource type="Resource" path="res://data/attacks/air_slash.tres" id="140"]
+[sub_resource type="Resource" id="LE_new_0036_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0036_double_slap"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0036_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0036_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0036_sing"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0036_minimize"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0036_defense_curl"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0036_metronome"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0036_splash"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0036_sweet_kiss"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0036_charm"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0036_encore"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0036_moonlight"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0036_follow_me"]
+script = ExtResource("learnset_script")
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0036_meteor_mash"]
+script = ExtResource("learnset_script")
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0036_cosmic_power"]
+script = ExtResource("learnset_script")
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0036_gravity"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0036_healing_wish"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0036_copycat"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0036_after_you"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0036_stored_power"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0036_disarming_voice"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0036_moonblast"]
+script = ExtResource("learnset_script")
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0036_spotlight"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0036_life_dew"]
+script = ExtResource("learnset_script")
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_new_0036_fairy_wind"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_new_0036_baby_doll_eyes"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("126")
+
+[sub_resource type="Resource" id="LE_new_0036_draining_kiss"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("127")
+
+[sub_resource type="Resource" id="LE_new_0036_calm_mind"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("128")
+
+[sub_resource type="Resource" id="LE_new_0036_psychic"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("129")
+
+[sub_resource type="Resource" id="LE_new_0036_double_edge"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("130")
+
+[sub_resource type="Resource" id="LE_new_0036_cute_charm"]
+script = ExtResource("learnset_script")
+action = ExtResource("131")
+
+[sub_resource type="Resource" id="LE_new_0036_magic_guard"]
+script = ExtResource("learnset_script")
+action = ExtResource("132")
+
+[sub_resource type="Resource" id="LE_new_0036_unaware"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("133")
+
+[sub_resource type="Resource" id="WHI_0036_moon_stone"]
+script = ExtResource("wild_item_script")
+item = ExtResource("134")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0036_leppa_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("135")
+chance = 0.5
+
+[sub_resource type="Resource" id="WHI_0036_comet_shard"]
+script = ExtResource("wild_item_script")
+item = ExtResource("136")
+chance = 0.01
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_after_you"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_charm"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_copycat"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_cosmic_power"]
+script = ExtResource("learnset_script")
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_defense_curl"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_doubleslap"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_encore"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_follow_me"]
+script = ExtResource("learnset_script")
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_gravity"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_healing_wish"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_meteor_mash"]
+script = ExtResource("learnset_script")
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_metronome"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_minimize"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_moonlight"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_sing"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_splash"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_stored_power"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_sweet_kiss"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_magical_leaf"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("137")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_calm_mind"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("128")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_bubblebeam"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("138")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_amnesia"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("139")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_psychic"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("129")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_double_edge"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("130")
+
+[sub_resource type="Resource" id="LE_pokmmo_0036_air_slash"]
+script = ExtResource("learnset_script")
+level = 52
+action = ExtResource("140")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0036_moon_stone"), SubResource("WHI_0036_leppa_berry"), SubResource("WHI_0036_comet_shard")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0036_after_you"), SubResource("LE_pokmmo_0036_charm"), SubResource("LE_pokmmo_0036_copycat"), SubResource("LE_pokmmo_0036_cosmic_power"), SubResource("LE_pokmmo_0036_defense_curl"), SubResource("LE_pokmmo_0036_doubleslap"), SubResource("LE_pokmmo_0036_encore"), SubResource("LE_pokmmo_0036_follow_me"), SubResource("LE_pokmmo_0036_gravity"), SubResource("LE_pokmmo_0036_growl"), SubResource("LE_pokmmo_0036_healing_wish"), SubResource("LE_pokmmo_0036_meteor_mash"), SubResource("LE_pokmmo_0036_metronome"), SubResource("LE_pokmmo_0036_minimize"), SubResource("LE_pokmmo_0036_moonlight"), SubResource("LE_pokmmo_0036_pound"), SubResource("LE_pokmmo_0036_sing"), SubResource("LE_pokmmo_0036_splash"), SubResource("LE_pokmmo_0036_stored_power"), SubResource("LE_pokmmo_0036_sweet_kiss"), SubResource("LE_pokmmo_0036_tackle"), SubResource("LE_pokmmo_0036_magical_leaf"), SubResource("LE_pokmmo_0036_calm_mind"), SubResource("LE_pokmmo_0036_bubblebeam"), SubResource("LE_pokmmo_0036_amnesia"), SubResource("LE_pokmmo_0036_psychic"), SubResource("LE_pokmmo_0036_double_edge"), SubResource("LE_pokmmo_0036_air_slash"), SubResource("LE_new_0036_cute_charm"), SubResource("LE_new_0036_magic_guard"), SubResource("LE_new_0036_unaware")])
 unit_name = "Clefable"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

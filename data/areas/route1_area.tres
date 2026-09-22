@@ -9,6 +9,7 @@
 [ext_resource type="Resource" uid="uid://cqpfhup7pmyie" path="res://data/units/0010.tres" id="6_jnjnh"]
 [ext_resource type="Resource" uid="uid://cbjmwanx2w7an" path="res://data/units/0048.tres" id="7_ctf4f"]
 
+[ext_resource type="Script" path="res://scripts/wild_spawn_entry.gd" id="wse_script"]
 [sub_resource type="Resource" id="Resource_f8nrp"]
 script = ExtResource("2_b6401")
 species = ExtResource("3_b6401")
@@ -58,7 +59,41 @@ weight = 3.0
 times_of_day = 4
 metadata/_custom_type_script = "uid://dm7q7oe584rvd"
 
+[sub_resource type="Resource" id="WSE_0021"]
+script = ExtResource("wse_script")
+species = ExtResource("3_b6401")
+level = 4
+spawn_chance = 0.1
+
+[sub_resource type="Resource" id="WSE_0019"]
+script = ExtResource("wse_script")
+species = ExtResource("4_qhkjw")
+level = 4
+spawn_chance = 0.1
+
+[sub_resource type="Resource" id="WSE_0013"]
+script = ExtResource("wse_script")
+species = ExtResource("5_f8nrp")
+level = 3
+spawn_chance = 0.2
+times_of_day = 1
+
+[sub_resource type="Resource" id="WSE_0010"]
+script = ExtResource("wse_script")
+species = ExtResource("6_jnjnh")
+level = 3
+spawn_chance = 0.2
+times_of_day = 1
+
+[sub_resource type="Resource" id="WSE_0048"]
+script = ExtResource("wse_script")
+species = ExtResource("7_ctf4f")
+level = 8
+spawn_chance = 0.3
+times_of_day = 4
+
 [resource]
 script = ExtResource("1")
+wild_spawn_entries = Array[ExtResource("wse_script")]([SubResource("WSE_0021"), SubResource("WSE_0019"), SubResource("WSE_0013"), SubResource("WSE_0010"), SubResource("WSE_0048")])
 area_name = "ROUTE 1"
 groups = Array[ExtResource("2")]([SubResource("Resource_ctf4f"), SubResource("Resource_xlp32"), SubResource("Resource_b3ayd")])

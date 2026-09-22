@@ -4,8 +4,184 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0429/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0429/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/confuse_ray.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/psywave.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/spite.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/perish_song.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/mean_look.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/pain_split.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/shadow_ball.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/grudge.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/astonish.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/magical_leaf.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/payback.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/lucky_chant.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/power_gem.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/shadow_sneak.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/hex.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/phantom_force.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/mystical_fire.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/hypnosis.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/extrasensory.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/levitate.tres" id="122"]
+[sub_resource type="Resource" id="LE_new_0429_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0429_psybeam"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0429_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0429_confuse_ray"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0429_psywave"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0429_spite"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0429_perish_song"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0429_mean_look"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0429_pain_split"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0429_shadow_ball"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0429_grudge"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0429_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0429_magical_leaf"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0429_payback"]
+script = ExtResource("learnset_script")
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0429_lucky_chant"]
+script = ExtResource("learnset_script")
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0429_power_gem"]
+script = ExtResource("learnset_script")
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0429_shadow_sneak"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0429_hex"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0429_phantom_force"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0429_mystical_fire"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0429_hypnosis"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0429_extrasensory"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0429_levitate"]
+script = ExtResource("learnset_script")
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_lucky_chant"]
+script = ExtResource("learnset_script")
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_magical_leaf"]
+script = ExtResource("learnset_script")
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_power_gem"]
+script = ExtResource("learnset_script")
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_psywave"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_shadow_sneak"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_spite"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_confusion"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_hypnosis"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_hex"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_extrasensory"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0429_shadow_ball"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("109")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0429_astonish"), SubResource("LE_pokmmo_0429_growl"), SubResource("LE_pokmmo_0429_lucky_chant"), SubResource("LE_pokmmo_0429_magical_leaf"), SubResource("LE_pokmmo_0429_power_gem"), SubResource("LE_pokmmo_0429_psywave"), SubResource("LE_pokmmo_0429_shadow_sneak"), SubResource("LE_pokmmo_0429_spite"), SubResource("LE_pokmmo_0429_confusion"), SubResource("LE_pokmmo_0429_hypnosis"), SubResource("LE_pokmmo_0429_hex"), SubResource("LE_pokmmo_0429_extrasensory"), SubResource("LE_pokmmo_0429_shadow_ball"), SubResource("LE_new_0429_levitate")])
 unit_name = "Mismagius"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

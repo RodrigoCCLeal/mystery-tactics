@@ -4,8 +4,262 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0312/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0312/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_wave.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/nasty_plot.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/entrainment.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/play_nice.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/nuzzle.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/helping_hand.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/spark.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/encore.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/switcheroo.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/swift.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/electro_ball.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/copycat.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/fake_tears.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/charge.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/discharge.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/baton_pass.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/thunder.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/trump_card.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/last_resort.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/minus.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/volt_absorb.tres" id="124"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/cell_battery.tres" id="125"]
+[sub_resource type="Resource" id="LE_new_0312_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0312_thunder_wave"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0312_quick_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0312_nasty_plot"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0312_entrainment"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0312_play_nice"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0312_nuzzle"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0312_helping_hand"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0312_spark"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0312_encore"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0312_switcheroo"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0312_swift"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0312_electro_ball"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0312_charm"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0312_copycat"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0312_fake_tears"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0312_charge"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0312_discharge"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0312_baton_pass"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0312_thunder"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0312_agility"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0312_trump_card"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0312_last_resort"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0312_minus"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0312_volt_absorb"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="WHI_0312_cell_battery"]
+script = ExtResource("wild_item_script")
+item = ExtResource("125")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_quick_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_thunder_wave"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_helping_hand"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_spark"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_encore"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_switcheroo"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_swift"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_electro_ball"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_charm"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_copycat"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_fake_tears"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_charge"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_discharge"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_baton_pass"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_agility"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_last_resort"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_trump_card"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_thunder"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_nasty_plot"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0312_entrainment"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("104")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0312_cell_battery")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0312_growl"), SubResource("LE_pokmmo_0312_quick_attack"), SubResource("LE_pokmmo_0312_thunder_wave"), SubResource("LE_pokmmo_0312_helping_hand"), SubResource("LE_pokmmo_0312_spark"), SubResource("LE_pokmmo_0312_encore"), SubResource("LE_pokmmo_0312_switcheroo"), SubResource("LE_pokmmo_0312_swift"), SubResource("LE_pokmmo_0312_electro_ball"), SubResource("LE_pokmmo_0312_charm"), SubResource("LE_pokmmo_0312_copycat"), SubResource("LE_pokmmo_0312_fake_tears"), SubResource("LE_pokmmo_0312_charge"), SubResource("LE_pokmmo_0312_discharge"), SubResource("LE_pokmmo_0312_baton_pass"), SubResource("LE_pokmmo_0312_agility"), SubResource("LE_pokmmo_0312_last_resort"), SubResource("LE_pokmmo_0312_trump_card"), SubResource("LE_pokmmo_0312_thunder"), SubResource("LE_pokmmo_0312_nasty_plot"), SubResource("LE_pokmmo_0312_entrainment"), SubResource("LE_new_0312_minus"), SubResource("LE_new_0312_volt_absorb")])
 unit_name = "Minun"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

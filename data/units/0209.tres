@@ -4,8 +4,214 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0209/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0209/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/tail_whip.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_fang.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/ice_fang.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/fire_fang.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/lick.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/headbutt.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/roar.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/rage.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/taunt.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/last_resort.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/play_rough.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/payback.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/crunch.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/intimidate.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/run_away.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/rattled.tres" id="121"]
+[sub_resource type="Resource" id="LE_new_0209_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0209_tail_whip"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0209_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0209_scary_face"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0209_charm"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0209_thunder_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0209_ice_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0209_fire_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0209_bite"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0209_lick"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0209_headbutt"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0209_roar"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0209_rage"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0209_taunt"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0209_last_resort"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0209_take_down"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0209_play_rough"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0209_payback"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0209_crunch"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0209_intimidate"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0209_run_away"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0209_rattled"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_charm"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_fire_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_ice_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_scary_face"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_tail_whip"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_thunder_fang"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_bite"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_lick"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_headbutt"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_roar"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_last_resort"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_rage"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_taunt"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_payback"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_take_down"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0209_crunch"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("118")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0209_charm"), SubResource("LE_pokmmo_0209_fire_fang"), SubResource("LE_pokmmo_0209_growl"), SubResource("LE_pokmmo_0209_ice_fang"), SubResource("LE_pokmmo_0209_scary_face"), SubResource("LE_pokmmo_0209_tackle"), SubResource("LE_pokmmo_0209_tail_whip"), SubResource("LE_pokmmo_0209_thunder_fang"), SubResource("LE_pokmmo_0209_bite"), SubResource("LE_pokmmo_0209_lick"), SubResource("LE_pokmmo_0209_headbutt"), SubResource("LE_pokmmo_0209_roar"), SubResource("LE_pokmmo_0209_last_resort"), SubResource("LE_pokmmo_0209_rage"), SubResource("LE_pokmmo_0209_taunt"), SubResource("LE_pokmmo_0209_payback"), SubResource("LE_pokmmo_0209_take_down"), SubResource("LE_pokmmo_0209_crunch"), SubResource("LE_new_0209_intimidate"), SubResource("LE_new_0209_run_away"), SubResource("LE_new_0209_rattled")])
 unit_name = "Snubbull"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

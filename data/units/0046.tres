@@ -4,8 +4,229 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0046/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0046/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/sleep_powder.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/stun_spore.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/leech_life.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/growth.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/fury_swipes.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/venoshock.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/spore.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/fury_cutter.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/slash.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/x_scissor.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/giga_drain.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/aromatherapy.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/energy_ball.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/rage_powder.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/effect_spore.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/dry_skin.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/damp.tres" id="119"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/tiny_mushroom.tres" id="120"]
+[ext_resource type="Resource" path="res://data/items/big_mushroom.tres" id="121"]
+[ext_resource type="Resource" path="res://data/items/balm_mushroom.tres" id="122"]
+[sub_resource type="Resource" id="LE_new_0046_scratch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0046_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0046_sleep_powder"]
+script = ExtResource("learnset_script")
+level = 2
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0046_stun_spore"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0046_poison_powder"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0046_leech_life"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0046_growth"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0046_fury_swipes"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0046_venoshock"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0046_spore"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0046_fury_cutter"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0046_slash"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0046_x_scissor"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0046_giga_drain"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0046_aromatherapy"]
+script = ExtResource("learnset_script")
+level = 38
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0046_energy_ball"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0046_rage_powder"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0046_effect_spore"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0046_dry_skin"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0046_damp"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="WHI_0046_tiny_mushroom"]
+script = ExtResource("wild_item_script")
+item = ExtResource("120")
+chance = 0.5
+
+[sub_resource type="Resource" id="WHI_0046_big_mushroom"]
+script = ExtResource("wild_item_script")
+item = ExtResource("121")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0046_balm_mushroom"]
+script = ExtResource("wild_item_script")
+item = ExtResource("122")
+chance = 0.01
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_scratch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_sleep_powder"]
+script = ExtResource("learnset_script")
+level = 2
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_stun_spore"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_poisonpowder"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_growth"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_fury_swipes"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_venoshock"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_fury_cutter"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_leech_life"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_slash"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_spore"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_x_scissor"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_giga_drain"]
+script = ExtResource("learnset_script")
+level = 38
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_aromatherapy"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_energy_ball"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0046_rage_powder"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("116")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0046_tiny_mushroom"), SubResource("WHI_0046_big_mushroom"), SubResource("WHI_0046_balm_mushroom")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0046_absorb"), SubResource("LE_pokmmo_0046_scratch"), SubResource("LE_pokmmo_0046_sleep_powder"), SubResource("LE_pokmmo_0046_stun_spore"), SubResource("LE_pokmmo_0046_poisonpowder"), SubResource("LE_pokmmo_0046_growth"), SubResource("LE_pokmmo_0046_fury_swipes"), SubResource("LE_pokmmo_0046_venoshock"), SubResource("LE_pokmmo_0046_fury_cutter"), SubResource("LE_pokmmo_0046_leech_life"), SubResource("LE_pokmmo_0046_slash"), SubResource("LE_pokmmo_0046_spore"), SubResource("LE_pokmmo_0046_x_scissor"), SubResource("LE_pokmmo_0046_giga_drain"), SubResource("LE_pokmmo_0046_aromatherapy"), SubResource("LE_pokmmo_0046_energy_ball"), SubResource("LE_pokmmo_0046_rage_powder"), SubResource("LE_new_0046_effect_spore"), SubResource("LE_new_0046_dry_skin"), SubResource("LE_new_0046_damp")])
 unit_name = "Paras"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

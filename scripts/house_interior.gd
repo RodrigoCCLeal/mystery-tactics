@@ -274,6 +274,22 @@ func start_trainer_battle(trainer: Node) -> void:
 	GameState.current_trainer_prize = trainer.get_prize_money()
 	GameState.current_trainer_badge_name = trainer.badge_name
 	GameState.current_trainer_iq = trainer.iq
+	# Faltava aqui (bug encontrado 2026-09-11: "the barias gym battle still
+	# doesnt use the map I made") — este gêmeo em house_interior.gd tinha
+	# ficado pra trás de world.gd::start_trainer_battle quando
+	# starting_weather/generated_map/manual_map/forced_battle_tileset foram
+	# adicionados lá (ver comentário grande em trainer.gd::generated_map/
+	# manual_map). A GymLeader Misty mora numa cena de INTERIOR
+	# (barias_gym_interior.tscn usa este script, não world.gd), então toda
+	# batalha contra ela passava por AQUI, sem nunca copiar generated_map=
+	# false/manual_map=mistyGym.tscn (nem starting_weather="Rain") pro
+	# GameState — battle.gd sempre via os defaults (generated_map=true,
+	# manual_map=null), por isso o mapa desenhado à mão nunca aparecia.
+	GameState.current_trainer_starting_weather = trainer.starting_weather
+	GameState.current_trainer_starting_weather_overridable = trainer.starting_weather_overridable
+	GameState.generated_map = trainer.generated_map
+	GameState.manual_map = trainer.manual_map
+	GameState.forced_battle_tileset = trainer.forced_battle_tileset
 	get_tree().change_scene_to_file("res://scenes/battle/battle.tscn")
 
 func get_door_at(cell: Vector2i) -> Door:

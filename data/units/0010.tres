@@ -40,6 +40,41 @@ script = ExtResource("4")
 level = 9
 action = ExtResource("10_bug_bite")
 
+[sub_resource type="Resource" id="LE_new_0010_tackle"]
+script = ExtResource("4")
+action = ExtResource("8_tackle")
+
+[sub_resource type="Resource" id="LE_new_0010_string_shot"]
+script = ExtResource("4")
+action = ExtResource("9_string_shot")
+
+[sub_resource type="Resource" id="LE_new_0010_bug_bite"]
+script = ExtResource("4")
+level = 9
+action = ExtResource("10_bug_bite")
+
+[sub_resource type="Resource" id="LE_new_0010_shield_dust"]
+script = ExtResource("4")
+action = ExtResource("5")
+
+[sub_resource type="Resource" id="LE_new_0010_run_away"]
+script = ExtResource("4")
+is_hidden_ability = true
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="LE_pokmmo_0010_string_shot"]
+script = ExtResource("4")
+action = ExtResource("9_string_shot")
+
+[sub_resource type="Resource" id="LE_pokmmo_0010_tackle"]
+script = ExtResource("4")
+action = ExtResource("8_tackle")
+
+[sub_resource type="Resource" id="LE_pokmmo_0010_bug_bite"]
+script = ExtResource("4")
+level = 9
+action = ExtResource("10_bug_bite")
+
 [resource]
 script = ExtResource("1")
 unit_name = "Caterpie"
@@ -49,7 +84,7 @@ attack_hit_delay = 0.7
 special_hit_delay = 0.1
 types = Array[String](["Bug"])
 slots = Array[ExtResource("4_caterpie")]([ExtResource("8_tackle"), ExtResource("9_string_shot"), ExtResource("5")])
-learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0010_shield_dust"), SubResource("LearnsetEntry_0010_run_away"), SubResource("LearnsetEntry_0010_tackle"), SubResource("LearnsetEntry_0010_string_shot"), SubResource("LearnsetEntry_0010_bug_bite")])
+learnset = Array[ExtResource("4")]([SubResource("LE_pokmmo_0010_string_shot"), SubResource("LE_pokmmo_0010_tackle"), SubResource("LE_pokmmo_0010_bug_bite"), SubResource("LE_new_0010_shield_dust"), SubResource("LE_new_0010_run_away")])
 attack_base = 30
 defense_base = 35
 special_attack_base = 20

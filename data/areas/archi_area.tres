@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://data/units/0240.tres" id="5_16ajl"]
 [ext_resource type="Resource" path="res://data/units/0239.tres" id="6_7l5xi"]
 
+[ext_resource type="Script" path="res://scripts/wild_spawn_entry.gd" id="wse_script"]
 [sub_resource type="Resource" id="Resource_3d85r"]
 script = ExtResource("3")
 species = ExtResource("3_bcvgc")
@@ -49,7 +50,34 @@ weight = 2.0
 min_badges = 1
 metadata/_custom_type_script = "uid://dm7q7oe584rvd"
 
+[sub_resource type="Resource" id="WSE_0172"]
+script = ExtResource("wse_script")
+species = ExtResource("3_bcvgc")
+level = 3
+spawn_chance = 0.1
+
+[sub_resource type="Resource" id="WSE_0175"]
+script = ExtResource("wse_script")
+species = ExtResource("4_dxtfx")
+level = 3
+spawn_chance = 0.1
+
+[sub_resource type="Resource" id="WSE_0240"]
+script = ExtResource("wse_script")
+species = ExtResource("5_16ajl")
+level = 8
+spawn_chance = 0.2
+min_badges = 1
+
+[sub_resource type="Resource" id="WSE_0239"]
+script = ExtResource("wse_script")
+species = ExtResource("6_7l5xi")
+level = 8
+spawn_chance = 0.2
+min_badges = 1
+
 [resource]
 script = ExtResource("1")
+wild_spawn_entries = Array[ExtResource("wse_script")]([SubResource("WSE_0172"), SubResource("WSE_0175"), SubResource("WSE_0240"), SubResource("WSE_0239")])
 area_name = "ARCHI"
 groups = Array[ExtResource("2")]([SubResource("Resource_soqpy"), SubResource("Resource_aqrj2"), SubResource("Resource_n7x4q")])

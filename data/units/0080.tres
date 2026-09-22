@@ -4,8 +4,246 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0080/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0080/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/stomp.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/headbutt.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/disable.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/withdraw.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/curse.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/yawn.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/heal_pulse.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/water_pulse.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/surf.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/rest.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/slack_off.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/psych_up.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/rain_dance.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/oblivious.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/own_tempo.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/regenerator.tres" id="122"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/kings_rock.tres" id="123"]
+[ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="124"]
+[ext_resource type="Resource" path="res://data/attacks/future_sight.tres" id="125"]
+[sub_resource type="Resource" id="LE_new_0080_stomp"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0080_headbutt"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0080_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0080_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0080_disable"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0080_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0080_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0080_withdraw"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0080_curse"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0080_yawn"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0080_heal_pulse"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0080_water_pulse"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0080_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0080_amnesia"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0080_surf"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0080_rest"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0080_slack_off"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0080_psychic"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0080_psych_up"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0080_rain_dance"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0080_oblivious"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0080_own_tempo"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0080_regenerator"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="WHI_0080_kings_rock"]
+script = ExtResource("wild_item_script")
+item = ExtResource("123")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_curse"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_heal_pulse"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_stomp"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_water_gun"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_withdraw"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_yawn"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_psybeam"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_disable"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_water_pulse"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_headbutt"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_amnesia"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_rest"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_surf"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_slack_off"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_psychic"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_psych_up"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_future_sight"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_pokmmo_0080_rain_dance"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("119")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0080_kings_rock")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0080_confusion"), SubResource("LE_pokmmo_0080_curse"), SubResource("LE_pokmmo_0080_growl"), SubResource("LE_pokmmo_0080_heal_pulse"), SubResource("LE_pokmmo_0080_stomp"), SubResource("LE_pokmmo_0080_tackle"), SubResource("LE_pokmmo_0080_water_gun"), SubResource("LE_pokmmo_0080_withdraw"), SubResource("LE_pokmmo_0080_yawn"), SubResource("LE_pokmmo_0080_psybeam"), SubResource("LE_pokmmo_0080_disable"), SubResource("LE_pokmmo_0080_water_pulse"), SubResource("LE_pokmmo_0080_headbutt"), SubResource("LE_pokmmo_0080_zen_headbutt"), SubResource("LE_pokmmo_0080_amnesia"), SubResource("LE_pokmmo_0080_rest"), SubResource("LE_pokmmo_0080_surf"), SubResource("LE_pokmmo_0080_slack_off"), SubResource("LE_pokmmo_0080_psychic"), SubResource("LE_pokmmo_0080_psych_up"), SubResource("LE_pokmmo_0080_future_sight"), SubResource("LE_pokmmo_0080_rain_dance"), SubResource("LE_new_0080_oblivious"), SubResource("LE_new_0080_own_tempo"), SubResource("LE_new_0080_regenerator")])
 unit_name = "Slowbro"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

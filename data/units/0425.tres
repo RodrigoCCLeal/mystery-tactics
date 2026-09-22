@@ -4,8 +4,266 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0425/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0425/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/minimize.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/constrict.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/astonish.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/gust.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/hypnosis.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/focus_energy.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/payback.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/calm_mind.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/hex.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/shadow_ball.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/ominous_wind.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/stockpile.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/spit_up.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/swallow.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/mystical_fire.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/self_destruct.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/extrasensory.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/destiny_bond.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/baton_pass.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/tailwind.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/explosion.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/aftermath.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/unburden.tres" id="124"]
+[ext_resource type="Resource" path="res://data/abilities/flare_boost.tres" id="125"]
+[sub_resource type="Resource" id="LE_new_0425_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0425_minimize"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0425_constrict"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0425_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0425_gust"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0425_hypnosis"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0425_focus_energy"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0425_payback"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0425_calm_mind"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0425_hex"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0425_shadow_ball"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0425_ominous_wind"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0425_stockpile"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0425_spit_up"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0425_swallow"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0425_mystical_fire"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0425_self_destruct"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0425_extrasensory"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0425_destiny_bond"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0425_baton_pass"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0425_amnesia"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0425_tailwind"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0425_explosion"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0425_aftermath"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0425_unburden"]
+script = ExtResource("learnset_script")
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_new_0425_flare_boost"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_constrict"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_minimize"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_gust"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_hypnosis"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_focus_energy"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_payback"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_calm_mind"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_hex"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_ominous_wind"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_shadow_ball"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_spit_up"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_stockpile"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_swallow"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_extrasensory"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_selfdestruct"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_destiny_bond"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_baton_pass"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_amnesia"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_tailwind"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0425_explosion"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("122")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0425_astonish"), SubResource("LE_pokmmo_0425_confusion"), SubResource("LE_pokmmo_0425_constrict"), SubResource("LE_pokmmo_0425_minimize"), SubResource("LE_pokmmo_0425_gust"), SubResource("LE_pokmmo_0425_hypnosis"), SubResource("LE_pokmmo_0425_focus_energy"), SubResource("LE_pokmmo_0425_payback"), SubResource("LE_pokmmo_0425_calm_mind"), SubResource("LE_pokmmo_0425_hex"), SubResource("LE_pokmmo_0425_ominous_wind"), SubResource("LE_pokmmo_0425_shadow_ball"), SubResource("LE_pokmmo_0425_spit_up"), SubResource("LE_pokmmo_0425_stockpile"), SubResource("LE_pokmmo_0425_swallow"), SubResource("LE_pokmmo_0425_extrasensory"), SubResource("LE_pokmmo_0425_selfdestruct"), SubResource("LE_pokmmo_0425_destiny_bond"), SubResource("LE_pokmmo_0425_baton_pass"), SubResource("LE_pokmmo_0425_amnesia"), SubResource("LE_pokmmo_0425_tailwind"), SubResource("LE_pokmmo_0425_explosion"), SubResource("LE_new_0425_aftermath"), SubResource("LE_new_0425_unburden"), SubResource("LE_new_0425_flare_boost")])
 unit_name = "Drifloon"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

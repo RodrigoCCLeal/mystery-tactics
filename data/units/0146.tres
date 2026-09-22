@@ -4,8 +4,232 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0146/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0146/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/gust.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/wing_attack.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/ember.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/peck.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/fire_spin.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/sky_attack.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/heat_wave.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/roost.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/hurricane.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/safeguard.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/endure.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/air_slash.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/ancient_power.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/incinerate.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/flamethrower.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/sunny_day.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/solar_beam.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/overheat.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/burn_up.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/pressure.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/flame_body.tres" id="122"]
+[sub_resource type="Resource" id="LE_new_0146_gust"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0146_wing_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0146_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0146_ember"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0146_peck"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0146_fire_spin"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0146_sky_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0146_heat_wave"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0146_roost"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0146_hurricane"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0146_safeguard"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0146_agility"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0146_endure"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0146_air_slash"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0146_ancient_power"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0146_incinerate"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0146_flamethrower"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0146_sunny_day"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0146_solar_beam"]
+script = ExtResource("learnset_script")
+level = 64
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0146_overheat"]
+script = ExtResource("learnset_script")
+level = 65
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0146_burn_up"]
+script = ExtResource("learnset_script")
+level = 65
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0146_pressure"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0146_flame_body"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_ember"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_gust"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_peck"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_wing_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_fire_spin"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_safeguard"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_agility"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_air_slash"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_ancientpower"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_incinerate"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_flamethrower"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_roost"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_heat_wave"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_sunny_day"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_hurricane"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_endure"]
+script = ExtResource("learnset_script")
+level = 60
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_solarbeam"]
+script = ExtResource("learnset_script")
+level = 64
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_overheat"]
+script = ExtResource("learnset_script")
+level = 65
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0146_sky_attack"]
+script = ExtResource("learnset_script")
+level = 70
+action = ExtResource("106")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0146_ember"), SubResource("LE_pokmmo_0146_gust"), SubResource("LE_pokmmo_0146_leer"), SubResource("LE_pokmmo_0146_peck"), SubResource("LE_pokmmo_0146_wing_attack"), SubResource("LE_pokmmo_0146_fire_spin"), SubResource("LE_pokmmo_0146_safeguard"), SubResource("LE_pokmmo_0146_agility"), SubResource("LE_pokmmo_0146_air_slash"), SubResource("LE_pokmmo_0146_ancientpower"), SubResource("LE_pokmmo_0146_incinerate"), SubResource("LE_pokmmo_0146_flamethrower"), SubResource("LE_pokmmo_0146_roost"), SubResource("LE_pokmmo_0146_heat_wave"), SubResource("LE_pokmmo_0146_sunny_day"), SubResource("LE_pokmmo_0146_hurricane"), SubResource("LE_pokmmo_0146_endure"), SubResource("LE_pokmmo_0146_solarbeam"), SubResource("LE_pokmmo_0146_overheat"), SubResource("LE_pokmmo_0146_sky_attack"), SubResource("LE_new_0146_pressure"), SubResource("LE_new_0146_flame_body")])
 unit_name = "Moltres"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

@@ -4,8 +4,243 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0167/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0167/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/string_shot.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/constrict.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/infestation.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/leech_life.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/night_shade.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/shadow_sneak.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/fury_swipes.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/sucker_punch.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/spider_web.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/pin_missile.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/poison_jab.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/cross_poison.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/sticky_web.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/toxic_thread.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/swarm.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/insomnia.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/sniper.tres" id="122"]
+[ext_resource type="Resource" path="res://data/attacks/x_scissor.tres" id="123"]
+[ext_resource type="Resource" path="res://data/attacks/bug_buzz.tres" id="124"]
+[ext_resource type="Resource" path="res://data/attacks/megahorn.tres" id="125"]
+[sub_resource type="Resource" id="LE_new_0167_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0167_string_shot"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0167_constrict"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0167_absorb"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0167_scary_face"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0167_infestation"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0167_leech_life"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0167_night_shade"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0167_shadow_sneak"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0167_fury_swipes"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0167_sucker_punch"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0167_agility"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0167_spider_web"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0167_pin_missile"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0167_psychic"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0167_poison_jab"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0167_cross_poison"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0167_screech"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0167_sticky_web"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0167_toxic_thread"]
+script = ExtResource("learnset_script")
+level = 51
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0167_swarm"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0167_insomnia"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0167_sniper"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_constrict"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_string_shot"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_absorb"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_scary_face"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_shadow_sneak"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_night_shade"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_x_scissor"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_screech"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_fury_swipes"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_sucker_punch"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_pin_missile"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_agility"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_leech_life"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_spider_web"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_psychic"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_poison_jab"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_bug_buzz"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_cross_poison"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0167_megahorn"]
+script = ExtResource("learnset_script")
+level = 44
+action = ExtResource("125")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0167_constrict"), SubResource("LE_pokmmo_0167_poison_sting"), SubResource("LE_pokmmo_0167_string_shot"), SubResource("LE_pokmmo_0167_absorb"), SubResource("LE_pokmmo_0167_scary_face"), SubResource("LE_pokmmo_0167_shadow_sneak"), SubResource("LE_pokmmo_0167_night_shade"), SubResource("LE_pokmmo_0167_x_scissor"), SubResource("LE_pokmmo_0167_screech"), SubResource("LE_pokmmo_0167_fury_swipes"), SubResource("LE_pokmmo_0167_sucker_punch"), SubResource("LE_pokmmo_0167_pin_missile"), SubResource("LE_pokmmo_0167_agility"), SubResource("LE_pokmmo_0167_leech_life"), SubResource("LE_pokmmo_0167_spider_web"), SubResource("LE_pokmmo_0167_psychic"), SubResource("LE_pokmmo_0167_poison_jab"), SubResource("LE_pokmmo_0167_bug_buzz"), SubResource("LE_pokmmo_0167_cross_poison"), SubResource("LE_pokmmo_0167_megahorn"), SubResource("LE_new_0167_swarm"), SubResource("LE_new_0167_insomnia"), SubResource("LE_new_0167_sniper")])
 unit_name = "Spinarak"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

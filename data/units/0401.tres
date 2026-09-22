@@ -4,8 +4,96 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0401/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0401/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/bide.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/struggle_bug.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/bug_bite.tres" id="106"]
+[ext_resource type="Resource" path="res://data/abilities/shed_skin.tres" id="107"]
+[ext_resource type="Resource" path="res://data/abilities/run_away.tres" id="108"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/metronome.tres" id="109"]
+[sub_resource type="Resource" id="LE_new_0401_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0401_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0401_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0401_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0401_bide"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0401_struggle_bug"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0401_bug_bite"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0401_shed_skin"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0401_run_away"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="WHI_0401_metronome"]
+script = ExtResource("wild_item_script")
+item = ExtResource("109")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0401_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0401_bide"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0401_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0401_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0401_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0401_struggle_bug"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0401_bug_bite"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("106")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0401_metronome")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0401_absorb"), SubResource("LE_pokmmo_0401_bide"), SubResource("LE_pokmmo_0401_growl"), SubResource("LE_pokmmo_0401_pound"), SubResource("LE_pokmmo_0401_tackle"), SubResource("LE_pokmmo_0401_struggle_bug"), SubResource("LE_pokmmo_0401_bug_bite"), SubResource("LE_new_0401_shed_skin"), SubResource("LE_new_0401_run_away")])
 unit_name = "Kricketot"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

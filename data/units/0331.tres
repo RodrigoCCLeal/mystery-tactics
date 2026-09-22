@@ -4,8 +4,257 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0331/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0331/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/growth.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/sand_attack.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/needle_arm.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/bullet_seed.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/poison_jab.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/feint_attack.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/assurance.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/power_trip.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/pin_missile.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/ingrain.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/payback.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/spikes.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/sucker_punch.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/cotton_spore.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/energy_ball.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/sandstorm.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/destiny_bond.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/sand_veil.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/water_absorb.tres" id="122"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/poison_barb.tres" id="123"]
+[ext_resource type="Resource" path="res://data/items/sticky_barb.tres" id="124"]
+[sub_resource type="Resource" id="LE_new_0331_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0331_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0331_absorb"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0331_growth"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0331_leech_seed"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0331_sand_attack"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0331_needle_arm"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0331_bullet_seed"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0331_poison_jab"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0331_feint_attack"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0331_assurance"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0331_power_trip"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0331_pin_missile"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0331_ingrain"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0331_payback"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0331_spikes"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0331_sucker_punch"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0331_cotton_spore"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0331_energy_ball"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0331_sandstorm"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0331_destiny_bond"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0331_sand_veil"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0331_water_absorb"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="WHI_0331_poison_barb"]
+script = ExtResource("wild_item_script")
+item = ExtResource("123")
+chance = 0.05
+
+[sub_resource type="Resource" id="WHI_0331_sticky_barb"]
+script = ExtResource("wild_item_script")
+item = ExtResource("124")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_absorb"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_growth"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_leech_seed"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_sand_attack"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_bullet_seed"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_needle_arm"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_poison_jab"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_assurance"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_faint_attack"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_ingrain"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_payback"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_spikes"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_sucker_punch"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_pin_missile"]
+script = ExtResource("learnset_script")
+level = 38
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_energy_ball"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_cotton_spore"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_sandstorm"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0331_destiny_bond"]
+script = ExtResource("learnset_script")
+level = 54
+action = ExtResource("120")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0331_poison_barb"), SubResource("WHI_0331_sticky_barb")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0331_leer"), SubResource("LE_pokmmo_0331_poison_sting"), SubResource("LE_pokmmo_0331_absorb"), SubResource("LE_pokmmo_0331_growth"), SubResource("LE_pokmmo_0331_leech_seed"), SubResource("LE_pokmmo_0331_sand_attack"), SubResource("LE_pokmmo_0331_bullet_seed"), SubResource("LE_pokmmo_0331_needle_arm"), SubResource("LE_pokmmo_0331_poison_jab"), SubResource("LE_pokmmo_0331_assurance"), SubResource("LE_pokmmo_0331_faint_attack"), SubResource("LE_pokmmo_0331_ingrain"), SubResource("LE_pokmmo_0331_payback"), SubResource("LE_pokmmo_0331_spikes"), SubResource("LE_pokmmo_0331_sucker_punch"), SubResource("LE_pokmmo_0331_pin_missile"), SubResource("LE_pokmmo_0331_energy_ball"), SubResource("LE_pokmmo_0331_cotton_spore"), SubResource("LE_pokmmo_0331_sandstorm"), SubResource("LE_pokmmo_0331_destiny_bond"), SubResource("LE_new_0331_sand_veil"), SubResource("LE_new_0331_water_absorb")])
 unit_name = "Cacnea"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

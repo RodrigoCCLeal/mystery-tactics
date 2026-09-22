@@ -4,8 +4,214 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0203/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0203/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/stomp.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/growl.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/astonish.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/power_swap.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/guard_swap.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/odor_sleuth.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/assurance.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/agility.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/baton_pass.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/double_hit.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/twin_beam.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/crunch.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/nasty_plot.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/inner_focus.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/early_bird.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/sap_sipper.tres" id="120"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/persim_berry.tres" id="121"]
+[sub_resource type="Resource" id="LE_new_0203_stomp"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0203_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0203_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0203_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0203_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0203_power_swap"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0203_guard_swap"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0203_odor_sleuth"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0203_assurance"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0203_agility"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0203_psybeam"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0203_baton_pass"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0203_double_hit"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0203_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0203_twin_beam"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0203_psychic"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0203_crunch"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0203_nasty_plot"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0203_inner_focus"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0203_early_bird"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0203_sap_sipper"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="WHI_0203_persim_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("121")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_confusion"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_growl"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_guard_swap"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_power_swap"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_odor_sleuth"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_assurance"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_stomp"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_psybeam"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_agility"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_double_hit"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_crunch"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_baton_pass"]
+script = ExtResource("learnset_script")
+level = 41
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_nasty_plot"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0203_psychic"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("115")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0203_persim_berry")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0203_astonish"), SubResource("LE_pokmmo_0203_confusion"), SubResource("LE_pokmmo_0203_growl"), SubResource("LE_pokmmo_0203_guard_swap"), SubResource("LE_pokmmo_0203_power_swap"), SubResource("LE_pokmmo_0203_tackle"), SubResource("LE_pokmmo_0203_odor_sleuth"), SubResource("LE_pokmmo_0203_assurance"), SubResource("LE_pokmmo_0203_stomp"), SubResource("LE_pokmmo_0203_psybeam"), SubResource("LE_pokmmo_0203_agility"), SubResource("LE_pokmmo_0203_double_hit"), SubResource("LE_pokmmo_0203_zen_headbutt"), SubResource("LE_pokmmo_0203_crunch"), SubResource("LE_pokmmo_0203_baton_pass"), SubResource("LE_pokmmo_0203_nasty_plot"), SubResource("LE_pokmmo_0203_psychic"), SubResource("LE_new_0203_inner_focus"), SubResource("LE_new_0203_early_bird"), SubResource("LE_new_0203_sap_sipper")])
 unit_name = "Girafarig"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

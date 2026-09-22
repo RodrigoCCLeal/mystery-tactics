@@ -4,8 +4,172 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0294/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0294/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/uproar.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/astonish.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/howl.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/echoed_voice.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/rest.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/sleep_talk.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/stomp.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/roar.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/hyper_voice.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/synchronoise.tres" id="113"]
+[ext_resource type="Resource" path="res://data/abilities/soundproof.tres" id="114"]
+[ext_resource type="Resource" path="res://data/abilities/scrappy.tres" id="115"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/chesto_berry.tres" id="116"]
+[sub_resource type="Resource" id="LE_new_0294_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0294_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0294_uproar"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0294_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0294_howl"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0294_echoed_voice"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0294_screech"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0294_rest"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0294_sleep_talk"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0294_supersonic"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0294_stomp"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0294_roar"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0294_hyper_voice"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0294_synchronoise"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0294_soundproof"]
+script = ExtResource("learnset_script")
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0294_scrappy"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="WHI_0294_chesto_berry"]
+script = ExtResource("wild_item_script")
+item = ExtResource("116")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_astonish"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_echoed_voice"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_howl"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_rest"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_sleep_talk"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_stomp"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_roar"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_supersonic"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_uproar"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_screech"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_synchronoise"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0294_hyper_voice"]
+script = ExtResource("learnset_script")
+level = 57
+action = ExtResource("112")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0294_chesto_berry")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0294_astonish"), SubResource("LE_pokmmo_0294_bite"), SubResource("LE_pokmmo_0294_echoed_voice"), SubResource("LE_pokmmo_0294_howl"), SubResource("LE_pokmmo_0294_pound"), SubResource("LE_pokmmo_0294_rest"), SubResource("LE_pokmmo_0294_sleep_talk"), SubResource("LE_pokmmo_0294_stomp"), SubResource("LE_pokmmo_0294_roar"), SubResource("LE_pokmmo_0294_supersonic"), SubResource("LE_pokmmo_0294_uproar"), SubResource("LE_pokmmo_0294_screech"), SubResource("LE_pokmmo_0294_synchronoise"), SubResource("LE_pokmmo_0294_hyper_voice"), SubResource("LE_new_0294_soundproof"), SubResource("LE_new_0294_scrappy")])
 unit_name = "Loudred"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

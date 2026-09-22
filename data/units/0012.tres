@@ -27,6 +27,10 @@
 [ext_resource type="Resource" path="res://data/attacks/rage_powder.tres" id="23_rage_powder"]
 [ext_resource type="Resource" path="res://data/attacks/quiver_dance.tres" id="24_quiver_dance"]
 
+[ext_resource type="Resource" path="res://data/attacks/silver_wind.tres" id="7"]
+[ext_resource type="Resource" path="res://data/attacks/captivate.tres" id="8"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/silver_powder.tres" id="9"]
 [sub_resource type="Resource" id="LearnsetEntry_0012_compound_eyes"]
 script = ExtResource("4")
 action = ExtResource("5")
@@ -121,8 +125,211 @@ script = ExtResource("4")
 level = 44
 action = ExtResource("24_quiver_dance")
 
+[sub_resource type="Resource" id="LE_new_0012_gust"]
+script = ExtResource("4")
+action = ExtResource("8_gust")
+
+[sub_resource type="Resource" id="LE_new_0012_tackle"]
+script = ExtResource("4")
+action = ExtResource("11_tackle")
+
+[sub_resource type="Resource" id="LE_new_0012_string_shot"]
+script = ExtResource("4")
+action = ExtResource("10_string_shot")
+
+[sub_resource type="Resource" id="LE_new_0012_confusion"]
+script = ExtResource("4")
+action = ExtResource("13_confusion")
+
+[sub_resource type="Resource" id="LE_new_0012_harden"]
+script = ExtResource("4")
+action = ExtResource("9_harden")
+
+[sub_resource type="Resource" id="LE_new_0012_bug_bite"]
+script = ExtResource("4")
+action = ExtResource("7_bug_bite")
+
+[sub_resource type="Resource" id="LE_new_0012_supersonic"]
+script = ExtResource("4")
+level = 4
+action = ExtResource("12_supersonic")
+
+[sub_resource type="Resource" id="LE_new_0012_poison_powder"]
+script = ExtResource("4")
+level = 12
+action = ExtResource("14_poison_powder")
+
+[sub_resource type="Resource" id="LE_new_0012_stun_spore"]
+script = ExtResource("4")
+level = 12
+action = ExtResource("16_stun_spore")
+
+[sub_resource type="Resource" id="LE_new_0012_sleep_powder"]
+script = ExtResource("4")
+level = 12
+action = ExtResource("15_sleep_powder")
+
+[sub_resource type="Resource" id="LE_new_0012_psybeam"]
+script = ExtResource("4")
+level = 16
+action = ExtResource("17_psybeam")
+
+[sub_resource type="Resource" id="LE_new_0012_silver_wind"]
+script = ExtResource("4")
+level = 19
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LE_new_0012_whirlwind"]
+script = ExtResource("4")
+level = 20
+action = ExtResource("18_whirlwind")
+
+[sub_resource type="Resource" id="LE_new_0012_quiver_dance"]
+script = ExtResource("4")
+level = 22
+action = ExtResource("24_quiver_dance")
+
+[sub_resource type="Resource" id="LE_new_0012_air_slash"]
+script = ExtResource("4")
+level = 24
+action = ExtResource("19_air_slash")
+
+[sub_resource type="Resource" id="LE_new_0012_safeguard"]
+script = ExtResource("4")
+level = 25
+action = ExtResource("20_safeguard")
+
+[sub_resource type="Resource" id="LE_new_0012_tailwind"]
+script = ExtResource("4")
+level = 30
+action = ExtResource("22_tailwind")
+
+[sub_resource type="Resource" id="LE_new_0012_bug_buzz"]
+script = ExtResource("4")
+level = 31
+action = ExtResource("21_bug_buzz")
+
+[sub_resource type="Resource" id="LE_new_0012_rage_powder"]
+script = ExtResource("4")
+level = 34
+action = ExtResource("23_rage_powder")
+
+[sub_resource type="Resource" id="LE_new_0012_captivate"]
+script = ExtResource("4")
+level = 36
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LE_new_0012_compound_eyes"]
+script = ExtResource("4")
+action = ExtResource("5")
+
+[sub_resource type="Resource" id="LE_new_0012_tinted_lens"]
+script = ExtResource("4")
+is_hidden_ability = true
+action = ExtResource("6")
+
+[sub_resource type="Resource" id="WHI_0012_silver_powder"]
+script = ExtResource("wild_item_script")
+item = ExtResource("9")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_bug_bite"]
+script = ExtResource("4")
+action = ExtResource("7_bug_bite")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_confusion"]
+script = ExtResource("4")
+action = ExtResource("13_confusion")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_gust"]
+script = ExtResource("4")
+action = ExtResource("8_gust")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_harden"]
+script = ExtResource("4")
+action = ExtResource("9_harden")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_string_shot"]
+script = ExtResource("4")
+action = ExtResource("10_string_shot")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_tackle"]
+script = ExtResource("4")
+action = ExtResource("11_tackle")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_supersonic"]
+script = ExtResource("4")
+level = 4
+action = ExtResource("12_supersonic")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_poisonpowder"]
+script = ExtResource("4")
+level = 12
+action = ExtResource("14_poison_powder")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_sleep_powder"]
+script = ExtResource("4")
+level = 12
+action = ExtResource("15_sleep_powder")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_stun_spore"]
+script = ExtResource("4")
+level = 12
+action = ExtResource("16_stun_spore")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_psybeam"]
+script = ExtResource("4")
+level = 16
+action = ExtResource("17_psybeam")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_silver_wind"]
+script = ExtResource("4")
+level = 19
+action = ExtResource("7")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_whirlwind"]
+script = ExtResource("4")
+level = 20
+action = ExtResource("18_whirlwind")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_quiver_dance"]
+script = ExtResource("4")
+level = 22
+action = ExtResource("24_quiver_dance")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_air_slash"]
+script = ExtResource("4")
+level = 24
+action = ExtResource("19_air_slash")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_safeguard"]
+script = ExtResource("4")
+level = 28
+action = ExtResource("20_safeguard")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_bug_buzz"]
+script = ExtResource("4")
+level = 31
+action = ExtResource("21_bug_buzz")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_tailwind"]
+script = ExtResource("4")
+level = 36
+action = ExtResource("22_tailwind")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_captivate"]
+script = ExtResource("4")
+level = 37
+action = ExtResource("8")
+
+[sub_resource type="Resource" id="LE_pokmmo_0012_rage_powder"]
+script = ExtResource("4")
+level = 40
+action = ExtResource("23_rage_powder")
+
 [resource]
 script = ExtResource("1")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0012_silver_powder")])
 unit_name = "Butterfree"
 sprite_frames = ExtResource("2")
 portrait = ExtResource("3")
@@ -131,7 +338,7 @@ special_hit_delay = 0.8
 types = Array[String](["Bug", "Flying"])
 grounded = false
 slots = Array[ExtResource("4_butterfree")]([ExtResource("7_bug_bite"), ExtResource("8_gust"), ExtResource("5")])
-learnset = Array[ExtResource("4")]([SubResource("LearnsetEntry_0012_compound_eyes"), SubResource("LearnsetEntry_0012_tinted_lens"), SubResource("LearnsetEntry_0012_bug_bite"), SubResource("LearnsetEntry_0012_gust"), SubResource("LearnsetEntry_0012_harden"), SubResource("LearnsetEntry_0012_string_shot"), SubResource("LearnsetEntry_0012_tackle"), SubResource("LearnsetEntry_0012_supersonic"), SubResource("LearnsetEntry_0012_confusion"), SubResource("LearnsetEntry_0012_poison_powder"), SubResource("LearnsetEntry_0012_sleep_powder"), SubResource("LearnsetEntry_0012_stun_spore"), SubResource("LearnsetEntry_0012_psybeam"), SubResource("LearnsetEntry_0012_whirlwind"), SubResource("LearnsetEntry_0012_air_slash"), SubResource("LearnsetEntry_0012_safeguard"), SubResource("LearnsetEntry_0012_bug_buzz"), SubResource("LearnsetEntry_0012_tailwind"), SubResource("LearnsetEntry_0012_rage_powder"), SubResource("LearnsetEntry_0012_quiver_dance")])
+learnset = Array[ExtResource("4")]([SubResource("LE_pokmmo_0012_bug_bite"), SubResource("LE_pokmmo_0012_confusion"), SubResource("LE_pokmmo_0012_gust"), SubResource("LE_pokmmo_0012_harden"), SubResource("LE_pokmmo_0012_string_shot"), SubResource("LE_pokmmo_0012_tackle"), SubResource("LE_pokmmo_0012_supersonic"), SubResource("LE_pokmmo_0012_poisonpowder"), SubResource("LE_pokmmo_0012_sleep_powder"), SubResource("LE_pokmmo_0012_stun_spore"), SubResource("LE_pokmmo_0012_psybeam"), SubResource("LE_pokmmo_0012_silver_wind"), SubResource("LE_pokmmo_0012_whirlwind"), SubResource("LE_pokmmo_0012_quiver_dance"), SubResource("LE_pokmmo_0012_air_slash"), SubResource("LE_pokmmo_0012_safeguard"), SubResource("LE_pokmmo_0012_bug_buzz"), SubResource("LE_pokmmo_0012_tailwind"), SubResource("LE_pokmmo_0012_captivate"), SubResource("LE_pokmmo_0012_rage_powder"), SubResource("LE_new_0012_compound_eyes"), SubResource("LE_new_0012_tinted_lens")])
 hp_base = 60
 defense_base = 50
 special_attack_base = 90

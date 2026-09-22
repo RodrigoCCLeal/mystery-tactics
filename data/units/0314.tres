@@ -4,8 +4,192 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0314/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0314/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/play_nice.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/sweet_scent.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/charm.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/moonlight.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/struggle_bug.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/wish.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/encore.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/flatter.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/helping_hand.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/covet.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/bug_buzz.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/play_rough.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/infestation.tres" id="115"]
+[ext_resource type="Resource" path="res://data/abilities/oblivious.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/tinted_lens.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/prankster.tres" id="118"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/bright_powder.tres" id="119"]
+[sub_resource type="Resource" id="LE_new_0314_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0314_play_nice"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0314_sweet_scent"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0314_charm"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0314_quick_attack"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0314_moonlight"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0314_struggle_bug"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0314_wish"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0314_encore"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0314_flatter"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0314_helping_hand"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0314_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0314_covet"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0314_bug_buzz"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0314_play_rough"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0314_infestation"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0314_oblivious"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0314_tinted_lens"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0314_prankster"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="WHI_0314_bright_powder"]
+script = ExtResource("wild_item_script")
+item = ExtResource("119")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_sweet_scent"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_charm"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_quick_attack"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_struggle_bug"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_moonlight"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_wish"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_encore"]
+script = ExtResource("learnset_script")
+level = 26
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_flatter"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_helping_hand"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_bug_buzz"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0314_covet"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("112")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0314_bright_powder")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0314_tackle"), SubResource("LE_pokmmo_0314_sweet_scent"), SubResource("LE_pokmmo_0314_charm"), SubResource("LE_pokmmo_0314_quick_attack"), SubResource("LE_pokmmo_0314_struggle_bug"), SubResource("LE_pokmmo_0314_moonlight"), SubResource("LE_pokmmo_0314_wish"), SubResource("LE_pokmmo_0314_encore"), SubResource("LE_pokmmo_0314_flatter"), SubResource("LE_pokmmo_0314_zen_headbutt"), SubResource("LE_pokmmo_0314_helping_hand"), SubResource("LE_pokmmo_0314_bug_buzz"), SubResource("LE_pokmmo_0314_covet"), SubResource("LE_new_0314_oblivious"), SubResource("LE_new_0314_tinted_lens"), SubResource("LE_new_0314_prankster")])
 unit_name = "Illumise"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

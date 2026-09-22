@@ -4,8 +4,210 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0386/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0386/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/wrap.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/night_shade.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/teleport.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/knock_off.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/pursuit.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/psychic.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/psyshock.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/snatch.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/cosmic_power.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/gravity.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/recover.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/skill_swap.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/psycho_shift.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/psycho_boost.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/hyper_beam.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/pressure.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/toxic_spikes.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/switcheroo.tres" id="119"]
+[sub_resource type="Resource" id="LE_new_0386_wrap"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0386_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0386_night_shade"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0386_teleport"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0386_knock_off"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0386_pursuit"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0386_psychic"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0386_psyshock"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0386_snatch"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0386_cosmic_power"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0386_gravity"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0386_recover"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0386_skill_swap"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0386_psycho_shift"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0386_psycho_boost"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0386_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0386_hyper_beam"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0386_pressure"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_wrap"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_night_shade"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_teleport"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_knock_off"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_psyshock"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_pursuit"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_toxic_spikes"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_psychic"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_gravity"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_snatch"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_switcheroo"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_psycho_shift"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_skill_swap"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 49
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_cosmic_power"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_recover"]
+script = ExtResource("learnset_script")
+level = 61
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_psycho_boost"]
+script = ExtResource("learnset_script")
+level = 67
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0386_hyper_beam"]
+script = ExtResource("learnset_script")
+level = 73
+action = ExtResource("116")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0386_leer"), SubResource("LE_pokmmo_0386_wrap"), SubResource("LE_pokmmo_0386_night_shade"), SubResource("LE_pokmmo_0386_teleport"), SubResource("LE_pokmmo_0386_knock_off"), SubResource("LE_pokmmo_0386_psyshock"), SubResource("LE_pokmmo_0386_pursuit"), SubResource("LE_pokmmo_0386_toxic_spikes"), SubResource("LE_pokmmo_0386_psychic"), SubResource("LE_pokmmo_0386_gravity"), SubResource("LE_pokmmo_0386_snatch"), SubResource("LE_pokmmo_0386_switcheroo"), SubResource("LE_pokmmo_0386_psycho_shift"), SubResource("LE_pokmmo_0386_skill_swap"), SubResource("LE_pokmmo_0386_zen_headbutt"), SubResource("LE_pokmmo_0386_cosmic_power"), SubResource("LE_pokmmo_0386_recover"), SubResource("LE_pokmmo_0386_psycho_boost"), SubResource("LE_pokmmo_0386_hyper_beam"), SubResource("LE_new_0386_pressure")])
 unit_name = "Deoxys"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

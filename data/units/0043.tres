@@ -4,8 +4,213 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0043/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0043/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/growth.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/acid.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/sweet_scent.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/mega_drain.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/poison_powder.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/stun_spore.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/sleep_powder.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/razor_leaf.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/giga_drain.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/lucky_chant.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/toxic.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/moonlight.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/moonblast.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/natural_gift.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/grassy_terrain.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/petal_dance.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/solar_beam.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/chlorophyll.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/run_away.tres" id="119"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/absorb_bulb.tres" id="120"]
+[sub_resource type="Resource" id="LE_new_0043_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0043_growth"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0043_acid"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0043_sweet_scent"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0043_mega_drain"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0043_poison_powder"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0043_stun_spore"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0043_sleep_powder"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0043_razor_leaf"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0043_giga_drain"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0043_lucky_chant"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0043_toxic"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0043_moonlight"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0043_moonblast"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0043_natural_gift"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0043_grassy_terrain"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0043_petal_dance"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0043_solar_beam"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0043_chlorophyll"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0043_run_away"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="WHI_0043_absorb_bulb"]
+script = ExtResource("wild_item_script")
+item = ExtResource("120")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_growth"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_acid"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_sweet_scent"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_mega_drain"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_poisonpowder"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_stun_spore"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_sleep_powder"]
+script = ExtResource("learnset_script")
+level = 14
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_razor_leaf"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_giga_drain"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_lucky_chant"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_toxic"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_moonlight"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_natural_gift"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_petal_dance"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0043_solarbeam"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("117")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0043_absorb_bulb")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0043_absorb"), SubResource("LE_pokmmo_0043_growth"), SubResource("LE_pokmmo_0043_acid"), SubResource("LE_pokmmo_0043_sweet_scent"), SubResource("LE_pokmmo_0043_mega_drain"), SubResource("LE_pokmmo_0043_poisonpowder"), SubResource("LE_pokmmo_0043_stun_spore"), SubResource("LE_pokmmo_0043_sleep_powder"), SubResource("LE_pokmmo_0043_razor_leaf"), SubResource("LE_pokmmo_0043_giga_drain"), SubResource("LE_pokmmo_0043_lucky_chant"), SubResource("LE_pokmmo_0043_toxic"), SubResource("LE_pokmmo_0043_moonlight"), SubResource("LE_pokmmo_0043_natural_gift"), SubResource("LE_pokmmo_0043_petal_dance"), SubResource("LE_pokmmo_0043_solarbeam"), SubResource("LE_new_0043_chlorophyll"), SubResource("LE_new_0043_run_away")])
 unit_name = "Oddish"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

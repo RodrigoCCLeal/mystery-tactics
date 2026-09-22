@@ -4,8 +4,43 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0063/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0063/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/teleport.tres" id="100"]
+[ext_resource type="Resource" path="res://data/abilities/synchronize.tres" id="101"]
+[ext_resource type="Resource" path="res://data/abilities/inner_focus.tres" id="102"]
+[ext_resource type="Resource" path="res://data/abilities/magic_guard.tres" id="103"]
+[ext_resource type="Script" path="res://scripts/wild_held_item_entry.gd" id="wild_item_script"]
+[ext_resource type="Resource" path="res://data/items/twisted_spoon.tres" id="104"]
+[sub_resource type="Resource" id="LE_new_0063_teleport"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0063_synchronize"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0063_inner_focus"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0063_magic_guard"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="WHI_0063_twisted_spoon"]
+script = ExtResource("wild_item_script")
+item = ExtResource("104")
+chance = 0.05
+
+[sub_resource type="Resource" id="LE_pokmmo_0063_teleport"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
 [resource]
 script = ExtResource("1_script")
+wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0063_twisted_spoon")])
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0063_teleport"), SubResource("LE_new_0063_synchronize"), SubResource("LE_new_0063_inner_focus"), SubResource("LE_new_0063_magic_guard")])
 unit_name = "Abra"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

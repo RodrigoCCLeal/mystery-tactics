@@ -4,8 +4,242 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0192/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0192/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/growth.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/synthesis.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/endeavor.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/seed_bomb.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/flower_shield.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/ingrain.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/mega_drain.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/grass_whistle.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/razor_leaf.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/leech_seed.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/sunny_day.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/worry_seed.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/bullet_seed.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/giga_drain.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/petal_dance.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/solar_beam.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/natural_gift.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/leaf_storm.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/petal_blizzard.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/chlorophyll.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/solar_power.tres" id="124"]
+[ext_resource type="Resource" path="res://data/abilities/early_bird.tres" id="125"]
+[sub_resource type="Resource" id="LE_new_0192_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0192_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0192_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0192_growth"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0192_synthesis"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0192_endeavor"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0192_seed_bomb"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0192_flower_shield"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0192_ingrain"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0192_mega_drain"]
+script = ExtResource("learnset_script")
+level = 5
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0192_grass_whistle"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0192_razor_leaf"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0192_leech_seed"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0192_sunny_day"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0192_worry_seed"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0192_bullet_seed"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0192_giga_drain"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0192_petal_dance"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0192_solar_beam"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0192_natural_gift"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0192_double_edge"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0192_leaf_storm"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0192_petal_blizzard"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0192_chlorophyll"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0192_solar_power"]
+script = ExtResource("learnset_script")
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_new_0192_early_bird"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("125")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_absorb"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_growth"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_pound"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_ingrain"]
+script = ExtResource("learnset_script")
+level = 4
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_grasswhistle"]
+script = ExtResource("learnset_script")
+level = 7
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_mega_drain"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_leech_seed"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_razor_leaf"]
+script = ExtResource("learnset_script")
+level = 16
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_worry_seed"]
+script = ExtResource("learnset_script")
+level = 19
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_giga_drain"]
+script = ExtResource("learnset_script")
+level = 22
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_bullet_seed"]
+script = ExtResource("learnset_script")
+level = 25
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_petal_dance"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_natural_gift"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_solarbeam"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_double_edge"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_sunny_day"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0192_leaf_storm"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("121")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0192_absorb"), SubResource("LE_pokmmo_0192_growth"), SubResource("LE_pokmmo_0192_pound"), SubResource("LE_pokmmo_0192_tackle"), SubResource("LE_pokmmo_0192_ingrain"), SubResource("LE_pokmmo_0192_grasswhistle"), SubResource("LE_pokmmo_0192_mega_drain"), SubResource("LE_pokmmo_0192_leech_seed"), SubResource("LE_pokmmo_0192_razor_leaf"), SubResource("LE_pokmmo_0192_worry_seed"), SubResource("LE_pokmmo_0192_giga_drain"), SubResource("LE_pokmmo_0192_bullet_seed"), SubResource("LE_pokmmo_0192_petal_dance"), SubResource("LE_pokmmo_0192_natural_gift"), SubResource("LE_pokmmo_0192_solarbeam"), SubResource("LE_pokmmo_0192_double_edge"), SubResource("LE_pokmmo_0192_sunny_day"), SubResource("LE_pokmmo_0192_leaf_storm"), SubResource("LE_new_0192_chlorophyll"), SubResource("LE_new_0192_solar_power"), SubResource("LE_new_0192_early_bird")])
 unit_name = "Sunflora"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

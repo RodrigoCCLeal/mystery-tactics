@@ -4,8 +4,238 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0054/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0054/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/tail_whip.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/bubble.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/water_sport.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/fury_swipes.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/disable.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/water_pulse.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/hypnosis.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/zen_headbutt.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/screech.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/aqua_tail.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/soak.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/psych_up.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/amnesia.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/hydro_pump.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/surf.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/wonder_room.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/damp.tres" id="120"]
+[ext_resource type="Resource" path="res://data/abilities/cloud_nine.tres" id="121"]
+[ext_resource type="Resource" path="res://data/abilities/swift_swim.tres" id="122"]
+[sub_resource type="Resource" id="LE_new_0054_scratch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0054_tail_whip"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0054_bubble"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0054_water_sport"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0054_water_gun"]
+script = ExtResource("learnset_script")
+level = 3
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0054_confusion"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0054_fury_swipes"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0054_disable"]
+script = ExtResource("learnset_script")
+level = 10
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0054_water_pulse"]
+script = ExtResource("learnset_script")
+level = 11
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0054_hypnosis"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0054_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0054_screech"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0054_aqua_tail"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0054_psybeam"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0054_soak"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0054_psych_up"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0054_amnesia"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0054_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0054_surf"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0054_wonder_room"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0054_damp"]
+script = ExtResource("learnset_script")
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0054_cloud_nine"]
+script = ExtResource("learnset_script")
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0054_swift_swim"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_bubble"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_scratch"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_tail_whip"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_water_sport"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_water_gun"]
+script = ExtResource("learnset_script")
+level = 3
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_confusion"]
+script = ExtResource("learnset_script")
+level = 6
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_fury_swipes"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_water_pulse"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_disable"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_hypnosis"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_zen_headbutt"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_screech"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_aqua_tail"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_psybeam"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_soak"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_psych_up"]
+script = ExtResource("learnset_script")
+level = 30
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_amnesia"]
+script = ExtResource("learnset_script")
+level = 34
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_hydro_pump"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_surf"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0054_wonder_room"]
+script = ExtResource("learnset_script")
+level = 39
+action = ExtResource("119")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0054_bubble"), SubResource("LE_pokmmo_0054_scratch"), SubResource("LE_pokmmo_0054_tail_whip"), SubResource("LE_pokmmo_0054_water_sport"), SubResource("LE_pokmmo_0054_water_gun"), SubResource("LE_pokmmo_0054_confusion"), SubResource("LE_pokmmo_0054_fury_swipes"), SubResource("LE_pokmmo_0054_water_pulse"), SubResource("LE_pokmmo_0054_disable"), SubResource("LE_pokmmo_0054_hypnosis"), SubResource("LE_pokmmo_0054_zen_headbutt"), SubResource("LE_pokmmo_0054_screech"), SubResource("LE_pokmmo_0054_aqua_tail"), SubResource("LE_pokmmo_0054_psybeam"), SubResource("LE_pokmmo_0054_soak"), SubResource("LE_pokmmo_0054_psych_up"), SubResource("LE_pokmmo_0054_amnesia"), SubResource("LE_pokmmo_0054_hydro_pump"), SubResource("LE_pokmmo_0054_surf"), SubResource("LE_pokmmo_0054_wonder_room"), SubResource("LE_new_0054_damp"), SubResource("LE_new_0054_cloud_nine"), SubResource("LE_new_0054_swift_swim")])
 unit_name = "Psyduck"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

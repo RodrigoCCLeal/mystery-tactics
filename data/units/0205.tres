@@ -4,8 +4,255 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0205/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0205/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/take_down.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/self_destruct.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/protect.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/zap_cannon.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/toxic_spikes.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/magnet_rise.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/mirror_shot.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/bug_bite.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/autotomize.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/heavy_slam.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/rapid_spin.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/bide.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/reflect.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/rollout.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/natural_gift.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/curse.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/spikes.tres" id="117"]
+[ext_resource type="Resource" path="res://data/attacks/payback.tres" id="118"]
+[ext_resource type="Resource" path="res://data/attacks/explosion.tres" id="119"]
+[ext_resource type="Resource" path="res://data/attacks/iron_defense.tres" id="120"]
+[ext_resource type="Resource" path="res://data/attacks/gyro_ball.tres" id="121"]
+[ext_resource type="Resource" path="res://data/attacks/double_edge.tres" id="122"]
+[ext_resource type="Resource" path="res://data/abilities/sturdy.tres" id="123"]
+[ext_resource type="Resource" path="res://data/abilities/overcoat.tres" id="124"]
+[sub_resource type="Resource" id="LE_new_0205_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0205_take_down"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0205_self_destruct"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0205_protect"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0205_zap_cannon"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0205_toxic_spikes"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0205_magnet_rise"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0205_mirror_shot"]
+script = ExtResource("learnset_script")
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0205_bug_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0205_autotomize"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0205_heavy_slam"]
+script = ExtResource("learnset_script")
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0205_rapid_spin"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0205_bide"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0205_reflect"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0205_rollout"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0205_natural_gift"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0205_curse"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0205_spikes"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0205_payback"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0205_explosion"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0205_iron_defense"]
+script = ExtResource("learnset_script")
+level = 38
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_new_0205_gyro_ball"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_new_0205_double_edge"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_new_0205_sturdy"]
+script = ExtResource("learnset_script")
+action = ExtResource("123")
+
+[sub_resource type="Resource" id="LE_new_0205_overcoat"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("124")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_autotomize"]
+script = ExtResource("learnset_script")
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_bug_bite"]
+script = ExtResource("learnset_script")
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_magnet_rise"]
+script = ExtResource("learnset_script")
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_protect"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_selfdestruct"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_toxic_spikes"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_zap_cannon"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_take_down"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_rapid_spin"]
+script = ExtResource("learnset_script")
+level = 17
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_bide"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_reflect"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_rollout"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_curse"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_natural_gift"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_spikes"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_mirror_shot"]
+script = ExtResource("learnset_script")
+level = 31
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_payback"]
+script = ExtResource("learnset_script")
+level = 32
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_explosion"]
+script = ExtResource("learnset_script")
+level = 36
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_iron_defense"]
+script = ExtResource("learnset_script")
+level = 42
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_gyro_ball"]
+script = ExtResource("learnset_script")
+level = 46
+action = ExtResource("121")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_double_edge"]
+script = ExtResource("learnset_script")
+level = 50
+action = ExtResource("122")
+
+[sub_resource type="Resource" id="LE_pokmmo_0205_heavy_slam"]
+script = ExtResource("learnset_script")
+level = 64
+action = ExtResource("110")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0205_autotomize"), SubResource("LE_pokmmo_0205_bug_bite"), SubResource("LE_pokmmo_0205_magnet_rise"), SubResource("LE_pokmmo_0205_protect"), SubResource("LE_pokmmo_0205_selfdestruct"), SubResource("LE_pokmmo_0205_tackle"), SubResource("LE_pokmmo_0205_toxic_spikes"), SubResource("LE_pokmmo_0205_zap_cannon"), SubResource("LE_pokmmo_0205_take_down"), SubResource("LE_pokmmo_0205_rapid_spin"), SubResource("LE_pokmmo_0205_bide"), SubResource("LE_pokmmo_0205_reflect"), SubResource("LE_pokmmo_0205_rollout"), SubResource("LE_pokmmo_0205_curse"), SubResource("LE_pokmmo_0205_natural_gift"), SubResource("LE_pokmmo_0205_spikes"), SubResource("LE_pokmmo_0205_mirror_shot"), SubResource("LE_pokmmo_0205_payback"), SubResource("LE_pokmmo_0205_explosion"), SubResource("LE_pokmmo_0205_iron_defense"), SubResource("LE_pokmmo_0205_gyro_ball"), SubResource("LE_pokmmo_0205_double_edge"), SubResource("LE_pokmmo_0205_heavy_slam"), SubResource("LE_new_0205_sturdy"), SubResource("LE_new_0205_overcoat")])
 unit_name = "Forretress"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

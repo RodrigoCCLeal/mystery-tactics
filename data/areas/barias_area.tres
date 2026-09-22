@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bugegqrkhre4u" path="res://scripts/encounter_entry.gd" id="2_nptcu"]
 [ext_resource type="Resource" uid="uid://df5oxagkg6gq2" path="res://data/units/0011.tres" id="3_rhoyc"]
 
+[ext_resource type="Script" path="res://scripts/wild_spawn_entry.gd" id="wse_script"]
 [sub_resource type="Resource" id="Resource_8c6gl"]
 script = ExtResource("2_nptcu")
 species = ExtResource("3_rhoyc")
@@ -16,7 +17,14 @@ script = ExtResource("1_c6weh")
 entries = Array[ExtResource("2_nptcu")]([SubResource("Resource_8c6gl")])
 metadata/_custom_type_script = "uid://dm7q7oe584rvd"
 
+[sub_resource type="Resource" id="WSE_0011"]
+script = ExtResource("wse_script")
+species = ExtResource("3_rhoyc")
+level = 7
+spawn_chance = 0.1
+
 [resource]
 script = ExtResource("1")
+wild_spawn_entries = Array[ExtResource("wse_script")]([SubResource("WSE_0011")])
 area_name = "BARIAS"
 groups = Array[ExtResource("1_c6weh")]([SubResource("Resource_tj3ds")])

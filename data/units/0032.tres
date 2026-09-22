@@ -4,8 +4,194 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0032/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0032/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/peck.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/focus_energy.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/horn_attack.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/double_kick.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/fury_attack.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/helping_hand.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/toxic.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/toxic_spikes.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/poison_jab.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/horn_drill.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/flatter.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/captivate.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/earth_power.tres" id="115"]
+[ext_resource type="Resource" path="res://data/abilities/poison_point.tres" id="116"]
+[ext_resource type="Resource" path="res://data/abilities/rivalry.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/hustle.tres" id="118"]
+[sub_resource type="Resource" id="LE_new_0032_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0032_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0032_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0032_peck"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0032_focus_energy"]
+script = ExtResource("learnset_script")
+level = 3
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0032_horn_attack"]
+script = ExtResource("learnset_script")
+level = 8
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0032_double_kick"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0032_fury_attack"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0032_helping_hand"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0032_toxic"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0032_toxic_spikes"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0032_poison_jab"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0032_horn_drill"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0032_flatter"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0032_captivate"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0032_earth_power"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0032_poison_point"]
+script = ExtResource("learnset_script")
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0032_rivalry"]
+script = ExtResource("learnset_script")
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0032_hustle"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_peck"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_poison_sting"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_focus_energy"]
+script = ExtResource("learnset_script")
+level = 3
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_double_kick"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_horn_attack"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_fury_attack"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_helping_hand"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_toxic"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_toxic_spikes"]
+script = ExtResource("learnset_script")
+level = 20
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_poison_jab"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_horn_drill"]
+script = ExtResource("learnset_script")
+level = 27
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_captivate"]
+script = ExtResource("learnset_script")
+level = 43
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_flatter"]
+script = ExtResource("learnset_script")
+level = 45
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0032_earth_power"]
+script = ExtResource("learnset_script")
+level = 55
+action = ExtResource("115")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0032_leer"), SubResource("LE_pokmmo_0032_peck"), SubResource("LE_pokmmo_0032_poison_sting"), SubResource("LE_pokmmo_0032_tackle"), SubResource("LE_pokmmo_0032_focus_energy"), SubResource("LE_pokmmo_0032_double_kick"), SubResource("LE_pokmmo_0032_horn_attack"), SubResource("LE_pokmmo_0032_fury_attack"), SubResource("LE_pokmmo_0032_helping_hand"), SubResource("LE_pokmmo_0032_toxic"), SubResource("LE_pokmmo_0032_toxic_spikes"), SubResource("LE_pokmmo_0032_poison_jab"), SubResource("LE_pokmmo_0032_horn_drill"), SubResource("LE_pokmmo_0032_captivate"), SubResource("LE_pokmmo_0032_flatter"), SubResource("LE_pokmmo_0032_earth_power"), SubResource("LE_new_0032_poison_point"), SubResource("LE_new_0032_rivalry"), SubResource("LE_new_0032_hustle")])
 unit_name = "Nidoran♂"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")

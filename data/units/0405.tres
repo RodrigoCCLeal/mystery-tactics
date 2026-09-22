@@ -4,8 +4,208 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0405/Normal.png" id="2_portrait"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0405/frames.tres" id="3_frames"]
 
+[ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
+[ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
+[ext_resource type="Resource" path="res://data/attacks/leer.tres" id="101"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_shock.tres" id="102"]
+[ext_resource type="Resource" path="res://data/attacks/quick_attack.tres" id="103"]
+[ext_resource type="Resource" path="res://data/attacks/charge.tres" id="104"]
+[ext_resource type="Resource" path="res://data/attacks/electric_terrain.tres" id="105"]
+[ext_resource type="Resource" path="res://data/attacks/bite.tres" id="106"]
+[ext_resource type="Resource" path="res://data/attacks/spark.tres" id="107"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_fang.tres" id="108"]
+[ext_resource type="Resource" path="res://data/attacks/thunder_wave.tres" id="109"]
+[ext_resource type="Resource" path="res://data/attacks/roar.tres" id="110"]
+[ext_resource type="Resource" path="res://data/attacks/swagger.tres" id="111"]
+[ext_resource type="Resource" path="res://data/attacks/crunch.tres" id="112"]
+[ext_resource type="Resource" path="res://data/attacks/volt_switch.tres" id="113"]
+[ext_resource type="Resource" path="res://data/attacks/wild_charge.tres" id="114"]
+[ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="115"]
+[ext_resource type="Resource" path="res://data/attacks/thunder.tres" id="116"]
+[ext_resource type="Resource" path="res://data/attacks/discharge.tres" id="117"]
+[ext_resource type="Resource" path="res://data/abilities/rivalry.tres" id="118"]
+[ext_resource type="Resource" path="res://data/abilities/intimidate.tres" id="119"]
+[ext_resource type="Resource" path="res://data/abilities/guts.tres" id="120"]
+[sub_resource type="Resource" id="LE_new_0405_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_new_0405_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_new_0405_thunder_shock"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_new_0405_quick_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_new_0405_charge"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_new_0405_electric_terrain"]
+script = ExtResource("learnset_script")
+action = ExtResource("105")
+
+[sub_resource type="Resource" id="LE_new_0405_bite"]
+script = ExtResource("learnset_script")
+level = 9
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_new_0405_spark"]
+script = ExtResource("learnset_script")
+level = 13
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_new_0405_thunder_fang"]
+script = ExtResource("learnset_script")
+level = 15
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_new_0405_thunder_wave"]
+script = ExtResource("learnset_script")
+level = 21
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_new_0405_roar"]
+script = ExtResource("learnset_script")
+level = 23
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_new_0405_swagger"]
+script = ExtResource("learnset_script")
+level = 28
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_new_0405_crunch"]
+script = ExtResource("learnset_script")
+level = 29
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_new_0405_volt_switch"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_new_0405_wild_charge"]
+script = ExtResource("learnset_script")
+level = 37
+action = ExtResource("114")
+
+[sub_resource type="Resource" id="LE_new_0405_scary_face"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_new_0405_thunder"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_new_0405_discharge"]
+script = ExtResource("learnset_script")
+level = 56
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_new_0405_rivalry"]
+script = ExtResource("learnset_script")
+action = ExtResource("118")
+
+[sub_resource type="Resource" id="LE_new_0405_intimidate"]
+script = ExtResource("learnset_script")
+action = ExtResource("119")
+
+[sub_resource type="Resource" id="LE_new_0405_guts"]
+script = ExtResource("learnset_script")
+is_hidden_ability = true
+action = ExtResource("120")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_charge"]
+script = ExtResource("learnset_script")
+action = ExtResource("104")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_leer"]
+script = ExtResource("learnset_script")
+action = ExtResource("101")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_quick_attack"]
+script = ExtResource("learnset_script")
+action = ExtResource("103")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_tackle"]
+script = ExtResource("learnset_script")
+action = ExtResource("100")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_thundershock"]
+script = ExtResource("learnset_script")
+action = ExtResource("102")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_bite"]
+script = ExtResource("learnset_script")
+level = 12
+action = ExtResource("106")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_spark"]
+script = ExtResource("learnset_script")
+level = 18
+action = ExtResource("107")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_roar"]
+script = ExtResource("learnset_script")
+level = 24
+action = ExtResource("110")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_volt_switch"]
+script = ExtResource("learnset_script")
+level = 33
+action = ExtResource("113")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_thunder_fang"]
+script = ExtResource("learnset_script")
+level = 35
+action = ExtResource("108")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_scary_face"]
+script = ExtResource("learnset_script")
+level = 40
+action = ExtResource("115")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_thunder"]
+script = ExtResource("learnset_script")
+level = 47
+action = ExtResource("116")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_thunder_wave"]
+script = ExtResource("learnset_script")
+level = 48
+action = ExtResource("109")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_crunch"]
+script = ExtResource("learnset_script")
+level = 56
+action = ExtResource("112")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_discharge"]
+script = ExtResource("learnset_script")
+level = 64
+action = ExtResource("117")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_swagger"]
+script = ExtResource("learnset_script")
+level = 72
+action = ExtResource("111")
+
+[sub_resource type="Resource" id="LE_pokmmo_0405_wild_charge"]
+script = ExtResource("learnset_script")
+level = 80
+action = ExtResource("114")
+
 [resource]
 script = ExtResource("1_script")
+learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0405_charge"), SubResource("LE_pokmmo_0405_leer"), SubResource("LE_pokmmo_0405_quick_attack"), SubResource("LE_pokmmo_0405_tackle"), SubResource("LE_pokmmo_0405_thundershock"), SubResource("LE_pokmmo_0405_bite"), SubResource("LE_pokmmo_0405_spark"), SubResource("LE_pokmmo_0405_roar"), SubResource("LE_pokmmo_0405_volt_switch"), SubResource("LE_pokmmo_0405_thunder_fang"), SubResource("LE_pokmmo_0405_scary_face"), SubResource("LE_pokmmo_0405_thunder"), SubResource("LE_pokmmo_0405_thunder_wave"), SubResource("LE_pokmmo_0405_crunch"), SubResource("LE_pokmmo_0405_discharge"), SubResource("LE_pokmmo_0405_swagger"), SubResource("LE_pokmmo_0405_wild_charge"), SubResource("LE_new_0405_rivalry"), SubResource("LE_new_0405_intimidate"), SubResource("LE_new_0405_guts")])
 unit_name = "Luxray"
 sprite_frames = ExtResource("3_frames")
 portrait = ExtResource("2_portrait")
