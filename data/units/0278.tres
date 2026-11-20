@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0278/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0278/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/growl.tres" id="100"]
@@ -183,8 +181,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0278_pretty_wing")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0278_growl"), SubResource("LE_pokmmo_0278_water_gun"), SubResource("LE_pokmmo_0278_quick_attack"), SubResource("LE_pokmmo_0278_supersonic"), SubResource("LE_pokmmo_0278_wing_attack"), SubResource("LE_pokmmo_0278_water_pulse"), SubResource("LE_pokmmo_0278_air_cutter"), SubResource("LE_pokmmo_0278_agility"), SubResource("LE_pokmmo_0278_pursuit"), SubResource("LE_pokmmo_0278_aerial_ace"), SubResource("LE_pokmmo_0278_air_slash"), SubResource("LE_pokmmo_0278_mist"), SubResource("LE_pokmmo_0278_roost"), SubResource("LE_pokmmo_0278_hurricane"), SubResource("LE_new_0278_keen_eye"), SubResource("LE_new_0278_hydration"), SubResource("LE_new_0278_rain_dish")])
 unit_name = "Wingull"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Water", "Flying"])
 grounded = false
 weight = 1

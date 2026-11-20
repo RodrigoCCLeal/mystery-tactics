@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0282/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0282/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/growl.tres" id="100"]
@@ -272,8 +270,6 @@ action = ExtResource("122")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0282_charm"), SubResource("LE_pokmmo_0282_confusion"), SubResource("LE_pokmmo_0282_double_team"), SubResource("LE_pokmmo_0282_growl"), SubResource("LE_pokmmo_0282_heal_pulse"), SubResource("LE_pokmmo_0282_healing_wish"), SubResource("LE_pokmmo_0282_stored_power"), SubResource("LE_pokmmo_0282_teleport"), SubResource("LE_pokmmo_0282_hypnosis"), SubResource("LE_pokmmo_0282_magical_leaf"), SubResource("LE_pokmmo_0282_psybeam"), SubResource("LE_pokmmo_0282_confuse_ray"), SubResource("LE_pokmmo_0282_wish"), SubResource("LE_pokmmo_0282_calm_mind"), SubResource("LE_pokmmo_0282_imprison"), SubResource("LE_pokmmo_0282_psychic"), SubResource("LE_pokmmo_0282_aura_sphere"), SubResource("LE_pokmmo_0282_captivate"), SubResource("LE_pokmmo_0282_recover"), SubResource("LE_pokmmo_0282_dream_eater"), SubResource("LE_pokmmo_0282_future_sight"), SubResource("LE_new_0282_synchronize"), SubResource("LE_new_0282_trace"), SubResource("LE_new_0282_telepathy")])
 unit_name = "Gardevoir"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic", "Fairy"])
 grounded = true
 weight = 1

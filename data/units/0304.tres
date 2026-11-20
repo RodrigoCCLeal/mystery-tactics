@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0304/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0304/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -238,8 +236,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0304_hard_stone")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0304_harden"), SubResource("LE_pokmmo_0304_screech"), SubResource("LE_pokmmo_0304_tackle"), SubResource("LE_pokmmo_0304_metal_claw"), SubResource("LE_pokmmo_0304_mud_slap"), SubResource("LE_pokmmo_0304_rock_tomb"), SubResource("LE_pokmmo_0304_roar"), SubResource("LE_pokmmo_0304_headbutt"), SubResource("LE_pokmmo_0304_protect"), SubResource("LE_pokmmo_0304_rock_slide"), SubResource("LE_pokmmo_0304_iron_head"), SubResource("LE_pokmmo_0304_metal_sound"), SubResource("LE_pokmmo_0304_take_down"), SubResource("LE_pokmmo_0304_autotomize"), SubResource("LE_pokmmo_0304_iron_tail"), SubResource("LE_pokmmo_0304_iron_defense"), SubResource("LE_pokmmo_0304_heavy_slam"), SubResource("LE_pokmmo_0304_double_edge"), SubResource("LE_pokmmo_0304_metal_burst"), SubResource("LE_pokmmo_0304_head_smash"), SubResource("LE_new_0304_sturdy"), SubResource("LE_new_0304_rock_head"), SubResource("LE_new_0304_heavy_metal")])
 unit_name = "Aron"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Steel", "Rock"])
 grounded = true
 weight = 1

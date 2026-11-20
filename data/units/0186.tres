@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0186/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0186/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -177,8 +175,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0186_kings_rock")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0186_belly_drum"), SubResource("LE_pokmmo_0186_body_slam"), SubResource("LE_pokmmo_0186_bounce"), SubResource("LE_pokmmo_0186_bubblebeam"), SubResource("LE_pokmmo_0186_double_edge"), SubResource("LE_pokmmo_0186_doubleslap"), SubResource("LE_pokmmo_0186_earth_power"), SubResource("LE_pokmmo_0186_hydro_pump"), SubResource("LE_pokmmo_0186_hyper_voice"), SubResource("LE_pokmmo_0186_hypnosis"), SubResource("LE_pokmmo_0186_mud_shot"), SubResource("LE_pokmmo_0186_perish_song"), SubResource("LE_pokmmo_0186_pound"), SubResource("LE_pokmmo_0186_rain_dance"), SubResource("LE_pokmmo_0186_swagger"), SubResource("LE_pokmmo_0186_water_gun"), SubResource("LE_new_0186_water_absorb"), SubResource("LE_new_0186_damp"), SubResource("LE_new_0186_drizzle")])
 unit_name = "Politoed"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Water"])
 grounded = true
 weight = 1

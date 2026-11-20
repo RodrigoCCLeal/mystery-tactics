@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0478/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0478/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/headbutt.tres" id="100"]
@@ -296,8 +294,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0478_babiri_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0478_astonish"), SubResource("LE_pokmmo_0478_bite"), SubResource("LE_pokmmo_0478_destiny_bond"), SubResource("LE_pokmmo_0478_double_team"), SubResource("LE_pokmmo_0478_headbutt"), SubResource("LE_pokmmo_0478_hex"), SubResource("LE_pokmmo_0478_ice_shard"), SubResource("LE_pokmmo_0478_leer"), SubResource("LE_pokmmo_0478_powder_snow"), SubResource("LE_pokmmo_0478_confuse_ray"), SubResource("LE_pokmmo_0478_ice_fang"), SubResource("LE_pokmmo_0478_icy_wind"), SubResource("LE_pokmmo_0478_crunch"), SubResource("LE_pokmmo_0478_fake_tears"), SubResource("LE_pokmmo_0478_ominous_wind"), SubResource("LE_pokmmo_0478_frost_breath"), SubResource("LE_pokmmo_0478_haze"), SubResource("LE_pokmmo_0478_icicle_crash"), SubResource("LE_pokmmo_0478_ice_beam"), SubResource("LE_pokmmo_0478_wake_up_slap"), SubResource("LE_pokmmo_0478_shadow_ball"), SubResource("LE_pokmmo_0478_snowscape"), SubResource("LE_pokmmo_0478_captivate"), SubResource("LE_pokmmo_0478_will_o_wisp"), SubResource("LE_pokmmo_0478_blizzard"), SubResource("LE_pokmmo_0478_curse"), SubResource("LE_new_0478_snow_cloak"), SubResource("LE_new_0478_cursed_body")])
 unit_name = "Froslass"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ice", "Ghost"])
 grounded = true
 weight = 1

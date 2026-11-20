@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0442/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0442/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/night_shade.tres" id="100"]
@@ -206,8 +204,6 @@ action = ExtResource("111")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0442_confuse_ray"), SubResource("LE_pokmmo_0442_curse"), SubResource("LE_pokmmo_0442_night_shade"), SubResource("LE_pokmmo_0442_pursuit"), SubResource("LE_pokmmo_0442_shadow_sneak"), SubResource("LE_pokmmo_0442_spite"), SubResource("LE_pokmmo_0442_faint_attack"), SubResource("LE_pokmmo_0442_payback"), SubResource("LE_pokmmo_0442_nasty_plot"), SubResource("LE_pokmmo_0442_extrasensory"), SubResource("LE_pokmmo_0442_hex"), SubResource("LE_pokmmo_0442_ominous_wind"), SubResource("LE_pokmmo_0442_memento"), SubResource("LE_pokmmo_0442_sucker_punch"), SubResource("LE_pokmmo_0442_shadow_ball"), SubResource("LE_pokmmo_0442_dark_pulse"), SubResource("LE_pokmmo_0442_hypnosis"), SubResource("LE_pokmmo_0442_dream_eater"), SubResource("LE_new_0442_pressure"), SubResource("LE_new_0442_infiltrator")])
 unit_name = "Spiritomb"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ghost", "Dark"])
 grounded = true
 weight = 1

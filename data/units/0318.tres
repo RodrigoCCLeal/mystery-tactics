@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0318/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0318/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="100"]
@@ -200,8 +198,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0318_deep_sea_tooth"), SubResource("WHI_0318_black_glasses")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0318_aqua_jet"), SubResource("LE_pokmmo_0318_bite"), SubResource("LE_pokmmo_0318_leer"), SubResource("LE_pokmmo_0318_poison_fang"), SubResource("LE_pokmmo_0318_rage"), SubResource("LE_pokmmo_0318_focus_energy"), SubResource("LE_pokmmo_0318_scary_face"), SubResource("LE_pokmmo_0318_assurance"), SubResource("LE_pokmmo_0318_ice_fang"), SubResource("LE_pokmmo_0318_screech"), SubResource("LE_pokmmo_0318_swagger"), SubResource("LE_pokmmo_0318_crunch"), SubResource("LE_pokmmo_0318_agility"), SubResource("LE_pokmmo_0318_take_down"), SubResource("LE_pokmmo_0318_bounce"), SubResource("LE_pokmmo_0318_double_edge"), SubResource("LE_new_0318_rough_skin"), SubResource("LE_new_0318_speed_boost")])
 unit_name = "Carvanha"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Water", "Dark"])
 grounded = true
 weight = 1

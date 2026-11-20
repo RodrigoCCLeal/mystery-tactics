@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0165/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0165/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -199,8 +197,6 @@ action = ExtResource("115")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0165_tackle"), SubResource("LE_pokmmo_0165_supersonic"), SubResource("LE_pokmmo_0165_swift"), SubResource("LE_pokmmo_0165_light_screen"), SubResource("LE_pokmmo_0165_reflect"), SubResource("LE_pokmmo_0165_safeguard"), SubResource("LE_pokmmo_0165_mach_punch"), SubResource("LE_pokmmo_0165_roost"), SubResource("LE_pokmmo_0165_silver_wind"), SubResource("LE_pokmmo_0165_comet_punch"), SubResource("LE_pokmmo_0165_struggle_bug"), SubResource("LE_pokmmo_0165_baton_pass"), SubResource("LE_pokmmo_0165_agility"), SubResource("LE_pokmmo_0165_bug_buzz"), SubResource("LE_pokmmo_0165_air_slash"), SubResource("LE_pokmmo_0165_double_edge"), SubResource("LE_new_0165_swarm"), SubResource("LE_new_0165_early_bird"), SubResource("LE_new_0165_rattled")])
 unit_name = "Ledyba"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Flying"])
 grounded = false
 weight = 1

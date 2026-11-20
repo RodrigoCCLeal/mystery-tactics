@@ -43,6 +43,14 @@ extends Node2D
 
 @onready var player: Node2D = $Actors/Player
 
+# Em qual lugar do mapa de Tactica este interior fica (MapLocation.id, ex:
+# "kano" pras casas de Kano). Ao carregar a cena, vira
+# GameState.current_location_id (é onde o indicador do Town Map aparece) e
+# o lugar conta como visitado. "" = não mexe — é o caso do Pokémon Center e
+# do Poké Mart, mapas únicos compartilhados: lá o lugar atual continua
+# sendo a cidade de onde o jogador entrou (ver town_map_screen.gd).
+@export var location_id: String = ""
+
 const GAME_MENU_SCENE: PackedScene = preload("res://scenes/ui/screens/game_menu.tscn")
 const SYSTEM_MENU_SCENE: PackedScene = preload("res://scenes/ui/screens/system_menu.tscn")
 
@@ -61,6 +69,7 @@ const TIME_HUD_SCENE: PackedScene = preload("res://scenes/ui/hud/time_hud.tscn")
 # Mesma caixa de 1 linha que trainer.gd/loot_ball.gd já usam — reaproveitada
 # aqui pra Door.blocked_message (ver _handle_blocked_door/door.gd).
 const MESSAGE_BOX_SCENE: PackedScene = preload("res://scenes/ui/popups/trainer_message_box.tscn")
+const TOWN_MAP_SCENE: PackedScene = preload("res://scenes/ui/screens/town_map_screen.tscn")
 
 const FACING_TO_DIR = {
 	"down": Vector2i(0, 1),
@@ -116,6 +125,8 @@ func _ready() -> void:
 	if tile_map_top != null:
 		tile_map_top.z_index = 1   # ver comentário grande em tile_map_top acima
 	add_child(TIME_HUD_SCENE.instantiate())   # ver comentário grande em TIME_HUD_SCENE acima
+	if location_id != "":
+		GameState.set_current_location(location_id)
 	_restore_player_state()
 	_sync_live_position()
 
@@ -301,9 +312,55 @@ func get_door_at(cell: Vector2i) -> Door:
 # Porta abre (se tiver animação configurada) -> fade pra preto -> troca de
 # cena -> fade clareia. Mesmo comentário de world.gd::use_door.
 func use_door(door: Door) -> void:
+	# Porta pra cidade vermelha: abre o Town Map em vez de trocar de cena.
+	if door.opens_town_map:
+		_open_town_map_from_door(door)
+		return
+	# Destino vazio/apagado (ex: a saída das casas de Kano, enquanto o mapa
+	# de Kano não existe) — avisa em vez de quebrar no change_scene.
+	if door.target_scene_path == "" or not ResourceLoader.exists(door.target_scene_path):
+		_show_door_message("Esse caminho ainda está em construção.")
+		return
 	await door.play_open_animation()
 	GameState.save_player_state(door.target_grid_pos, door.target_facing, door.target_scene_path)
 	SceneTransition.change_scene_with_fade(door.target_scene_path)
+
+# O jogador NÃO entrou na célula da porta (ver player.gd::_try_start_move),
+# então fechar o mapa com Z/Esc já deixa ele exatamente onde estava, na
+# frente da porta. Só precisamos destravar o Player (is_using_door).
+func _open_town_map_from_door(door: Door) -> void:
+	var city_id := door.town_map_location_id
+	if city_id == "":
+		city_id = GameState.current_location_id
+	get_tree().paused = true
+	var map = TOWN_MAP_SCENE.instantiate()
+	add_child(map)
+	active_menu = map
+	map.open_arrival(city_id)
+	map.closed.connect(_on_town_map_closed)
+
+func _on_town_map_closed() -> void:
+	active_menu = null
+	get_tree().paused = false
+	_release_door_lock_when_idle()
+
+func _show_door_message(text: String) -> void:
+	get_tree().paused = true
+	var box = MESSAGE_BOX_SCENE.instantiate()
+	add_child(box)
+	box.setup(text)
+	box.closed.connect(_on_door_message_closed)
+
+func _on_door_message_closed() -> void:
+	get_tree().paused = false
+	_release_door_lock_when_idle()
+
+# Só destrava o Player quando ele soltar a direção — senão, segurando a seta
+# pra porta, o mapa/mensagem reabriria no mesmo instante em que fecha.
+func _release_door_lock_when_idle() -> void:
+	while is_inside_tree() and player.read_direction() != Vector2i.ZERO:
+		await get_tree().process_frame
+	player.is_using_door = false
 
 func _get_npc_at(cell: Vector2i) -> Npc:
 	for npc in get_tree().get_nodes_in_group("npc"):

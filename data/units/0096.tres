@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0096/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0096/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -230,8 +228,6 @@ action = ExtResource("117")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0096_hypnosis"), SubResource("LE_pokmmo_0096_pound"), SubResource("LE_pokmmo_0096_disable"), SubResource("LE_pokmmo_0096_confusion"), SubResource("LE_pokmmo_0096_headbutt"), SubResource("LE_pokmmo_0096_poison_gas"), SubResource("LE_pokmmo_0096_meditate"), SubResource("LE_pokmmo_0096_psybeam"), SubResource("LE_pokmmo_0096_wake_up_slap"), SubResource("LE_pokmmo_0096_psych_up"), SubResource("LE_pokmmo_0096_mind_reader"), SubResource("LE_pokmmo_0096_zen_headbutt"), SubResource("LE_pokmmo_0096_psychic"), SubResource("LE_pokmmo_0096_swagger"), SubResource("LE_pokmmo_0096_nasty_plot"), SubResource("LE_pokmmo_0096_synchronoise"), SubResource("LE_pokmmo_0096_dream_eater"), SubResource("LE_pokmmo_0096_psyshock"), SubResource("LE_pokmmo_0096_future_sight"), SubResource("LE_new_0096_insomnia"), SubResource("LE_new_0096_forewarn"), SubResource("LE_new_0096_inner_focus")])
 unit_name = "Drowzee"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic"])
 grounded = true
 weight = 1

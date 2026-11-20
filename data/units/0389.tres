@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0389/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0389/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -229,8 +227,6 @@ action = ExtResource("119")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0389_absorb"), SubResource("LE_pokmmo_0389_earthquake"), SubResource("LE_pokmmo_0389_razor_leaf"), SubResource("LE_pokmmo_0389_tackle"), SubResource("LE_pokmmo_0389_withdraw"), SubResource("LE_pokmmo_0389_wood_hammer"), SubResource("LE_pokmmo_0389_growth"), SubResource("LE_pokmmo_0389_curse"), SubResource("LE_pokmmo_0389_bulldoze"), SubResource("LE_pokmmo_0389_bite"), SubResource("LE_pokmmo_0389_sleep_powder"), SubResource("LE_pokmmo_0389_mega_drain"), SubResource("LE_pokmmo_0389_leech_seed"), SubResource("LE_pokmmo_0389_leaf_blade"), SubResource("LE_pokmmo_0389_synthesis"), SubResource("LE_pokmmo_0389_double_edge"), SubResource("LE_pokmmo_0389_crunch"), SubResource("LE_pokmmo_0389_giga_drain"), SubResource("LE_pokmmo_0389_leaf_storm"), SubResource("LE_new_0389_overgrow"), SubResource("LE_new_0389_shell_armor")])
 unit_name = "Torterra"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Grass", "Ground"])
 grounded = true
 weight = 1

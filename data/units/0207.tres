@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0207/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0207/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="100"]
@@ -265,8 +263,6 @@ action = ExtResource("118")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0207_poison_sting"), SubResource("LE_pokmmo_0207_sand_attack"), SubResource("LE_pokmmo_0207_harden"), SubResource("LE_pokmmo_0207_knock_off"), SubResource("LE_pokmmo_0207_aerial_ace"), SubResource("LE_pokmmo_0207_quick_attack"), SubResource("LE_pokmmo_0207_fury_cutter"), SubResource("LE_pokmmo_0207_mud_bomb"), SubResource("LE_pokmmo_0207_faint_attack"), SubResource("LE_pokmmo_0207_mud_slap"), SubResource("LE_pokmmo_0207_poison_tail"), SubResource("LE_pokmmo_0207_acrobatics"), SubResource("LE_pokmmo_0207_slash"), SubResource("LE_pokmmo_0207_u_turn"), SubResource("LE_pokmmo_0207_poison_jab"), SubResource("LE_pokmmo_0207_screech"), SubResource("LE_pokmmo_0207_x_scissor"), SubResource("LE_pokmmo_0207_crabhammer"), SubResource("LE_pokmmo_0207_earthquake"), SubResource("LE_pokmmo_0207_sky_uppercut"), SubResource("LE_pokmmo_0207_swords_dance"), SubResource("LE_pokmmo_0207_guillotine"), SubResource("LE_new_0207_hyper_cutter"), SubResource("LE_new_0207_sand_veil"), SubResource("LE_new_0207_immunity")])
 unit_name = "Gligar"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ground", "Flying"])
 grounded = false
 weight = 1

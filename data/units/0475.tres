@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0475/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0475/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="100"]
@@ -321,8 +319,6 @@ action = ExtResource("131")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0475_close_combat"), SubResource("LE_pokmmo_0475_confusion"), SubResource("LE_pokmmo_0475_double_team"), SubResource("LE_pokmmo_0475_dream_eater"), SubResource("LE_pokmmo_0475_fury_cutter"), SubResource("LE_pokmmo_0475_growl"), SubResource("LE_pokmmo_0475_hypnosis"), SubResource("LE_pokmmo_0475_imprison"), SubResource("LE_pokmmo_0475_leaf_blade"), SubResource("LE_pokmmo_0475_leer"), SubResource("LE_pokmmo_0475_psybeam"), SubResource("LE_pokmmo_0475_slash"), SubResource("LE_pokmmo_0475_stored_power"), SubResource("LE_pokmmo_0475_teleport"), SubResource("LE_pokmmo_0475_helping_hand"), SubResource("LE_pokmmo_0475_feint"), SubResource("LE_pokmmo_0475_aerial_ace"), SubResource("LE_pokmmo_0475_false_swipe"), SubResource("LE_pokmmo_0475_calm_mind"), SubResource("LE_pokmmo_0475_protect"), SubResource("LE_pokmmo_0475_psychic"), SubResource("LE_pokmmo_0475_swords_dance"), SubResource("LE_pokmmo_0475_psycho_cut"), SubResource("LE_pokmmo_0475_heal_pulse"), SubResource("LE_pokmmo_0475_quick_guard"), SubResource("LE_pokmmo_0475_wide_guard"), SubResource("LE_new_0475_steadfast"), SubResource("LE_new_0475_sharpness"), SubResource("LE_new_0475_justified")])
 unit_name = "Gallade"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic", "Fighting"])
 grounded = true
 weight = 1

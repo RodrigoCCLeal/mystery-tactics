@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0316/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0316/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -283,8 +281,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0316_big_pearl"), SubResource("WHI_0316_oran_berry"), SubResource("WHI_0316_sitrus_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0316_pound"), SubResource("LE_pokmmo_0316_smokescreen"), SubResource("LE_pokmmo_0316_tackle"), SubResource("LE_pokmmo_0316_yawn"), SubResource("LE_pokmmo_0316_poison_gas"), SubResource("LE_pokmmo_0316_sludge"), SubResource("LE_pokmmo_0316_amnesia"), SubResource("LE_pokmmo_0316_take_down"), SubResource("LE_pokmmo_0316_acid_armor"), SubResource("LE_pokmmo_0316_acid_spray"), SubResource("LE_pokmmo_0316_poison_jab"), SubResource("LE_pokmmo_0316_encore"), SubResource("LE_pokmmo_0316_knock_off"), SubResource("LE_pokmmo_0316_rollout"), SubResource("LE_pokmmo_0316_toxic"), SubResource("LE_pokmmo_0316_body_slam"), SubResource("LE_pokmmo_0316_spit_up"), SubResource("LE_pokmmo_0316_stockpile"), SubResource("LE_pokmmo_0316_swallow"), SubResource("LE_pokmmo_0316_sludge_bomb"), SubResource("LE_pokmmo_0316_gastro_acid"), SubResource("LE_pokmmo_0316_pain_split"), SubResource("LE_pokmmo_0316_wring_out"), SubResource("LE_pokmmo_0316_gunk_shot"), SubResource("LE_pokmmo_0316_sludge_wave"), SubResource("LE_pokmmo_0316_explosion"), SubResource("LE_new_0316_liquid_ooze"), SubResource("LE_new_0316_sticky_hold"), SubResource("LE_new_0316_gluttony")])
 unit_name = "Gulpin"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Poison"])
 grounded = true
 weight = 1

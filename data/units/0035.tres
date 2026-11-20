@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0035/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0035/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -405,8 +403,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0035_moon_stone"), SubResource("WHI_0035_leppa_berry"), SubResource("WHI_0035_comet_shard")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0035_charm"), SubResource("LE_pokmmo_0035_copycat"), SubResource("LE_pokmmo_0035_defense_curl"), SubResource("LE_pokmmo_0035_encore"), SubResource("LE_pokmmo_0035_growl"), SubResource("LE_pokmmo_0035_pound"), SubResource("LE_pokmmo_0035_sing"), SubResource("LE_pokmmo_0035_splash"), SubResource("LE_pokmmo_0035_sweet_kiss"), SubResource("LE_pokmmo_0035_tackle"), SubResource("LE_pokmmo_0035_stored_power"), SubResource("LE_pokmmo_0035_minimize"), SubResource("LE_pokmmo_0035_doubleslap"), SubResource("LE_pokmmo_0035_after_you"), SubResource("LE_pokmmo_0035_amnesia"), SubResource("LE_pokmmo_0035_magical_leaf"), SubResource("LE_pokmmo_0035_metronome"), SubResource("LE_pokmmo_0035_bestow"), SubResource("LE_pokmmo_0035_calm_mind"), SubResource("LE_pokmmo_0035_bubblebeam"), SubResource("LE_pokmmo_0035_wake_up_slap"), SubResource("LE_pokmmo_0035_body_slam"), SubResource("LE_pokmmo_0035_moonlight"), SubResource("LE_pokmmo_0035_gravity"), SubResource("LE_pokmmo_0035_psychic"), SubResource("LE_pokmmo_0035_meteor_mash"), SubResource("LE_pokmmo_0035_follow_me"), SubResource("LE_pokmmo_0035_lucky_chant"), SubResource("LE_pokmmo_0035_cosmic_power"), SubResource("LE_pokmmo_0035_light_screen"), SubResource("LE_pokmmo_0035_double_edge"), SubResource("LE_pokmmo_0035_healing_wish"), SubResource("LE_new_0035_cute_charm"), SubResource("LE_new_0035_magic_guard"), SubResource("LE_new_0035_friend_guard")])
 unit_name = "Clefairy"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fairy"])
 grounded = true
 weight = 1

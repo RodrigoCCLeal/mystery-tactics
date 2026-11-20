@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="MapLocation" format=3]
+
+[ext_resource type="Script" path="res://scripts/map_location.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/city_option.gd" id="2"]
+
+[sub_resource type="Resource" id="Option_0"]
+script = ExtResource("2")
+label = "Home"
+scene_path = "res://scenes/overworld/red_house_interior.tscn"
+grid_pos = Vector2i(0, 2)
+facing = "up"
+
+[sub_resource type="Resource" id="Option_1"]
+script = ExtResource("2")
+label = "Prof. Oak's Lab"
+scene_path = "res://scenes/overworld/oak_lab_interior.tscn"
+grid_pos = Vector2i(0, 2)
+facing = "up"
+
+[sub_resource type="Resource" id="Option_2"]
+script = ExtResource("2")
+label = "Blue House"
+scene_path = "res://scenes/overworld/blue_house_interior.tscn"
+grid_pos = Vector2i(0, 2)
+facing = "up"
+
+[sub_resource type="Resource" id="Option_3"]
+script = ExtResource("2")
+label = "Green House"
+scene_path = "res://scenes/overworld/green_house_interior.tscn"
+grid_pos = Vector2i(0, 2)
+facing = "up"
+
+[sub_resource type="Resource" id="Option_4"]
+script = ExtResource("2")
+label = "Baldo's House"
+scene_path = "res://scenes/overworld/baldo_house_interior.tscn"
+grid_pos = Vector2i(0, 2)
+facing = "up"
+
+[resource]
+script = ExtResource("1")
+id = "kano"
+display_name = "Kano"
+kind = 1
+cells = Array[Vector2i]([Vector2i(4, 21)])
+neighbors = Array[String](["route_1"])
+starts_visited = true
+has_pokemon_center = false
+exit_required_flag = "STARTER1_CHOSEN"
+exit_blocked_message = "OAK: Hold on now! You can't head out without a partner Pokémon."
+options = Array[ExtResource("2")]([SubResource("Option_0"), SubResource("Option_1"), SubResource("Option_2"), SubResource("Option_3"), SubResource("Option_4")])

@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0119/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0119/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tail_whip.tres" id="100"]
@@ -211,8 +209,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0119_mystic_water")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0119_megahorn"), SubResource("LE_pokmmo_0119_peck"), SubResource("LE_pokmmo_0119_poison_jab"), SubResource("LE_pokmmo_0119_psybeam"), SubResource("LE_pokmmo_0119_quick_attack"), SubResource("LE_pokmmo_0119_skull_bash"), SubResource("LE_pokmmo_0119_supersonic"), SubResource("LE_pokmmo_0119_tail_whip"), SubResource("LE_pokmmo_0119_water_pulse"), SubResource("LE_pokmmo_0119_water_sport"), SubResource("LE_pokmmo_0119_horn_attack"), SubResource("LE_pokmmo_0119_agility"), SubResource("LE_pokmmo_0119_fury_attack"), SubResource("LE_pokmmo_0119_waterfall"), SubResource("LE_pokmmo_0119_aqua_ring"), SubResource("LE_pokmmo_0119_flail"), SubResource("LE_pokmmo_0119_horn_drill"), SubResource("LE_pokmmo_0119_soak"), SubResource("LE_new_0119_swift_swim"), SubResource("LE_new_0119_water_veil"), SubResource("LE_new_0119_lightning_rod")])
 unit_name = "Seaking"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Water"])
 grounded = true
 weight = 1

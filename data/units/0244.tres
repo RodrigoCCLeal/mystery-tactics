@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0244/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0244/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/stomp.tres" id="100"]
@@ -231,8 +229,6 @@ action = ExtResource("120")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0244_bite"), SubResource("LE_pokmmo_0244_ember"), SubResource("LE_pokmmo_0244_eruption"), SubResource("LE_pokmmo_0244_extrasensory"), SubResource("LE_pokmmo_0244_extremespeed"), SubResource("LE_pokmmo_0244_lava_plume"), SubResource("LE_pokmmo_0244_leer"), SubResource("LE_pokmmo_0244_sacred_fire"), SubResource("LE_pokmmo_0244_smokescreen"), SubResource("LE_pokmmo_0244_stomp"), SubResource("LE_pokmmo_0244_flame_wheel"), SubResource("LE_pokmmo_0244_calm_mind"), SubResource("LE_pokmmo_0244_fire_spin"), SubResource("LE_pokmmo_0244_roar"), SubResource("LE_pokmmo_0244_fire_fang"), SubResource("LE_pokmmo_0244_flamethrower"), SubResource("LE_pokmmo_0244_scary_face"), SubResource("LE_pokmmo_0244_crunch"), SubResource("LE_pokmmo_0244_swagger"), SubResource("LE_pokmmo_0244_sunny_day"), SubResource("LE_pokmmo_0244_fire_blast"), SubResource("LE_new_0244_pressure"), SubResource("LE_new_0244_inner_focus")])
 unit_name = "Entei"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire"])
 grounded = true
 weight = 1

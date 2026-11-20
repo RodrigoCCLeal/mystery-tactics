@@ -2400,8 +2400,12 @@ func has_usable_slot_action(u: Node) -> bool:
 		if action == null or action is AbilityData:
 			continue
 		if action is ItemData:
-			if action.category == "Ball" or action.category == "TM":
+			if action.category == "Ball":
 				if u.data.get_slot_quantity(i) > 0:
+					return true
+			elif action.category == "TM" and action.tm_attack != null:
+				# TM = o golpe dele, com os usos do golpe (ver unit.gd::_apply_common).
+				if action.tm_attack.max_uses <= 0 or (i < u.slot_uses.size() and u.slot_uses[i] > 0):
 					return true
 			continue   # Held Item/Medicine/Berry: nunca clicável em batalha
 		if action is AttackData:
@@ -2458,29 +2462,34 @@ func refresh_action_slots_hud() -> void:
 			_apply_slot_border(button, BALL_BORDER_COLOR)
 			continue
 
-		# TM: se comporta como um Ataque na HUD (nome + contagem, borda na
-		# cor do TIPO do ataque que ele ensina — ver tm_attack) só que a
-		# "contagem" mostrada é quantas cargas do ITEM ainda restam nesse
-		# slot, não o max_uses/PP do ataque em si (ver execute_tm_attack:
-		# usar TM 10 não gasta PP de Ice Fang, gasta 1 unidade de TM 10).
+		# TM: se comporta EXATAMENTE como um Ataque na HUD (nome + usos, borda
+		# na cor do TIPO do golpe — ver tm_attack). Desde 2026-11-20 o TM não
+		# é mais consumido: os usos mostrados são o PP do próprio golpe
+		# (Unit.slot_uses, preenchido com tm_attack.max_uses em
+		# unit.gd::_apply_common), gastos por execute_attack como qualquer
+		# golpe aprendido.
 		if action is ItemData and action.category == "TM":
 			var tm_attack: AttackData = action.tm_attack
-			var quantity = current.data.get_slot_quantity(i)
-			button.text = "%s\n%dx" % [action.action_name, quantity]
-			button.disabled = current.attacks_remaining <= 0 or quantity <= 0
+			var uses_left: int = current.slot_uses[i] if i < current.slot_uses.size() else 0
+			var has_uses: bool = tm_attack != null and (tm_attack.max_uses <= 0 or uses_left > 0)
+			button.text = action.action_name
+			if tm_attack != null and tm_attack.max_uses > 0:
+				button.text += "\n%d/%d" % [uses_left, tm_attack.max_uses]
+			button.disabled = current.attacks_remaining <= 0 or not has_uses
 			if tm_attack != null:
 				# "Status" (ver AttackData.is_status) igual _build_attack_tooltip
 				# já faz pro ramo de Ataque comum logo abaixo — sem isso, TM
 				# 11/Sunny Day (Status) aparecia rotulado "Físico" por engano
 				# (era só um "else" sem terceira opção antes desta correção).
 				var kind = "Status" if tm_attack.is_status else ("Especial" if tm_attack.is_special else "Físico")
-				button.tooltip_text = "%s\nTipo: %s (%s)\nPoder: %d\nCargas restantes: %d" % [
+				button.tooltip_text = "%s\nTipo: %s (%s)\nPoder: %d" % [
 					tm_attack.action_name,
 					tm_attack.element_type,
 					kind,
 					tm_attack.power,
-					quantity,
 				]
+				if tm_attack.max_uses > 0:
+					button.tooltip_text += "\nUsos: %d/%d" % [uses_left, tm_attack.max_uses]
 				_apply_slot_border(button, TYPE_BORDER_COLORS.get(tm_attack.element_type, TYPE_BORDER_COLORS["Normal"]))
 			else:
 				_apply_slot_border(button, ITEM_BORDER_COLOR)
@@ -2708,6 +2717,12 @@ func _on_slot_pressed(index: int) -> void:
 	# refresh_action_slots_hud), mas confere de novo por segurança.
 	if action is ItemData and action.stackable and current.data.get_slot_quantity(index) <= 0:
 		return
+	# TM sem usos (PP) do golpe sobrando — mesmo motivo do check acima.
+	if action is ItemData and action.category == "TM":
+		if action.tm_attack == null:
+			return
+		if action.tm_attack.max_uses > 0 and (index >= current.slot_uses.size() or current.slot_uses[index] <= 0):
+			return
 	# Ataque (ou Ball/TM) já usado neste turno — botão devia estar
 	# desabilitado, mas confere de novo aqui por segurança.
 	if current.attacks_remaining <= 0:
@@ -6357,42 +6372,25 @@ func play_cast_effect(texture: Texture2D, attacker: Node, dir: Vector2i, cast_ra
 
 # Uso de um item TM (ver handle_targeting_input) — reaproveita execute_attack
 # inteiro (dano, efetividade, status secundário, tudo) rodando em cima do
-# ataque referenciado (ItemData.tm_attack, ex: Ice Fang), só que
-# consume_slot_use=false: quem desconta 1 carga aqui é a PILHA do próprio
-# item TM (UnitData.slot_quantities), não o PP do ataque (attack.max_uses/
-# Unit.slot_uses) — um TM não "recarrega" com o tempo feito um ataque normal,
-# ele é consumido igual uma Ball, só que sem precisar acertar o alvo pra
-# sumir uma unidade da pilha (usar o ataque já é o suficiente).
+# ataque referenciado (ItemData.tm_attack, ex: Ice Fang).
 #
-# phase pode já ter virado ENDED dentro do await de execute_attack (se esse
-# ataque matou o último inimigo/aliado e end_battle já trocou de cena) — por
-# isso o guard antes de mexer em slot/HUD, mesmo padrão já usado em
-# execute_ball_throw logo abaixo.
+# Desde 2026-11-20 (pedido do usuário: "When held by a unit, it will
+# function as having that tm's move (including usage points)") o TM NUNCA é
+# consumido: existe só 1 de cada no jogo, e ele gasta o PP do PRÓPRIO golpe
+# (Unit.slot_uses[slot_index], preenchido com tm_attack.max_uses em
+# unit.gd::_apply_common) — consume_slot_use=true faz execute_attack
+# descontar esse uso exatamente como faria com um golpe aprendido.
 func execute_tm_attack(attacker: Node, defender: Node, tm_item: ItemData, slot_index: int) -> void:
-	await execute_attack(attacker, defender, tm_item.tm_attack, slot_index, false)
-	if phase != Phase.BATTLE:
-		return
-	attacker.data.set_slot_quantity(slot_index, attacker.data.get_slot_quantity(slot_index) - 1)
-	if attacker.data.get_slot_quantity(slot_index) <= 0:
-		attacker.data.slots[slot_index] = null
-	refresh_action_slots_hud()
+	await execute_attack(attacker, defender, tm_item.tm_attack, slot_index, true)
 
 # Gêmeo de execute_tm_attack() acima pra um TM cujo tm_attack é de Status
 # (ver AttackData.is_status/ItemData.tm_attack) — mesma ideia de
 # execute_status_attack existir separada de execute_attack (ver comentário
-# grande em AttackData.is_status), só que pro TM: chama
-# execute_status_attack em vez de execute_attack, e SÓ DEPOIS desconta a
-# carga do item (mesmo "consumo sempre no fim, nunca antes" de
-# execute_tm_attack — dir vem pronto de quem chama, igual
-# execute_status_attack já espera). TM 11/Sunny Day é o primeiro caso.
+# grande em AttackData.is_status). execute_status_attack já desconta o PP
+# do golpe em Unit.slot_uses[slot_index]; o TM em si nunca é consumido.
+# TM 11/Sunny Day é o primeiro caso.
 func execute_tm_status_attack(attacker: Node, tm_item: ItemData, dir: Vector2i, slot_index: int) -> void:
 	await execute_status_attack(attacker, tm_item.tm_attack, dir, slot_index)
-	if phase != Phase.BATTLE:
-		return
-	attacker.data.set_slot_quantity(slot_index, attacker.data.get_slot_quantity(slot_index) - 1)
-	if attacker.data.get_slot_quantity(slot_index) <= 0:
-		attacker.data.slots[slot_index] = null
-	refresh_action_slots_hud()
 
 # Chamado assim que um dos dois times fica sem ninguém (ver o "if" acima,
 # logo depois de remove_defeated_unit). `last_defeated` é o nó que acabou de
@@ -6983,7 +6981,7 @@ func _apply_challenge_permadeath(u: Node) -> void:
 			# UnitData.slot_quantities) — held item comum nunca teve
 			# quantidade escrita nesse índice, então max(...,1) garante
 			# devolver pelo menos a 1 unidade física que estava equipada.
-			var amount = max(u.data.get_slot_quantity(i), 1)
+			var amount = max(u.data.get_slot_quantity(i), 1) if action.stackable else 1
 			GameState.add_item(action, amount)
 	GameState.remove_from_roster(u.data)
 	GameState.add_to_first_empty_heaven_slot(u.data)

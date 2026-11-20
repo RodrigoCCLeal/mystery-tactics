@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0396/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0396/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/gust.tres" id="100"]
@@ -220,8 +218,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0396_yache_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0396_growl"), SubResource("LE_pokmmo_0396_gust"), SubResource("LE_pokmmo_0396_peck"), SubResource("LE_pokmmo_0396_tackle"), SubResource("LE_pokmmo_0396_quick_attack"), SubResource("LE_pokmmo_0396_wing_attack"), SubResource("LE_pokmmo_0396_double_team"), SubResource("LE_pokmmo_0396_air_slash"), SubResource("LE_pokmmo_0396_endeavor"), SubResource("LE_pokmmo_0396_featherdance"), SubResource("LE_pokmmo_0396_roost"), SubResource("LE_pokmmo_0396_whirlwind"), SubResource("LE_pokmmo_0396_aerial_ace"), SubResource("LE_pokmmo_0396_double_edge"), SubResource("LE_pokmmo_0396_take_down"), SubResource("LE_pokmmo_0396_agility"), SubResource("LE_pokmmo_0396_brave_bird"), SubResource("LE_pokmmo_0396_final_gambit"), SubResource("LE_pokmmo_0396_giga_impact"), SubResource("LE_new_0396_keen_eye"), SubResource("LE_new_0396_reckless")])
 unit_name = "Starly"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal", "Flying"])
 grounded = false
 weight = 1

@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0384/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0384/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="100"]
@@ -182,8 +180,6 @@ action = ExtResource("114")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0384_air_slash"), SubResource("LE_pokmmo_0384_ancientpower"), SubResource("LE_pokmmo_0384_scary_face"), SubResource("LE_pokmmo_0384_twister"), SubResource("LE_pokmmo_0384_crunch"), SubResource("LE_pokmmo_0384_dragon_dance"), SubResource("LE_pokmmo_0384_dragon_claw"), SubResource("LE_pokmmo_0384_extremespeed"), SubResource("LE_pokmmo_0384_dragon_pulse"), SubResource("LE_pokmmo_0384_hyper_voice"), SubResource("LE_pokmmo_0384_rest"), SubResource("LE_pokmmo_0384_dragon_rush"), SubResource("LE_pokmmo_0384_fly"), SubResource("LE_pokmmo_0384_hurricane"), SubResource("LE_pokmmo_0384_outrage"), SubResource("LE_pokmmo_0384_hyper_beam"), SubResource("LE_new_0384_air_lock")])
 unit_name = "Rayquaza"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dragon", "Flying"])
 grounded = false
 weight = 1

@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0453/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0453/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="100"]
@@ -253,8 +251,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0453_black_sludge")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0453_astonish"), SubResource("LE_pokmmo_0453_mud_slap"), SubResource("LE_pokmmo_0453_poison_sting"), SubResource("LE_pokmmo_0453_rock_smash"), SubResource("LE_pokmmo_0453_taunt"), SubResource("LE_pokmmo_0453_flatter"), SubResource("LE_pokmmo_0453_pursuit"), SubResource("LE_pokmmo_0453_low_kick"), SubResource("LE_pokmmo_0453_revenge"), SubResource("LE_pokmmo_0453_faint_attack"), SubResource("LE_pokmmo_0453_venoshock"), SubResource("LE_pokmmo_0453_sucker_punch"), SubResource("LE_pokmmo_0453_swagger"), SubResource("LE_pokmmo_0453_mud_bomb"), SubResource("LE_pokmmo_0453_poison_jab"), SubResource("LE_pokmmo_0453_toxic"), SubResource("LE_pokmmo_0453_earth_power"), SubResource("LE_pokmmo_0453_nasty_plot"), SubResource("LE_pokmmo_0453_sludge_bomb"), SubResource("LE_pokmmo_0453_close_combat"), SubResource("LE_new_0453_anticipation"), SubResource("LE_new_0453_dry_skin"), SubResource("LE_new_0453_poison_touch")])
 unit_name = "Croagunk"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Poison", "Fighting"])
 grounded = true
 weight = 1

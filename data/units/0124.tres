@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0124/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0124/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -277,8 +275,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0124_aspear_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0124_copycat"), SubResource("LE_pokmmo_0124_lick"), SubResource("LE_pokmmo_0124_lovely_kiss"), SubResource("LE_pokmmo_0124_perish_song"), SubResource("LE_pokmmo_0124_pound"), SubResource("LE_pokmmo_0124_powder_snow"), SubResource("LE_pokmmo_0124_sweet_kiss"), SubResource("LE_pokmmo_0124_confusion"), SubResource("LE_pokmmo_0124_doubleslap"), SubResource("LE_pokmmo_0124_covet"), SubResource("LE_pokmmo_0124_screech"), SubResource("LE_pokmmo_0124_sing"), SubResource("LE_pokmmo_0124_heart_stamp"), SubResource("LE_pokmmo_0124_fake_tears"), SubResource("LE_pokmmo_0124_ice_punch"), SubResource("LE_pokmmo_0124_body_slam"), SubResource("LE_pokmmo_0124_wake_up_slap"), SubResource("LE_pokmmo_0124_psychic"), SubResource("LE_pokmmo_0124_avalanche"), SubResource("LE_pokmmo_0124_blizzard"), SubResource("LE_pokmmo_0124_mean_look"), SubResource("LE_pokmmo_0124_thrash"), SubResource("LE_pokmmo_0124_wring_out"), SubResource("LE_new_0124_oblivious"), SubResource("LE_new_0124_forewarn"), SubResource("LE_new_0124_dry_skin")])
 unit_name = "Jynx"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ice", "Psychic"])
 grounded = true
 weight = 1

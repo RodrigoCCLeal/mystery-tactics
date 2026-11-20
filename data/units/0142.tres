@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0142/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0142/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/wing_attack.tres" id="100"]
@@ -237,8 +235,6 @@ action = ExtResource("119")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0142_ancientpower"), SubResource("LE_pokmmo_0142_bite"), SubResource("LE_pokmmo_0142_fire_fang"), SubResource("LE_pokmmo_0142_ice_fang"), SubResource("LE_pokmmo_0142_iron_head"), SubResource("LE_pokmmo_0142_scary_face"), SubResource("LE_pokmmo_0142_steel_wing"), SubResource("LE_pokmmo_0142_supersonic"), SubResource("LE_pokmmo_0142_thunder_fang"), SubResource("LE_pokmmo_0142_wing_attack"), SubResource("LE_pokmmo_0142_roar"), SubResource("LE_pokmmo_0142_rock_blast"), SubResource("LE_pokmmo_0142_rock_slide"), SubResource("LE_pokmmo_0142_rock_throw"), SubResource("LE_pokmmo_0142_agility"), SubResource("LE_pokmmo_0142_crunch"), SubResource("LE_pokmmo_0142_take_down"), SubResource("LE_pokmmo_0142_stone_edge"), SubResource("LE_pokmmo_0142_fly"), SubResource("LE_pokmmo_0142_sky_drop"), SubResource("LE_pokmmo_0142_hyper_beam"), SubResource("LE_pokmmo_0142_giga_impact"), SubResource("LE_new_0142_rock_head"), SubResource("LE_new_0142_pressure"), SubResource("LE_new_0142_unnerve")])
 unit_name = "Aerodactyl"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Rock", "Flying"])
 grounded = false
 weight = 1

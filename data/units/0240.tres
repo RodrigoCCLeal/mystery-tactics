@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0240/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0240/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="100"]
@@ -237,8 +235,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0240_rawst_berry"), SubResource("WHI_0240_magmarizer")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0240_ember"), SubResource("LE_pokmmo_0240_leer"), SubResource("LE_pokmmo_0240_smog"), SubResource("LE_pokmmo_0240_tackle"), SubResource("LE_pokmmo_0240_smokescreen"), SubResource("LE_pokmmo_0240_clear_smog"), SubResource("LE_pokmmo_0240_faint_attack"), SubResource("LE_pokmmo_0240_fire_spin"), SubResource("LE_pokmmo_0240_flame_wheel"), SubResource("LE_pokmmo_0240_poison_gas"), SubResource("LE_pokmmo_0240_confuse_ray"), SubResource("LE_pokmmo_0240_flame_burst"), SubResource("LE_pokmmo_0240_scary_face"), SubResource("LE_pokmmo_0240_fire_punch"), SubResource("LE_pokmmo_0240_lava_plume"), SubResource("LE_pokmmo_0240_low_kick"), SubResource("LE_pokmmo_0240_flamethrower"), SubResource("LE_pokmmo_0240_sunny_day"), SubResource("LE_pokmmo_0240_fire_blast"), SubResource("LE_new_0240_flame_body"), SubResource("LE_new_0240_vital_spirit")])
 unit_name = "Magby"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire"])
 grounded = true
 weight = 1

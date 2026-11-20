@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0331/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0331/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/poison_sting.tres" id="100"]
@@ -256,8 +254,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0331_poison_barb"), SubResource("WHI_0331_sticky_barb")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0331_leer"), SubResource("LE_pokmmo_0331_poison_sting"), SubResource("LE_pokmmo_0331_absorb"), SubResource("LE_pokmmo_0331_growth"), SubResource("LE_pokmmo_0331_leech_seed"), SubResource("LE_pokmmo_0331_sand_attack"), SubResource("LE_pokmmo_0331_bullet_seed"), SubResource("LE_pokmmo_0331_needle_arm"), SubResource("LE_pokmmo_0331_poison_jab"), SubResource("LE_pokmmo_0331_assurance"), SubResource("LE_pokmmo_0331_faint_attack"), SubResource("LE_pokmmo_0331_ingrain"), SubResource("LE_pokmmo_0331_payback"), SubResource("LE_pokmmo_0331_spikes"), SubResource("LE_pokmmo_0331_sucker_punch"), SubResource("LE_pokmmo_0331_pin_missile"), SubResource("LE_pokmmo_0331_energy_ball"), SubResource("LE_pokmmo_0331_cotton_spore"), SubResource("LE_pokmmo_0331_sandstorm"), SubResource("LE_pokmmo_0331_destiny_bond"), SubResource("LE_new_0331_sand_veil"), SubResource("LE_new_0331_water_absorb")])
 unit_name = "Cacnea"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Grass"])
 grounded = true
 weight = 1

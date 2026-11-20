@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0337/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0337/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -239,8 +237,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0337_moon_stone"), SubResource("WHI_0337_stardust"), SubResource("WHI_0337_hard_stone"), SubResource("WHI_0337_comet_shard")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0337_confusion"), SubResource("LE_pokmmo_0337_harden"), SubResource("LE_pokmmo_0337_moonlight"), SubResource("LE_pokmmo_0337_power_gem"), SubResource("LE_pokmmo_0337_psyshock"), SubResource("LE_pokmmo_0337_rock_throw"), SubResource("LE_pokmmo_0337_tackle"), SubResource("LE_pokmmo_0337_hypnosis"), SubResource("LE_pokmmo_0337_rock_polish"), SubResource("LE_pokmmo_0337_psywave"), SubResource("LE_pokmmo_0337_rock_slide"), SubResource("LE_pokmmo_0337_embargo"), SubResource("LE_pokmmo_0337_cosmic_power"), SubResource("LE_pokmmo_0337_psychic"), SubResource("LE_pokmmo_0337_heal_block"), SubResource("LE_pokmmo_0337_stone_edge"), SubResource("LE_pokmmo_0337_future_sight"), SubResource("LE_pokmmo_0337_magic_room"), SubResource("LE_pokmmo_0337_explosion"), SubResource("LE_new_0337_levitate")])
 unit_name = "Lunatone"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Rock", "Psychic"])
 grounded = true
 weight = 1

@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0136/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0136/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/sand_attack.tres" id="100"]
@@ -343,8 +341,6 @@ action = ExtResource("128")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0136_baton_pass"), SubResource("LE_pokmmo_0136_bite"), SubResource("LE_pokmmo_0136_copycat"), SubResource("LE_pokmmo_0136_covet"), SubResource("LE_pokmmo_0136_ember"), SubResource("LE_pokmmo_0136_growl"), SubResource("LE_pokmmo_0136_helping_hand"), SubResource("LE_pokmmo_0136_sand_attack"), SubResource("LE_pokmmo_0136_tackle"), SubResource("LE_pokmmo_0136_tail_whip"), SubResource("LE_pokmmo_0136_yawn"), SubResource("LE_pokmmo_0136_quick_attack"), SubResource("LE_pokmmo_0136_double_kick"), SubResource("LE_pokmmo_0136_swift"), SubResource("LE_pokmmo_0136_fire_spin"), SubResource("LE_pokmmo_0136_smog"), SubResource("LE_pokmmo_0136_smokescreen"), SubResource("LE_pokmmo_0136_focus_energy"), SubResource("LE_pokmmo_0136_flame_wheel"), SubResource("LE_pokmmo_0136_mimic"), SubResource("LE_pokmmo_0136_fire_fang"), SubResource("LE_pokmmo_0136_flare_blitz"), SubResource("LE_pokmmo_0136_calm_mind"), SubResource("LE_pokmmo_0136_lava_plume"), SubResource("LE_pokmmo_0136_double_edge"), SubResource("LE_pokmmo_0136_fire_blast"), SubResource("LE_pokmmo_0136_scary_face"), SubResource("LE_pokmmo_0136_leer"), SubResource("LE_pokmmo_0136_rage"), SubResource("LE_pokmmo_0136_flamethrower"), SubResource("LE_pokmmo_0136_last_resort"), SubResource("LE_new_0136_flash_fire"), SubResource("LE_new_0136_guts")])
 unit_name = "Flareon"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire"])
 grounded = true
 weight = 1

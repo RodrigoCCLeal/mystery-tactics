@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0459/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0459/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="100"]
@@ -202,8 +200,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0459_never_melt_ice")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0459_leer"), SubResource("LE_pokmmo_0459_powder_snow"), SubResource("LE_pokmmo_0459_mist"), SubResource("LE_pokmmo_0459_grasswhistle"), SubResource("LE_pokmmo_0459_ice_shard"), SubResource("LE_pokmmo_0459_icicle_crash"), SubResource("LE_pokmmo_0459_razor_leaf"), SubResource("LE_pokmmo_0459_energy_ball"), SubResource("LE_pokmmo_0459_icy_wind"), SubResource("LE_pokmmo_0459_growth"), SubResource("LE_pokmmo_0459_swagger"), SubResource("LE_pokmmo_0459_ingrain"), SubResource("LE_pokmmo_0459_leech_seed"), SubResource("LE_pokmmo_0459_wood_hammer"), SubResource("LE_pokmmo_0459_blizzard"), SubResource("LE_pokmmo_0459_sheer_cold"), SubResource("LE_pokmmo_0459_leaf_storm"), SubResource("LE_new_0459_snow_warning"), SubResource("LE_new_0459_soundproof")])
 unit_name = "Snover"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Grass", "Ice"])
 grounded = true
 weight = 1

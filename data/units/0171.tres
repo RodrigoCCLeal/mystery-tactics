@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0171/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0171/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/supersonic.tres" id="100"]
@@ -237,8 +235,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0171_yellow_shard"), SubResource("WHI_0171_deep_sea_scale")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0171_bubble"), SubResource("LE_pokmmo_0171_electro_ball"), SubResource("LE_pokmmo_0171_spit_up"), SubResource("LE_pokmmo_0171_stockpile"), SubResource("LE_pokmmo_0171_supersonic"), SubResource("LE_pokmmo_0171_swallow"), SubResource("LE_pokmmo_0171_thunder_wave"), SubResource("LE_pokmmo_0171_water_gun"), SubResource("LE_pokmmo_0171_bubblebeam"), SubResource("LE_pokmmo_0171_confuse_ray"), SubResource("LE_pokmmo_0171_spark"), SubResource("LE_pokmmo_0171_charge"), SubResource("LE_pokmmo_0171_signal_beam"), SubResource("LE_pokmmo_0171_discharge"), SubResource("LE_pokmmo_0171_aqua_ring"), SubResource("LE_pokmmo_0171_flail"), SubResource("LE_pokmmo_0171_take_down"), SubResource("LE_pokmmo_0171_hydro_pump"), SubResource("LE_new_0171_volt_absorb"), SubResource("LE_new_0171_illuminate"), SubResource("LE_new_0171_water_absorb")])
 unit_name = "Lanturn"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Water", "Electric"])
 grounded = true
 weight = 1

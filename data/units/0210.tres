@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0210/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0210/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -222,8 +220,6 @@ action = ExtResource("119")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0210_charm"), SubResource("LE_pokmmo_0210_fire_fang"), SubResource("LE_pokmmo_0210_growl"), SubResource("LE_pokmmo_0210_ice_fang"), SubResource("LE_pokmmo_0210_outrage"), SubResource("LE_pokmmo_0210_scary_face"), SubResource("LE_pokmmo_0210_tackle"), SubResource("LE_pokmmo_0210_tail_whip"), SubResource("LE_pokmmo_0210_thunder_fang"), SubResource("LE_pokmmo_0210_bite"), SubResource("LE_pokmmo_0210_lick"), SubResource("LE_pokmmo_0210_headbutt"), SubResource("LE_pokmmo_0210_roar"), SubResource("LE_pokmmo_0210_last_resort"), SubResource("LE_pokmmo_0210_rage"), SubResource("LE_pokmmo_0210_taunt"), SubResource("LE_pokmmo_0210_payback"), SubResource("LE_pokmmo_0210_take_down"), SubResource("LE_pokmmo_0210_crunch"), SubResource("LE_new_0210_intimidate"), SubResource("LE_new_0210_quick_feet"), SubResource("LE_new_0210_rattled")])
 unit_name = "Granbull"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fairy"])
 grounded = true
 weight = 1

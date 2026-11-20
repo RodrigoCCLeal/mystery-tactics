@@ -78,13 +78,14 @@ extends Resource
 
 @export var tool_shortcuts: Array[ItemData] = []
 
-# Área de encontro atual (ver EncounterArea) e pra qual cena de overworld
-# voltar — várias cenas existem hoje (world_archis/world_route1/
-# world_barias.tscn + interiores; o antigo world.tscn monolítico foi
-# cortado em 3, pedido do usuário em 2026-09-21, ver world_archis.gd), este
-# campo é o que lembra em qual delas o jogador estava.
+# Área de encontro atual (ver EncounterArea) e pra qual cena "andável"
+# voltar (interior, rota, vilarejo...) — este campo é o que lembra em qual
+# delas o jogador estava.
 @export var current_area: EncounterArea
-@export var overworld_scene_path: String = "res://scenes/overworld/world_archis.tscn"
+# Ver GameState.current_location_id/visited_locations (Town Map).
+@export var current_location_id: String = "kano"
+@export var visited_locations: Dictionary = {}
+@export var overworld_scene_path: String = "res://scenes/overworld/red_house_interior.tscn"
 # Ver GameState.game_time_seconds — relógio próprio do jogo (Manhã/Dia/
 # Noite), em segundos dentro de um dia de 24h.
 @export var game_time_seconds: float = 8.0 * 3600.0

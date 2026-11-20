@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0421/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0421/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -218,8 +216,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0421_miracle_seed")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0421_absorb"), SubResource("LE_pokmmo_0421_growth"), SubResource("LE_pokmmo_0421_leech_seed"), SubResource("LE_pokmmo_0421_morning_sun"), SubResource("LE_pokmmo_0421_sunny_day"), SubResource("LE_pokmmo_0421_tackle"), SubResource("LE_pokmmo_0421_stun_spore"), SubResource("LE_pokmmo_0421_helping_hand"), SubResource("LE_pokmmo_0421_magical_leaf"), SubResource("LE_pokmmo_0421_energy_ball"), SubResource("LE_pokmmo_0421_sleep_powder"), SubResource("LE_pokmmo_0421_take_down"), SubResource("LE_pokmmo_0421_double_edge"), SubResource("LE_pokmmo_0421_lucky_chant"), SubResource("LE_pokmmo_0421_worry_seed"), SubResource("LE_pokmmo_0421_solarbeam"), SubResource("LE_pokmmo_0421_petal_dance"), SubResource("LE_new_0421_flower_gift")])
 unit_name = "Cherrim"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Grass"])
 grounded = true
 weight = 1

@@ -2,8 +2,6 @@
 
 [ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="1_o5gnm"]
-[ext_resource type="SpriteFrames" uid="uid://cbot47kh6djlj" path="res://assets/sprites/Pokemon/Sprites/0202/frames.tres" id="2"]
-[ext_resource type="Texture2D" uid="uid://bxj8dqb5xcxg1" path="res://assets/sprites/Pokemon/Sprites/0202/Normal.png" id="3"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="4_ced6m"]
 
 [ext_resource type="Resource" path="res://data/attacks/counter.tres" id="4"]
@@ -93,8 +91,6 @@ action = ExtResource("6")
 script = ExtResource("1")
 learnset = Array[ExtResource("1_o5gnm")]([SubResource("LE_pokmmo_0202_amnesia"), SubResource("LE_pokmmo_0202_charm"), SubResource("LE_pokmmo_0202_counter"), SubResource("LE_pokmmo_0202_destiny_bond"), SubResource("LE_pokmmo_0202_encore"), SubResource("LE_pokmmo_0202_mirror_coat"), SubResource("LE_pokmmo_0202_safeguard"), SubResource("LE_pokmmo_0202_splash"), SubResource("LE_new_0202_shadow_tag"), SubResource("LE_new_0202_telepathy")])
 unit_name = "Wobbuffet"
-sprite_frames = ExtResource("2")
-portrait = ExtResource("3")
 attack_hit_delay = 0.35
 special_hit_delay = 0.35
 types = Array[String](["Psychic"])

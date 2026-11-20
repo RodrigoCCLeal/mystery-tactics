@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0391/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0391/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -228,8 +226,6 @@ action = ExtResource("120")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0391_ember"), SubResource("LE_pokmmo_0391_leer"), SubResource("LE_pokmmo_0391_mach_punch"), SubResource("LE_pokmmo_0391_scratch"), SubResource("LE_pokmmo_0391_tackle"), SubResource("LE_pokmmo_0391_taunt"), SubResource("LE_pokmmo_0391_swift"), SubResource("LE_pokmmo_0391_fury_swipes"), SubResource("LE_pokmmo_0391_flame_wheel"), SubResource("LE_pokmmo_0391_nasty_plot"), SubResource("LE_pokmmo_0391_feint"), SubResource("LE_pokmmo_0391_torment"), SubResource("LE_pokmmo_0391_flamethrower"), SubResource("LE_pokmmo_0391_close_combat"), SubResource("LE_pokmmo_0391_fire_spin"), SubResource("LE_pokmmo_0391_double_edge"), SubResource("LE_pokmmo_0391_acrobatics"), SubResource("LE_pokmmo_0391_slack_off"), SubResource("LE_pokmmo_0391_flare_blitz"), SubResource("LE_new_0391_blaze"), SubResource("LE_new_0391_iron_fist")])
 unit_name = "Monferno"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire", "Fighting"])
 grounded = true
 weight = 1

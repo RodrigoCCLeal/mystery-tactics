@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0413/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0413/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -253,8 +251,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0413_silver_powder")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0413_bug_bite"), SubResource("LE_pokmmo_0413_protect"), SubResource("LE_pokmmo_0413_quiver_dance"), SubResource("LE_pokmmo_0413_struggle_bug"), SubResource("LE_pokmmo_0413_sucker_punch"), SubResource("LE_pokmmo_0413_tackle"), SubResource("LE_pokmmo_0413_gust"), SubResource("LE_pokmmo_0413_silver_wind"), SubResource("LE_pokmmo_0413_hidden_power"), SubResource("LE_pokmmo_0413_string_shot"), SubResource("LE_pokmmo_0413_confusion"), SubResource("LE_pokmmo_0413_energy_ball"), SubResource("LE_pokmmo_0413_razor_leaf"), SubResource("LE_pokmmo_0413_growth"), SubResource("LE_pokmmo_0413_psybeam"), SubResource("LE_pokmmo_0413_captivate"), SubResource("LE_pokmmo_0413_flail"), SubResource("LE_pokmmo_0413_attract"), SubResource("LE_pokmmo_0413_psychic"), SubResource("LE_pokmmo_0413_leaf_storm"), SubResource("LE_pokmmo_0413_bug_buzz"), SubResource("LE_new_0413_anticipation"), SubResource("LE_new_0413_overcoat")])
 unit_name = "Wormadam"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Grass"])
 grounded = true
 weight = 1

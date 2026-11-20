@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0212/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0212/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/wing_attack.tres" id="100"]
@@ -289,8 +287,6 @@ action = ExtResource("124")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0212_agility"), SubResource("LE_pokmmo_0212_air_slash"), SubResource("LE_pokmmo_0212_bullet_punch"), SubResource("LE_pokmmo_0212_false_swipe"), SubResource("LE_pokmmo_0212_feint"), SubResource("LE_pokmmo_0212_fury_cutter"), SubResource("LE_pokmmo_0212_leer"), SubResource("LE_pokmmo_0212_quick_attack"), SubResource("LE_pokmmo_0212_wing_attack"), SubResource("LE_pokmmo_0212_silver_wind"), SubResource("LE_pokmmo_0212_pursuit"), SubResource("LE_pokmmo_0212_aerial_ace"), SubResource("LE_pokmmo_0212_metal_claw"), SubResource("LE_pokmmo_0212_double_team"), SubResource("LE_pokmmo_0212_steel_wing"), SubResource("LE_pokmmo_0212_double_hit"), SubResource("LE_pokmmo_0212_slash"), SubResource("LE_pokmmo_0212_focus_energy"), SubResource("LE_pokmmo_0212_iron_defense"), SubResource("LE_pokmmo_0212_x_scissor"), SubResource("LE_pokmmo_0212_razor_wind"), SubResource("LE_pokmmo_0212_bug_buzz"), SubResource("LE_pokmmo_0212_iron_head"), SubResource("LE_pokmmo_0212_swords_dance"), SubResource("LE_pokmmo_0212_close_combat"), SubResource("LE_pokmmo_0212_night_slash"), SubResource("LE_new_0212_swarm"), SubResource("LE_new_0212_technician"), SubResource("LE_new_0212_light_metal")])
 unit_name = "Scizor"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Steel"])
 grounded = true
 weight = 1

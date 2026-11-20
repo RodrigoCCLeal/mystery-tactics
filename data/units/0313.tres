@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0313/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0313/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -211,8 +209,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0313_bright_powder")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0313_flash"), SubResource("LE_pokmmo_0313_tackle"), SubResource("LE_pokmmo_0313_double_team"), SubResource("LE_pokmmo_0313_confuse_ray"), SubResource("LE_pokmmo_0313_quick_attack"), SubResource("LE_pokmmo_0313_struggle_bug"), SubResource("LE_pokmmo_0313_moonlight"), SubResource("LE_pokmmo_0313_tail_glow"), SubResource("LE_pokmmo_0313_encore"), SubResource("LE_pokmmo_0313_protect"), SubResource("LE_pokmmo_0313_signal_beam"), SubResource("LE_pokmmo_0313_zen_headbutt"), SubResource("LE_pokmmo_0313_helping_hand"), SubResource("LE_pokmmo_0313_bug_buzz"), SubResource("LE_pokmmo_0313_double_edge"), SubResource("LE_new_0313_illuminate"), SubResource("LE_new_0313_swarm"), SubResource("LE_new_0313_prankster")])
 unit_name = "Volbeat"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug"])
 grounded = true
 weight = 1

@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0335/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0335/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -273,8 +271,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0335_quick_claw"), SubResource("WHI_0335_silk_scarf")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0335_leer"), SubResource("LE_pokmmo_0335_scratch"), SubResource("LE_pokmmo_0335_tackle"), SubResource("LE_pokmmo_0335_quick_attack"), SubResource("LE_pokmmo_0335_fury_cutter"), SubResource("LE_pokmmo_0335_metal_claw"), SubResource("LE_pokmmo_0335_pursuit"), SubResource("LE_pokmmo_0335_aerial_ace"), SubResource("LE_pokmmo_0335_hone_claws"), SubResource("LE_pokmmo_0335_slash"), SubResource("LE_pokmmo_0335_revenge"), SubResource("LE_pokmmo_0335_night_slash"), SubResource("LE_pokmmo_0335_crush_claw"), SubResource("LE_pokmmo_0335_false_swipe"), SubResource("LE_pokmmo_0335_dig"), SubResource("LE_pokmmo_0335_embargo"), SubResource("LE_pokmmo_0335_facade"), SubResource("LE_pokmmo_0335_switcheroo"), SubResource("LE_pokmmo_0335_detect"), SubResource("LE_pokmmo_0335_x_scissor"), SubResource("LE_pokmmo_0335_taunt"), SubResource("LE_pokmmo_0335_swords_dance"), SubResource("LE_pokmmo_0335_close_combat"), SubResource("LE_new_0335_immunity"), SubResource("LE_new_0335_toxic_boost")])
 unit_name = "Zangoose"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal"])
 grounded = true
 weight = 1

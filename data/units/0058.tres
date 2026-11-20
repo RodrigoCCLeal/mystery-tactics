@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0058/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0058/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="100"]
@@ -240,8 +238,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0058_rawst_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0058_bite"), SubResource("LE_pokmmo_0058_ember"), SubResource("LE_pokmmo_0058_leer"), SubResource("LE_pokmmo_0058_roar"), SubResource("LE_pokmmo_0058_howl"), SubResource("LE_pokmmo_0058_helping_hand"), SubResource("LE_pokmmo_0058_odor_sleuth"), SubResource("LE_pokmmo_0058_flame_wheel"), SubResource("LE_pokmmo_0058_take_down"), SubResource("LE_pokmmo_0058_flamethrower"), SubResource("LE_pokmmo_0058_agility"), SubResource("LE_pokmmo_0058_fire_fang"), SubResource("LE_pokmmo_0058_heat_wave"), SubResource("LE_pokmmo_0058_crunch"), SubResource("LE_pokmmo_0058_flame_burst"), SubResource("LE_pokmmo_0058_retaliate"), SubResource("LE_pokmmo_0058_outrage"), SubResource("LE_pokmmo_0058_flare_blitz"), SubResource("LE_pokmmo_0058_reversal"), SubResource("LE_new_0058_intimidate"), SubResource("LE_new_0058_flash_fire"), SubResource("LE_new_0058_justified")])
 unit_name = "Growlithe"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire"])
 grounded = true
 weight = 1

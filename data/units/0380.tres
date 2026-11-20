@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0380/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0380/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/psywave.tres" id="100"]
@@ -250,8 +248,6 @@ action = ExtResource("118")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0380_charm"), SubResource("LE_pokmmo_0380_healing_wish"), SubResource("LE_pokmmo_0380_helping_hand"), SubResource("LE_pokmmo_0380_mist_ball"), SubResource("LE_pokmmo_0380_psywave"), SubResource("LE_pokmmo_0380_safeguard"), SubResource("LE_pokmmo_0380_stored_power"), SubResource("LE_pokmmo_0380_wish"), SubResource("LE_pokmmo_0380_water_sport"), SubResource("LE_pokmmo_0380_recover"), SubResource("LE_pokmmo_0380_refresh"), SubResource("LE_pokmmo_0380_confusion"), SubResource("LE_pokmmo_0380_psybeam"), SubResource("LE_pokmmo_0380_tailwind"), SubResource("LE_pokmmo_0380_dragonbreath"), SubResource("LE_pokmmo_0380_water_pulse"), SubResource("LE_pokmmo_0380_zen_headbutt"), SubResource("LE_pokmmo_0380_dragon_pulse"), SubResource("LE_pokmmo_0380_aura_sphere"), SubResource("LE_pokmmo_0380_heal_pulse"), SubResource("LE_pokmmo_0380_reflect_type"), SubResource("LE_pokmmo_0380_air_slash"), SubResource("LE_pokmmo_0380_psychic"), SubResource("LE_pokmmo_0380_guard_split"), SubResource("LE_pokmmo_0380_psycho_shift"), SubResource("LE_new_0380_levitate")])
 unit_name = "Latias"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dragon", "Psychic"])
 grounded = true
 weight = 1

@@ -657,7 +657,11 @@ func _apply_common(new_data: UnitData) -> void:
 	anim.sprite_frames = data.sprite_frames
 	slot_uses.clear()
 	for action in data.slots:
-		if action != null and action.max_uses > 0:
+		# TM equipado funciona como ter o golpe (ver ItemData.tm_attack): o
+		# slot ganha os usos (PP) do PRÓPRIO golpe, igual um Ataque aprendido.
+		if action is ItemData and action.category == "TM" and action.tm_attack != null and action.tm_attack.max_uses > 0:
+			slot_uses.append(action.tm_attack.max_uses)
+		elif action != null and action.max_uses > 0:
 			slot_uses.append(action.max_uses)
 		else:
 			slot_uses.append(0)   # slot vazio, ou ação sem contador de uso (max_uses -1)

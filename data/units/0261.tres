@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0261/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0261/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -246,8 +244,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0261_pecha_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0261_tackle"), SubResource("LE_pokmmo_0261_howl"), SubResource("LE_pokmmo_0261_sand_attack"), SubResource("LE_pokmmo_0261_bite"), SubResource("LE_pokmmo_0261_leer"), SubResource("LE_pokmmo_0261_mud_slap"), SubResource("LE_pokmmo_0261_odor_sleuth"), SubResource("LE_pokmmo_0261_roar"), SubResource("LE_pokmmo_0261_swagger"), SubResource("LE_pokmmo_0261_assurance"), SubResource("LE_pokmmo_0261_scary_face"), SubResource("LE_pokmmo_0261_embargo"), SubResource("LE_pokmmo_0261_headbutt"), SubResource("LE_pokmmo_0261_taunt"), SubResource("LE_pokmmo_0261_crunch"), SubResource("LE_pokmmo_0261_yawn"), SubResource("LE_pokmmo_0261_take_down"), SubResource("LE_pokmmo_0261_sucker_punch"), SubResource("LE_pokmmo_0261_thief"), SubResource("LE_new_0261_run_away"), SubResource("LE_new_0261_quick_feet"), SubResource("LE_new_0261_rattled")])
 unit_name = "Poochyena"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dark"])
 grounded = true
 weight = 1

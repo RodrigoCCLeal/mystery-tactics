@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0214/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0214/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/horn_attack.tres" id="100"]
@@ -288,8 +286,6 @@ action = ExtResource("118")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0214_arm_thrust"), SubResource("LE_pokmmo_0214_bullet_seed"), SubResource("LE_pokmmo_0214_endure"), SubResource("LE_pokmmo_0214_horn_attack"), SubResource("LE_pokmmo_0214_leer"), SubResource("LE_pokmmo_0214_night_slash"), SubResource("LE_pokmmo_0214_tackle"), SubResource("LE_pokmmo_0214_fury_attack"), SubResource("LE_pokmmo_0214_rock_smash"), SubResource("LE_pokmmo_0214_feint"), SubResource("LE_pokmmo_0214_pin_missile"), SubResource("LE_pokmmo_0214_detect"), SubResource("LE_pokmmo_0214_aerial_ace"), SubResource("LE_pokmmo_0214_chip_away"), SubResource("LE_pokmmo_0214_take_down"), SubResource("LE_pokmmo_0214_slash"), SubResource("LE_pokmmo_0214_brick_break"), SubResource("LE_pokmmo_0214_counter"), SubResource("LE_pokmmo_0214_rock_blast"), SubResource("LE_pokmmo_0214_bug_buzz"), SubResource("LE_pokmmo_0214_double_edge"), SubResource("LE_pokmmo_0214_swords_dance"), SubResource("LE_pokmmo_0214_megahorn"), SubResource("LE_pokmmo_0214_thrash"), SubResource("LE_pokmmo_0214_reversal"), SubResource("LE_pokmmo_0214_close_combat"), SubResource("LE_new_0214_swarm"), SubResource("LE_new_0214_guts"), SubResource("LE_new_0214_moxie")])
 unit_name = "Heracross"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Fighting"])
 grounded = true
 weight = 1

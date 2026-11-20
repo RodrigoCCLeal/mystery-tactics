@@ -28,6 +28,7 @@ const ITEM_ACTION_MENU_SCENE: PackedScene = preload("res://scenes/ui/popups/item
 const QUANTITY_PICKER_SCENE: PackedScene = preload("res://scenes/ui/popups/quantity_picker.tscn")
 const TOOL_REGISTER_SCREEN_SCENE: PackedScene = preload("res://scenes/ui/screens/tool_register_screen.tscn")
 const SONG_MENU_SCENE: PackedScene = preload("res://scenes/ui/popups/song_menu.tscn")
+const TOWN_MAP_SCENE: PackedScene = preload("res://scenes/ui/screens/town_map_screen.tscn")
 const UnitScript = preload("res://scripts/unit.gd")
 
 @onready var title_label: Label = $Center/Panel/MarginContainer/Content/Title
@@ -223,6 +224,8 @@ func _on_item_action_closed(option: String, item: ItemData) -> void:
 			if item.category == "Tool":
 				if item.opens_song_menu:
 					_open_song_menu(item)
+				elif item.opens_town_map:
+					_open_town_map()
 				else:
 					GameState.use_tool(item)
 					_rebuild_rows()
@@ -260,6 +263,19 @@ func _open_song_menu(item: ItemData) -> void:
 	add_child(menu)
 	menu.setup(item)
 	menu.closed.connect(_on_song_menu_closed)
+
+# Town Map (Tool) — mesmo padrão de _open_song_menu: abre por cima,
+# só travando o input da lista por baixo. Se o jogador voar (Fly) e entrar
+# num lugar, a troca de cena descarta esta tela inteira junto com a Bag.
+func _open_town_map() -> void:
+	_input_locked = true
+	var map = TOWN_MAP_SCENE.instantiate()
+	add_child(map)
+	map.open_view()
+	map.closed.connect(_on_town_map_closed)
+
+func _on_town_map_closed() -> void:
+	_input_locked = false
 
 func _on_song_menu_closed() -> void:
 	_input_locked = false

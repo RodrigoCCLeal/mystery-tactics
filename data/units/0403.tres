@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0403/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0403/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -212,8 +210,6 @@ action = ExtResource("115")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0403_leer"), SubResource("LE_pokmmo_0403_quick_attack"), SubResource("LE_pokmmo_0403_tackle"), SubResource("LE_pokmmo_0403_thundershock"), SubResource("LE_pokmmo_0403_charge"), SubResource("LE_pokmmo_0403_bite"), SubResource("LE_pokmmo_0403_spark"), SubResource("LE_pokmmo_0403_roar"), SubResource("LE_pokmmo_0403_volt_switch"), SubResource("LE_pokmmo_0403_scary_face"), SubResource("LE_pokmmo_0403_thunder_fang"), SubResource("LE_pokmmo_0403_thunder_wave"), SubResource("LE_pokmmo_0403_crunch"), SubResource("LE_pokmmo_0403_discharge"), SubResource("LE_pokmmo_0403_swagger"), SubResource("LE_pokmmo_0403_thunder"), SubResource("LE_pokmmo_0403_wild_charge"), SubResource("LE_new_0403_rivalry"), SubResource("LE_new_0403_intimidate"), SubResource("LE_new_0403_guts")])
 unit_name = "Shinx"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Electric"])
 grounded = true
 weight = 1

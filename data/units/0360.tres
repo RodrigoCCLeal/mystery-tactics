@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0360/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0360/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/counter.tres" id="100"]
@@ -92,8 +90,6 @@ action = ExtResource("102")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0360_amnesia"), SubResource("LE_pokmmo_0360_charm"), SubResource("LE_pokmmo_0360_counter"), SubResource("LE_pokmmo_0360_destiny_bond"), SubResource("LE_pokmmo_0360_encore"), SubResource("LE_pokmmo_0360_mirror_coat"), SubResource("LE_pokmmo_0360_safeguard"), SubResource("LE_pokmmo_0360_splash"), SubResource("LE_new_0360_shadow_tag"), SubResource("LE_new_0360_telepathy")])
 unit_name = "Wynaut"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic"])
 grounded = true
 weight = 1

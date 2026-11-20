@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0471/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0471/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -293,8 +291,6 @@ action = ExtResource("127")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0471_baton_pass"), SubResource("LE_pokmmo_0471_bite"), SubResource("LE_pokmmo_0471_copycat"), SubResource("LE_pokmmo_0471_covet"), SubResource("LE_pokmmo_0471_growl"), SubResource("LE_pokmmo_0471_helping_hand"), SubResource("LE_pokmmo_0471_icy_wind"), SubResource("LE_pokmmo_0471_tackle"), SubResource("LE_pokmmo_0471_tail_whip"), SubResource("LE_pokmmo_0471_sand_attack"), SubResource("LE_pokmmo_0471_quick_attack"), SubResource("LE_pokmmo_0471_swift"), SubResource("LE_pokmmo_0471_mist"), SubResource("LE_pokmmo_0471_ice_shard"), SubResource("LE_pokmmo_0471_ice_beam"), SubResource("LE_pokmmo_0471_mimic"), SubResource("LE_pokmmo_0471_ice_fang"), SubResource("LE_pokmmo_0471_barrier"), SubResource("LE_pokmmo_0471_calm_mind"), SubResource("LE_pokmmo_0471_snowscape"), SubResource("LE_pokmmo_0471_double_edge"), SubResource("LE_pokmmo_0471_mirror_coat"), SubResource("LE_pokmmo_0471_blizzard"), SubResource("LE_pokmmo_0471_last_resort"), SubResource("LE_new_0471_snow_cloak"), SubResource("LE_new_0471_ice_body")])
 unit_name = "Glaceon"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ice"])
 grounded = true
 weight = 1

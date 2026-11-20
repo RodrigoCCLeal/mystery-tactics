@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0137/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0137/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -281,8 +279,6 @@ action = ExtResource("119")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0137_charge"), SubResource("LE_pokmmo_0137_confuse_ray"), SubResource("LE_pokmmo_0137_conversion"), SubResource("LE_pokmmo_0137_conversion_2"), SubResource("LE_pokmmo_0137_sharpen"), SubResource("LE_pokmmo_0137_tackle"), SubResource("LE_pokmmo_0137_recycle"), SubResource("LE_pokmmo_0137_psybeam"), SubResource("LE_pokmmo_0137_thunder_wave"), SubResource("LE_pokmmo_0137_magnet_rise"), SubResource("LE_pokmmo_0137_agility"), SubResource("LE_pokmmo_0137_spark"), SubResource("LE_pokmmo_0137_thundershock"), SubResource("LE_pokmmo_0137_barrier"), SubResource("LE_pokmmo_0137_tri_attack"), SubResource("LE_pokmmo_0137_signal_beam"), SubResource("LE_pokmmo_0137_thunderbolt"), SubResource("LE_pokmmo_0137_recover"), SubResource("LE_pokmmo_0137_discharge"), SubResource("LE_pokmmo_0137_hyper_beam"), SubResource("LE_pokmmo_0137_metal_sound"), SubResource("LE_pokmmo_0137_double_edge"), SubResource("LE_pokmmo_0137_magic_coat"), SubResource("LE_pokmmo_0137_selfdestruct"), SubResource("LE_pokmmo_0137_lock_on"), SubResource("LE_pokmmo_0137_zap_cannon"), SubResource("LE_new_0137_trace"), SubResource("LE_new_0137_download"), SubResource("LE_new_0137_analytic")])
 unit_name = "Porygon"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal"])
 grounded = true
 weight = 1

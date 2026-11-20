@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0146/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0146/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/gust.tres" id="100"]
@@ -231,8 +229,6 @@ action = ExtResource("106")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0146_ember"), SubResource("LE_pokmmo_0146_gust"), SubResource("LE_pokmmo_0146_leer"), SubResource("LE_pokmmo_0146_peck"), SubResource("LE_pokmmo_0146_wing_attack"), SubResource("LE_pokmmo_0146_fire_spin"), SubResource("LE_pokmmo_0146_safeguard"), SubResource("LE_pokmmo_0146_agility"), SubResource("LE_pokmmo_0146_air_slash"), SubResource("LE_pokmmo_0146_ancientpower"), SubResource("LE_pokmmo_0146_incinerate"), SubResource("LE_pokmmo_0146_flamethrower"), SubResource("LE_pokmmo_0146_roost"), SubResource("LE_pokmmo_0146_heat_wave"), SubResource("LE_pokmmo_0146_sunny_day"), SubResource("LE_pokmmo_0146_hurricane"), SubResource("LE_pokmmo_0146_endure"), SubResource("LE_pokmmo_0146_solarbeam"), SubResource("LE_pokmmo_0146_overheat"), SubResource("LE_pokmmo_0146_sky_attack"), SubResource("LE_new_0146_pressure"), SubResource("LE_new_0146_flame_body")])
 unit_name = "Moltres"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire", "Flying"])
 grounded = false
 weight = 1

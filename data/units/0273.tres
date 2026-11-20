@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0273/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0273/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -192,8 +190,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0273_power_herb")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0273_bide"), SubResource("LE_pokmmo_0273_harden"), SubResource("LE_pokmmo_0273_tackle"), SubResource("LE_pokmmo_0273_absorb"), SubResource("LE_pokmmo_0273_astonish"), SubResource("LE_pokmmo_0273_growth"), SubResource("LE_pokmmo_0273_rollout"), SubResource("LE_pokmmo_0273_mega_drain"), SubResource("LE_pokmmo_0273_payback"), SubResource("LE_pokmmo_0273_headbutt"), SubResource("LE_pokmmo_0273_nature_power"), SubResource("LE_pokmmo_0273_sunny_day"), SubResource("LE_pokmmo_0273_synthesis"), SubResource("LE_pokmmo_0273_sucker_punch"), SubResource("LE_pokmmo_0273_explosion"), SubResource("LE_new_0273_chlorophyll"), SubResource("LE_new_0273_early_bird"), SubResource("LE_new_0273_pickpocket")])
 unit_name = "Seedot"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Grass"])
 grounded = true
 weight = 1

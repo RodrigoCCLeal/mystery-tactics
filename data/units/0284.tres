@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0284/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0284/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/whirlwind.tres" id="100"]
@@ -241,8 +239,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0284_silver_powder")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0284_bubble"), SubResource("LE_pokmmo_0284_bug_buzz"), SubResource("LE_pokmmo_0284_ominous_wind"), SubResource("LE_pokmmo_0284_quick_attack"), SubResource("LE_pokmmo_0284_quiver_dance"), SubResource("LE_pokmmo_0284_soak"), SubResource("LE_pokmmo_0284_sweet_scent"), SubResource("LE_pokmmo_0284_water_gun"), SubResource("LE_pokmmo_0284_water_sport"), SubResource("LE_pokmmo_0284_whirlwind"), SubResource("LE_pokmmo_0284_gust"), SubResource("LE_pokmmo_0284_air_cutter"), SubResource("LE_pokmmo_0284_scary_face"), SubResource("LE_pokmmo_0284_stun_spore"), SubResource("LE_pokmmo_0284_air_slash"), SubResource("LE_pokmmo_0284_silver_wind"), SubResource("LE_pokmmo_0284_supersonic"), SubResource("LE_pokmmo_0284_giga_drain"), SubResource("LE_new_0284_intimidate"), SubResource("LE_new_0284_unnerve")])
 unit_name = "Masquerain"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Flying"])
 grounded = false
 weight = 1

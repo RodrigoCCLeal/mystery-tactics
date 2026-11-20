@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0032/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0032/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -193,8 +191,6 @@ action = ExtResource("115")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0032_leer"), SubResource("LE_pokmmo_0032_peck"), SubResource("LE_pokmmo_0032_poison_sting"), SubResource("LE_pokmmo_0032_tackle"), SubResource("LE_pokmmo_0032_focus_energy"), SubResource("LE_pokmmo_0032_double_kick"), SubResource("LE_pokmmo_0032_horn_attack"), SubResource("LE_pokmmo_0032_fury_attack"), SubResource("LE_pokmmo_0032_helping_hand"), SubResource("LE_pokmmo_0032_toxic"), SubResource("LE_pokmmo_0032_toxic_spikes"), SubResource("LE_pokmmo_0032_poison_jab"), SubResource("LE_pokmmo_0032_horn_drill"), SubResource("LE_pokmmo_0032_captivate"), SubResource("LE_pokmmo_0032_flatter"), SubResource("LE_pokmmo_0032_earth_power"), SubResource("LE_new_0032_poison_point"), SubResource("LE_new_0032_rivalry"), SubResource("LE_new_0032_hustle")])
 unit_name = "Nidoran♂"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Poison"])
 grounded = true
 weight = 1

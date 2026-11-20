@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0345/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0345/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/wrap.tres" id="100"]
@@ -209,8 +207,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0345_big_root")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0345_astonish"), SubResource("LE_pokmmo_0345_constrict"), SubResource("LE_pokmmo_0345_wrap"), SubResource("LE_pokmmo_0345_acid"), SubResource("LE_pokmmo_0345_confuse_ray"), SubResource("LE_pokmmo_0345_ingrain"), SubResource("LE_pokmmo_0345_ancientpower"), SubResource("LE_pokmmo_0345_mega_drain"), SubResource("LE_pokmmo_0345_brine"), SubResource("LE_pokmmo_0345_amnesia"), SubResource("LE_pokmmo_0345_gastro_acid"), SubResource("LE_pokmmo_0345_giga_drain"), SubResource("LE_pokmmo_0345_spit_up"), SubResource("LE_pokmmo_0345_stockpile"), SubResource("LE_pokmmo_0345_swallow"), SubResource("LE_pokmmo_0345_energy_ball"), SubResource("LE_pokmmo_0345_wring_out"), SubResource("LE_new_0345_suction_cups"), SubResource("LE_new_0345_storm_drain")])
 unit_name = "Lileep"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Rock", "Grass"])
 grounded = true
 weight = 1

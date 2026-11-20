@@ -2,8 +2,6 @@
 
 [ext_resource type="Script" uid="uid://dukviaasrbc5h" path="res://scripts/evolution_option.gd" id="1_hjdrh"]
 [ext_resource type="Script" uid="uid://dcmk5dnw33yee" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dwk8pab1hv1o0" path="res://assets/sprites/Pokemon/Sprites/0383/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" uid="uid://c35muhbugk7hb" path="res://assets/sprites/Pokemon/Sprites/0383/frames.tres" id="3_frames"]
 [ext_resource type="Script" uid="uid://dveq8omtf5cry" path="res://scripts/learnset_entry.gd" id="4_learnset"]
 [ext_resource type="Resource" path="res://data/abilities/desolate_land.tres" id="5_desolate_land"]
 [ext_resource type="Script" uid="uid://1jnek718ywbt" path="res://scripts/action_data.gd" id="6_cthjb"]
@@ -213,10 +211,8 @@ action = ExtResource("113")
 [resource]
 script = ExtResource("1_script")
 unit_name = "Groudon"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ground"])
-learnset = Array[ExtResource("4_learnset")]([SubResource("LE_pokmmo_0383_ancientpower"), SubResource("LE_pokmmo_0383_lava_plume"), SubResource("LE_pokmmo_0383_mud_shot"), SubResource("LE_pokmmo_0383_sand_tomb"), SubResource("LE_pokmmo_0383_scary_face"), SubResource("LE_pokmmo_0383_earth_power"), SubResource("LE_pokmmo_0383_bulk_up"), SubResource("LE_pokmmo_0383_slash"), SubResource("LE_pokmmo_0383_earthquake"), SubResource("LE_pokmmo_0383_rock_blast"), SubResource("LE_pokmmo_0383_fire_spin"), SubResource("LE_pokmmo_0383_hammer_arm"), SubResource("LE_pokmmo_0383_heavy_slam"), SubResource("LE_pokmmo_0383_stone_edge"), SubResource("LE_pokmmo_0383_fissure"), SubResource("LE_pokmmo_0383_rest"), SubResource("LE_pokmmo_0383_dynamicpunch"), SubResource("LE_pokmmo_0383_fire_blast"), SubResource("LE_pokmmo_0383_heat_crash"), SubResource("LE_pokmmo_0383_solarbeam"), SubResource("LE_pokmmo_0383_eruption"), SubResource("LE_new_0383_drought")])
+learnset = Array[ExtResource("4_learnset")]([SubResource("LE_pokmmo_0383_ancientpower"), SubResource("LE_pokmmo_0383_lava_plume"), SubResource("LE_pokmmo_0383_mud_shot"), SubResource("LE_pokmmo_0383_sand_tomb"), SubResource("LE_pokmmo_0383_scary_face"), SubResource("LE_pokmmo_0383_earth_power"), SubResource("LE_pokmmo_0383_bulk_up"), SubResource("LE_pokmmo_0383_slash"), SubResource("LE_pokmmo_0383_earthquake"), SubResource("LE_pokmmo_0383_rock_blast"), SubResource("LE_pokmmo_0383_fire_spin"), SubResource("LE_pokmmo_0383_hammer_arm"), SubResource("LE_pokmmo_0383_heavy_slam"), SubResource("LE_pokmmo_0383_stone_edge"), SubResource("LE_pokmmo_0383_fissure"), SubResource("LE_pokmmo_0383_rest"), SubResource("LE_pokmmo_0383_dynamicpunch"), SubResource("LE_pokmmo_0383_fire_blast"), SubResource("LE_pokmmo_0383_heat_crash"), SubResource("LE_pokmmo_0383_solarbeam"), SubResource("LE_pokmmo_0383_eruption"), SubResource("LE_new_0383_drought"), SubResource("LearnsetEntry_0383_desolate_land")])
 hp_base = 100
 attack_base = 150
 defense_base = 140

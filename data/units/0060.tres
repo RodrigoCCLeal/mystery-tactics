@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0060/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0060/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/water_gun.tres" id="100"]
@@ -215,8 +213,6 @@ action = ExtResource("117")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0060_bubble"), SubResource("LE_pokmmo_0060_hypnosis"), SubResource("LE_pokmmo_0060_water_gun"), SubResource("LE_pokmmo_0060_water_sport"), SubResource("LE_pokmmo_0060_pound"), SubResource("LE_pokmmo_0060_mud_shot"), SubResource("LE_pokmmo_0060_doubleslap"), SubResource("LE_pokmmo_0060_bubblebeam"), SubResource("LE_pokmmo_0060_rain_dance"), SubResource("LE_pokmmo_0060_low_kick"), SubResource("LE_pokmmo_0060_body_slam"), SubResource("LE_pokmmo_0060_wake_up_slap"), SubResource("LE_pokmmo_0060_earth_power"), SubResource("LE_pokmmo_0060_hydro_pump"), SubResource("LE_pokmmo_0060_amnesia"), SubResource("LE_pokmmo_0060_mud_bomb"), SubResource("LE_pokmmo_0060_belly_drum"), SubResource("LE_pokmmo_0060_double_edge"), SubResource("LE_new_0060_water_absorb"), SubResource("LE_new_0060_damp"), SubResource("LE_new_0060_swift_swim")])
 unit_name = "Poliwag"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Water"])
 grounded = true
 weight = 1

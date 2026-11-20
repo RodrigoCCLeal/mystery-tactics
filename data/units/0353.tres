@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0353/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0353/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/knock_off.tres" id="100"]
@@ -261,8 +259,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0353_spell_tag")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0353_astonish"), SubResource("LE_pokmmo_0353_knock_off"), SubResource("LE_pokmmo_0353_lick"), SubResource("LE_pokmmo_0353_screech"), SubResource("LE_pokmmo_0353_night_shade"), SubResource("LE_pokmmo_0353_confuse_ray"), SubResource("LE_pokmmo_0353_spite"), SubResource("LE_pokmmo_0353_will_o_wisp"), SubResource("LE_pokmmo_0353_faint_attack"), SubResource("LE_pokmmo_0353_pain_split"), SubResource("LE_pokmmo_0353_shadow_sneak"), SubResource("LE_pokmmo_0353_hex"), SubResource("LE_pokmmo_0353_shadow_claw"), SubResource("LE_pokmmo_0353_curse"), SubResource("LE_pokmmo_0353_shadow_ball"), SubResource("LE_pokmmo_0353_embargo"), SubResource("LE_pokmmo_0353_role_play"), SubResource("LE_pokmmo_0353_swords_dance"), SubResource("LE_pokmmo_0353_sucker_punch"), SubResource("LE_pokmmo_0353_snatch"), SubResource("LE_pokmmo_0353_trick"), SubResource("LE_pokmmo_0353_grudge"), SubResource("LE_pokmmo_0353_gunk_shot"), SubResource("LE_new_0353_insomnia"), SubResource("LE_new_0353_frisk"), SubResource("LE_new_0353_cursed_body")])
 unit_name = "Shuppet"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ghost"])
 grounded = true
 weight = 1

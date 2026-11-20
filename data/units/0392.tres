@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0392/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0392/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -254,8 +252,6 @@ action = ExtResource("124")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0392_close_combat"), SubResource("LE_pokmmo_0392_ember"), SubResource("LE_pokmmo_0392_flare_blitz"), SubResource("LE_pokmmo_0392_leer"), SubResource("LE_pokmmo_0392_mach_punch"), SubResource("LE_pokmmo_0392_scratch"), SubResource("LE_pokmmo_0392_tackle"), SubResource("LE_pokmmo_0392_taunt"), SubResource("LE_pokmmo_0392_swift"), SubResource("LE_pokmmo_0392_fury_swipes"), SubResource("LE_pokmmo_0392_flame_wheel"), SubResource("LE_pokmmo_0392_nasty_plot"), SubResource("LE_pokmmo_0392_feint"), SubResource("LE_pokmmo_0392_punishment"), SubResource("LE_pokmmo_0392_torment"), SubResource("LE_pokmmo_0392_u_turn"), SubResource("LE_pokmmo_0392_flamethrower"), SubResource("LE_pokmmo_0392_fire_spin"), SubResource("LE_pokmmo_0392_double_edge"), SubResource("LE_pokmmo_0392_acrobatics"), SubResource("LE_pokmmo_0392_calm_mind"), SubResource("LE_new_0392_blaze"), SubResource("LE_new_0392_iron_fist")])
 unit_name = "Infernape"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire", "Fighting"])
 grounded = true
 weight = 1

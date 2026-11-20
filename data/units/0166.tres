@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0166/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0166/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/comet_punch.tres" id="100"]
@@ -194,8 +192,6 @@ action = ExtResource("115")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0166_supersonic"), SubResource("LE_pokmmo_0166_swift"), SubResource("LE_pokmmo_0166_tackle"), SubResource("LE_pokmmo_0166_light_screen"), SubResource("LE_pokmmo_0166_reflect"), SubResource("LE_pokmmo_0166_safeguard"), SubResource("LE_pokmmo_0166_mach_punch"), SubResource("LE_pokmmo_0166_roost"), SubResource("LE_pokmmo_0166_silver_wind"), SubResource("LE_pokmmo_0166_comet_punch"), SubResource("LE_pokmmo_0166_struggle_bug"), SubResource("LE_pokmmo_0166_baton_pass"), SubResource("LE_pokmmo_0166_agility"), SubResource("LE_pokmmo_0166_bug_buzz"), SubResource("LE_pokmmo_0166_air_slash"), SubResource("LE_pokmmo_0166_double_edge"), SubResource("LE_new_0166_swarm"), SubResource("LE_new_0166_early_bird"), SubResource("LE_new_0166_iron_fist")])
 unit_name = "Ledian"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Flying"])
 grounded = false
 weight = 1

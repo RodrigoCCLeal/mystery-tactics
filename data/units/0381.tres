@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0381/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0381/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/psywave.tres" id="100"]
@@ -289,8 +287,6 @@ action = ExtResource("118")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0381_dragon_dance"), SubResource("LE_pokmmo_0381_heal_block"), SubResource("LE_pokmmo_0381_helping_hand"), SubResource("LE_pokmmo_0381_luster_purge"), SubResource("LE_pokmmo_0381_memento"), SubResource("LE_pokmmo_0381_psywave"), SubResource("LE_pokmmo_0381_safeguard"), SubResource("LE_pokmmo_0381_stored_power"), SubResource("LE_pokmmo_0381_work_up"), SubResource("LE_pokmmo_0381_protect"), SubResource("LE_pokmmo_0381_twister"), SubResource("LE_pokmmo_0381_recover"), SubResource("LE_pokmmo_0381_refresh"), SubResource("LE_pokmmo_0381_confusion"), SubResource("LE_pokmmo_0381_psybeam"), SubResource("LE_pokmmo_0381_tailwind"), SubResource("LE_pokmmo_0381_dragonbreath"), SubResource("LE_pokmmo_0381_ally_switch"), SubResource("LE_pokmmo_0381_wish"), SubResource("LE_pokmmo_0381_water_pulse"), SubResource("LE_pokmmo_0381_telekinesis"), SubResource("LE_pokmmo_0381_zen_headbutt"), SubResource("LE_pokmmo_0381_dragon_pulse"), SubResource("LE_pokmmo_0381_aura_sphere"), SubResource("LE_pokmmo_0381_heal_pulse"), SubResource("LE_pokmmo_0381_simple_beam"), SubResource("LE_pokmmo_0381_psychic"), SubResource("LE_pokmmo_0381_air_slash"), SubResource("LE_pokmmo_0381_power_split"), SubResource("LE_pokmmo_0381_psycho_shift"), SubResource("LE_new_0381_levitate")])
 unit_name = "Latios"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dragon", "Psychic"])
 grounded = true
 weight = 1

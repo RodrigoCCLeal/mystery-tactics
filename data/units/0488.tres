@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0488/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0488/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -188,8 +186,6 @@ action = ExtResource("115")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0488_confusion"), SubResource("LE_pokmmo_0488_double_team"), SubResource("LE_pokmmo_0488_lunar_dance"), SubResource("LE_pokmmo_0488_moonlight"), SubResource("LE_pokmmo_0488_psycho_cut"), SubResource("LE_pokmmo_0488_psycho_shift"), SubResource("LE_pokmmo_0488_tackle"), SubResource("LE_pokmmo_0488_mist"), SubResource("LE_pokmmo_0488_aurora_beam"), SubResource("LE_pokmmo_0488_psybeam"), SubResource("LE_pokmmo_0488_ally_switch"), SubResource("LE_pokmmo_0488_recover"), SubResource("LE_pokmmo_0488_slash"), SubResource("LE_pokmmo_0488_safeguard"), SubResource("LE_pokmmo_0488_psychic"), SubResource("LE_pokmmo_0488_future_sight"), SubResource("LE_new_0488_levitate")])
 unit_name = "Cresselia"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic"])
 grounded = true
 weight = 1

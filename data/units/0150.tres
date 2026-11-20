@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0150/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0150/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/disable.tres" id="100"]
@@ -289,8 +287,6 @@ action = ExtResource("126")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0150_confuse_ray"), SubResource("LE_pokmmo_0150_confusion"), SubResource("LE_pokmmo_0150_disable"), SubResource("LE_pokmmo_0150_psywave"), SubResource("LE_pokmmo_0150_safeguard"), SubResource("LE_pokmmo_0150_swift"), SubResource("LE_pokmmo_0150_teleport"), SubResource("LE_pokmmo_0150_ancientpower"), SubResource("LE_pokmmo_0150_mist"), SubResource("LE_pokmmo_0150_psybeam"), SubResource("LE_pokmmo_0150_psycho_cut"), SubResource("LE_pokmmo_0150_psych_up"), SubResource("LE_pokmmo_0150_miracle_eye"), SubResource("LE_pokmmo_0150_amnesia"), SubResource("LE_pokmmo_0150_aura_sphere"), SubResource("LE_pokmmo_0150_psychic"), SubResource("LE_pokmmo_0150_recover"), SubResource("LE_pokmmo_0150_guard_swap"), SubResource("LE_pokmmo_0150_power_swap"), SubResource("LE_pokmmo_0150_barrier"), SubResource("LE_pokmmo_0150_psystrike"), SubResource("LE_pokmmo_0150_agility"), SubResource("LE_pokmmo_0150_future_sight"), SubResource("LE_pokmmo_0150_me_first"), SubResource("LE_pokmmo_0150_calm_mind"), SubResource("LE_new_0150_pressure"), SubResource("LE_new_0150_unnerve")])
 unit_name = "Mewtwo"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic"])
 grounded = true
 weight = 1

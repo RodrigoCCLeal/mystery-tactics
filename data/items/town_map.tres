@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" uid="uid://c8w8n0ts68l77" path="res://scripts/item_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/items/Tool/TOWNMAP.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+icon = ExtResource("2")
+category = "Tool"
+effect_description = "Mostra o mapa de Tactica e onde você está. Com a Song Fly, dá pra voar até uma cidade já visitada."
+can_use = true
+opens_town_map = true
+buy_price = 0
+sell_price = 0
+action_name = "Town Map"

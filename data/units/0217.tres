@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0217/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0217/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -255,8 +253,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0217_oran_berry"), SubResource("WHI_0217_sitrus_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0217_covet"), SubResource("LE_pokmmo_0217_fake_tears"), SubResource("LE_pokmmo_0217_hammer_arm"), SubResource("LE_pokmmo_0217_leer"), SubResource("LE_pokmmo_0217_lick"), SubResource("LE_pokmmo_0217_scratch"), SubResource("LE_pokmmo_0217_tackle"), SubResource("LE_pokmmo_0217_fury_swipes"), SubResource("LE_pokmmo_0217_bulldoze"), SubResource("LE_pokmmo_0217_payback"), SubResource("LE_pokmmo_0217_faint_attack"), SubResource("LE_pokmmo_0217_sweet_scent"), SubResource("LE_pokmmo_0217_slash"), SubResource("LE_pokmmo_0217_scary_face"), SubResource("LE_pokmmo_0217_rest"), SubResource("LE_pokmmo_0217_snore"), SubResource("LE_pokmmo_0217_double_edge"), SubResource("LE_pokmmo_0217_thrash"), SubResource("LE_new_0217_guts"), SubResource("LE_new_0217_quick_feet"), SubResource("LE_new_0217_unnerve")])
 unit_name = "Ursaring"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal"])
 grounded = true
 weight = 1

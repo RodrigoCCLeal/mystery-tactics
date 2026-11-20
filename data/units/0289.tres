@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0289/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0289/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -240,8 +238,6 @@ action = ExtResource("126")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0289_encore"), SubResource("LE_pokmmo_0289_fling"), SubResource("LE_pokmmo_0289_hammer_arm"), SubResource("LE_pokmmo_0289_punishment"), SubResource("LE_pokmmo_0289_scratch"), SubResource("LE_pokmmo_0289_slack_off"), SubResource("LE_pokmmo_0289_sucker_punch"), SubResource("LE_pokmmo_0289_swagger"), SubResource("LE_pokmmo_0289_yawn"), SubResource("LE_pokmmo_0289_faint_attack"), SubResource("LE_pokmmo_0289_rest"), SubResource("LE_pokmmo_0289_amnesia"), SubResource("LE_pokmmo_0289_covet"), SubResource("LE_pokmmo_0289_chip_away"), SubResource("LE_pokmmo_0289_headbutt"), SubResource("LE_pokmmo_0289_counter"), SubResource("LE_pokmmo_0289_flail"), SubResource("LE_pokmmo_0289_mega_kick"), SubResource("LE_new_0289_truant")])
 unit_name = "Slaking"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal"])
 grounded = true
 weight = 1

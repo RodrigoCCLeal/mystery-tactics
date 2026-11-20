@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0277/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0277/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/growl.tres" id="100"]
@@ -168,8 +166,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0277_charti_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0277_air_slash"), SubResource("LE_pokmmo_0277_brave_bird"), SubResource("LE_pokmmo_0277_focus_energy"), SubResource("LE_pokmmo_0277_growl"), SubResource("LE_pokmmo_0277_peck"), SubResource("LE_pokmmo_0277_pluck"), SubResource("LE_pokmmo_0277_quick_attack"), SubResource("LE_pokmmo_0277_wing_attack"), SubResource("LE_pokmmo_0277_double_team"), SubResource("LE_pokmmo_0277_aerial_ace"), SubResource("LE_pokmmo_0277_quick_guard"), SubResource("LE_pokmmo_0277_agility"), SubResource("LE_pokmmo_0277_endeavor"), SubResource("LE_pokmmo_0277_reversal"), SubResource("LE_new_0277_guts"), SubResource("LE_new_0277_scrappy")])
 unit_name = "Swellow"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal", "Flying"])
 grounded = false
 weight = 1

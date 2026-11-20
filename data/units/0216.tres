@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0216/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0216/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -246,8 +244,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0216_oran_berry"), SubResource("WHI_0216_sitrus_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0216_covet"), SubResource("LE_pokmmo_0216_fake_tears"), SubResource("LE_pokmmo_0216_fling"), SubResource("LE_pokmmo_0216_leer"), SubResource("LE_pokmmo_0216_lick"), SubResource("LE_pokmmo_0216_scratch"), SubResource("LE_pokmmo_0216_tackle"), SubResource("LE_pokmmo_0216_fury_swipes"), SubResource("LE_pokmmo_0216_bulldoze"), SubResource("LE_pokmmo_0216_payback"), SubResource("LE_pokmmo_0216_faint_attack"), SubResource("LE_pokmmo_0216_sweet_scent"), SubResource("LE_pokmmo_0216_slash"), SubResource("LE_pokmmo_0216_charm"), SubResource("LE_pokmmo_0216_rest"), SubResource("LE_pokmmo_0216_snore"), SubResource("LE_pokmmo_0216_thrash"), SubResource("LE_pokmmo_0216_double_edge"), SubResource("LE_new_0216_pickup"), SubResource("LE_new_0216_quick_feet"), SubResource("LE_new_0216_honey_gather")])
 unit_name = "Teddiursa"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal"])
 grounded = true
 weight = 1

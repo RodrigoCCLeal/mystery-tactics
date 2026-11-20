@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0040/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0040/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -294,8 +292,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0040_moon_stone"), SubResource("WHI_0040_oran_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0040_bide"), SubResource("LE_pokmmo_0040_body_slam"), SubResource("LE_pokmmo_0040_charm"), SubResource("LE_pokmmo_0040_copycat"), SubResource("LE_pokmmo_0040_covet"), SubResource("LE_pokmmo_0040_defense_curl"), SubResource("LE_pokmmo_0040_disable"), SubResource("LE_pokmmo_0040_double_edge"), SubResource("LE_pokmmo_0040_doubleslap"), SubResource("LE_pokmmo_0040_echoed_voice"), SubResource("LE_pokmmo_0040_gyro_ball"), SubResource("LE_pokmmo_0040_hyper_voice"), SubResource("LE_pokmmo_0040_mimic"), SubResource("LE_pokmmo_0040_minimize"), SubResource("LE_pokmmo_0040_pound"), SubResource("LE_pokmmo_0040_rest"), SubResource("LE_pokmmo_0040_round"), SubResource("LE_pokmmo_0040_sing"), SubResource("LE_pokmmo_0040_spit_up"), SubResource("LE_pokmmo_0040_stockpile"), SubResource("LE_pokmmo_0040_swallow"), SubResource("LE_pokmmo_0040_sweet_kiss"), SubResource("LE_pokmmo_0040_tackle"), SubResource("LE_pokmmo_0040_rollout"), SubResource("LE_pokmmo_0040_fake_tears"), SubResource("LE_pokmmo_0040_confusion"), SubResource("LE_pokmmo_0040_facade"), SubResource("LE_pokmmo_0040_take_down"), SubResource("LE_pokmmo_0040_wish"), SubResource("LE_pokmmo_0040_perish_song"), SubResource("LE_new_0040_cute_charm"), SubResource("LE_new_0040_competitive"), SubResource("LE_new_0040_frisk")])
 unit_name = "Wigglytuff"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal", "Fairy"])
 grounded = true
 weight = 1

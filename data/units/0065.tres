@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0065/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0065/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/disable.tres" id="100"]
@@ -286,8 +284,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0065_twisted_spoon")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0065_barrier"), SubResource("LE_pokmmo_0065_calm_mind"), SubResource("LE_pokmmo_0065_disable"), SubResource("LE_pokmmo_0065_encore"), SubResource("LE_pokmmo_0065_flash"), SubResource("LE_pokmmo_0065_kinesis"), SubResource("LE_pokmmo_0065_psybeam"), SubResource("LE_pokmmo_0065_teleport"), SubResource("LE_pokmmo_0065_hypnosis"), SubResource("LE_pokmmo_0065_reflect"), SubResource("LE_pokmmo_0065_ally_switch"), SubResource("LE_pokmmo_0065_confusion"), SubResource("LE_pokmmo_0065_night_shade"), SubResource("LE_pokmmo_0065_psycho_cut"), SubResource("LE_pokmmo_0065_miracle_eye"), SubResource("LE_pokmmo_0065_recover"), SubResource("LE_pokmmo_0065_zen_headbutt"), SubResource("LE_pokmmo_0065_substitute"), SubResource("LE_pokmmo_0065_psyshock"), SubResource("LE_pokmmo_0065_telekinesis"), SubResource("LE_pokmmo_0065_psychic"), SubResource("LE_pokmmo_0065_role_play"), SubResource("LE_pokmmo_0065_safeguard"), SubResource("LE_pokmmo_0065_future_sight"), SubResource("LE_pokmmo_0065_trick"), SubResource("LE_new_0065_synchronize"), SubResource("LE_new_0065_inner_focus"), SubResource("LE_new_0065_magic_guard")])
 unit_name = "Alakazam"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic"])
 grounded = true
 weight = 1

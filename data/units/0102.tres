@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0102/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0102/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/absorb.tres" id="100"]
@@ -251,8 +249,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0102_psychic_seed")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0102_absorb"), SubResource("LE_pokmmo_0102_barrage"), SubResource("LE_pokmmo_0102_hypnosis"), SubResource("LE_pokmmo_0102_uproar"), SubResource("LE_pokmmo_0102_reflect"), SubResource("LE_pokmmo_0102_leech_seed"), SubResource("LE_pokmmo_0102_confusion"), SubResource("LE_pokmmo_0102_mega_drain"), SubResource("LE_pokmmo_0102_stun_spore"), SubResource("LE_pokmmo_0102_poisonpowder"), SubResource("LE_pokmmo_0102_sleep_powder"), SubResource("LE_pokmmo_0102_psybeam"), SubResource("LE_pokmmo_0102_synthesis"), SubResource("LE_pokmmo_0102_bullet_seed"), SubResource("LE_pokmmo_0102_giga_drain"), SubResource("LE_pokmmo_0102_natural_gift"), SubResource("LE_pokmmo_0102_extrasensory"), SubResource("LE_pokmmo_0102_psychic"), SubResource("LE_pokmmo_0102_solarbeam"), SubResource("LE_pokmmo_0102_bestow"), SubResource("LE_pokmmo_0102_worry_seed"), SubResource("LE_new_0102_chlorophyll"), SubResource("LE_new_0102_harvest")])
 unit_name = "Exeggcute"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Grass", "Psychic"])
 grounded = true
 weight = 1

@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0232/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0232/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/horn_attack.tres" id="100"]
@@ -255,8 +253,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0232_passho_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0232_bulldoze"), SubResource("LE_pokmmo_0232_defense_curl"), SubResource("LE_pokmmo_0232_fire_fang"), SubResource("LE_pokmmo_0232_flail"), SubResource("LE_pokmmo_0232_fury_attack"), SubResource("LE_pokmmo_0232_growl"), SubResource("LE_pokmmo_0232_horn_attack"), SubResource("LE_pokmmo_0232_odor_sleuth"), SubResource("LE_pokmmo_0232_thunder_fang"), SubResource("LE_pokmmo_0232_rapid_spin"), SubResource("LE_pokmmo_0232_rollout"), SubResource("LE_pokmmo_0232_assurance"), SubResource("LE_pokmmo_0232_knock_off"), SubResource("LE_pokmmo_0232_slam"), SubResource("LE_pokmmo_0232_magnitude"), SubResource("LE_pokmmo_0232_rock_tomb"), SubResource("LE_pokmmo_0232_scary_face"), SubResource("LE_pokmmo_0232_earthquake"), SubResource("LE_pokmmo_0232_giga_impact"), SubResource("LE_new_0232_sturdy"), SubResource("LE_new_0232_sand_veil")])
 unit_name = "Donphan"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ground"])
 grounded = true
 weight = 1

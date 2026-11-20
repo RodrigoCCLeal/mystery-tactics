@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0122/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0122/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -390,8 +388,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0122_leppa_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0122_barrier"), SubResource("LE_pokmmo_0122_baton_pass"), SubResource("LE_pokmmo_0122_confuse_ray"), SubResource("LE_pokmmo_0122_confusion"), SubResource("LE_pokmmo_0122_copycat"), SubResource("LE_pokmmo_0122_encore"), SubResource("LE_pokmmo_0122_guard_swap"), SubResource("LE_pokmmo_0122_hypnosis"), SubResource("LE_pokmmo_0122_magical_leaf"), SubResource("LE_pokmmo_0122_pound"), SubResource("LE_pokmmo_0122_power_swap"), SubResource("LE_pokmmo_0122_quick_guard"), SubResource("LE_pokmmo_0122_tackle"), SubResource("LE_pokmmo_0122_wide_guard"), SubResource("LE_pokmmo_0122_meditate"), SubResource("LE_pokmmo_0122_charm"), SubResource("LE_pokmmo_0122_doubleslap"), SubResource("LE_pokmmo_0122_iron_defense"), SubResource("LE_pokmmo_0122_dream_eater"), SubResource("LE_pokmmo_0122_psywave"), SubResource("LE_pokmmo_0122_mimic"), SubResource("LE_pokmmo_0122_role_play"), SubResource("LE_pokmmo_0122_zen_headbutt"), SubResource("LE_pokmmo_0122_protect"), SubResource("LE_pokmmo_0122_recycle"), SubResource("LE_pokmmo_0122_stealth_rock"), SubResource("LE_pokmmo_0122_psybeam"), SubResource("LE_pokmmo_0122_substitute"), SubResource("LE_pokmmo_0122_light_screen"), SubResource("LE_pokmmo_0122_reflect"), SubResource("LE_pokmmo_0122_safeguard"), SubResource("LE_pokmmo_0122_trick"), SubResource("LE_pokmmo_0122_sucker_punch"), SubResource("LE_pokmmo_0122_calm_mind"), SubResource("LE_pokmmo_0122_psychic"), SubResource("LE_pokmmo_0122_teeter_dance"), SubResource("LE_new_0122_soundproof"), SubResource("LE_new_0122_filter"), SubResource("LE_new_0122_technician")])
 unit_name = "Mr. Mime"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic", "Fairy"])
 grounded = true
 weight = 1

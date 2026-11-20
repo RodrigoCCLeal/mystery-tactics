@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0487/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0487/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="100"]
@@ -200,8 +198,6 @@ action = ExtResource("108")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0487_defog"), SubResource("LE_pokmmo_0487_dragonbreath"), SubResource("LE_pokmmo_0487_scary_face"), SubResource("LE_pokmmo_0487_shadow_sneak"), SubResource("LE_pokmmo_0487_ominous_wind"), SubResource("LE_pokmmo_0487_ancientpower"), SubResource("LE_pokmmo_0487_hex"), SubResource("LE_pokmmo_0487_slash"), SubResource("LE_pokmmo_0487_shadow_ball"), SubResource("LE_pokmmo_0487_dragon_pulse"), SubResource("LE_pokmmo_0487_shadow_claw"), SubResource("LE_pokmmo_0487_pain_split"), SubResource("LE_pokmmo_0487_heal_block"), SubResource("LE_pokmmo_0487_aura_sphere"), SubResource("LE_pokmmo_0487_dragon_claw"), SubResource("LE_pokmmo_0487_earth_power"), SubResource("LE_pokmmo_0487_shadow_force"), SubResource("LE_pokmmo_0487_destiny_bond"), SubResource("LE_new_0487_pressure"), SubResource("LE_new_0487_telepathy")])
 unit_name = "Giratina"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ghost", "Dragon"])
 grounded = true
 weight = 1

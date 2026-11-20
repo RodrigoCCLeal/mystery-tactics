@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0444/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0444/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/sand_attack.tres" id="100"]
@@ -214,8 +212,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0444_haban_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0444_dragon_rage"), SubResource("LE_pokmmo_0444_dragonbreath"), SubResource("LE_pokmmo_0444_dual_chop"), SubResource("LE_pokmmo_0444_sand_tomb"), SubResource("LE_pokmmo_0444_sand_attack"), SubResource("LE_pokmmo_0444_tackle"), SubResource("LE_pokmmo_0444_twister"), SubResource("LE_pokmmo_0444_bulldoze"), SubResource("LE_pokmmo_0444_bite"), SubResource("LE_pokmmo_0444_earth_power"), SubResource("LE_pokmmo_0444_slash"), SubResource("LE_pokmmo_0444_dragon_claw"), SubResource("LE_pokmmo_0444_double_edge"), SubResource("LE_pokmmo_0444_dig"), SubResource("LE_pokmmo_0444_outrage"), SubResource("LE_pokmmo_0444_take_down"), SubResource("LE_pokmmo_0444_sandstorm"), SubResource("LE_pokmmo_0444_dragon_rush"), SubResource("LE_new_0444_sand_veil"), SubResource("LE_new_0444_rough_skin")])
 unit_name = "Gabite"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dragon", "Ground"])
 grounded = true
 weight = 1

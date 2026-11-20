@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0481/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0481/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="100"]
@@ -219,8 +217,6 @@ action = ExtResource("113")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0481_confusion"), SubResource("LE_pokmmo_0481_copycat"), SubResource("LE_pokmmo_0481_healing_wish"), SubResource("LE_pokmmo_0481_natural_gift"), SubResource("LE_pokmmo_0481_rest"), SubResource("LE_pokmmo_0481_swift"), SubResource("LE_pokmmo_0481_double_hit"), SubResource("LE_pokmmo_0481_protect"), SubResource("LE_pokmmo_0481_psybeam"), SubResource("LE_pokmmo_0481_imprison"), SubResource("LE_pokmmo_0481_lucky_chant"), SubResource("LE_pokmmo_0481_tri_attack"), SubResource("LE_pokmmo_0481_extrasensory"), SubResource("LE_pokmmo_0481_calm_mind"), SubResource("LE_pokmmo_0481_charm"), SubResource("LE_pokmmo_0481_psychic"), SubResource("LE_pokmmo_0481_flatter"), SubResource("LE_pokmmo_0481_recover"), SubResource("LE_pokmmo_0481_future_sight"), SubResource("LE_new_0481_levitate")])
 unit_name = "Mesprit"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic"])
 grounded = true
 weight = 1

@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0111/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0111/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/sand_attack.tres" id="100"]
@@ -287,8 +285,6 @@ action = ExtResource("119")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0111_horn_attack"), SubResource("LE_pokmmo_0111_sand_attack"), SubResource("LE_pokmmo_0111_tackle"), SubResource("LE_pokmmo_0111_tail_whip"), SubResource("LE_pokmmo_0111_fury_attack"), SubResource("LE_pokmmo_0111_smack_down"), SubResource("LE_pokmmo_0111_bulldoze"), SubResource("LE_pokmmo_0111_rock_smash"), SubResource("LE_pokmmo_0111_stomp"), SubResource("LE_pokmmo_0111_stealth_rock"), SubResource("LE_pokmmo_0111_rock_throw"), SubResource("LE_pokmmo_0111_scary_face"), SubResource("LE_pokmmo_0111_drill_run"), SubResource("LE_pokmmo_0111_chip_away"), SubResource("LE_pokmmo_0111_rock_slide"), SubResource("LE_pokmmo_0111_rock_blast"), SubResource("LE_pokmmo_0111_take_down"), SubResource("LE_pokmmo_0111_megahorn"), SubResource("LE_pokmmo_0111_double_edge"), SubResource("LE_pokmmo_0111_earthquake"), SubResource("LE_pokmmo_0111_leer"), SubResource("LE_pokmmo_0111_stone_edge"), SubResource("LE_pokmmo_0111_giga_impact"), SubResource("LE_pokmmo_0111_horn_drill"), SubResource("LE_new_0111_lightning_rod"), SubResource("LE_new_0111_rock_head"), SubResource("LE_new_0111_reckless")])
 unit_name = "Rhyhorn"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ground", "Rock"])
 grounded = true
 weight = 1

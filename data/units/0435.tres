@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0435/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0435/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -249,8 +247,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0435_pecha_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0435_feint"), SubResource("LE_pokmmo_0435_flamethrower"), SubResource("LE_pokmmo_0435_focus_energy"), SubResource("LE_pokmmo_0435_poison_gas"), SubResource("LE_pokmmo_0435_scratch"), SubResource("LE_pokmmo_0435_screech"), SubResource("LE_pokmmo_0435_smokescreen"), SubResource("LE_pokmmo_0435_tackle"), SubResource("LE_pokmmo_0435_acid_spray"), SubResource("LE_pokmmo_0435_fury_swipes"), SubResource("LE_pokmmo_0435_bite"), SubResource("LE_pokmmo_0435_venoshock"), SubResource("LE_pokmmo_0435_slash"), SubResource("LE_pokmmo_0435_toxic"), SubResource("LE_pokmmo_0435_sucker_punch"), SubResource("LE_pokmmo_0435_memento"), SubResource("LE_pokmmo_0435_poison_jab"), SubResource("LE_pokmmo_0435_night_slash"), SubResource("LE_pokmmo_0435_double_edge"), SubResource("LE_pokmmo_0435_explosion"), SubResource("LE_new_0435_stench"), SubResource("LE_new_0435_aftermath"), SubResource("LE_new_0435_keen_eye")])
 unit_name = "Skuntank"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Poison", "Dark"])
 grounded = true
 weight = 1

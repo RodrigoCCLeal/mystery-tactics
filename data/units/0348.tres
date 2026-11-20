@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0348/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0348/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -172,8 +170,6 @@ action = ExtResource("114")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0348_fury_cutter"), SubResource("LE_pokmmo_0348_harden"), SubResource("LE_pokmmo_0348_mud_sport"), SubResource("LE_pokmmo_0348_scratch"), SubResource("LE_pokmmo_0348_smack_down"), SubResource("LE_pokmmo_0348_water_gun"), SubResource("LE_pokmmo_0348_metal_claw"), SubResource("LE_pokmmo_0348_ancientpower"), SubResource("LE_pokmmo_0348_bug_bite"), SubResource("LE_pokmmo_0348_brine"), SubResource("LE_pokmmo_0348_slash"), SubResource("LE_pokmmo_0348_crush_claw"), SubResource("LE_pokmmo_0348_rock_blast"), SubResource("LE_pokmmo_0348_protect"), SubResource("LE_pokmmo_0348_x_scissor"), SubResource("LE_new_0348_battle_armor"), SubResource("LE_new_0348_swift_swim")])
 unit_name = "Armaldo"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Rock", "Bug"])
 grounded = true
 weight = 1

@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0104/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0104/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/growl.tres" id="100"]
@@ -239,8 +237,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0104_thick_club")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0104_growl"), SubResource("LE_pokmmo_0104_mud_slap"), SubResource("LE_pokmmo_0104_tackle"), SubResource("LE_pokmmo_0104_tail_whip"), SubResource("LE_pokmmo_0104_leer"), SubResource("LE_pokmmo_0104_bone_club"), SubResource("LE_pokmmo_0104_false_swipe"), SubResource("LE_pokmmo_0104_headbutt"), SubResource("LE_pokmmo_0104_retaliate"), SubResource("LE_pokmmo_0104_detect"), SubResource("LE_pokmmo_0104_rage"), SubResource("LE_pokmmo_0104_fling"), SubResource("LE_pokmmo_0104_bulldoze"), SubResource("LE_pokmmo_0104_focus_energy"), SubResource("LE_pokmmo_0104_bonemerang"), SubResource("LE_pokmmo_0104_bone_rush"), SubResource("LE_pokmmo_0104_thrash"), SubResource("LE_pokmmo_0104_double_edge"), SubResource("LE_pokmmo_0104_endeavor"), SubResource("LE_pokmmo_0104_swords_dance"), SubResource("LE_pokmmo_0104_perish_song"), SubResource("LE_new_0104_rock_head"), SubResource("LE_new_0104_lightning_rod"), SubResource("LE_new_0104_battle_armor")])
 unit_name = "Cubone"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ground"])
 grounded = true
 weight = 1

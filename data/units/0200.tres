@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0200/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0200/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/growl.tres" id="100"]
@@ -212,8 +210,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0200_spell_tag")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0200_confusion"), SubResource("LE_pokmmo_0200_growl"), SubResource("LE_pokmmo_0200_psywave"), SubResource("LE_pokmmo_0200_shadow_sneak"), SubResource("LE_pokmmo_0200_spite"), SubResource("LE_pokmmo_0200_astonish"), SubResource("LE_pokmmo_0200_hypnosis"), SubResource("LE_pokmmo_0200_confuse_ray"), SubResource("LE_pokmmo_0200_mean_look"), SubResource("LE_pokmmo_0200_hex"), SubResource("LE_pokmmo_0200_extrasensory"), SubResource("LE_pokmmo_0200_psybeam"), SubResource("LE_pokmmo_0200_pain_split"), SubResource("LE_pokmmo_0200_payback"), SubResource("LE_pokmmo_0200_shadow_ball"), SubResource("LE_pokmmo_0200_perish_song"), SubResource("LE_pokmmo_0200_grudge"), SubResource("LE_pokmmo_0200_power_gem"), SubResource("LE_new_0200_levitate")])
 unit_name = "Misdreavus"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ghost"])
 grounded = true
 weight = 1

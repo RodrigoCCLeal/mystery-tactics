@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0073/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0073/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/wrap.tres" id="100"]
@@ -282,8 +280,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0073_poison_barb")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0073_acid"), SubResource("LE_pokmmo_0073_constrict"), SubResource("LE_pokmmo_0073_haze"), SubResource("LE_pokmmo_0073_mirror_coat"), SubResource("LE_pokmmo_0073_poison_sting"), SubResource("LE_pokmmo_0073_reflect"), SubResource("LE_pokmmo_0073_reflect_type"), SubResource("LE_pokmmo_0073_supersonic"), SubResource("LE_pokmmo_0073_water_gun"), SubResource("LE_pokmmo_0073_wrap"), SubResource("LE_pokmmo_0073_wring_out"), SubResource("LE_pokmmo_0073_bubble"), SubResource("LE_pokmmo_0073_toxic_spikes"), SubResource("LE_pokmmo_0073_water_pulse"), SubResource("LE_pokmmo_0073_bubblebeam"), SubResource("LE_pokmmo_0073_screech"), SubResource("LE_pokmmo_0073_acid_spray"), SubResource("LE_pokmmo_0073_surf"), SubResource("LE_pokmmo_0073_barrier"), SubResource("LE_pokmmo_0073_hex"), SubResource("LE_pokmmo_0073_acid_armor"), SubResource("LE_pokmmo_0073_brine"), SubResource("LE_pokmmo_0073_poison_jab"), SubResource("LE_pokmmo_0073_sludge_wave"), SubResource("LE_pokmmo_0073_hydro_pump"), SubResource("LE_new_0073_clear_body"), SubResource("LE_new_0073_liquid_ooze"), SubResource("LE_new_0073_rain_dish")])
 unit_name = "Tentacruel"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Water", "Poison"])
 grounded = true
 weight = 1

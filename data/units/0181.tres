@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0181/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0181/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/fire_punch.tres" id="100"]
@@ -246,8 +244,6 @@ action = ExtResource("119")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0181_dragon_pulse"), SubResource("LE_pokmmo_0181_fire_punch"), SubResource("LE_pokmmo_0181_growl"), SubResource("LE_pokmmo_0181_tackle"), SubResource("LE_pokmmo_0181_thunder_wave"), SubResource("LE_pokmmo_0181_thunderpunch"), SubResource("LE_pokmmo_0181_thundershock"), SubResource("LE_pokmmo_0181_zap_cannon"), SubResource("LE_pokmmo_0181_cotton_spore"), SubResource("LE_pokmmo_0181_charge"), SubResource("LE_pokmmo_0181_confuse_ray"), SubResource("LE_pokmmo_0181_take_down"), SubResource("LE_pokmmo_0181_electro_ball"), SubResource("LE_pokmmo_0181_cotton_guard"), SubResource("LE_pokmmo_0181_power_gem"), SubResource("LE_pokmmo_0181_thunderbolt"), SubResource("LE_pokmmo_0181_discharge"), SubResource("LE_pokmmo_0181_light_screen"), SubResource("LE_pokmmo_0181_thunder"), SubResource("LE_pokmmo_0181_charge_beam"), SubResource("LE_pokmmo_0181_signal_beam"), SubResource("LE_new_0181_static"), SubResource("LE_new_0181_plus")])
 unit_name = "Ampharos"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Electric"])
 grounded = true
 weight = 1

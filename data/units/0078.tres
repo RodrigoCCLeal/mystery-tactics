@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0078/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0078/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/stomp.tres" id="100"]
@@ -270,8 +268,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0078_shuca_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0078_ember"), SubResource("LE_pokmmo_0078_fury_attack"), SubResource("LE_pokmmo_0078_growl"), SubResource("LE_pokmmo_0078_horn_drill"), SubResource("LE_pokmmo_0078_hypnosis"), SubResource("LE_pokmmo_0078_megahorn"), SubResource("LE_pokmmo_0078_poison_jab"), SubResource("LE_pokmmo_0078_quick_attack"), SubResource("LE_pokmmo_0078_tackle"), SubResource("LE_pokmmo_0078_tail_whip"), SubResource("LE_pokmmo_0078_double_hit"), SubResource("LE_pokmmo_0078_double_kick"), SubResource("LE_pokmmo_0078_flame_charge"), SubResource("LE_pokmmo_0078_agility"), SubResource("LE_pokmmo_0078_stomp"), SubResource("LE_pokmmo_0078_flame_wheel"), SubResource("LE_pokmmo_0078_fire_spin"), SubResource("LE_pokmmo_0078_double_edge"), SubResource("LE_pokmmo_0078_fire_blast"), SubResource("LE_pokmmo_0078_take_down"), SubResource("LE_pokmmo_0078_bounce"), SubResource("LE_pokmmo_0078_inferno"), SubResource("LE_pokmmo_0078_flare_blitz"), SubResource("LE_new_0078_run_away"), SubResource("LE_new_0078_flash_fire"), SubResource("LE_new_0078_flame_body")])
 unit_name = "Rapidash"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire"])
 grounded = true
 weight = 1

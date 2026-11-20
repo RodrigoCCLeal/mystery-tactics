@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0450/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0450/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/sand_attack.tres" id="100"]
@@ -233,8 +231,6 @@ action = ExtResource("119")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0450_bite"), SubResource("LE_pokmmo_0450_fire_fang"), SubResource("LE_pokmmo_0450_ice_fang"), SubResource("LE_pokmmo_0450_sand_attack"), SubResource("LE_pokmmo_0450_tackle"), SubResource("LE_pokmmo_0450_thunder_fang"), SubResource("LE_pokmmo_0450_yawn"), SubResource("LE_pokmmo_0450_sand_tomb"), SubResource("LE_pokmmo_0450_dig"), SubResource("LE_pokmmo_0450_mud_bomb"), SubResource("LE_pokmmo_0450_crunch"), SubResource("LE_pokmmo_0450_amnesia"), SubResource("LE_pokmmo_0450_sandstorm"), SubResource("LE_pokmmo_0450_take_down"), SubResource("LE_pokmmo_0450_roar"), SubResource("LE_pokmmo_0450_heavy_slam"), SubResource("LE_pokmmo_0450_rest"), SubResource("LE_pokmmo_0450_earthquake"), SubResource("LE_pokmmo_0450_double_edge"), SubResource("LE_pokmmo_0450_fissure"), SubResource("LE_pokmmo_0450_slack_off"), SubResource("LE_new_0450_sand_stream"), SubResource("LE_new_0450_sand_force")])
 unit_name = "Hippowdon"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ground"])
 grounded = true
 weight = 1

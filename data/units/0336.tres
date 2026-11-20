@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0336/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0336/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/wrap.tres" id="100"]
@@ -266,8 +264,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0336_persim_berry"), SubResource("WHI_0336_shed_shell")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0336_bite"), SubResource("LE_pokmmo_0336_leer"), SubResource("LE_pokmmo_0336_swagger"), SubResource("LE_pokmmo_0336_wrap"), SubResource("LE_pokmmo_0336_lick"), SubResource("LE_pokmmo_0336_poison_tail"), SubResource("LE_pokmmo_0336_feint"), SubResource("LE_pokmmo_0336_screech"), SubResource("LE_pokmmo_0336_snarl"), SubResource("LE_pokmmo_0336_glare"), SubResource("LE_pokmmo_0336_poison_fang"), SubResource("LE_pokmmo_0336_venoshock"), SubResource("LE_pokmmo_0336_night_slash"), SubResource("LE_pokmmo_0336_gastro_acid"), SubResource("LE_pokmmo_0336_poison_jab"), SubResource("LE_pokmmo_0336_haze"), SubResource("LE_pokmmo_0336_swords_dance"), SubResource("LE_pokmmo_0336_crunch"), SubResource("LE_pokmmo_0336_coil"), SubResource("LE_pokmmo_0336_sludge_bomb"), SubResource("LE_pokmmo_0336_wring_out"), SubResource("LE_pokmmo_0336_gunk_shot"), SubResource("LE_new_0336_shed_skin"), SubResource("LE_new_0336_infiltrator")])
 unit_name = "Seviper"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Poison"])
 grounded = true
 weight = 1

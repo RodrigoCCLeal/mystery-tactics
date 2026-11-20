@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0493/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0493/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/seismic_toss.tres" id="100"]
@@ -224,8 +222,6 @@ action = ExtResource("114")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0493_cosmic_power"), SubResource("LE_pokmmo_0493_natural_gift"), SubResource("LE_pokmmo_0493_punishment"), SubResource("LE_pokmmo_0493_quick_attack"), SubResource("LE_pokmmo_0493_seismic_toss"), SubResource("LE_pokmmo_0493_confusion"), SubResource("LE_pokmmo_0493_gravity"), SubResource("LE_pokmmo_0493_ancientpower"), SubResource("LE_pokmmo_0493_calm_mind"), SubResource("LE_pokmmo_0493_earth_power"), SubResource("LE_pokmmo_0493_hyper_voice"), SubResource("LE_pokmmo_0493_extrasensory"), SubResource("LE_pokmmo_0493_extremespeed"), SubResource("LE_pokmmo_0493_healing_wish"), SubResource("LE_pokmmo_0493_refresh"), SubResource("LE_pokmmo_0493_future_sight"), SubResource("LE_pokmmo_0493_recover"), SubResource("LE_pokmmo_0493_hyper_beam"), SubResource("LE_pokmmo_0493_perish_song"), SubResource("LE_pokmmo_0493_judgment"), SubResource("LE_new_0493_multitype")])
 unit_name = "Arceus"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal"])
 grounded = true
 weight = 1

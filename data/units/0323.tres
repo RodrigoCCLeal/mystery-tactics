@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0323/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0323/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -253,8 +251,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0323_rawst_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0323_ember"), SubResource("LE_pokmmo_0323_eruption"), SubResource("LE_pokmmo_0323_fissure"), SubResource("LE_pokmmo_0323_focus_energy"), SubResource("LE_pokmmo_0323_growl"), SubResource("LE_pokmmo_0323_rock_slide"), SubResource("LE_pokmmo_0323_tackle"), SubResource("LE_pokmmo_0323_bulldoze"), SubResource("LE_pokmmo_0323_magnitude"), SubResource("LE_pokmmo_0323_flame_burst"), SubResource("LE_pokmmo_0323_flame_wheel"), SubResource("LE_pokmmo_0323_incinerate"), SubResource("LE_pokmmo_0323_amnesia"), SubResource("LE_pokmmo_0323_lava_plume"), SubResource("LE_pokmmo_0323_earth_power"), SubResource("LE_pokmmo_0323_curse"), SubResource("LE_pokmmo_0323_take_down"), SubResource("LE_pokmmo_0323_yawn"), SubResource("LE_pokmmo_0323_earthquake"), SubResource("LE_pokmmo_0323_flamethrower"), SubResource("LE_pokmmo_0323_double_edge"), SubResource("LE_pokmmo_0323_heat_crash"), SubResource("LE_new_0323_magma_armor"), SubResource("LE_new_0323_solid_rock"), SubResource("LE_new_0323_anger_point")])
 unit_name = "Camerupt"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire", "Ground"])
 grounded = true
 weight = 1

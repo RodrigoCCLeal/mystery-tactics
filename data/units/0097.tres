@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0097/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0097/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -249,8 +247,6 @@ action = ExtResource("121")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0097_barrier"), SubResource("LE_pokmmo_0097_confusion"), SubResource("LE_pokmmo_0097_disable"), SubResource("LE_pokmmo_0097_future_sight"), SubResource("LE_pokmmo_0097_hypnosis"), SubResource("LE_pokmmo_0097_nasty_plot"), SubResource("LE_pokmmo_0097_nightmare"), SubResource("LE_pokmmo_0097_pound"), SubResource("LE_pokmmo_0097_switcheroo"), SubResource("LE_pokmmo_0097_headbutt"), SubResource("LE_pokmmo_0097_poison_gas"), SubResource("LE_pokmmo_0097_meditate"), SubResource("LE_pokmmo_0097_psybeam"), SubResource("LE_pokmmo_0097_psych_up"), SubResource("LE_pokmmo_0097_mind_reader"), SubResource("LE_pokmmo_0097_wake_up_slap"), SubResource("LE_pokmmo_0097_zen_headbutt"), SubResource("LE_pokmmo_0097_psychic"), SubResource("LE_pokmmo_0097_swagger"), SubResource("LE_pokmmo_0097_synchronoise"), SubResource("LE_pokmmo_0097_psyshock"), SubResource("LE_pokmmo_0097_dream_eater"), SubResource("LE_new_0097_insomnia"), SubResource("LE_new_0097_forewarn"), SubResource("LE_new_0097_inner_focus")])
 unit_name = "Hypno"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic"])
 grounded = true
 weight = 1

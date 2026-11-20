@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0143/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0143/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/headbutt.tres" id="100"]
@@ -388,8 +386,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0143_chesto_berry"), SubResource("WHI_0143_leftovers")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0143_block"), SubResource("LE_pokmmo_0143_covet"), SubResource("LE_pokmmo_0143_defense_curl"), SubResource("LE_pokmmo_0143_flail"), SubResource("LE_pokmmo_0143_fling"), SubResource("LE_pokmmo_0143_headbutt"), SubResource("LE_pokmmo_0143_last_resort"), SubResource("LE_pokmmo_0143_lick"), SubResource("LE_pokmmo_0143_metronome"), SubResource("LE_pokmmo_0143_recycle"), SubResource("LE_pokmmo_0143_rollout"), SubResource("LE_pokmmo_0143_screech"), SubResource("LE_pokmmo_0143_stockpile"), SubResource("LE_pokmmo_0143_swallow"), SubResource("LE_pokmmo_0143_tackle"), SubResource("LE_pokmmo_0143_yawn"), SubResource("LE_pokmmo_0143_bulldoze"), SubResource("LE_pokmmo_0143_bite"), SubResource("LE_pokmmo_0143_chip_away"), SubResource("LE_pokmmo_0143_rest"), SubResource("LE_pokmmo_0143_sleep_talk"), SubResource("LE_pokmmo_0143_snore"), SubResource("LE_pokmmo_0143_crunch"), SubResource("LE_pokmmo_0143_body_slam"), SubResource("LE_pokmmo_0143_zen_headbutt"), SubResource("LE_pokmmo_0143_heavy_slam"), SubResource("LE_pokmmo_0143_amnesia"), SubResource("LE_pokmmo_0143_harden"), SubResource("LE_pokmmo_0143_hammer_arm"), SubResource("LE_pokmmo_0143_belly_drum"), SubResource("LE_pokmmo_0143_double_edge"), SubResource("LE_pokmmo_0143_giga_impact"), SubResource("LE_pokmmo_0143_superpower"), SubResource("LE_new_0143_immunity"), SubResource("LE_new_0143_thick_fat"), SubResource("LE_new_0143_gluttony")])
 unit_name = "Snorlax"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal"])
 grounded = true
 weight = 1

@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0037/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0037/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -309,8 +307,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0037_rawst_berry"), SubResource("WHI_0037_charcoal")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0037_ember"), SubResource("LE_pokmmo_0037_tackle"), SubResource("LE_pokmmo_0037_tail_whip"), SubResource("LE_pokmmo_0037_disable"), SubResource("LE_pokmmo_0037_roar"), SubResource("LE_pokmmo_0037_quick_attack"), SubResource("LE_pokmmo_0037_nasty_plot"), SubResource("LE_pokmmo_0037_spite"), SubResource("LE_pokmmo_0037_confuse_ray"), SubResource("LE_pokmmo_0037_flame_wheel"), SubResource("LE_pokmmo_0037_incinerate"), SubResource("LE_pokmmo_0037_will_o_wisp"), SubResource("LE_pokmmo_0037_payback"), SubResource("LE_pokmmo_0037_fire_spin"), SubResource("LE_pokmmo_0037_faint_attack"), SubResource("LE_pokmmo_0037_flamethrower"), SubResource("LE_pokmmo_0037_hex"), SubResource("LE_pokmmo_0037_extrasensory"), SubResource("LE_pokmmo_0037_flame_burst"), SubResource("LE_pokmmo_0037_fire_blast"), SubResource("LE_pokmmo_0037_imprison"), SubResource("LE_pokmmo_0037_safeguard"), SubResource("LE_pokmmo_0037_captivate"), SubResource("LE_pokmmo_0037_inferno"), SubResource("LE_pokmmo_0037_grudge"), SubResource("LE_new_0037_flash_fire"), SubResource("LE_new_0037_drought")])
 unit_name = "Vulpix"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire"])
 grounded = true
 weight = 1

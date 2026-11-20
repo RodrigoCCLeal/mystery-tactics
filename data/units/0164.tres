@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0164/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0164/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -219,8 +217,6 @@ action = ExtResource("118")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0164_dream_eater"), SubResource("LE_pokmmo_0164_echoed_voice"), SubResource("LE_pokmmo_0164_foresight"), SubResource("LE_pokmmo_0164_growl"), SubResource("LE_pokmmo_0164_hypnosis"), SubResource("LE_pokmmo_0164_peck"), SubResource("LE_pokmmo_0164_sky_attack"), SubResource("LE_pokmmo_0164_tackle"), SubResource("LE_pokmmo_0164_confusion"), SubResource("LE_pokmmo_0164_reflect"), SubResource("LE_pokmmo_0164_defog"), SubResource("LE_pokmmo_0164_psycho_shift"), SubResource("LE_pokmmo_0164_zen_headbutt"), SubResource("LE_pokmmo_0164_air_slash"), SubResource("LE_pokmmo_0164_extrasensory"), SubResource("LE_pokmmo_0164_take_down"), SubResource("LE_pokmmo_0164_uproar"), SubResource("LE_pokmmo_0164_roost"), SubResource("LE_pokmmo_0164_synchronoise"), SubResource("LE_new_0164_insomnia"), SubResource("LE_new_0164_keen_eye"), SubResource("LE_new_0164_tinted_lens")])
 unit_name = "Noctowl"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal", "Flying"])
 grounded = false
 weight = 1

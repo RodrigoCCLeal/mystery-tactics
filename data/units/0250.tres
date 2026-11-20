@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0250/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0250/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/gust.tres" id="100"]
@@ -229,8 +227,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0250_sacred_ash")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0250_ancientpower"), SubResource("LE_pokmmo_0250_gust"), SubResource("LE_pokmmo_0250_weather_ball"), SubResource("LE_pokmmo_0250_whirlwind"), SubResource("LE_pokmmo_0250_brave_bird"), SubResource("LE_pokmmo_0250_safeguard"), SubResource("LE_pokmmo_0250_calm_mind"), SubResource("LE_pokmmo_0250_extrasensory"), SubResource("LE_pokmmo_0250_recover"), SubResource("LE_pokmmo_0250_punishment"), SubResource("LE_pokmmo_0250_sacred_fire"), SubResource("LE_pokmmo_0250_sunny_day"), SubResource("LE_pokmmo_0250_swift"), SubResource("LE_pokmmo_0250_fire_blast"), SubResource("LE_pokmmo_0250_future_sight"), SubResource("LE_pokmmo_0250_natural_gift"), SubResource("LE_pokmmo_0250_sky_attack"), SubResource("LE_pokmmo_0250_overheat"), SubResource("LE_new_0250_pressure"), SubResource("LE_new_0250_regenerator")])
 unit_name = "Ho-Oh"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Fire", "Flying"])
 grounded = false
 weight = 1

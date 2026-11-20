@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0402/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0402/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -236,8 +234,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0402_metronome")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0402_absorb"), SubResource("LE_pokmmo_0402_bide"), SubResource("LE_pokmmo_0402_fury_cutter"), SubResource("LE_pokmmo_0402_growl"), SubResource("LE_pokmmo_0402_pound"), SubResource("LE_pokmmo_0402_tackle"), SubResource("LE_pokmmo_0402_aerial_ace"), SubResource("LE_pokmmo_0402_sing"), SubResource("LE_pokmmo_0402_focus_energy"), SubResource("LE_pokmmo_0402_leech_life"), SubResource("LE_pokmmo_0402_slash"), SubResource("LE_pokmmo_0402_x_scissor"), SubResource("LE_pokmmo_0402_screech"), SubResource("LE_pokmmo_0402_swords_dance"), SubResource("LE_pokmmo_0402_taunt"), SubResource("LE_pokmmo_0402_night_slash"), SubResource("LE_pokmmo_0402_bug_buzz"), SubResource("LE_pokmmo_0402_perish_song"), SubResource("LE_new_0402_swarm"), SubResource("LE_new_0402_technician")])
 unit_name = "Kricketune"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug"])
 grounded = true
 weight = 1

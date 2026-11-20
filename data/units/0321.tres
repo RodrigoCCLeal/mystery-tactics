@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0321/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0321/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/growl.tres" id="100"]
@@ -214,8 +212,6 @@ action = ExtResource("114")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0321_astonish"), SubResource("LE_pokmmo_0321_growl"), SubResource("LE_pokmmo_0321_heavy_slam"), SubResource("LE_pokmmo_0321_rollout"), SubResource("LE_pokmmo_0321_soak"), SubResource("LE_pokmmo_0321_splash"), SubResource("LE_pokmmo_0321_water_gun"), SubResource("LE_pokmmo_0321_mist"), SubResource("LE_pokmmo_0321_water_pulse"), SubResource("LE_pokmmo_0321_brine"), SubResource("LE_pokmmo_0321_whirlpool"), SubResource("LE_pokmmo_0321_dive"), SubResource("LE_pokmmo_0321_bounce"), SubResource("LE_pokmmo_0321_body_slam"), SubResource("LE_pokmmo_0321_rest"), SubResource("LE_pokmmo_0321_amnesia"), SubResource("LE_pokmmo_0321_hydro_pump"), SubResource("LE_pokmmo_0321_water_spout"), SubResource("LE_new_0321_water_veil"), SubResource("LE_new_0321_oblivious"), SubResource("LE_new_0321_pressure")])
 unit_name = "Wailord"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Water"])
 grounded = true
 weight = 1

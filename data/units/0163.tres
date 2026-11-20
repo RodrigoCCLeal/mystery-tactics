@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0163/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0163/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -221,8 +219,6 @@ action = ExtResource("118")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0163_foresight"), SubResource("LE_pokmmo_0163_growl"), SubResource("LE_pokmmo_0163_peck"), SubResource("LE_pokmmo_0163_tackle"), SubResource("LE_pokmmo_0163_echoed_voice"), SubResource("LE_pokmmo_0163_confusion"), SubResource("LE_pokmmo_0163_reflect"), SubResource("LE_pokmmo_0163_defog"), SubResource("LE_pokmmo_0163_psycho_shift"), SubResource("LE_pokmmo_0163_zen_headbutt"), SubResource("LE_pokmmo_0163_air_slash"), SubResource("LE_pokmmo_0163_extrasensory"), SubResource("LE_pokmmo_0163_take_down"), SubResource("LE_pokmmo_0163_uproar"), SubResource("LE_pokmmo_0163_roost"), SubResource("LE_pokmmo_0163_hypnosis"), SubResource("LE_pokmmo_0163_dream_eater"), SubResource("LE_pokmmo_0163_synchronoise"), SubResource("LE_new_0163_insomnia"), SubResource("LE_new_0163_keen_eye"), SubResource("LE_new_0163_tinted_lens")])
 unit_name = "Hoothoot"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal", "Flying"])
 grounded = false
 weight = 1

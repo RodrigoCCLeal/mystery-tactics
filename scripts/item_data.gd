@@ -131,9 +131,10 @@ var category: String = "Medicine"
 # Se true, um ÚNICO slot de loadout pode guardar de 1 a 99 unidades deste
 # item ao mesmo tempo (ver UnitData.slot_quantities/get_slot_quantity) — a
 # quantidade é escolhida no momento do "Give" (ver item_list_screen.gd ->
-# quantity_picker.gd). Só Ball e TM são Stackable hoje: os dois se
-# CONSOMEM sozinhos em batalha (um por uso — ver battle.gd::
-# execute_ball_throw/execute_tm_attack), diferente de Held Items (Focus
+# quantity_picker.gd). Só Ball é Stackable hoje: ela se CONSOME sozinha
+# em batalha (uma por arremesso — ver battle.gd::execute_ball_throw). TM
+# deixou de ser Stackable em 2026-11-20 (existe só 1 de cada no jogo e ele
+# nunca é consumido, ver tm_attack), diferente de Held Items (Focus
 # Band) ou Berry, que não fazem sentido "empilhados" (um único efeito
 # passivo, não tem "usar de novo"). false (padrão) = item comum, sempre
 # exatamente 1 por slot, como já funcionava antes desse campo existir.
@@ -181,11 +182,12 @@ var category: String = "Medicine"
 # Um TM "ensina" um ataque já existente — em vez de duplicar power/tipo/
 # alcance/etc, ele só REFERENCIA o AttackData de verdade (ex: TM 10 -> Ice
 # Fang aponta pro mesmo data/attacks/ice_fang.tres que qualquer unidade que
-# aprenda Ice Fang de verdade usaria). Em batalha, usar o slot do TM executa
-# ESTE ataque (mesmo dano/efetividade/status, ver battle.gd::
-# execute_tm_attack) e consome 1 carga do ITEM (UnitData.slot_quantities),
-# NÃO um "uso" de tm_attack.max_uses — TM 10 não fica sem PP de Ice Fang,
-# fica sem TM 10.
+# aprenda Ice Fang de verdade usaria). Equipado numa unidade, o TM funciona
+# como TER o golpe (pedido do usuário, 2026-11-20): usar o slot executa
+# ESTE ataque (ver battle.gd::execute_tm_attack) e gasta o PP do PRÓPRIO
+# golpe (tm_attack.max_uses, ver unit.gd::_apply_common), exatamente como um
+# golpe aprendido. O TM nunca é consumido, não empilha e existe só 1 de cada
+# no jogo (ver GameState.add_item).
 @export var tm_attack: AttackData
 
 @export_group("Tool (só itens com category == \"Tool\")")
@@ -217,3 +219,8 @@ var category: String = "Medicine"
 # house_interior.gd::_trigger_tool_shortcut pros dois lugares que checam
 # este campo antes de decidir abrir o popup ou chamar use_tool() normal.
 @export var opens_song_menu: bool = false
+
+# Se true, "Use" abre o mapa de Tactica (scenes/ui/screens/
+# town_map_screen.tscn) no modo VIEW em vez de chamar GameState.use_tool().
+# Mesmo espírito de opens_song_menu acima. Só o Town Map tem isso true hoje.
+@export var opens_town_map: bool = false

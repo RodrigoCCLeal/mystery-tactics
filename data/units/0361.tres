@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0361/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0361/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/headbutt.tres" id="100"]
@@ -229,8 +227,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0361_babiri_berry"), SubResource("WHI_0361_snowball")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0361_astonish"), SubResource("LE_pokmmo_0361_bite"), SubResource("LE_pokmmo_0361_headbutt"), SubResource("LE_pokmmo_0361_leer"), SubResource("LE_pokmmo_0361_powder_snow"), SubResource("LE_pokmmo_0361_double_team"), SubResource("LE_pokmmo_0361_ice_shard"), SubResource("LE_pokmmo_0361_protect"), SubResource("LE_pokmmo_0361_icy_wind"), SubResource("LE_pokmmo_0361_fake_tears"), SubResource("LE_pokmmo_0361_frost_breath"), SubResource("LE_pokmmo_0361_ice_fang"), SubResource("LE_pokmmo_0361_ice_beam"), SubResource("LE_pokmmo_0361_icicle_crash"), SubResource("LE_pokmmo_0361_crunch"), SubResource("LE_pokmmo_0361_snowscape"), SubResource("LE_pokmmo_0361_blizzard"), SubResource("LE_pokmmo_0361_weather_ball"), SubResource("LE_new_0361_inner_focus"), SubResource("LE_new_0361_ice_body"), SubResource("LE_new_0361_moody")])
 unit_name = "Snorunt"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ice"])
 grounded = true
 weight = 1

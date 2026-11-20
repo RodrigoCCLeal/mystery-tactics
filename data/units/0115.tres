@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0115/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0115/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -264,8 +262,6 @@ action = ExtResource("126")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0115_comet_punch"), SubResource("LE_pokmmo_0115_leer"), SubResource("LE_pokmmo_0115_pound"), SubResource("LE_pokmmo_0115_tackle"), SubResource("LE_pokmmo_0115_tail_whip"), SubResource("LE_pokmmo_0115_growl"), SubResource("LE_pokmmo_0115_fake_out"), SubResource("LE_pokmmo_0115_bite"), SubResource("LE_pokmmo_0115_stomp"), SubResource("LE_pokmmo_0115_focus_energy"), SubResource("LE_pokmmo_0115_rage"), SubResource("LE_pokmmo_0115_headbutt"), SubResource("LE_pokmmo_0115_mega_punch"), SubResource("LE_pokmmo_0115_sucker_punch"), SubResource("LE_pokmmo_0115_chip_away"), SubResource("LE_pokmmo_0115_double_hit"), SubResource("LE_pokmmo_0115_take_down"), SubResource("LE_pokmmo_0115_dizzy_punch"), SubResource("LE_pokmmo_0115_crunch"), SubResource("LE_pokmmo_0115_endure"), SubResource("LE_pokmmo_0115_outrage"), SubResource("LE_pokmmo_0115_reversal"), SubResource("LE_pokmmo_0115_last_resort"), SubResource("LE_pokmmo_0115_dynamicpunch"), SubResource("LE_new_0115_early_bird"), SubResource("LE_new_0115_scrappy"), SubResource("LE_new_0115_inner_focus")])
 unit_name = "Kangaskhan"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal"])
 grounded = true
 weight = 1

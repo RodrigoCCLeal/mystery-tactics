@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0135/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0135/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/sand_attack.tres" id="100"]
@@ -298,8 +296,6 @@ action = ExtResource("127")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0135_baton_pass"), SubResource("LE_pokmmo_0135_bite"), SubResource("LE_pokmmo_0135_copycat"), SubResource("LE_pokmmo_0135_covet"), SubResource("LE_pokmmo_0135_growl"), SubResource("LE_pokmmo_0135_helping_hand"), SubResource("LE_pokmmo_0135_sand_attack"), SubResource("LE_pokmmo_0135_tackle"), SubResource("LE_pokmmo_0135_tail_whip"), SubResource("LE_pokmmo_0135_thundershock"), SubResource("LE_pokmmo_0135_yawn"), SubResource("LE_pokmmo_0135_quick_attack"), SubResource("LE_pokmmo_0135_double_kick"), SubResource("LE_pokmmo_0135_swift"), SubResource("LE_pokmmo_0135_pin_missile"), SubResource("LE_pokmmo_0135_thunder_wave"), SubResource("LE_pokmmo_0135_agility"), SubResource("LE_pokmmo_0135_headbutt"), SubResource("LE_pokmmo_0135_mimic"), SubResource("LE_pokmmo_0135_thunderbolt"), SubResource("LE_pokmmo_0135_thunder_fang"), SubResource("LE_pokmmo_0135_thunder"), SubResource("LE_pokmmo_0135_calm_mind"), SubResource("LE_pokmmo_0135_discharge"), SubResource("LE_pokmmo_0135_double_edge"), SubResource("LE_pokmmo_0135_fake_tears"), SubResource("LE_pokmmo_0135_last_resort"), SubResource("LE_new_0135_volt_absorb"), SubResource("LE_new_0135_quick_feet")])
 unit_name = "Jolteon"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Electric"])
 grounded = true
 weight = 1

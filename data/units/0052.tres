@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0052/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0052/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -241,8 +239,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0052_nugget"), SubResource("WHI_0052_quick_claw")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0052_bite"), SubResource("LE_pokmmo_0052_fake_out"), SubResource("LE_pokmmo_0052_growl"), SubResource("LE_pokmmo_0052_pay_day"), SubResource("LE_pokmmo_0052_scratch"), SubResource("LE_pokmmo_0052_tail_whip"), SubResource("LE_pokmmo_0052_feint"), SubResource("LE_pokmmo_0052_taunt"), SubResource("LE_pokmmo_0052_screech"), SubResource("LE_pokmmo_0052_fury_swipes"), SubResource("LE_pokmmo_0052_faint_attack"), SubResource("LE_pokmmo_0052_slash"), SubResource("LE_pokmmo_0052_assurance"), SubResource("LE_pokmmo_0052_nasty_plot"), SubResource("LE_pokmmo_0052_hypnosis"), SubResource("LE_pokmmo_0052_take_down"), SubResource("LE_pokmmo_0052_charm"), SubResource("LE_pokmmo_0052_fake_tears"), SubResource("LE_pokmmo_0052_swagger"), SubResource("LE_pokmmo_0052_captivate"), SubResource("LE_pokmmo_0052_night_slash"), SubResource("LE_new_0052_pickup"), SubResource("LE_new_0052_technician"), SubResource("LE_new_0052_unnerve")])
 unit_name = "Meowth"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal"])
 grounded = true
 weight = 1

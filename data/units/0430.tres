@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0430/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0430/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/gust.tres" id="100"]
@@ -242,8 +240,6 @@ action = ExtResource("122")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0430_astonish"), SubResource("LE_pokmmo_0430_gust"), SubResource("LE_pokmmo_0430_haze"), SubResource("LE_pokmmo_0430_night_slash"), SubResource("LE_pokmmo_0430_pursuit"), SubResource("LE_pokmmo_0430_quash"), SubResource("LE_pokmmo_0430_sucker_punch"), SubResource("LE_pokmmo_0430_wing_attack"), SubResource("LE_pokmmo_0430_snarl"), SubResource("LE_pokmmo_0430_roost"), SubResource("LE_pokmmo_0430_aerial_ace"), SubResource("LE_pokmmo_0430_swagger"), SubResource("LE_pokmmo_0430_air_slash"), SubResource("LE_pokmmo_0430_nasty_plot"), SubResource("LE_pokmmo_0430_foul_play"), SubResource("LE_pokmmo_0430_brave_bird"), SubResource("LE_pokmmo_0430_dark_pulse"), SubResource("LE_new_0430_insomnia"), SubResource("LE_new_0430_super_luck"), SubResource("LE_new_0430_moxie")])
 unit_name = "Honchkrow"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dark", "Flying"])
 grounded = false
 weight = 1

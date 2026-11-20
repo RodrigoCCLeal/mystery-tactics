@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0338/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0338/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/tackle.tres" id="100"]
@@ -241,8 +239,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0338_sun_stone"), SubResource("WHI_0338_stardust"), SubResource("WHI_0338_comet_shard")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0338_confusion"), SubResource("LE_pokmmo_0338_flare_blitz"), SubResource("LE_pokmmo_0338_harden"), SubResource("LE_pokmmo_0338_morning_sun"), SubResource("LE_pokmmo_0338_rock_throw"), SubResource("LE_pokmmo_0338_tackle"), SubResource("LE_pokmmo_0338_fire_spin"), SubResource("LE_pokmmo_0338_hypnosis"), SubResource("LE_pokmmo_0338_rock_polish"), SubResource("LE_pokmmo_0338_psywave"), SubResource("LE_pokmmo_0338_rock_slide"), SubResource("LE_pokmmo_0338_embargo"), SubResource("LE_pokmmo_0338_zen_headbutt"), SubResource("LE_pokmmo_0338_cosmic_power"), SubResource("LE_pokmmo_0338_psychic"), SubResource("LE_pokmmo_0338_heal_block"), SubResource("LE_pokmmo_0338_stone_edge"), SubResource("LE_pokmmo_0338_solarbeam"), SubResource("LE_pokmmo_0338_wonder_room"), SubResource("LE_pokmmo_0338_explosion"), SubResource("LE_new_0338_levitate")])
 unit_name = "Solrock"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Rock", "Psychic"])
 grounded = true
 weight = 1

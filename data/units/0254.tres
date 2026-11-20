@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0254/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0254/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -290,8 +288,6 @@ action = ExtResource("131")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0254_absorb"), SubResource("LE_pokmmo_0254_dual_chop"), SubResource("LE_pokmmo_0254_energy_ball"), SubResource("LE_pokmmo_0254_false_swipe"), SubResource("LE_pokmmo_0254_fury_cutter"), SubResource("LE_pokmmo_0254_leaf_storm"), SubResource("LE_pokmmo_0254_leer"), SubResource("LE_pokmmo_0254_night_slash"), SubResource("LE_pokmmo_0254_pound"), SubResource("LE_pokmmo_0254_quick_attack"), SubResource("LE_pokmmo_0254_tackle"), SubResource("LE_pokmmo_0254_x_scissor"), SubResource("LE_pokmmo_0254_mega_drain"), SubResource("LE_pokmmo_0254_detect"), SubResource("LE_pokmmo_0254_leech_seed"), SubResource("LE_pokmmo_0254_quick_guard"), SubResource("LE_pokmmo_0254_pursuit"), SubResource("LE_pokmmo_0254_assurance"), SubResource("LE_pokmmo_0254_giga_drain"), SubResource("LE_pokmmo_0254_double_team"), SubResource("LE_pokmmo_0254_agility"), SubResource("LE_pokmmo_0254_dragonbreath"), SubResource("LE_pokmmo_0254_slam"), SubResource("LE_pokmmo_0254_slash"), SubResource("LE_pokmmo_0254_leaf_blade"), SubResource("LE_pokmmo_0254_screech"), SubResource("LE_pokmmo_0254_dragon_rush"), SubResource("LE_pokmmo_0254_endeavor"), SubResource("LE_pokmmo_0254_synthesis"), SubResource("LE_new_0254_overgrow"), SubResource("LE_new_0254_unburden")])
 unit_name = "Sceptile"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Grass"])
 grounded = true
 weight = 1

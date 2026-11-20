@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0213/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0213/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/wrap.tres" id="100"]
@@ -231,8 +229,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0213_berry_juice"), SubResource("WHI_0213_oran_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0213_bide"), SubResource("LE_pokmmo_0213_constrict"), SubResource("LE_pokmmo_0213_rollout"), SubResource("LE_pokmmo_0213_withdraw"), SubResource("LE_pokmmo_0213_wrap"), SubResource("LE_pokmmo_0213_encore"), SubResource("LE_pokmmo_0213_struggle_bug"), SubResource("LE_pokmmo_0213_rock_throw"), SubResource("LE_pokmmo_0213_safeguard"), SubResource("LE_pokmmo_0213_rest"), SubResource("LE_pokmmo_0213_bug_bite"), SubResource("LE_pokmmo_0213_guard_split"), SubResource("LE_pokmmo_0213_power_split"), SubResource("LE_pokmmo_0213_rock_slide"), SubResource("LE_pokmmo_0213_gastro_acid"), SubResource("LE_pokmmo_0213_power_trick"), SubResource("LE_pokmmo_0213_stone_edge"), SubResource("LE_pokmmo_0213_shell_smash"), SubResource("LE_new_0213_sturdy"), SubResource("LE_new_0213_gluttony"), SubResource("LE_new_0213_contrary")])
 unit_name = "Shuckle"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Rock"])
 grounded = true
 weight = 1

@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0292/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0292/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -197,8 +195,6 @@ action = ExtResource("113")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0292_absorb"), SubResource("LE_pokmmo_0292_dig"), SubResource("LE_pokmmo_0292_false_swipe"), SubResource("LE_pokmmo_0292_grudge"), SubResource("LE_pokmmo_0292_harden"), SubResource("LE_pokmmo_0292_leech_life"), SubResource("LE_pokmmo_0292_metal_claw"), SubResource("LE_pokmmo_0292_mud_slap"), SubResource("LE_pokmmo_0292_sand_attack"), SubResource("LE_pokmmo_0292_scratch"), SubResource("LE_pokmmo_0292_shadow_claw"), SubResource("LE_pokmmo_0292_confuse_ray"), SubResource("LE_pokmmo_0292_shadow_sneak"), SubResource("LE_pokmmo_0292_fury_swipes"), SubResource("LE_pokmmo_0292_heal_block"), SubResource("LE_pokmmo_0292_mind_reader"), SubResource("LE_pokmmo_0292_shadow_ball"), SubResource("LE_pokmmo_0292_spite"), SubResource("LE_new_0292_wonder_guard")])
 unit_name = "Shedinja"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Ghost"])
 grounded = true
 weight = 1

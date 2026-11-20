@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0465/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0465/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/bind.tres" id="100"]
@@ -270,8 +268,6 @@ action = ExtResource("123")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0465_absorb"), SubResource("LE_pokmmo_0465_bind"), SubResource("LE_pokmmo_0465_block"), SubResource("LE_pokmmo_0465_constrict"), SubResource("LE_pokmmo_0465_growth"), SubResource("LE_pokmmo_0465_ingrain"), SubResource("LE_pokmmo_0465_stun_spore"), SubResource("LE_pokmmo_0465_mega_drain"), SubResource("LE_pokmmo_0465_acid_spray"), SubResource("LE_pokmmo_0465_vine_whip"), SubResource("LE_pokmmo_0465_double_hit"), SubResource("LE_pokmmo_0465_poisonpowder"), SubResource("LE_pokmmo_0465_ancientpower"), SubResource("LE_pokmmo_0465_energy_ball"), SubResource("LE_pokmmo_0465_knock_off"), SubResource("LE_pokmmo_0465_giga_drain"), SubResource("LE_pokmmo_0465_natural_gift"), SubResource("LE_pokmmo_0465_sleep_powder"), SubResource("LE_pokmmo_0465_slam"), SubResource("LE_pokmmo_0465_tickle"), SubResource("LE_pokmmo_0465_power_whip"), SubResource("LE_pokmmo_0465_wring_out"), SubResource("LE_pokmmo_0465_sludge_bomb"), SubResource("LE_new_0465_chlorophyll"), SubResource("LE_new_0465_leaf_guard"), SubResource("LE_new_0465_regenerator")])
 unit_name = "Tangrowth"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Grass"])
 grounded = true
 weight = 1

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MapLocation" format=3]
+
+[ext_resource type="Script" path="res://scripts/map_location.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "daisangen"
+display_name = "Daisangen"
+kind = 1
+cells = Array[Vector2i]([Vector2i(5, 4)])
+neighbors = Array[String](["route_16", "route_17"])
+has_pokemon_center = false

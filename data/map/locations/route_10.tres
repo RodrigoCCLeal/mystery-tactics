@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="MapLocation" format=3]
+
+[ext_resource type="Script" path="res://scripts/map_location.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "route_10"
+display_name = "Route 10"
+kind = 3
+cells = Array[Vector2i]([Vector2i(9, 7), Vector2i(9, 8), Vector2i(10, 8), Vector2i(11, 8)])
+neighbors = Array[String](["glacia", "sushan"])

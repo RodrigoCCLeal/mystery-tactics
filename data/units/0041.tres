@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0041/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0041/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/gust.tres" id="100"]
@@ -246,8 +244,6 @@ action = ExtResource("119")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0041_absorb"), SubResource("LE_pokmmo_0041_supersonic"), SubResource("LE_pokmmo_0041_wing_attack"), SubResource("LE_pokmmo_0041_astonish"), SubResource("LE_pokmmo_0041_hypnosis"), SubResource("LE_pokmmo_0041_bite"), SubResource("LE_pokmmo_0041_mean_look"), SubResource("LE_pokmmo_0041_swift"), SubResource("LE_pokmmo_0041_poison_fang"), SubResource("LE_pokmmo_0041_quick_attack"), SubResource("LE_pokmmo_0041_confuse_ray"), SubResource("LE_pokmmo_0041_whirlwind"), SubResource("LE_pokmmo_0041_gust"), SubResource("LE_pokmmo_0041_haze"), SubResource("LE_pokmmo_0041_quick_guard"), SubResource("LE_pokmmo_0041_air_cutter"), SubResource("LE_pokmmo_0041_cross_poison"), SubResource("LE_pokmmo_0041_leech_life"), SubResource("LE_pokmmo_0041_toxic"), SubResource("LE_pokmmo_0041_acrobatics"), SubResource("LE_pokmmo_0041_air_slash"), SubResource("LE_pokmmo_0041_venoshock"), SubResource("LE_new_0041_inner_focus"), SubResource("LE_new_0041_infiltrator")])
 unit_name = "Zubat"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Poison", "Flying"])
 grounded = true
 weight = 1

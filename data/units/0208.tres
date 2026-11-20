@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0208/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0208/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/bind.tres" id="100"]
@@ -358,8 +356,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0208_metal_coat")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0208_bind"), SubResource("LE_pokmmo_0208_crunch"), SubResource("LE_pokmmo_0208_fire_fang"), SubResource("LE_pokmmo_0208_harden"), SubResource("LE_pokmmo_0208_ice_fang"), SubResource("LE_pokmmo_0208_mud_sport"), SubResource("LE_pokmmo_0208_rock_polish"), SubResource("LE_pokmmo_0208_rock_throw"), SubResource("LE_pokmmo_0208_rollout"), SubResource("LE_pokmmo_0208_tackle"), SubResource("LE_pokmmo_0208_thunder_fang"), SubResource("LE_pokmmo_0208_smack_down"), SubResource("LE_pokmmo_0208_autotomize"), SubResource("LE_pokmmo_0208_rock_tomb"), SubResource("LE_pokmmo_0208_bulldoze"), SubResource("LE_pokmmo_0208_dragonbreath"), SubResource("LE_pokmmo_0208_rage"), SubResource("LE_pokmmo_0208_curse"), SubResource("LE_pokmmo_0208_gyro_ball"), SubResource("LE_pokmmo_0208_rock_slide"), SubResource("LE_pokmmo_0208_screech"), SubResource("LE_pokmmo_0208_sand_tomb"), SubResource("LE_pokmmo_0208_stealth_rock"), SubResource("LE_pokmmo_0208_heavy_slam"), SubResource("LE_pokmmo_0208_slam"), SubResource("LE_pokmmo_0208_sandstorm"), SubResource("LE_pokmmo_0208_dig"), SubResource("LE_pokmmo_0208_iron_tail"), SubResource("LE_pokmmo_0208_stone_edge"), SubResource("LE_pokmmo_0208_double_edge"), SubResource("LE_pokmmo_0208_magnet_rise"), SubResource("LE_pokmmo_0208_head_smash"), SubResource("LE_new_0208_rock_head"), SubResource("LE_new_0208_sturdy"), SubResource("LE_new_0208_sheer_force")])
 unit_name = "Steelix"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Steel", "Ground"])
 grounded = true
 weight = 1

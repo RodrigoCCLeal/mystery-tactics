@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MapLocation" format=3]
+
+[ext_resource type="Script" path="res://scripts/map_location.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "kraepelin"
+display_name = "Kraepelin"
+kind = 0
+cells = Array[Vector2i]([Vector2i(25, 12), Vector2i(26, 12), Vector2i(25, 13), Vector2i(26, 13)])
+neighbors = Array[String](["route_13", "route_14", "route_15"])
+has_poke_mart = true

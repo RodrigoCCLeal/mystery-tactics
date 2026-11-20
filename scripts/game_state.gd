@@ -15,16 +15,14 @@ const UnitScript = preload("res://scripts/unit.gd")
 var has_saved_position: bool = false
 var player_grid_pos: Vector2i = Vector2i.ZERO
 var player_facing: String = "down"
-# world_archis.tscn (não mais o world.tscn monolítico antigo, nem o
-# test.tscn ainda mais antigo — "Ilha de Testes" foi removida, pedido do
-# usuário: "Lets delete ilha de testes, we dont need it anymore") é a cena
-# overworld de verdade do jogo agora. Pedido do usuário (2026-09-21) de
-# cortar world.tscn em 3 (Archis/Route 1/Barias) — ver world_archis.gd pro
-# comentário grande explicando o corte; world.tscn/world.gd originais
-# continuam existindo intocados, só não são mais o destino padrão.
-var overworld_scene_path: String = "res://scenes/overworld/world_archis.tscn"
+# Cena "física" onde o jogador está (interior, rota, vilarejo...). Archis/
+# Barias/Route 1 foram apagadas (pedido do usuário, 2026-11-19: a região
+# agora é Tactica, ver data/map/tactica_map.tres) — enquanto o mapa de Kano
+# não existe, a casa do jogador é o único lugar "andável" garantido, por
+# isso ela é o default.
+var overworld_scene_path: String = "res://scenes/overworld/red_house_interior.tscn"
 
-func save_player_state(cell: Vector2i, facing: String, scene_path: String = "res://scenes/overworld/world_archis.tscn") -> void:
+func save_player_state(cell: Vector2i, facing: String, scene_path: String = "res://scenes/overworld/red_house_interior.tscn") -> void:
 	has_saved_position = true
 	player_grid_pos = cell
 	player_facing = facing
@@ -370,7 +368,9 @@ func _apply_fresh_state(mode: String = "normal") -> void:
 	last_heal_grid_pos = Vector2i(0, -16)
 	last_heal_facing = "up"
 	last_heal_scene_path = "res://scenes/overworld/red_house_interior.tscn"
-	current_area = preload("res://data/areas/archi_area.tres")
+	current_area = preload("res://data/areas/kano_area.tres")
+	current_location_id = "kano"
+	_reset_visited_locations()
 	last_notified_area_name = ""
 	overworld_scene_path = "res://scenes/overworld/red_house_interior.tscn"
 	game_time_seconds = 8.0 * 3600.0   # 8:00 (Manhã) — ver comentário grande em game_time_seconds
@@ -1313,12 +1313,12 @@ const ALL_SPECIES: Array[UnitData] = [
 # propósito, não tem sentido uma área "ter" um nome sem ter (nem que vazia)
 # uma lista de encontros, ou vice-versa.
 #
-# O valor default abaixo (a área inicial de verdade, ARCHI) é só uma
+# O valor default abaixo (a área inicial de verdade, KANO) é só uma
 # rede de segurança pra spawn_enemies() nunca ficar sem tabela nenhuma — no
 # fluxo normal, world.gd/house_interior.gd sempre sobrescrevem isso ao
 # carregar (ver AreaNotification/current_area, atualizado por quem entra
 # numa EncounterArea nova).
-var current_area: EncounterArea = preload("res://data/areas/archi_area.tres")
+var current_area: EncounterArea = preload("res://data/areas/kano_area.tres")
 
 # Qual EncounterGroup.source pick_group() deve considerar na PRÓXIMA batalha
 # selvagem — "Grass" (padrão, grama alta) ou "Water" (surfando, ver
@@ -1673,6 +1673,54 @@ func advance_to_next_time_of_day() -> void:
 # mesmo conteúdo), o nome ainda identifica "é o mesmo lugar" corretamente.
 var last_notified_area_name: String = ""
 
+# ---------- Mapa de Tactica (Town Map) ----------
+# Ver town_map_screen.gd/data/map/tactica_map.tres. Cada lugar do mapa
+# (cidade, vilarejo, ponto especial, rota) tem um id (MapLocation.id).
+#
+# current_location_id = onde o jogador está AGORA no mapa — é onde o
+# indicador aparece. Dentro de um interior (casa, Pokémon Center...) é a
+# cidade/vilarejo daquele interior: é assim que a porta de saída do Pokémon
+# Center (mapa ÚNICO, compartilhado por todas as cidades) sabe pra qual
+# cidade voltar.
+var current_location_id: String = "kano"
+# id -> true pra cada lugar já visitado (o resto aparece cinza e "???").
+var visited_locations: Dictionary = {}
+
+const TACTICA_MAP_PATH = "res://data/map/tactica_map.tres"
+
+func is_location_visited(location_id: String) -> bool:
+	return visited_locations.get(location_id, false)
+
+func mark_location_visited(location_id: String) -> void:
+	if location_id != "":
+		visited_locations[location_id] = true
+
+# Chamado por quem de fato COLOCA o jogador num lugar (troca de cena pelo
+# Town Map, ou house_interior.gd::_ready com location_id preenchido).
+func set_current_location(location_id: String) -> void:
+	if location_id == "":
+		return
+	current_location_id = location_id
+	mark_location_visited(location_id)
+
+# Fly = Song da Fairy Ocarina (ver unlock_song/get_unlocked_songs). Com ela,
+# o Town Map deixa voar de graça pra qualquer cidade já visitada.
+func has_fly() -> bool:
+	return get_unlocked_songs().has("Fly")
+
+# load() em vez de preload(): o mapa referencia scripts (city_option.gd)
+# que usam o próprio GameState — preload aqui criaria uma dependência
+# circular na hora de compilar este autoload.
+func _reset_visited_locations() -> void:
+	visited_locations = {}
+	_add_starting_visited_locations()
+
+func _add_starting_visited_locations() -> void:
+	var map_data = load(TACTICA_MAP_PATH)
+	for loc in map_data.locations:
+		if loc != null and loc.starts_visited:
+			visited_locations[loc.id] = true
+
 # Inventário de itens do jogador (ver ItemData/bag_screen.gd/
 # item_list_screen.gd). Dictionary em vez de Array porque item não tem
 # estado próprio nenhum pra guardar por instância (diferente de UnitData,
@@ -1708,6 +1756,7 @@ const ALL_ITEMS: Array[ItemData] = [
 	preload("res://data/items/bicycle.tres"),
 	preload("res://data/items/ability_patch.tres"),
 	preload("res://data/items/fairy_ocarina.tres"),
+	preload("res://data/items/town_map.tres"),
 	preload("res://data/items/rocketball.tres"),
 	preload("res://data/items/muscle_band.tres"),
 	# Os 4 "Rock" de clima (ver ItemData.extends_weather/battle.gd::
@@ -1750,14 +1799,28 @@ func _seed_inventory_for_mode(mode: String) -> void:
 	if mode != "debugger":
 		return
 	for item in ALL_ITEMS:
-		add_item(item, DEBUGGER_STARTING_ITEM_COUNT)
+		# TM é único no jogo inteiro (ver add_item) — não faz sentido ter 99.
+		add_item(item, 1 if item.category == "TM" else DEBUGGER_STARTING_ITEM_COUNT)
 	# Mesmo atalho de teste de sempre (ver comentário original removido
 	# daqui) — só faz sentido no modo feito pra testar tudo de uma vez.
-	unlock_song("Strength")
-	unlock_song("Surf")
-	unlock_song("Fly")
+	_unlock_all_songs()
+
+# Toda Song da Fairy Ocarina (SONG_NAMES) — usado pelo modo debugger, tanto
+# em jogo novo (_seed_inventory_for_mode) quanto ao carregar um save
+# debugger antigo (load_game), pra Song nova adicionada depois também
+# aparecer em saves que já existiam.
+func _unlock_all_songs() -> void:
+	for song in SONG_NAMES:
+		unlock_song(song)
 
 func add_item(item: ItemData, amount: int = 1) -> void:
+	# Existe só 1 de cada TM no jogo (pedido do usuário, 2026-11-20): ele
+	# não empilha — equipado numa unidade, funciona como ter o golpe, com os
+	# usos (PP) do próprio golpe (ver battle.gd::execute_tm_attack). Por
+	# isso a Bag nunca guarda mais de 1 do mesmo TM.
+	if item.category == "TM":
+		inventory[item] = 1
+		return
 	inventory[item] = get_item_quantity(item) + amount
 
 # Contraparte de add_item — usado por merchant_sell_screen.gd ao vender
@@ -2088,6 +2151,8 @@ func save_game(slot: int) -> void:
 		data.inventory_quantities.append(inventory[item])
 	data.tool_shortcuts = tool_shortcuts.duplicate()
 	data.current_area = current_area
+	data.current_location_id = current_location_id
+	data.visited_locations = visited_locations.duplicate()
 	data.overworld_scene_path = overworld_scene_path
 	data.game_time_seconds = game_time_seconds
 	# live_grid_pos/live_facing (não player_grid_pos/player_facing) porque
@@ -2125,6 +2190,8 @@ func load_game(slot: int) -> bool:
 	# (default de SaveData.game_mode já cobre isso, mas o "if" deixa
 	# explícito e protege contra um "" vazio de algum caminho futuro).
 	game_mode = data.game_mode if data.game_mode != "" else "normal"
+	# flags é carregado logo abaixo e sobrescreveria o desbloqueio — por isso
+	# o _unlock_all_songs() do modo debugger roda no FIM desta função.
 	challenge_caught_areas = data.challenge_caught_areas.duplicate()
 	defeated_trainer_badges = data.defeated_trainer_badges.duplicate()
 	vanished_trainers = data.vanished_trainers.duplicate()
@@ -2165,7 +2232,12 @@ func load_game(slot: int) -> bool:
 	# barato o bastante pra deixar como segunda linha de defesa; world.gd
 	# recalcula isso de qualquer forma assim que entra na cena (ver
 	# _update_current_area), então nem chega a ficar visível por muito tempo.
-	current_area = data.current_area if data.current_area != null else preload("res://data/areas/archi_area.tres")
+	current_area = data.current_area if data.current_area != null else preload("res://data/areas/kano_area.tres")
+	# Saves de antes do Town Map existir não têm esses dois campos: caem no
+	# começo de jogo (Kano), e os lugares iniciais são sempre garantidos.
+	current_location_id = data.current_location_id if data.current_location_id != "" else "kano"
+	visited_locations = data.visited_locations.duplicate()
+	_add_starting_visited_locations()
 	# overworld_scene_path/last_heal_scene_path são só String (não
 	# ext_resource), então _save_has_missing_dependency não pega se
 	# apontarem pra uma cena deletada (ex: um save de antes desta sessão
@@ -2183,6 +2255,8 @@ func load_game(slot: int) -> bool:
 	last_heal_grid_pos = data.last_heal_grid_pos
 	last_heal_facing = data.last_heal_facing
 	current_save_slot = slot
+	if game_mode == "debugger":
+		_unlock_all_songs()
 	return true
 
 # "New Game" num slot específico (ver save_slot_screen.gd/name_entry_screen.gd)

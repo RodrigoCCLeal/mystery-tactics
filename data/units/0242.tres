@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0242/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0242/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -334,8 +332,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0242_oval_stone"), SubResource("WHI_0242_lucky_egg")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0242_charm"), SubResource("LE_pokmmo_0242_copycat"), SubResource("LE_pokmmo_0242_covet"), SubResource("LE_pokmmo_0242_defense_curl"), SubResource("LE_pokmmo_0242_double_edge"), SubResource("LE_pokmmo_0242_growl"), SubResource("LE_pokmmo_0242_minimize"), SubResource("LE_pokmmo_0242_pound"), SubResource("LE_pokmmo_0242_sweet_kiss"), SubResource("LE_pokmmo_0242_tackle"), SubResource("LE_pokmmo_0242_tail_whip"), SubResource("LE_pokmmo_0242_echoed_voice"), SubResource("LE_pokmmo_0242_refresh"), SubResource("LE_pokmmo_0242_doubleslap"), SubResource("LE_pokmmo_0242_sing"), SubResource("LE_pokmmo_0242_bestow"), SubResource("LE_pokmmo_0242_fling"), SubResource("LE_pokmmo_0242_take_down"), SubResource("LE_pokmmo_0242_calm_mind"), SubResource("LE_pokmmo_0242_heal_pulse"), SubResource("LE_pokmmo_0242_helping_hand"), SubResource("LE_pokmmo_0242_light_screen"), SubResource("LE_pokmmo_0242_egg_bomb"), SubResource("LE_pokmmo_0242_softboiled"), SubResource("LE_pokmmo_0242_last_resort"), SubResource("LE_pokmmo_0242_healing_wish"), SubResource("LE_new_0242_natural_cure"), SubResource("LE_new_0242_serene_grace"), SubResource("LE_new_0242_healer")])
 unit_name = "Blissey"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal"])
 grounded = true
 weight = 1

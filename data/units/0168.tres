@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0168/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0168/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/swords_dance.tres" id="100"]
@@ -276,8 +274,6 @@ action = ExtResource("121")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0168_absorb"), SubResource("LE_pokmmo_0168_bug_bite"), SubResource("LE_pokmmo_0168_constrict"), SubResource("LE_pokmmo_0168_focus_energy"), SubResource("LE_pokmmo_0168_poison_sting"), SubResource("LE_pokmmo_0168_string_shot"), SubResource("LE_pokmmo_0168_swords_dance"), SubResource("LE_pokmmo_0168_scary_face"), SubResource("LE_pokmmo_0168_shadow_sneak"), SubResource("LE_pokmmo_0168_night_shade"), SubResource("LE_pokmmo_0168_x_scissor"), SubResource("LE_pokmmo_0168_screech"), SubResource("LE_pokmmo_0168_fury_swipes"), SubResource("LE_pokmmo_0168_pin_missile"), SubResource("LE_pokmmo_0168_sucker_punch"), SubResource("LE_pokmmo_0168_psychic"), SubResource("LE_pokmmo_0168_agility"), SubResource("LE_pokmmo_0168_leech_life"), SubResource("LE_pokmmo_0168_spider_web"), SubResource("LE_pokmmo_0168_poison_jab"), SubResource("LE_pokmmo_0168_bug_buzz"), SubResource("LE_pokmmo_0168_megahorn"), SubResource("LE_pokmmo_0168_cross_poison"), SubResource("LE_new_0168_swarm"), SubResource("LE_new_0168_insomnia"), SubResource("LE_new_0168_sniper")])
 unit_name = "Ariados"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Bug", "Poison"])
 grounded = true
 weight = 1

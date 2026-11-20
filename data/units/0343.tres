@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0343/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0343/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/confusion.tres" id="100"]
@@ -214,8 +212,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0343_light_clay")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0343_confusion"), SubResource("LE_pokmmo_0343_harden"), SubResource("LE_pokmmo_0343_mud_slap"), SubResource("LE_pokmmo_0343_rapid_spin"), SubResource("LE_pokmmo_0343_rock_tomb"), SubResource("LE_pokmmo_0343_heal_block"), SubResource("LE_pokmmo_0343_power_trick"), SubResource("LE_pokmmo_0343_psybeam"), SubResource("LE_pokmmo_0343_ancientpower"), SubResource("LE_pokmmo_0343_imprison"), SubResource("LE_pokmmo_0343_cosmic_power"), SubResource("LE_pokmmo_0343_extrasensory"), SubResource("LE_pokmmo_0343_earth_power"), SubResource("LE_pokmmo_0343_selfdestruct"), SubResource("LE_pokmmo_0343_guard_split"), SubResource("LE_pokmmo_0343_power_split"), SubResource("LE_pokmmo_0343_sandstorm"), SubResource("LE_pokmmo_0343_explosion"), SubResource("LE_new_0343_levitate")])
 unit_name = "Baltoy"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ground", "Psychic"])
 grounded = true
 weight = 1

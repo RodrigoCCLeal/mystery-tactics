@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0238/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0238/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -216,8 +214,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0238_aspear_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0238_lick"), SubResource("LE_pokmmo_0238_pound"), SubResource("LE_pokmmo_0238_powder_snow"), SubResource("LE_pokmmo_0238_copycat"), SubResource("LE_pokmmo_0238_confusion"), SubResource("LE_pokmmo_0238_covet"), SubResource("LE_pokmmo_0238_sing"), SubResource("LE_pokmmo_0238_heart_stamp"), SubResource("LE_pokmmo_0238_fake_tears"), SubResource("LE_pokmmo_0238_ice_punch"), SubResource("LE_pokmmo_0238_lucky_chant"), SubResource("LE_pokmmo_0238_psychic"), SubResource("LE_pokmmo_0238_avalanche"), SubResource("LE_pokmmo_0238_sweet_kiss"), SubResource("LE_pokmmo_0238_mean_look"), SubResource("LE_pokmmo_0238_perish_song"), SubResource("LE_pokmmo_0238_blizzard"), SubResource("LE_new_0238_oblivious"), SubResource("LE_new_0238_forewarn"), SubResource("LE_new_0238_hydration")])
 unit_name = "Smoochum"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Ice", "Psychic"])
 grounded = true
 weight = 1

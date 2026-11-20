@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0483/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0483/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scary_face.tres" id="100"]
@@ -188,8 +186,6 @@ action = ExtResource("113")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0483_dragonbreath"), SubResource("LE_pokmmo_0483_metal_claw"), SubResource("LE_pokmmo_0483_scary_face"), SubResource("LE_pokmmo_0483_twister"), SubResource("LE_pokmmo_0483_ancientpower"), SubResource("LE_pokmmo_0483_slash"), SubResource("LE_pokmmo_0483_flash_cannon"), SubResource("LE_pokmmo_0483_dragon_pulse"), SubResource("LE_pokmmo_0483_dragon_claw"), SubResource("LE_pokmmo_0483_aura_sphere"), SubResource("LE_pokmmo_0483_heal_block"), SubResource("LE_pokmmo_0483_power_gem"), SubResource("LE_pokmmo_0483_metal_burst"), SubResource("LE_pokmmo_0483_earth_power"), SubResource("LE_pokmmo_0483_iron_tail"), SubResource("LE_pokmmo_0483_roar_of_time"), SubResource("LE_new_0483_pressure"), SubResource("LE_new_0483_telepathy")])
 unit_name = "Dialga"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Steel", "Dragon"])
 grounded = true
 weight = 1

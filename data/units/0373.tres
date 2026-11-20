@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0373/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0373/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/fly.tres" id="100"]
@@ -241,8 +239,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0373_dragon_scale"), SubResource("WHI_0373_dragon_fang")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0373_bite"), SubResource("LE_pokmmo_0373_dragon_tail"), SubResource("LE_pokmmo_0373_dragonbreath"), SubResource("LE_pokmmo_0373_ember"), SubResource("LE_pokmmo_0373_fire_fang"), SubResource("LE_pokmmo_0373_fly"), SubResource("LE_pokmmo_0373_leer"), SubResource("LE_pokmmo_0373_protect"), SubResource("LE_pokmmo_0373_rage"), SubResource("LE_pokmmo_0373_roost"), SubResource("LE_pokmmo_0373_thunder_fang"), SubResource("LE_pokmmo_0373_headbutt"), SubResource("LE_pokmmo_0373_scary_face"), SubResource("LE_pokmmo_0373_crunch"), SubResource("LE_pokmmo_0373_dragon_claw"), SubResource("LE_pokmmo_0373_zen_headbutt"), SubResource("LE_pokmmo_0373_focus_energy"), SubResource("LE_pokmmo_0373_flamethrower"), SubResource("LE_pokmmo_0373_outrage"), SubResource("LE_pokmmo_0373_double_edge"), SubResource("LE_pokmmo_0373_air_slash"), SubResource("LE_new_0373_intimidate"), SubResource("LE_new_0373_moxie")])
 unit_name = "Salamence"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dragon", "Flying"])
 grounded = false
 weight = 1

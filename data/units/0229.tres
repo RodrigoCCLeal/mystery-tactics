@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0229/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0229/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/leer.tres" id="100"]
@@ -289,8 +287,6 @@ action = ExtResource("130")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0229_ember"), SubResource("LE_pokmmo_0229_howl"), SubResource("LE_pokmmo_0229_inferno"), SubResource("LE_pokmmo_0229_leer"), SubResource("LE_pokmmo_0229_nasty_plot"), SubResource("LE_pokmmo_0229_smog"), SubResource("LE_pokmmo_0229_thunder_fang"), SubResource("LE_pokmmo_0229_tackle"), SubResource("LE_pokmmo_0229_roar"), SubResource("LE_pokmmo_0229_bite"), SubResource("LE_pokmmo_0229_incinerate"), SubResource("LE_pokmmo_0229_odor_sleuth"), SubResource("LE_pokmmo_0229_taunt"), SubResource("LE_pokmmo_0229_snarl"), SubResource("LE_pokmmo_0229_take_down"), SubResource("LE_pokmmo_0229_beat_up"), SubResource("LE_pokmmo_0229_fire_fang"), SubResource("LE_pokmmo_0229_dark_pulse"), SubResource("LE_pokmmo_0229_faint_attack"), SubResource("LE_pokmmo_0229_payback"), SubResource("LE_pokmmo_0229_torment"), SubResource("LE_pokmmo_0229_embargo"), SubResource("LE_pokmmo_0229_flame_charge"), SubResource("LE_pokmmo_0229_flamethrower"), SubResource("LE_pokmmo_0229_foul_play"), SubResource("LE_pokmmo_0229_crunch"), SubResource("LE_pokmmo_0229_overheat"), SubResource("LE_new_0229_early_bird"), SubResource("LE_new_0229_flash_fire"), SubResource("LE_new_0229_unnerve")])
 unit_name = "Houndoom"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dark", "Fire"])
 grounded = true
 weight = 1

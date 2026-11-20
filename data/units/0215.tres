@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0215/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0215/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -251,8 +249,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0215_quick_claw"), SubResource("WHI_0215_grip_claw")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0215_leer"), SubResource("LE_pokmmo_0215_quick_attack"), SubResource("LE_pokmmo_0215_scratch"), SubResource("LE_pokmmo_0215_taunt"), SubResource("LE_pokmmo_0215_faint_attack"), SubResource("LE_pokmmo_0215_swift"), SubResource("LE_pokmmo_0215_metal_claw"), SubResource("LE_pokmmo_0215_icy_wind"), SubResource("LE_pokmmo_0215_poison_jab"), SubResource("LE_pokmmo_0215_fury_swipes"), SubResource("LE_pokmmo_0215_swords_dance"), SubResource("LE_pokmmo_0215_hone_claws"), SubResource("LE_pokmmo_0215_snatch"), SubResource("LE_pokmmo_0215_beat_up"), SubResource("LE_pokmmo_0215_blizzard"), SubResource("LE_pokmmo_0215_punishment"), SubResource("LE_pokmmo_0215_ice_shard"), SubResource("LE_pokmmo_0215_agility"), SubResource("LE_pokmmo_0215_screech"), SubResource("LE_pokmmo_0215_slash"), SubResource("LE_new_0215_inner_focus"), SubResource("LE_new_0215_keen_eye"), SubResource("LE_new_0215_pickpocket")])
 unit_name = "Sneasel"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dark", "Ice"])
 grounded = true
 weight = 1

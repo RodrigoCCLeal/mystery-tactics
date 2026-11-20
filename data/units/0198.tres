@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0198/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0198/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/gust.tres" id="100"]
@@ -283,8 +281,6 @@ action = ExtResource("123")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0198_astonish"), SubResource("LE_pokmmo_0198_gust"), SubResource("LE_pokmmo_0198_peck"), SubResource("LE_pokmmo_0198_pursuit"), SubResource("LE_pokmmo_0198_snarl"), SubResource("LE_pokmmo_0198_haze"), SubResource("LE_pokmmo_0198_roost"), SubResource("LE_pokmmo_0198_wing_attack"), SubResource("LE_pokmmo_0198_aerial_ace"), SubResource("LE_pokmmo_0198_night_shade"), SubResource("LE_pokmmo_0198_assurance"), SubResource("LE_pokmmo_0198_night_slash"), SubResource("LE_pokmmo_0198_air_slash"), SubResource("LE_pokmmo_0198_taunt"), SubResource("LE_pokmmo_0198_nasty_plot"), SubResource("LE_pokmmo_0198_air_cutter"), SubResource("LE_pokmmo_0198_faint_attack"), SubResource("LE_pokmmo_0198_mean_look"), SubResource("LE_pokmmo_0198_foul_play"), SubResource("LE_pokmmo_0198_dark_pulse"), SubResource("LE_pokmmo_0198_sucker_punch"), SubResource("LE_pokmmo_0198_tailwind"), SubResource("LE_pokmmo_0198_torment"), SubResource("LE_pokmmo_0198_quash"), SubResource("LE_new_0198_insomnia"), SubResource("LE_new_0198_super_luck"), SubResource("LE_new_0198_prankster")])
 unit_name = "Murkrow"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dark", "Flying"])
 grounded = false
 weight = 1

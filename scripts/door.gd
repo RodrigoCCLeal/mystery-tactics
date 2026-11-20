@@ -39,6 +39,20 @@ extends Node2D
 @export var target_grid_pos: Vector2i = Vector2i.ZERO
 @export_enum("down", "left", "right", "up") var target_facing: String = "down"
 
+@export_group("Town Map (porta pra uma cidade-menu)")
+# Cidades (vermelhas) e vilarejos (azuis) não são mapas andáveis (ver
+# town_map_screen.gd). Uma porta que "levaria" a um deles — a saída de uma
+# casa de Kano, a saída de uma rota na direção de Wushu, ou a porta de saída
+# do Pokémon Center — liga isto: em vez de trocar
+# de cena, abre o Town Map com o indicador na cidade e o menu dela aberto.
+# target_scene_path/target_grid_pos são ignorados nesse caso.
+@export var opens_town_map: bool = false
+# id da cidade/vilarejo (MapLocation.id, ex: "wushu", "kano"). "" = onde o jogador
+# já está (GameState.current_location_id) — é o que a porta de saída do
+# Pokémon Center/Poké Mart usa, já que esses dois mapas são ÚNICOS e
+# compartilhados por todas as cidades.
+@export var town_map_location_id: String = ""
+
 @export_group("Animação de abrir (opcional)")
 # Spritesheet tipo RPG Maker (ex: doors5.png): cada COLUNA é uma cor/estilo
 # de porta diferente, cada LINHA é um quadro da animação de abrir (fechada

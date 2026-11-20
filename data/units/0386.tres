@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0386/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0386/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/wrap.tres" id="100"]
@@ -209,8 +207,6 @@ action = ExtResource("116")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0386_leer"), SubResource("LE_pokmmo_0386_wrap"), SubResource("LE_pokmmo_0386_night_shade"), SubResource("LE_pokmmo_0386_teleport"), SubResource("LE_pokmmo_0386_knock_off"), SubResource("LE_pokmmo_0386_psyshock"), SubResource("LE_pokmmo_0386_pursuit"), SubResource("LE_pokmmo_0386_toxic_spikes"), SubResource("LE_pokmmo_0386_psychic"), SubResource("LE_pokmmo_0386_gravity"), SubResource("LE_pokmmo_0386_snatch"), SubResource("LE_pokmmo_0386_switcheroo"), SubResource("LE_pokmmo_0386_psycho_shift"), SubResource("LE_pokmmo_0386_skill_swap"), SubResource("LE_pokmmo_0386_zen_headbutt"), SubResource("LE_pokmmo_0386_cosmic_power"), SubResource("LE_pokmmo_0386_recover"), SubResource("LE_pokmmo_0386_psycho_boost"), SubResource("LE_pokmmo_0386_hyper_beam"), SubResource("LE_new_0386_pressure")])
 unit_name = "Deoxys"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic"])
 grounded = true
 weight = 1

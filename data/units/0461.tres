@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0461/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0461/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/scratch.tres" id="100"]
@@ -309,8 +307,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0461_quick_claw"), SubResource("WHI_0461_grip_claw")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0461_agility"), SubResource("LE_pokmmo_0461_assurance"), SubResource("LE_pokmmo_0461_beat_up"), SubResource("LE_pokmmo_0461_embargo"), SubResource("LE_pokmmo_0461_ice_shard"), SubResource("LE_pokmmo_0461_leer"), SubResource("LE_pokmmo_0461_quick_attack"), SubResource("LE_pokmmo_0461_revenge"), SubResource("LE_pokmmo_0461_scratch"), SubResource("LE_pokmmo_0461_slash"), SubResource("LE_pokmmo_0461_taunt"), SubResource("LE_pokmmo_0461_faint_attack"), SubResource("LE_pokmmo_0461_swift"), SubResource("LE_pokmmo_0461_metal_claw"), SubResource("LE_pokmmo_0461_icy_wind"), SubResource("LE_pokmmo_0461_poison_jab"), SubResource("LE_pokmmo_0461_fury_swipes"), SubResource("LE_pokmmo_0461_swords_dance"), SubResource("LE_pokmmo_0461_hone_claws"), SubResource("LE_pokmmo_0461_snatch"), SubResource("LE_pokmmo_0461_fling"), SubResource("LE_pokmmo_0461_blizzard"), SubResource("LE_pokmmo_0461_punishment"), SubResource("LE_pokmmo_0461_nasty_plot"), SubResource("LE_pokmmo_0461_screech"), SubResource("LE_pokmmo_0461_night_slash"), SubResource("LE_pokmmo_0461_dark_pulse"), SubResource("LE_new_0461_pressure"), SubResource("LE_new_0461_pickpocket")])
 unit_name = "Weavile"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Dark", "Ice"])
 grounded = true
 weight = 1

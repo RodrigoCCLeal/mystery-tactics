@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0326/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0326/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/psybeam.tres" id="100"]
@@ -260,8 +258,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0326_persim_berry"), SubResource("WHI_0326_tanga_berry")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0326_confusion"), SubResource("LE_pokmmo_0326_odor_sleuth"), SubResource("LE_pokmmo_0326_psybeam"), SubResource("LE_pokmmo_0326_psywave"), SubResource("LE_pokmmo_0326_splash"), SubResource("LE_pokmmo_0326_teeter_dance"), SubResource("LE_pokmmo_0326_growl"), SubResource("LE_pokmmo_0326_hypnosis"), SubResource("LE_pokmmo_0326_psych_up"), SubResource("LE_pokmmo_0326_magic_coat"), SubResource("LE_pokmmo_0326_confuse_ray"), SubResource("LE_pokmmo_0326_whirlwind"), SubResource("LE_pokmmo_0326_zen_headbutt"), SubResource("LE_pokmmo_0326_snarl"), SubResource("LE_pokmmo_0326_power_gem"), SubResource("LE_pokmmo_0326_amnesia"), SubResource("LE_pokmmo_0326_rest"), SubResource("LE_pokmmo_0326_snore"), SubResource("LE_pokmmo_0326_psyshock"), SubResource("LE_pokmmo_0326_psychic"), SubResource("LE_pokmmo_0326_payback"), SubResource("LE_pokmmo_0326_bounce"), SubResource("LE_pokmmo_0326_future_sight"), SubResource("LE_new_0326_thick_fat"), SubResource("LE_new_0326_own_tempo"), SubResource("LE_new_0326_gluttony")])
 unit_name = "Grumpig"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Psychic"])
 grounded = true
 weight = 1

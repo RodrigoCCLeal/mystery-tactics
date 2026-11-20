@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0333/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0333/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/growl.tres" id="100"]
@@ -228,8 +226,6 @@ action = ExtResource("123")
 script = ExtResource("1_script")
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0333_growl"), SubResource("LE_pokmmo_0333_peck"), SubResource("LE_pokmmo_0333_astonish"), SubResource("LE_pokmmo_0333_mist"), SubResource("LE_pokmmo_0333_fury_attack"), SubResource("LE_pokmmo_0333_round"), SubResource("LE_pokmmo_0333_dragonbreath"), SubResource("LE_pokmmo_0333_natural_gift"), SubResource("LE_pokmmo_0333_safeguard"), SubResource("LE_pokmmo_0333_refresh"), SubResource("LE_pokmmo_0333_sing"), SubResource("LE_pokmmo_0333_mirror_move"), SubResource("LE_pokmmo_0333_cotton_guard"), SubResource("LE_pokmmo_0333_twister"), SubResource("LE_pokmmo_0333_take_down"), SubResource("LE_pokmmo_0333_dragon_pulse"), SubResource("LE_pokmmo_0333_featherdance"), SubResource("LE_pokmmo_0333_perish_song"), SubResource("LE_pokmmo_0333_brave_bird"), SubResource("LE_pokmmo_0333_dragon_rush"), SubResource("LE_new_0333_natural_cure"), SubResource("LE_new_0333_cloud_nine")])
 unit_name = "Swablu"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Normal", "Flying"])
 grounded = false
 weight = 1

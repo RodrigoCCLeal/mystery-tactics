@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3]
 
 [ext_resource type="Script" path="res://scripts/unit_data.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Pokemon/Sprites/0275/Normal.png" id="2_portrait"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/Pokemon/Sprites/0275/frames.tres" id="3_frames"]
 
 [ext_resource type="Script" path="res://scripts/learnset_entry.gd" id="learnset_script"]
 [ext_resource type="Resource" path="res://data/attacks/pound.tres" id="100"]
@@ -274,8 +272,6 @@ script = ExtResource("1_script")
 wild_held_items = Array[ExtResource("wild_item_script")]([SubResource("WHI_0275_power_herb")])
 learnset = Array[ExtResource("learnset_script")]([SubResource("LE_pokmmo_0275_absorb"), SubResource("LE_pokmmo_0275_air_cutter"), SubResource("LE_pokmmo_0275_astonish"), SubResource("LE_pokmmo_0275_explosion"), SubResource("LE_pokmmo_0275_extrasensory"), SubResource("LE_pokmmo_0275_faint_attack"), SubResource("LE_pokmmo_0275_fake_out"), SubResource("LE_pokmmo_0275_growth"), SubResource("LE_pokmmo_0275_harden"), SubResource("LE_pokmmo_0275_hurricane"), SubResource("LE_pokmmo_0275_leaf_tornado"), SubResource("LE_pokmmo_0275_mega_drain"), SubResource("LE_pokmmo_0275_nasty_plot"), SubResource("LE_pokmmo_0275_nature_power"), SubResource("LE_pokmmo_0275_payback"), SubResource("LE_pokmmo_0275_pound"), SubResource("LE_pokmmo_0275_razor_leaf"), SubResource("LE_pokmmo_0275_rollout"), SubResource("LE_pokmmo_0275_sucker_punch"), SubResource("LE_pokmmo_0275_sunny_day"), SubResource("LE_pokmmo_0275_swagger"), SubResource("LE_pokmmo_0275_synthesis"), SubResource("LE_pokmmo_0275_tackle"), SubResource("LE_pokmmo_0275_torment"), SubResource("LE_pokmmo_0275_whirlwind"), SubResource("LE_pokmmo_0275_leaf_storm"), SubResource("LE_new_0275_chlorophyll"), SubResource("LE_new_0275_wind_rider"), SubResource("LE_new_0275_pickpocket")])
 unit_name = "Shiftry"
-sprite_frames = ExtResource("3_frames")
-portrait = ExtResource("2_portrait")
 types = Array[String](["Grass", "Dark"])
 grounded = true
 weight = 1
